@@ -1,0 +1,226 @@
+.tracklist-play-pause {
+    color: #fff;
+    display: none
+}
+
+.tracklist-play-pause svg {
+    height: 1em;
+    width: 1em
+}
+
+.tracklist-play-pause.is-recommended {
+    display: block;
+    color: #535353
+}
+
+.tracklist-row {
+    -webkit-transition-property: background-color;
+    transition-property: background-color;
+    -webkit-transition-duration: .2s;
+    transition-duration: .2s;
+    -webkit-transition-timing-function: linear;
+    transition-timing-function: linear;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 4.56em;
+    list-style-type: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none
+}
+
+.tracklist-row .more {
+    display: none;
+    text-align: right;
+    padding-right: 1em
+}
+
+.tracklist-row:focus,
+.tracklist-row:hover {
+    background-color: rgba(0, 0, 0, .3)
+}
+
+.tracklist-row--active .position,
+.tracklist-row--active .tracklist-duration,
+.tracklist-row--active .tracklist-name,
+.tracklist-row--active .tracklist-play-pause {
+    color: #1ed760 !important
+}
+
+.tracklist-row:focus,
+.tracklist-row:hover {
+    background-color: rgba(0, 0, 0, .3)
+}
+
+.tracklist-row:focus .tracklist-play-pause,
+.tracklist-row:hover .tracklist-play-pause {
+    display: block;
+    color: #fff
+}
+
+.tracklist-row:focus .position,
+.tracklist-row:hover .position {
+    display: none
+}
+
+.tracklist-row:focus .more,
+.tracklist-row:hover .more {
+    display: block
+}
+
+.tracklist-name {
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: .015em;
+    color: #fff
+}
+
+.tracklist-col {
+    display: block;
+    height: 4.56em
+}
+
+.tracklist-col.position-outer {
+    -webkit-font-feature-settings: "tnum";
+    font-feature-settings: "tnum";
+    letter-spacing: 0;
+    text-align: right;
+    padding-right: 1em;
+    width: 3em
+}
+
+.tracklist-col.name {
+    text-align: left;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    width: 0;
+    overflow: hidden
+}
+
+.tracklist-col-recommended-add {
+    padding-right: 1em;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.tracklist-col-premium {
+    padding: 0 8px
+}
+
+.tracklist-col-premium span {
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: .015em;
+    font-weight: 200;
+    color: hsla(0, 0%, 100%, .6);
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    font-weight: 400;
+    display: inline-block;
+    background-color: #fff;
+    border-radius: 2px;
+    color: #000;
+    padding: 5px
+}
+
+.tracklist-col-duration {
+    -webkit-font-feature-settings: "tnum";
+    font-feature-settings: "tnum";
+    letter-spacing: 0;
+    text-align: right;
+    padding-right: 1em;
+    width: 3.9em
+}
+
+.track-name-wrapper .second-line {
+    display: block
+}
+
+.track-name-wrapper .explicit-label {
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: .015em;
+    display: inline-block;
+    text-transform: uppercase;
+    background-color: hsla(0, 0%, 100%, .6);
+    color: #000;
+    border-radius: 2px;
+    padding: 0 .3em;
+    margin-right: .67em
+}
+
+.track-name-wrapper .second-line-separator {
+    display: inline-block;
+    -webkit-transform: translateY(-1px);
+    transform: translateY(-1px);
+    font-size: .8em;
+    padding: 0 8px
+}
+
+.tracklist-col-cover-art-thumb {
+    display: block;
+    margin-right: 1em
+}
+
+.tracklist-top-align {
+    margin-top: .7em
+}
+
+.tracklist-top-align .icon-pause,
+.tracklist-top-align .icon-play {
+    -webkit-transform: translateY(4px);
+    transform: translateY(4px)
+}
+
+.tracklist-top-align.position {
+    margin-top: .75em
+}
+
+.tracklist-middle-align {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%)
+}
+
+.tracklist-middle-align .icon-pause,
+.tracklist-middle-align .icon-play {
+    -webkit-transform: translateY(3px);
+    transform: translateY(3px)
+}
+
+.tracklist-row.tracklist-row--oneline,
+.tracklist-row.tracklist-row--oneline .tracklist-col {
+    height: 4em
+}
+
+.no-focus-outline .tracklist-row {
+    outline: none
+}
+
+.spoticon-track-16:before {
+    content: "\F156";
+    font-size: 16px
+}
+
+
+
+.track-name-wrapper .second-line {
+    display: block
+}
+
+.track-name-wrapper .second-line-separator {
+    display: inline-block;
+    -webkit-transform: translateY(-1px);
+    transform: translateY(-1px);
+    font-size: .8em;
+    padding: 0 8px
+}

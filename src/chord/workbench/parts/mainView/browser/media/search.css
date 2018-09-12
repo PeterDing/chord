@@ -1,0 +1,70 @@
+@media (max-width: 1200px) {
+    .search-nav-container {
+        padding-bottom: 12px
+    }
+}
+
+.search-nav-container {
+    width: 100%;
+    padding: 20px 0
+}
+
+.search-nav-ul {
+    text-align: center
+}
+
+.search-nav-li {
+    display: inline-block
+}
+
+.search-nav-item {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: .015em;
+    font-weight: 400;
+    color: hsla(0, 0%, 100%, .6);
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    position: relative;
+    border: 0;
+    display: inline-block;
+    margin: .8em;
+    padding: .8em .8em 0;
+    text-decoration: none
+}
+
+.search-nav-item.search-nav-item__active {
+    color: #fff
+}
+
+.search-nav-item.search-nav-item__active:before {
+    content: "";
+    height: 2px;
+    background-color: #1db954;
+    width: 30px;
+    position: absolute;
+    bottom: -6px;
+    display: block;
+    left: 50%;
+    margin-left: -15px
+}
+
+.search-result-title {
+    font-size: 36px;
+    line-height: 44px;
+    letter-spacing: -.005em;
+    font-weight: 600;
+    color: #fff;
+    text-transform: none;
+    margin: 24px 0
+}
+
+.tracklist-container {
+    position: relative
+}
+
+.tracklist-container .tracklist {
+    color: hsla(0,0%,100%,.6);
+    width: 100%;
+    margin-bottom: 1.5em
+}

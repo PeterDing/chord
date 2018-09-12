@@ -1,0 +1,457 @@
+#main .playerBar-container {
+    background-color: #181818;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    z-index: 111;
+}
+
+.player-bar-container {
+    min-width: 620px;
+    background-color: #282828;
+    border-top: 1px solid #000;
+    -webkit-box-orient: vertical;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+.player-bar,
+.player-bar-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-direction: normal
+}
+
+.player-bar {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-orient: horizontal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    height: 90px;
+    padding: 0 16px
+}
+
+.player-bar__left {
+    width: 30%;
+    min-width: 180px
+}
+
+.player-bar__center {
+    width: 40%;
+    max-width: 722px
+}
+
+.now-player {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.player__cover-art {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    margin-right: 14px !important
+}
+
+.player-controls {
+    -webkit-box-orient: vertical;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.player-controls,
+.player-controls__buttons {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-direction: normal
+}
+
+.player-controls__buttons {
+    margin-bottom: 12px;
+    width: 224px;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-orient: horizontal;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap
+}
+
+
+
+/* control button */
+
+.control-button {
+    background-color: transparent;
+    border: none;
+    color: hsla(0, 0%, 100%, .6);
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    position: relative
+}
+
+.control-button:hover {
+    color: #fff
+}
+
+.control-button:hover:active {
+    color: hsla(0, 0%, 100%, .6)
+}
+
+
+
+/* control button icon */
+
+[class*=" spoticon-"]:before,
+[class^=spoticon-]:before {
+    font-family: glue1-spoticon;
+    font-style: normal;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: inherit;
+    vertical-align: bottom;
+    display: inline-block;
+    text-decoration: inherit
+}
+
+.spoticon-rewind-16:before {
+    content: "\F146";
+    font-size: 16px
+}
+
+.spoticon-play-16:before {
+    content: "\F132";
+    font-size: 16px
+}
+
+.spoticon-pause-16:before {
+    content: "\F130";
+    font-size: 16px
+}
+
+.spoticon-forward-16:before {
+    content: "\F148";
+    font-size: 16px
+}
+
+.control-button--circled:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 500px;
+    border: 1px solid hsla(0, 0%, 100%, .6)
+}
+
+.control-button--circled:hover {
+    -webkit-transition: none 33ms cubic-bezier(.3, 0, 0, 1);
+    transition: none 33ms cubic-bezier(.3, 0, 0, 1);
+    -webkit-transition-property: all;
+    transition-property: all;
+    -webkit-transform: scale(1.06);
+    transform: scale(1.06)
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .control-button--circled:hover {
+        -webkit-transition-duration: 66ms;
+        transition-duration: 66ms
+    }
+}
+
+.control-button--circled:hover:after {
+    border-color: #fff
+}
+
+.control-button--circled:hover:active {
+    -webkit-transition: none;
+    transition: none;
+    -webkit-transform: scale(.99);
+    transform: scale(.99)
+}
+
+.control-button--circled:hover:active:after {
+    border-color: hsla(0, 0%, 100%, .6)
+}
+
+
+
+/* process bar */
+
+.playback-bar {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.playback-bar canvas {
+    pointer-events: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100
+}
+
+.playback-bar__progress-time {
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: .015em;
+    min-width: 40px;
+    text-align: center
+}
+
+
+.progress-bar {
+    height: 12px;
+    position: relative;
+    width: 100%
+}
+
+.progress-bar__bg {
+    background-color: #404040;
+    border-radius: 2px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 4px;
+    width: 100%
+}
+
+.progress-bar__fg {
+    -webkit-transition-property: background-color;
+    transition-property: background-color;
+    -webkit-transition-timing-function: cubic-bezier(1, 0, .7, 1);
+    transition-timing-function: cubic-bezier(1, 0, .7, 1);
+    background-color: #b3b3b3;
+    border-radius: 2px;
+    height: 4px;
+    width: 0
+}
+
+.progress-bar__fg,
+.progress-bar__slider {
+    -webkit-transition-duration: .1s;
+    transition-duration: .1s
+}
+
+.progress-bar__slider {
+    position: absolute;
+    top: 50%;
+    -webkit-transition-property: -webkit-transform;
+    transition-property: -webkit-transform;
+    transition-property: transform;
+    transition-property: transform, -webkit-transform;
+    -webkit-transition-timing-function: cubic-bezier(1, 0, .7, 1);
+    transition-timing-function: cubic-bezier(1, 0, .7, 1);
+    background-color: #fff;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    margin-top: -6px;
+    z-index: 100;
+    -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .5);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .5);
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+
+.progress-bar:hover .progress-bar__fg {
+    -webkit-transition-property: background-color;
+    transition-property: background-color;
+    -webkit-transition-duration: .1s;
+    transition-duration: .1s;
+    -webkit-transition-timing-function: cubic-bezier(.3, 0, 0, 1);
+    transition-timing-function: cubic-bezier(.3, 0, 0, 1);
+    background-color: #1db954
+}
+
+.progress-bar:hover .progress-bar__slider {
+    -webkit-transition-property: -webkit-transform;
+    transition-property: -webkit-transform;
+    transition-property: transform;
+    transition-property: transform, -webkit-transform;
+    -webkit-transition-duration: .1s;
+    transition-duration: .1s;
+    -webkit-transition-timing-function: cubic-bezier(.3, 0, 0, 1);
+    transition-timing-function: cubic-bezier(.3, 0, 0, 1);
+    -webkit-transform: scale(1);
+    transform: scale(1)
+}
+
+
+/* PlayList & Volume */
+
+.player-bar__right {
+    width: 30%;
+    min-width: 180px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end
+}
+
+.player-bar__right__inner {
+    width: 180px
+}
+
+.extra-controls {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.extra-controls__queue-link {
+    border: 0;
+    display: inline-block;
+    position: relative
+}
+
+.GlueDropTarget--active .extra-controls__queue-link {
+    color: #1ed760
+}
+
+.GlueDropTarget--active .extra-controls__queue-link a {
+    color: inherit
+}
+
+.GlueDropTarget--active .extra-controls__queue-link:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: 1px solid #1ed760;
+    border-radius: 100%;
+    color: #1ed760
+}
+
+.spoticon-queue-16:before {
+    content: "\F13A";
+    font-size: 16px
+}
+
+.player-list-container {
+    position: relative
+}
+
+.player-list-songs {
+    display: none;
+    position: absolute;
+    min-width: 500px;
+    max-height: 60vh;
+    bottom: 75px;
+    right: -430%;
+    z-index: 100;
+    padding: 10px;
+    overflow: scroll;
+    background-color: hsla(0, 0%, 12%, 1)
+}
+
+.player-list__song {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 20px
+}
+
+.volume-bar {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 136px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex
+}
+
+.spoticon-volume-16:before {
+    content: "\F15E";
+    font-size: 16px
+}
+
+
+
+.track-info {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    margin-right: 10px
+}
+
+.track-info__name {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: .015em;
+    color: #fff
+}
+
+.track-info__artists {
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: .015em
+}

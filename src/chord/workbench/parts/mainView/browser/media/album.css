@@ -1,0 +1,35 @@
+.album {
+    padding-top: 2em
+}
+
+.album .album-windowed-message {
+    background-color: rgba(0, 0, 0, .1)
+}
+
+.album .album-windowed-message--header {
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: .015em;
+    font-weight: 600;
+    color: #fff;
+    text-transform: none;
+    text-align: center;
+    padding: 20px 10px 10px
+}
+
+.album .album-windowed-message--description {
+    text-align: center;
+    padding: 10px 10px 20px
+}
+
+.album .album-tracks {
+    margin-bottom: 20px
+}
+
+@media (min-width: 1200px) and (min-height:870px) {
+    .album .col-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 40px
+    }
+}

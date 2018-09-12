@@ -1,0 +1,118 @@
+@import './search.css';
+
+.main-view-container {
+    padding-left: 220px;
+    padding-bottom: 91px;
+    width: 100%;
+    min-height: 0 !important
+}
+
+.hw-accelerate {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform
+}
+
+.contentSpacing {
+    padding: 0 2em;
+    margin: 0 auto;
+    max-width: 1480px
+}
+
+
+/* Input */
+
+.inputBox {
+    position: relative;
+    /* background-color: #282828; */
+    background-color: rgba(30, 30, 30, 0.3);
+    padding: 32px 0
+}
+
+.inputBox-label {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: .015em;
+    font-weight: 400;
+    color: #fff;
+    text-transform: none;
+    margin-bottom: .5em
+}
+
+.inputBox-input {
+    font-size: 48px;
+    line-height: 56px;
+    letter-spacing: -.005em;
+    font-weight: 600;
+    color: #fff;
+    text-transform: none;
+    caret-color: #1db954;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    background-color: transparent;
+    border: none
+}
+
+.inputBox-input:focus,
+.inputBox-input:hover {
+    outline: 0
+}
+
+.inputBox-input::-webkit-input-placeholder {
+    color: #535353
+}
+
+.inputBox-input:-ms-input-placeholder,
+.inputBox-input::-ms-input-placeholder {
+    color: #535353
+}
+
+.inputBox-input::placeholder {
+    color: #535353
+}
+
+
+/* Search History */
+
+.search-history li {
+    padding: 10px 0
+}
+
+.search-history li h1 {
+    font-size: 28px;
+    line-height: 36px;
+    letter-spacing: -.005em;
+    font-weight: 600;
+    color: #fff;
+    text-transform: none;
+    color: inherit;
+    padding: 0;
+    width: 100%
+}
+
+.search-history li span {
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: .015em;
+    font-weight: 200;
+    color: hsla(0, 0%, 100%, .6);
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    display: block
+}
+
+.link-subtle {
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: .2s;
+    transition-duration: .2s;
+    -webkit-transition-timing-function: linear;
+    transition-timing-function: linear;
+    color: hsla(0, 0%, 100%, .6)
+}
+
+.link-subtle:focus,
+.link-subtle:hover {
+    color: #fff
+}

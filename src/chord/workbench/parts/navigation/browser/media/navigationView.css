@@ -1,0 +1,74 @@
+/* Navigation */
+
+.nav-bar-container {
+    width: 220px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, .5);
+    overflow: auto;
+    min-height: 0 !important;
+    will-change: transform
+}
+
+.navBar {
+    padding: 24px;
+    padding-bottom: 95px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default
+}
+
+.navBar-expand {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1
+}
+
+.navBar-group {
+    padding-bottom: 5px;
+    padding-top: 10px
+}
+
+.navBar-item {
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: .015em;
+    font-weight: 600;
+    padding: 3px 0
+}
+
+.navBar-item .collection-active-icon,
+.navBar-item .collection-icon,
+.navBar-item .home-active-icon,
+.navBar-item .home-icon,
+.navBar-item .search-active-icon,
+.navBar-item .search-icon {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    height: 24px;
+    width: 24px
+}
+
+.navBar-item--with-icon-left {
+    padding-left: 36px;
+    position: relative
+}
+
+.navBar-item--with-icon-right {
+    padding-right: 36px;
+    position: relative
+}

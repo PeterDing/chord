@@ -1,0 +1,11 @@
+.collection {
+    padding-top: 2em
+}
+
+@media (min-width: 1200px) and (min-height:870px) {
+    .collection .col-sticky {
+        position:-webkit-sticky;
+        position: sticky;
+        top: 40px
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "$schema": "https://schemastore.azurewebsites.net/schemas/json/tsconfig.json",
+    "compilerOptions": {
+        "module": "amd",
+        "moduleResolution": "classic",
+        "noImplicitAny": false,
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "target": "es5",
+        "sourceMap": false,
+        "experimentalDecorators": true,
+        "declaration": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "jsx": "react",
+        "baseUrl": ".",
+        "lib": [
+            "es2015",
+            "dom",
+            "es2017.string"
+        ]
+    },
+    "exclude": [
+        "../out",
+    ]
+}

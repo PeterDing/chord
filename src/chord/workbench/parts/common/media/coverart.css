@@ -1,0 +1,194 @@
+.cover-art {
+    margin: 0;
+    display: block;
+    border: 0;
+    outline: 0;
+    position: relative;
+    background-color: #282828
+}
+
+.cover-art.actionable {
+    -webkit-transition: none 33ms cubic-bezier(.3, 0, .7, 1);
+    transition: none 33ms cubic-bezier(.3, 0, .7, 1);
+    -webkit-transition-property: -webkit-transform;
+    transition-property: -webkit-transform;
+    transition-property: transform;
+    transition-property: transform, -webkit-transform
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .cover-art.actionable {
+        -webkit-transition-duration: 50ms;
+        transition-duration: 50ms
+    }
+}
+
+.cover-art.actionable.linking:active {
+    -webkit-transition: none;
+    transition: none;
+    -webkit-transform: scale3d(.97, .97, 1);
+    transform: scale3d(.97, .97, 1);
+    -webkit-box-shadow: none;
+    box-shadow: none
+}
+
+.cover-art.rounded {
+    border-radius: 50%
+}
+
+.cover-art.shadow {
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3)
+}
+
+.cover-art .daily-mix-decoration .waves {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    pointer-events: none;
+    background-color: hsla(0, 0%, 100%, .6)
+}
+
+.cover-art .daily-mix-decoration .bottom-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    pointer-events: none
+}
+
+.cover-art .cover-art-image {
+    -webkit-transition-property: opacity;
+    transition-property: opacity;
+    -webkit-transition-duration: .3s;
+    transition-duration: .3s;
+    -webkit-transition-timing-function: cubic-bezier(.3, 0, .4, 1);
+    transition-timing-function: cubic-bezier(.3, 0, .4, 1);
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover !important;
+    background-position: 50%;
+    opacity: 0
+}
+
+.cover-art .cover-art-image .cover-art-image-artist {
+    border-radius: 50%
+}
+
+.cover-art .cover-art-image-loaded {
+    opacity: 1
+}
+
+.cover-art .cover-art-playback {
+    -webkit-transition: none 33ms cubic-bezier(.3, 0, .7, 1);
+    transition: none 33ms cubic-bezier(.3, 0, .7, 1);
+    -webkit-transition-property: all;
+    transition-property: all;
+    background-color: transparent;
+    display: none;
+    position: absolute;
+    z-index: 3;
+    width: 62px;
+    height: 62px;
+    margin-left: -31px;
+    margin-top: -31px;
+    top: 50%;
+    left: 50%;
+    color: #fff;
+    border: 0;
+    border-radius: 500px;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+    outline: none;
+    -webkit-box-shadow: inset 0 0 0 1px #b3b3b3;
+    box-shadow: inset 0 0 0 1px #b3b3b3
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .cover-art .cover-art-playback {
+        -webkit-transition-duration: 50ms;
+        transition-duration: 50ms
+    }
+}
+
+.cover-art .cover-art-playback:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 500px;
+    -webkit-box-shadow: inset 0 0 0 1px #b3b3b3;
+    box-shadow: inset 0 0 0 1px #b3b3b3
+}
+
+.cover-art .cover-art-playback:hover {
+    -webkit-transition: none 33ms cubic-bezier(.3, 0, 0, 1);
+    transition: none 33ms cubic-bezier(.3, 0, 0, 1);
+    -webkit-transition-property: all;
+    transition-property: all;
+    -webkit-transform: scale(1.06);
+    transform: scale(1.06);
+    -webkit-box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px transparent;
+    box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px transparent
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .cover-art .cover-art-playback:hover {
+        -webkit-transition-duration: 66ms;
+        transition-duration: 66ms;
+        -webkit-box-shadow: inset 0 0 0 1px #fff;
+        box-shadow: inset 0 0 0 1px #fff
+    }
+}
+
+.cover-art .cover-art-playback:hover:after {
+    -webkit-box-shadow: inset 0 0 0 1px #fff;
+    box-shadow: inset 0 0 0 1px #fff
+}
+
+.cover-art .cover-art-playback.linking:hover:active {
+    -webkit-transition: none;
+    transition: none;
+    -webkit-transform: scale(.99);
+    transform: scale(.99)
+}
+
+.cover-art .cover-art-playback svg {
+    -webkit-transform: scale(.5);
+    transform: scale(.5);
+    width: 100%;
+    height: 100%
+}
+
+.cover-art .cover-art-playback .icon-play {
+    margin-left: 4px
+}
+
+.cover-art .cover-art-playback.playing {
+    border-color: #fff;
+    display: block
+}
+
+.cover-art .icon {
+    position: absolute;
+    top: 35%;
+    bottom: 35%;
+    left: 35%;
+    right: 35%
+}
+
+.cover-art .icon svg {
+    width: 100%;
+    height: 100%
+}
+
+.cover-art--with-auto-height {
+    padding-top: 100%
+}

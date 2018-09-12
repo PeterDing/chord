@@ -1,0 +1,124 @@
+@import '../../parts/common/media/common.css';
+
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box
+}
+
+a,abbr,acronym,address,applet,
+article,aside,audio,b,big,
+blockquote,body,canvas,caption,
+center,cite,code,dd,del,details,
+dfn,div,dl,dt,em,embed,fieldset,
+figcaption,figure,footer,form,
+h1,h2,h3,h4,h5,h6,header,hgroup,html,
+i,iframe,img,ins,kbd,label,legend,
+li,mark,menu,nav,object,ol,output,
+p,pre,q,ruby,s,samp,section,small,span,
+strike,strong,sub,summary,sup,table,
+tbody,td,tfoot,th,thead,time,tr,tt,
+u,ul,var,video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline
+}
+
+body {
+    line-height: 1.6
+}
+
+ol,ul {
+    list-style: none
+}
+
+blockquote,q {
+    quotes: none
+}
+
+blockquote:after,blockquote:before,q:after,q:before {
+    content: "";
+    content: none
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+html {
+    background-color: #181818
+}
+
+body,button,input {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: .015em;
+    font-weight: 200;
+    color: hsla(0,0%,100%,.6);
+    text-transform: none;
+    font-family: spotify-circular,Helvetica Neue,Helvetica,Arial,Hiragino Kaku Gothic Pro,Meiryo,MS Gothic,zh-font,sans-serif;
+}
+
+body {
+    min-width: 720px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-scroll-chaining: none;
+    overscroll-behavior: none
+}
+
+[draggable] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+#main {
+    width: 100%
+}
+
+#main .root {
+    -webkit-transition-property: background;
+    transition-property: background;
+    -webkit-transition-duration: .5s;
+    transition-duration: .5s;
+    -webkit-transition-timing-function: cubic-bezier(.3,0,.4,1);
+    transition-timing-function: cubic-bezier(.3,0,.4,1);
+    min-height: 100vh
+}
+
+#main .root .top-container {
+    min-height: 100%;
+    width: 100%;
+    position: relative
+}
+
+#main .root .top-container--not-supported {
+    padding-top: 45px
+}
+
+#main .root .player-bar-container {
+    background-color: #181818;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    z-index: 101
+}
+
+.main-background {
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    background-repeat: no-repeat;
+    left: 0;
+    top: 0;
+    position: fixed;
+    will-change: transform
+}
