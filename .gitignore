@@ -5,3 +5,4 @@ out
 .DS_Store
 dist
 .tern-port
+yarn-error.log
