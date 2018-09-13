@@ -101,18 +101,3 @@
     letter-spacing: .16em;
     display: block
 }
-
-.link-subtle {
-    -webkit-transition-property: color;
-    transition-property: color;
-    -webkit-transition-duration: .2s;
-    transition-duration: .2s;
-    -webkit-transition-timing-function: linear;
-    transition-timing-function: linear;
-    color: hsla(0, 0%, 100%, .6)
-}
-
-.link-subtle:focus,
-.link-subtle:hover {
-    color: #fff
-}
