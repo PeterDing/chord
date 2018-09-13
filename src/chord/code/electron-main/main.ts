@@ -1,6 +1,7 @@
 'use strict';
 
-import * as path from "path";
+import * as process from 'process';
+import * as path from 'path';
 
 import { app, BrowserWindow, Menu } from 'electron';
 import { menuTemplate } from 'chord/code/electron-main/menu/template';
@@ -8,6 +9,8 @@ import { menuTemplate } from 'chord/code/electron-main/menu/template';
 
 console.log('=== main electron behave main===');
 
+
+const DEV = process.env.ELECTRON_DEV ? true : false;
 
 let win: BrowserWindow;
 
@@ -40,7 +43,10 @@ function createWindow() {
 
     // path: chord/workbench/electron-browser/bootstrap/index.html
     win.loadFile(path.join(__dirname, '../../workbench/electron-browser/bootstrap/index.html'));
-    // win.webContents.openDevTools();
+
+    if (DEV) {
+        win.webContents.openDevTools();
+    }
 
     win.on('close', () => {
         win = null;
