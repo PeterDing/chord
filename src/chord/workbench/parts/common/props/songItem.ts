@@ -15,6 +15,12 @@ export interface ISongItemViewProps {
      * If short is true, no showing artist name and album name
      */
     short: boolean;
+
+    /**
+     * If thumb is true, show album cover
+     */
+    thumb: boolean;
+
     song: ISong;
     handlePlay: () => any | null;
     handlePlayOne: (song: ISong) => IPlayOneAct;

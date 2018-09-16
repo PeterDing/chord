@@ -86,6 +86,7 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
                     song={song}
                     active={false}
                     short={false}
+                    thumb={true}
                     handlePlay={null} />
             )
         );

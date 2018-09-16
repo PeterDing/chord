@@ -8,7 +8,7 @@ import { ISong } from 'chord/music/api/song';
 import { ISongItemViewProps } from 'chord/workbench/parts/common/props/songItem';
 import { handlePlayOne } from 'chord/workbench/parts/player/browser/action/playOne';
 
-import { PlayIcon } from 'chord/workbench/parts/common/component/common';
+import { PlayIcon, PlayListIcon } from 'chord/workbench/parts/common/component/common';
 
 import { handleShowArtistViewById } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 import { handleShowAlbumViewById } from 'chord/workbench/parts/mainView/browser/action/showAlbum';
@@ -57,6 +57,21 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
             </span>
         );
 
+        let cover = song.albumCoverPath || song.albumCoverUrl;
+        let coverThumbView = this.props.thumb ? (
+            <div className='tracklist-col tracklist-col-cover-art-thumb'>
+                <div className='cover-art shadow tracklist-middle-align cover-art--with-auto-height'
+                    style={{ width: '50px', height: 'auto' }}>
+                    <div>
+                        {PlayListIcon}
+                        <div className='cover-art-image cover-art-image-loaded'
+                            style={{backgroundImage: `url("${cover}")`}}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ) : null;
+
         return (
             <div className='react-contextmenu-wrapper'>
                 <div draggable={true}>
@@ -67,6 +82,9 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
                             <div className={`tracklist-play-pause ${tracklistAlign}`}>{PlayIcon}</div>
                             <div className={`position ${tracklistAlign}`}><span className='spoticon-track-16'></span></div>
                         </div>
+
+                        {/* album cover */}
+                        {coverThumbView}
 
                         <div className='tracklist-col name'>
                             <div className={`track-name-wrapper ellipsis-one-line ${tracklistAlign}`}>
