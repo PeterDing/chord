@@ -35,6 +35,13 @@ class Audio {
      * Make a Howl instance
      */
     protected static doMakeAudio(url: string): Howl {
+        // prevent request pending
+        if (url.match(/\?/)) {
+            url += `&t=${Date.now()}`;
+        } else {
+            url += `?t=${Date.now()}`;
+        }
+
         let audioOptions = {
             src: url,
 
@@ -42,7 +49,7 @@ class Audio {
             html5: true,
             autoplay: false,
 
-            onplay: (soundId: number) => Audio.onplay(soundId, Audio.store), 
+            onplay: (soundId: number) => Audio.onplay(soundId, Audio.store),
             onpause: (soundId: number) => Audio.onpause(soundId, Audio.store),
             onend: (soundId: number) => Audio.onend(soundId, Audio.store),
         };
