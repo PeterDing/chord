@@ -36,7 +36,8 @@ export class PlayList extends React.Component<IPlayListProps, object> {
                 handlePlay={() => this.props.handlePlay(i)}
                 song={song}
                 active={index == i}
-                short={false} />
+                short={false}
+                thumb={true} />
         ));
 
         return (
