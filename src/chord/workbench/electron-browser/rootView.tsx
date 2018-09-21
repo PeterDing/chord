@@ -11,13 +11,36 @@ import { IRootViewProps } from 'chord/workbench/electron-browser/props/rootView'
 
 import { getMainBackground } from 'chord/workbench/electron-browser/media/mainBackground';
 
+import MenuView from 'chord/workbench/parts/menu/browser/menuView';
+
 import MainView from 'chord/workbench/parts/mainview/browser/mainView';
+
+
+function closeMenu() {
+    document.querySelectorAll('.react-contextmenu').forEach(elm => {
+        let menu = elm as HTMLElement;
+        menu.style.display = 'none';
+    });
+}
+
+/**
+ * window scroll event
+ */
+window.addEventListener('scroll', function() {
+    closeMenu();
+});
 
 
 class RootView extends React.Component<IRootViewProps, any> {
 
     constructor(props: IRootViewProps) {
         super(props);
+
+        this.handleGlobalClickAndSCroll = this.handleGlobalClickAndSCroll.bind(this);
+    }
+
+    handleGlobalClickAndSCroll() {
+        closeMenu();
     }
 
     render() {
@@ -25,7 +48,8 @@ class RootView extends React.Component<IRootViewProps, any> {
         let background = getMainBackground(viewKey);
 
         return (
-            <div>
+            <div onClick={() => this.handleGlobalClickAndSCroll()}
+                onScroll={() => this.handleGlobalClickAndSCroll()}>
 
                 <div className='main-background'
                     style={{ backgroundImage: background }}></div>
@@ -39,6 +63,9 @@ class RootView extends React.Component<IRootViewProps, any> {
                     {/* PlayView */}
                     <PlayerView />
                 </div>
+
+                <MenuView />
+
             </div>
         );
     }
