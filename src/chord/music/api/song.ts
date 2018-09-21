@@ -27,7 +27,7 @@ export interface ISong {
     subTitle?: string;
 
     songWriters?: Array<string>;
-    songers?: Array<string>;
+    singers?: Array<string>;
 
     // albumId is the database primary key
     albumId?: string;

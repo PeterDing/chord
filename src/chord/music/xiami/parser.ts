@@ -68,7 +68,7 @@ export function makeSong(info: any): ISong {
         subTitle: info['song_sub_title'],
 
         songWriters: info['songwriters'],
-        songers: info['singers'],
+        singers: info['singers'],
 
         albumId: _getAlbumId(info['album_id']),
         albumOriginalId: info['album_id'].toString(),
@@ -324,7 +324,7 @@ export function makeAliSong(info: any): ISong {
         subTitle: info['subName'],
 
         songWriters: info['songwriters'],
-        songers: info['singers'],
+        singers: info['singers'],
 
         albumId: _getAlbumId(info['albumId']),
         albumOriginalId: info['albumId'].toString(),
@@ -369,7 +369,7 @@ export function makeAliAlbum(info: any): IAlbum {
 
     let tags: Array<ITag> = [{ id: info['categoryId'], name: info['albumCategory'] }];
 
-    let songs: Array<ISong> = info['songs'] ? info['songs'].map(song => makeAliSong(song)) : null;
+    let songs: Array<ISong> = (info['songs'] || []).map(song => makeAliSong(song));
 
     let album: IAlbum = {
         albumId: _getAlbumId(albumOriginalId),
