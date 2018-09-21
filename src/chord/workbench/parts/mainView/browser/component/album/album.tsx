@@ -18,8 +18,10 @@ import { IAlbumViewProps } from 'chord/workbench/parts/mainView/browser/componen
 
 import { handleShowArtistViewById } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 
+import { showAlbumMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
-function AlbumEntity({ album, handlePlayAlbum, handleShowArtistViewById }) {
+
+function AlbumEntity({ album, handlePlayAlbum, handleShowArtistViewById, showAlbumMenu }) {
     let cover = album.albumCoverPath || album.albumCoverUrl;
     return (
         <header className='entity-info'>
@@ -27,7 +29,8 @@ function AlbumEntity({ album, handlePlayAlbum, handleShowArtistViewById }) {
                 <div draggable={true}>
                     <div className="media-object">
                         <div className="media-object-hoverable">
-                            <div className="react-contextmenu-wrapper">
+                            <div className="react-contextmenu-wrapper"
+                                onContextMenu={(e) => showAlbumMenu(e, album)}>
 
                                 <div className="cover-art shadow cover-art--with-auto-height" aria-hidden="true"
                                     style={{ width: 'auto', height: 'auto' }}>
@@ -94,6 +97,7 @@ class AlbumView extends React.Component<IAlbumViewProps, any> {
                     song={song}
                     active={false}
                     short={true}
+                    thumb={false}
                     handlePlay={null} />
             )
         );
@@ -108,7 +112,8 @@ class AlbumView extends React.Component<IAlbumViewProps, any> {
                                 <div className='col-xs-12 col-lg-3 col-xl-4 col-sticky'>
                                     <AlbumEntity album={album}
                                         handlePlayAlbum={this.props.handlePlayAlbum}
-                                        handleShowArtistViewById={this.props.handleShowArtistViewById} />
+                                        handleShowArtistViewById={this.props.handleShowArtistViewById} 
+                                        showAlbumMenu={this.props.showAlbumMenu}/>
                                 </div>
 
                                 <div className='col-xs-12 col-lg-9 col-xl-8'>
@@ -138,6 +143,7 @@ function mapDispatchToProps(dispatch) {
     return {
         handlePlayAlbum: album => handlePlayAlbum(album).then(act => dispatch(act)),
         handleShowArtistViewById: artistId => handleShowArtistViewById(artistId).then(act => dispatch(act)),
+        showAlbumMenu: (e, album) => dispatch(showAlbumMenu(e, album)),
     };
 }
 

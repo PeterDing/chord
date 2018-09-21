@@ -17,6 +17,20 @@ import { comebackView } from 'chord/workbench/parts/mainView/browser/reducer/com
 
 import { getMoreArtistSongs, getMoreArtistAlbums } from 'chord/workbench/parts/mainView/browser/reducer/artist';
 
+import { showLibraryResult } from 'chord/workbench/parts/mainView/browser/reducer/libraryResult';
+import {
+    getMoreLibrarySongs,
+    getMoreLibraryArtists,
+    getMoreLibraryAlbums,
+    getMoreLibraryCollections
+} from 'chord/workbench/parts/mainView/browser/reducer/libraryResult';
+import {
+    addLibrarySong,
+    addLibraryArtist,
+    addLibraryAlbum,
+    addLibraryCollection
+} from 'chord/workbench/parts/mainView/browser/reducer/library';
+
 
 export function map(act: string): IReducerMap {
     switch (act) {
@@ -90,6 +104,53 @@ export function map(act: string): IReducerMap {
             return {
                 reducer: getMoreArtistAlbums,
                 node: 'artistView',
+            };
+
+        // library
+        case 'c:mainView:libraryInput':
+            return {
+                reducer: showLibraryResult,
+                node: 'libraryView',
+            };
+        case 'c:mainView:getMoreLibrarySongs':
+            return {
+                reducer: getMoreLibrarySongs,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:getMoreLibraryArtists':
+            return {
+                reducer: getMoreLibraryArtists,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:getMoreLibraryAlbums':
+            return {
+                reducer: getMoreLibraryAlbums,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:getMoreLibraryCollections':
+            return {
+                reducer: getMoreLibraryCollections,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:addLibrarySong':
+            return {
+                reducer: addLibrarySong,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:addLibraryArtist':
+            return {
+                reducer: addLibraryArtist,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:addLibraryAlbum':
+            return {
+                reducer: addLibraryAlbum,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:addLibraryCollection':
+            return {
+                reducer: addLibraryCollection,
+                node: 'libraryView.result',
             };
 
         default:

@@ -14,6 +14,9 @@ import AlbumItemView from 'chord/workbench/parts/common/component/albumItem';
 import { getMoreSongs, getMoreAlbums } from 'chord/workbench/parts/mainView/browser/action/artist';
 import { handlePlayArtist } from 'chord/workbench/parts/player/browser/action/playArtist';
 
+import { MenuButton } from 'chord/workbench/parts/common/component/buttons';
+import { showArtistMenu } from 'chord/workbench/parts/menu/browser/action/menu';
+
 
 function ArtistNavMenu({ view, changeArtistNavMenuView }) {
     return (
@@ -121,6 +124,7 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
                     <button className='btn btn-green'
                         onClick={() => this.props.handlePlayArtist(artist)}>
                         PLAY</button>
+                    <MenuButton click={(e) => this.props.showArtistMenu(e, artist)} />
                 </div>
                 <ArtistNavMenu
                     view={ArtistView.view}
@@ -269,6 +273,7 @@ function mapDispatchToProps(dispatch) {
         getMoreSongs: (artist, page) => getMoreSongs(artist, page).then(act => dispatch(act)),
         getMoreAlbums: (artist, page) => getMoreAlbums(artist, page).then(act => dispatch(act)),
         handlePlayArtist: artist => handlePlayArtist(artist).then(act => dispatch(act)),
+        showArtistMenu: (e, artist) => dispatch(showArtistMenu(e, artist)),
     };
 }
 

@@ -16,9 +16,10 @@ import { handlePlayCollection } from 'chord/workbench/parts/player/browser/actio
 
 import { ICollectionViewProps } from 'chord/workbench/parts/mainView/browser/component/collection/props/collection';
 
+import { showCollectionMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
 
-function CollectionEntity({ collection, handlePlayCollection }) {
+function CollectionEntity({ collection, handlePlayCollection, showCollectionMenu }) {
     let cover = collection.collectionCoverPath || collection.collectionCoverUrl;
     return (
         <header className='entity-info'>
@@ -26,7 +27,8 @@ function CollectionEntity({ collection, handlePlayCollection }) {
                 <div draggable={true}>
                     <div className="media-object">
                         <div className="media-object-hoverable">
-                            <div className="react-contextmenu-wrapper">
+                            <div className="react-contextmenu-wrapper"
+                                onContextMenu={(e) => showCollectionMenu(e, collection)}>
 
                                 <div className="cover-art shadow cover-art--with-auto-height" aria-hidden="true"
                                     style={{ width: 'auto', height: 'auto' }}>
@@ -69,7 +71,7 @@ function CollectionInfo({ collection, handlePlayCollection }) {
 }
 
 
-class CollectionView extends React.Component<ICollectionViewProps> {
+class CollectionView extends React.Component<ICollectionViewProps, any> {
 
     constructor(props: ICollectionViewProps) {
         super(props);
@@ -89,6 +91,7 @@ class CollectionView extends React.Component<ICollectionViewProps> {
                     song={song}
                     active={false}
                     short={false}
+                    thumb={false}
                     handlePlay={null} />
             )
         );
@@ -102,7 +105,8 @@ class CollectionView extends React.Component<ICollectionViewProps> {
 
                                 <div className='col-xs-12 col-lg-3 col-xl-4 col-sticky'>
                                     <CollectionEntity collection={collection}
-                                        handlePlayCollection={this.props.handlePlayCollection} />
+                                        handlePlayCollection={this.props.handlePlayCollection}
+                                        showCollectionMenu={this.props.showCollectionMenu} />
                                 </div>
 
                                 <div className='col-xs-12 col-lg-9 col-xl-8'>
@@ -130,6 +134,7 @@ function mapStateToProps(state: IStateGlobal) {
 function mapDispatchToProps(dispatch) {
     return {
         handlePlayCollection: collection => handlePlayCollection(collection).then(act => dispatch(act)),
+        showCollectionMenu: (e, collection) => dispatch(showCollectionMenu(e, collection)),
     };
 }
 

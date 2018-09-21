@@ -7,7 +7,7 @@ import { IMainViewState } from 'chord/workbench/api/common/state/mainView/mainVi
 
 
 /**
- * What view is this main view
+ * What is view of this mainView
  */
 function handleView(act: string): string {
     switch (act) {
@@ -30,7 +30,19 @@ function handleView(act: string): string {
         case 'c:mainView:getMoreArtistAlbums':
             return 'artistView';
 
+        case 'c:mainView:libraryView':
+        case 'c:mainView:libraryInput':
+        case 'c:mainView:getMoreLibrarySongs':
+        case 'c:mainView:getMoreLibraryArtists':
+        case 'c:mainView:getMoreLibraryAlbums':
+        case 'c:mainView:getMoreLibraryCollections':
+            return 'libraryView';
+
         case 'c:mainView:comeback':
+        case 'c:mainView:addLibrarySong':
+        case 'c:mainView:addLibraryArtist':
+        case 'c:mainView:addLibraryAlbum':
+        case 'c:mainView:addLibraryCollection':
         default:
             return null;
     }
