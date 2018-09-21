@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-
 import { ISearchResultProps } from 'chord/workbench/parts/mainView/browser/component/search/props/searchResult';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import SongItemView from 'chord/workbench/parts/common/component/songItem';
@@ -99,6 +98,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
                     song={song}
                     active={false}
                     short={false}
+                    thumb={false}
                     handlePlay={null} />
             )
         );
@@ -400,16 +400,17 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
 
     render() {
         let view = SearchResult.view;
-        if (view == 'artists') {
-            return this.artistsResult();
-        } else if (view == 'songs') {
-            return this.songsResult();
-        } else if (view == 'albums') {
-            return this.albumsResult();
-        } else if (view == 'collections') {
-            return this.collectionsResult();
-        } else {
-            return this.topResult();
+        switch (view) {
+            case 'songs':
+                return this.songsResult();
+            case 'artists':
+                return this.artistsResult();
+            case 'albums':
+                return this.albumsResult();
+            case 'collections':
+                return this.collectionsResult();
+            default: // view == 'top'
+                return this.topResult();
         }
     }
 }
