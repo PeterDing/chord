@@ -1,0 +1,61 @@
+.react-contextmenu {
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background-color: #282828;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: .25rem;
+    color: hsla(0, 0%, 100%, .6);
+    margin: 2px 0 0;
+    min-width: 160px;
+    opacity: 0;
+    outline: none;
+    padding: 5px 0;
+    pointer-events: none;
+    text-align: left;
+    z-index: 1003
+}
+
+.react-contextmenu.react-contextmenu--visible {
+    opacity: 1;
+    pointer-events: auto
+}
+
+.react-contextmenu-item {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    background: 0 0;
+    border: 0;
+    clear: both;
+    color: hsla(0, 0%, 100%, .6);
+    cursor: default;
+    line-height: 32px;
+    padding: 3px 20px;
+    text-align: inherit;
+    user-select: none;
+    white-space: nowrap;
+    width: 100%
+}
+
+.react-contextmenu-item.active,
+.react-contextmenu-item:hover {
+    background-color: #333;
+    border-color: #333;
+    color: #fff;
+    text-decoration: none
+}
+
+.react-contextmenu-item.submenu>a {
+    padding-right: 27px
+}
+
+.react-contextmenu-item.submenu>a:after {
+    content: "\25B6";
+    display: inline-block;
+    position: absolute;
+    right: 7px
+}
+
+.react-contextmenu-wrapper {
+    display: inline
+}
