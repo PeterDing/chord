@@ -1,0 +1,100 @@
+@font-face {
+    font-family: glue1-spoticon;
+    src: url("./spoticon_regular_2.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal
+}
+
+[class*=" spoticon-"]:before,
+[class^=spoticon-]:before {
+    font-family: glue1-spoticon;
+    font-style: normal;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: inherit;
+    vertical-align: bottom;
+    display: inline-block;
+    text-decoration: inherit
+}
+
+.spoticon-ellipsis-16:before {
+    content: "\F12C";
+    font-size: 16px
+}
+
+.spoticon-ellipsis-24:before {
+    content: "\F12C";
+    font-size: 24px;
+    position: relative;
+    top: 1px
+}
+
+
+.spoticon-heart-16:before {
+    content: "\F320";
+    font-size: 16px
+}
+
+.spoticon-heart-24:before {
+    content: "\F3DB";
+    font-size: 24px
+}
+
+.spoticon-heart-32:before {
+    content: "\F31F";
+    font-size: 32px
+}
+
+.spoticon-heart-active-16:before {
+    content: "\F322";
+    font-size: 16px
+}
+
+.spoticon-heart-active-24:before {
+    content: "\F3DC";
+    font-size: 24px
+}
+
+.spoticon-heart-active-32:before {
+    content: "\F321";
+    font-size: 32px
+}
+
+/* control button icon */
+
+.spoticon-rewind-16:before {
+    content: "\F146";
+    font-size: 16px
+}
+
+.spoticon-play-16:before {
+    content: "\F132";
+    font-size: 16px
+}
+
+.spoticon-pause-16:before {
+    content: "\F130";
+    font-size: 16px
+}
+
+.spoticon-forward-16:before {
+    content: "\F148";
+    font-size: 16px
+}
+
+.spoticon-queue-16:before {
+    content: "\F13A";
+    font-size: 16px
+}
+
+.spoticon-volume-16:before {
+    content: "\F15E";
+    font-size: 16px
+}
+
+.spoticon-track-16:before {
+    content: "\F156";
+    font-size: 16px
+}
+
