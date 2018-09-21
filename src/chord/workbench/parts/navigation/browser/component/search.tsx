@@ -1,7 +1,5 @@
 'use strict';
 
-import 'chord/css!../media/navigationView';
-
 import * as React from 'react';
 import { connect } from 'react-redux';
 
