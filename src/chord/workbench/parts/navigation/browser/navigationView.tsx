@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import Search from 'chord/workbench/parts/navigation/browser/component/search';
 import Comeback from 'chord/workbench/parts/navigation/browser/component/comeback';
+import Library from 'chord/workbench/parts/navigation/browser/component/library';
 
 
 export function NavigationView() {
@@ -22,6 +23,10 @@ export function NavigationView() {
 
                         <li className='navBar-group'>
                             <Search />
+                        </li>
+
+                        <li className='navBar-group'>
+                            <Library />
                         </li>
 
                     </ul>
