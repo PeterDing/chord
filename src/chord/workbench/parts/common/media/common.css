@@ -1,13 +1,7 @@
 @import './bootstrap.css';
 @import './coverart.css';
 @import './songItem.css';
-
-@font-face {
-    font-family: glue1-spoticon;
-    src: url("./spoticon_regular_2.woff2") format("woff2");
-    font-weight: 400;
-    font-style: normal
-}
+@import './spoticon.css';
 
 @font-face {
     font-family: zh-font;
