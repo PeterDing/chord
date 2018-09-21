@@ -129,40 +129,6 @@
 
 
 
-/* control button icon */
-
-[class*=" spoticon-"]:before,
-[class^=spoticon-]:before {
-    font-family: glue1-spoticon;
-    font-style: normal;
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    line-height: inherit;
-    vertical-align: bottom;
-    display: inline-block;
-    text-decoration: inherit
-}
-
-.spoticon-rewind-16:before {
-    content: "\F146";
-    font-size: 16px
-}
-
-.spoticon-play-16:before {
-    content: "\F132";
-    font-size: 16px
-}
-
-.spoticon-pause-16:before {
-    content: "\F130";
-    font-size: 16px
-}
-
-.spoticon-forward-16:before {
-    content: "\F148";
-    font-size: 16px
-}
 
 .control-button--circled:after {
     content: "";
@@ -382,11 +348,6 @@
     color: #1ed760
 }
 
-.spoticon-queue-16:before {
-    content: "\F13A";
-    font-size: 16px
-}
-
 .player-list-container {
     position: relative
 }
@@ -420,11 +381,6 @@
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex
-}
-
-.spoticon-volume-16:before {
-    content: "\F15E";
-    font-size: 16px
 }
 
 
