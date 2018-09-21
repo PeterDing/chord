@@ -73,4 +73,3 @@ export function initiateSearchViewState(): ISearchViewState {
         result: initiateSearchResultState(),
     }
 }
-
