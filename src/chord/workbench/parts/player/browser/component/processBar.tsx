@@ -20,9 +20,8 @@ const intervalDuration = 1000;
 
 function step() {
     let duration: number = CAudio.playing() ? CAudio.duration() : 0;
-    let seek: number = CAudio.seek() as number || 0;
+    let seek: number = CAudio.playing() ? CAudio.seek() as number || 0 : 0;
     let percent: number = duration ? seek / duration * 100 : 0 ;
-    duration = CAudio.playing() ? duration : 0;
 
     _bar.style.width = `${percent}%`;
     _slider.style.left = `${percent}%`;
