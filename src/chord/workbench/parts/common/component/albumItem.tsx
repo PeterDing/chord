@@ -8,6 +8,8 @@ import { IAlbumItemViewProps } from 'chord/workbench/parts/common/props/albumIte
 import { handlePlayAlbum } from 'chord/workbench/parts/player/browser/action/playAlbum';
 import { handleShowAlbumView } from 'chord/workbench/parts/mainView/browser/action/showAlbum';
 
+import { showAlbumMenu } from 'chord/workbench/parts/menu/browser/action/menu';
+
 import { AlbumIcon } from 'chord/workbench/parts/common/component/common';
 
 
@@ -33,7 +35,8 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, object> {
                 <div draggable={true}>
                     <div className="media-object" style={{ maxWidth: '300px' }}>
                         <div className="media-object-hoverable">
-                            <div className="react-contextmenu-wrapper">
+                            <div className="react-contextmenu-wrapper"
+                                onContextMenu={(e) => this.props.showAlbumMenu(e, album)}>
 
                                 <div className="cover-art shadow actionable linking cover-art--with-auto-height" aria-hidden="true"
                                     style={{ width: 'auto', height: 'auto' }}>
@@ -83,7 +86,8 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, object> {
 function mapDispatchToProps(dispatch) {
     return {
         handlePlayAlbum: album => handlePlayAlbum(album).then(act => dispatch(act)),
-        handleShowAlbumView: album => handleShowAlbumView(album).then(act => dispatch(act))
+        handleShowAlbumView: album => handleShowAlbumView(album).then(act => dispatch(act)),
+        showAlbumMenu: (e, album) => dispatch(showAlbumMenu(e, album)),
     };
 }
 

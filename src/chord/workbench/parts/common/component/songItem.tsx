@@ -13,6 +13,8 @@ import { PlayIcon, PlayListIcon } from 'chord/workbench/parts/common/component/c
 import { handleShowArtistViewById } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 import { handleShowAlbumViewById } from 'chord/workbench/parts/mainView/browser/action/showAlbum';
 
+import { showSongMenu } from 'chord/workbench/parts/menu/browser/action/menu';
+
 
 class SongItemView extends React.Component<ISongItemViewProps, object> {
 
@@ -65,7 +67,7 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
                     <div>
                         {PlayListIcon}
                         <div className='cover-art-image cover-art-image-loaded'
-                            style={{backgroundImage: `url("${cover}")`}}>
+                            style={{ backgroundImage: `url("${cover}")` }}>
                         </div>
                     </div>
                 </div>
@@ -74,7 +76,8 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
 
         return (
             <div className='react-contextmenu-wrapper'>
-                <div draggable={true}>
+                <div draggable={true}
+                    onContextMenu={(e) => this.props.showSongMenu(e, song)}>
                     <li className={liClassName} role='button' tabIndex={0}>
 
                         {/* music icon */}
@@ -113,9 +116,10 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
 
 function mapDispatchToProps(dispatch) {
     return {
-        handlePlayOne: (song: ISong) => dispatch(handlePlayOne(song)),
+        handlePlayOne: (song: ISong) => handlePlayOne(song).then(act => dispatch(act)),
         handleShowArtistViewById: (artistId: string) => handleShowArtistViewById(artistId).then(act => dispatch(act)),
         handleShowAlbumViewById: (albumId: string) => handleShowAlbumViewById(albumId).then(act => dispatch(act)),
+        showSongMenu: (e: React.MouseEvent<HTMLDivElement>, song: ISong) => dispatch(showSongMenu(e, song)),
     }
 }
 

@@ -9,6 +9,8 @@ import { ArtistIcon } from 'chord/workbench/parts/common/component/common';
 import { handleShowArtistView } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 import { handlePlayArtist } from 'chord/workbench/parts/player/browser/action/playArtist';
 
+import { showArtistMenu } from 'chord/workbench/parts/menu/browser/action/menu';
+
 
 class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
 
@@ -25,7 +27,8 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
                 <div draggable={true}>
                     <div className="media-object mo-artist" style={{ maxWidth: '300px' }}>
                         <div className="media-object-hoverable">
-                            <div className="react-contextmenu-wrapper">
+                            <div className="react-contextmenu-wrapper"
+                                onContextMenu={(e) => this.props.showArtistMenu(e, artist)}>
 
                                 <div className="cover-art shadow actionable rounded linking cover-art--with-auto-height"
                                     aria-hidden="true" style={{ width: 'auto', height: 'auto' }}>
@@ -62,6 +65,7 @@ function mapDispatchToProps(dispatch) {
     return {
         handleShowArtistView: artist => handleShowArtistView(artist).then(act => dispatch(act)),
         handlePlayArtist: artist => handlePlayArtist(artist).then(act => dispatch(act)),
+        showArtistMenu: (e, artist) => dispatch(showArtistMenu(e, artist)),
     };
 }
 

@@ -10,6 +10,8 @@ import { handleShowCollectionView } from 'chord/workbench/parts/mainView/browser
 
 import { CollectionIcon } from 'chord/workbench/parts/common/component/common';
 
+import { showCollectionMenu } from 'chord/workbench/parts/menu/browser/action/menu';
+
 
 /**
  * Album item view
@@ -18,7 +20,7 @@ import { CollectionIcon } from 'chord/workbench/parts/common/component/common';
  *
  * props.collection is given by parent component
  */
-class CollectionItemView extends React.Component<ICollectionItemViewProps, object> {
+class CollectionItemView extends React.Component<ICollectionItemViewProps, any> {
 
     constructor(props: ICollectionItemViewProps) {
         super(props);
@@ -33,7 +35,8 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, objec
                 <div draggable={true}>
                     <div className="media-object" style={{ maxWidth: '300px' }}>
                         <div className="media-object-hoverable">
-                            <div className="react-contextmenu-wrapper">
+                            <div className="react-contextmenu-wrapper"
+                                onContextMenu={(e) => this.props.showCollectionMenu(e, collection)}>
 
                                 {/* Cover */}
                                 <div className="cover-art shadow actionable linking cover-art--with-auto-height"
@@ -79,7 +82,8 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, objec
 function mapDispatchToProps(dispatch) {
     return {
         handlePlayCollection: collection => handlePlayCollection(collection).then(act => dispatch(act)),
-        handleShowCollectionView: collection => handleShowCollectionView(collection).then(act => dispatch(act))
+        handleShowCollectionView: collection => handleShowCollectionView(collection).then(act => dispatch(act)),
+        showCollectionMenu: (e, collection) => dispatch(showCollectionMenu(e, collection)),
     };
 }
 
