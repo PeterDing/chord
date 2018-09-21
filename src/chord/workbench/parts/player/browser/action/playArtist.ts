@@ -6,9 +6,13 @@ import { IPlayArtistAct } from 'chord/workbench/api/common/action/player';
 
 import { aliMusicApi } from 'chord/music/xiami/api';
 
+import { filterSongWithAudios } from 'chord/workbench/api/utils/song';
+
 
 export async function handlePlayArtist(artist: IArtist): Promise<IPlayArtistAct> {
-    let songs = artist.songs || [];
+    let songs = filterSongWithAudios(artist.songs);
+
+    // default size of songs readed from settings
     if (songs.length < 50) {
         songs = await aliMusicApi.artistSongs(artist.artistOriginalId, 1, 50);
     }
