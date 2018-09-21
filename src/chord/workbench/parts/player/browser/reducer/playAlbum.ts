@@ -26,6 +26,7 @@ export function playAlbum(state: IPlayerState, act: IPlayAlbumAct): IPlayerState
             playing = true;
             break;
         }
+        return { ...state, playList, index, playing };
     }
-    return { ...state, playList, index, playing };
+    return { ...state };
 }
