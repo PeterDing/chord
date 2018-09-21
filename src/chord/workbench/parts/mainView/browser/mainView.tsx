@@ -10,39 +10,39 @@ import SearchView from 'chord/workbench/parts/mainView/browser/component/search/
 import AlbumView from 'chord/workbench/parts/mainView/browser/component/album/album';
 import ArtistView from 'chord/workbench/parts/mainView/browser/component/artist/artist';
 import CollectionView from 'chord/workbench/parts/mainView/browser/component/collection/collection';
+import LibraryView from 'chord/workbench/parts/mainView/browser/component/library/library';
 
 
 function MainView({ view }) {
     console.log('+++ MainView view:', view);
-    if (view == 'searchView') {
-        let View = <SearchView />;
-        return (
-            <div className='main-view-container'>
-                {View}
-            </div>
-        );
-    } else if (view == 'albumView') {
-        let View = <AlbumView />
-        return (
-            <div className='main-view-container'>
-                {View}
-            </div>
-        );
-    } else if (view == 'artistView') {
-        let View = <ArtistView />
-        return (
-            <div className='main-view-container'>
-                {View}
-            </div>
-        );
-    } else if (view == 'collectionView') {
-        let View = <CollectionView />
-        return (
-            <div className='main-view-container'>
-                {View}
-            </div>
-        );
+
+    let View;
+    switch (view) {
+        case 'searchView':
+            View = <SearchView />;
+            break;
+        case 'albumView':
+            View = <AlbumView />
+            break;
+        case 'artistView':
+            View = <ArtistView />
+            break;
+        case 'collectionView':
+            View = <CollectionView />
+            break;
+        case 'libraryView':
+            View = <LibraryView />
+            break;
+        default:
+            console.warn(`[WARN] [MainView]: No get view: ${view}`);
+            return null;
     }
+
+    return (
+        <div className='main-view-container'>
+            {View}
+        </div>
+    );
 }
 
 
