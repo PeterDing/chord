@@ -4,8 +4,9 @@ import { ok } from 'chord/base/common/assert';
 import { assign } from 'chord/base/common/objects';
 import { md5 } from 'chord/base/node/crypto';
 import { makeCookieJar, CookieJar } from 'chord/base/node/cookies';
-import { querystringify } from 'chord/base/node/url';
+import { querystringify, getHost } from 'chord/base/node/url';
 import { request, IRequestOptions } from 'chord/base/node/_request';
+import { Cookie } from 'tough-cookie';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
@@ -267,6 +268,12 @@ export class AliMusicApi {
     static refreshToken: string;
 
 
+    public static makeCookie(key: string, value: string): Cookie {
+        let domain = getHost(AliMusicApi.BASICURL);
+        return Cookie.fromJSON({key, value, domain});
+    }
+
+
     public static reset() {
         AliMusicApi.token = null;
         AliMusicApi.cookieJar = null;
@@ -330,12 +337,16 @@ export class AliMusicApi {
             return null;
         }
 
+        let etag = await this.getEtag();
+
         return this.request(
             AliMusicApi.NODE_MAP.album,
             { albumId: '1' },
-            'http://h.xiami.com/album_detail.html?id=1&f=&from=&disabled=&ch=',
+            'http://h.xiami.com/album_detail.html?id=1&f=&from=&ch=',
             true,
-        );
+        ).then((_) => {
+            this.setEtagCookie(etag);
+        });
     }
 
 
@@ -343,11 +354,41 @@ export class AliMusicApi {
         ok(AliMusicApi.cookieJar, 'no AliMusicApi.cookieJar');
         ok(userId || AliMusicApi.userId, 'no userId');
 
-        let cookie = AliMusicApi.cookieJar.getCookies(AliMusicApi.BASICURL)[0].clone();
-        cookie.key = 'uidXM';
-        cookie.value = AliMusicApi.userId;
-
+        let key = 'uidXM';
+        let value = AliMusicApi.userId;
+        let cookie = AliMusicApi.makeCookie(key, value);
         let domain = cookie.domain;
+
+        AliMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+    }
+
+
+    /**
+     * Etag for anti spider
+     */
+    public async getEtag(): Promise<string> {
+        let url = 'http://log.mmstat.com/eg.js';
+        let options: IRequestOptions = {
+            method: 'GET',
+            url: url,
+            jar: AliMusicApi.cookieJar || null,
+            headers: { ...AliMusicApi.HEADERS },
+            gzip: true,
+            resolveWithFullResponse: true,
+        };
+        let result: any = await request(options);
+        return result.headers['Etag'];
+    }
+
+
+    public setEtagCookie(etag: string): void {
+        ok(AliMusicApi.cookieJar, 'no AliMusicApi.cookieJar');
+
+        let key = 'cna';
+        let value = etag;
+        let cookie = AliMusicApi.makeCookie(key, value);
+        let domain = cookie.domain;
+
         AliMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
     }
 
@@ -415,7 +456,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.songs,
             { songIds: [songId] },
-            `http://h.xiami.com/song.html?id=${songId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/song.html?id=${songId}&f=&from=&ch=`,
         );
 
         let info = json.data.data.songs[0];
@@ -431,7 +472,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.songs,
             { songIds },
-            `http://h.xiami.com/song.html?id=${songIds[0]}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/song.html?id=${songIds[0]}&f=&from=&ch=`,
         );
 
         let info = json.data.data.songs;
@@ -452,7 +493,7 @@ export class AliMusicApi {
                 context: '',
                 songId: parseInt(songId),
             },
-            `http://h.xiami.com/song.html?id=${songId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/song.html?id=${songId}&f=&from=&ch=`,
         );
 
         let info = json.data.data.songs;
@@ -468,7 +509,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.album,
             { albumId },
-            `http://h.xiami.com/album_detail.html?id=${albumId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/album_detail.html?id=${albumId}&f=&from=&ch=`,
         );
 
         let info = json.data.data.albumDetail;
@@ -481,7 +522,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.albums,
             { albumIds },
-            `http://h.xiami.com/album_detail.html?id=${albumIds[0]}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/album_detail.html?id=${albumIds[0]}&f=&from=&ch=`,
         );
 
         let info = json.data.data.albums;
@@ -497,7 +538,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.artist,
             { artistId },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
         );
 
         let info = json.data.data['artistDetailVO'];
@@ -519,7 +560,7 @@ export class AliMusicApi {
                     pageSize: size,
                 }
             },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
         );
 
         let info = json.data.data.albums;
@@ -541,7 +582,7 @@ export class AliMusicApi {
                     pageSize: 1,
                 }
             },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
         );
 
         return json.data.data.total;
@@ -562,7 +603,7 @@ export class AliMusicApi {
                     pageSize: size,
                 }
             },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
         );
 
         let info = json.data.data.songs;
@@ -585,7 +626,7 @@ export class AliMusicApi {
                     pageSize: 1,
                 }
             },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
         );
 
         return json.data.data.total;
@@ -605,7 +646,7 @@ export class AliMusicApi {
                     pageSize: size,
                 }
             },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
         );
 
         let info = json.data.data.artists;
@@ -627,7 +668,7 @@ export class AliMusicApi {
                     pageSize: 1,
                 }
             },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
         );
 
         return json.data.data.pagingVO.count;
@@ -644,7 +685,7 @@ export class AliMusicApi {
                 listId: collectionId,
                 isFullTags: false,
             },
-            `http://h.xiami.com/collect_detail.html?id=${collectionId}&f=&from=&disabled=&ch=`,
+            `http://h.xiami.com/collect_detail.html?id=${collectionId}&f=&from=&ch=`,
         );
 
         let info = json.data.data.collectDetail;
