@@ -6,6 +6,7 @@ import * as querystring from 'querystring';
 
 type URL = url.URL;
 
+
 export function getAbsolutUrl(input: string, base?: string | URL): string {
     if (!base) {
         if (input.startsWith('//')) {
@@ -20,4 +21,9 @@ export function getAbsolutUrl(input: string, base?: string | URL): string {
 
 export function querystringify(input: object): string {
     return querystring.stringify(input);
+}
+
+
+export function getHost(input: string): string {
+    return url.parse(input).host;
 }
