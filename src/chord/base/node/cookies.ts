@@ -16,3 +16,7 @@ export function makeCookieJar(rawCookies: Array<string>): CookieJar {
     });
     return cookieJar;
 }
+
+export function makeCookie(key: string, value: string, domain?: string): Cookie {
+    return Cookie.fromJSON({key, value, domain});
+}
