@@ -3,14 +3,14 @@
 import { ISong } from 'chord/music/api/song';
 import { IPlayOneAct } from 'chord/workbench/api/common/action/player';
 
-import { aliMusicApi } from 'chord/music/xiami/api';
+import { musicApi } from 'chord/music/core/api';
 
 import { hasSongAudio } from 'chord/workbench/api/utils/song';
 
 
 export async function handlePlayOne(song: ISong): Promise<IPlayOneAct> {
     if (!hasSongAudio(song)) {
-        song = await aliMusicApi.song(song.songOriginalId);
+        song.audios = await musicApi.audios(song.songId);
     }
 
     return {
