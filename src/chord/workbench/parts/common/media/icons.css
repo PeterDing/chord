@@ -1,0 +1,11 @@
+.tracklist-col.xiami-icon {
+    width: 50%;
+    height: 50%
+}
+
+.cover-icon.xiami-icon {
+    position: relative;
+    display: block;
+    width: 10%;
+    left: 45%
+}
