@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "better-sqlite3": "^4.1.4",
+        "big-integer": "^1.6.36",
         "howler": "^2.0.15",
         "react": "^16.5.0",
         "react-dom": "^16.5.0",
