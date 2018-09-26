@@ -64,12 +64,14 @@ export class Music {
                 case ORIGIN.xiami:
                     audios = xiamiSongsAudios.pop();
                     songsAudios.push(audios);
+                    break;
                 case ORIGIN.netease:
                     audios = neteaseSongsAudios.pop();
                     songsAudios.push(audios);
+                    break;
                 default:
                     // Here will never be occured.
-                    throw new Error(`[ERROR] [Music.songsAudios] Here will never be occured. wrong originType: ${originType}`);
+                    throw new Error(`[ERROR] [Music.songsAudios] Here will never be occured. wrong originType: ${JSON.stringify(originType)}`);
             }
         });
         return songsAudios;
@@ -108,6 +110,41 @@ export class Music {
                 throw new Error(`[ERROR] [Music.artist] Here will never be occured. [args]: ${artistId}`);
         }
     }
+
+
+    /**
+     * artistId is Chord's artist id, not artist original id
+     */
+    public async artistSongs(artistId: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let originType = getOrigin(artistId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                return await this.xiamiApi.artistSongs(originType.id, offset, limit);
+            case ORIGIN.netease:
+                return await this.neteaseApi.artistSongs(originType.id, offset, limit);
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.artistSongs] Here will never be occured. [args]: ${artistId}`);
+        }
+    }
+
+
+    /**
+     * artistId is Chord's artist id, not artist original id
+     */
+    public async artistAlbums(artistId: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let originType = getOrigin(artistId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                return await this.xiamiApi.artistAlbums(originType.id, offset, limit);
+            case ORIGIN.netease:
+                return await this.neteaseApi.artistAlbums(originType.id, offset, limit);
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.artistAlbums] Here will never be occured. [args]: ${artistId}`);
+        }
+    }
+
 
     /**
      * albumId is Chord's album id, not album original id
