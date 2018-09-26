@@ -7,6 +7,7 @@ import { makeCookieJar, CookieJar } from 'chord/base/node/cookies';
 import { querystringify, getHost } from 'chord/base/node/url';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 import { Cookie } from 'tough-cookie';
+import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
@@ -446,6 +447,24 @@ export class AliMusicApi {
             return this.request(node, apiParams, referer, init);
         }
         return json;
+    }
+
+
+    /**
+     * Get audio urls, the songId must be number string
+     */
+    public async audios(songId: string): Promise<Array<IAudio>> {
+        let song = await this.song(songId);
+        return song.audios;
+    }
+
+
+    /**
+     * Get many songs' audios
+     */
+    public async songsAudios(songIds: Array<string>): Promise<Array<Array<IAudio>>> {
+        let songs = await this.songs(songIds);
+        return songs.map(song => song.audios);
     }
 
 
