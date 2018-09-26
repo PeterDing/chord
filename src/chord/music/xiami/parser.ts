@@ -439,7 +439,7 @@ export function makeAliArtists(info: any): Array<IArtist> {
 
 
 export function makeAliCollection(info: any): ICollection {
-    let collectionOriginalId = info['listId'];
+    let collectionOriginalId = info['listId'].toString();
     let collectionCoverUrl = getAbsolutUrl(info['collectLogo'], _staticResourceBasicUrl);
     let tags: Array<ITag> = info['tags'].map(tag => ({ name: tag }));
     let songs: Array<ISong> = (info['songs'] || []).map(songInfo => makeAliSong(songInfo));
