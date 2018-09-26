@@ -2,6 +2,7 @@
 @import './coverart.css';
 @import './songItem.css';
 @import './spoticon.css';
+@import './icons.css';
 
 @font-face {
     font-family: zh-font;
