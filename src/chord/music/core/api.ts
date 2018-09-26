@@ -54,8 +54,8 @@ export class Music {
         let xiamiSongIds = songsOriginType.filter(originType => originType.origin == ORIGIN.xiami).reverse().map(originType => originType.id);
         let neteaseSongIds = songsOriginType.filter(originType => originType.origin == ORIGIN.netease).reverse().map(originType => originType.id);
 
-        let xiamiSongsAudios = await this.xiamiApi.songsAudios(xiamiSongIds);
-        let neteaseSongsAudios = await this.neteaseApi.songsAudios(neteaseSongIds);
+        let [xiamiSongsAudios, neteaseSongsAudios] = await Promise.all(
+            [this.xiamiApi.songsAudios(xiamiSongIds), this.neteaseApi.songsAudios(neteaseSongIds)]);
 
         let songsAudios = [];
         songsOriginType.forEach(originType => {
@@ -119,9 +119,9 @@ export class Music {
         let originType = getOrigin(artistId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.artistSongs(originType.id, offset, limit);
+                return await this.xiamiApi.artistSongs(originType.id, offset + 1, limit);
             case ORIGIN.netease:
-                return await this.neteaseApi.artistSongs(originType.id, offset, limit);
+                return await this.neteaseApi.artistSongs(originType.id, offset * limit, limit);
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artistSongs] Here will never be occured. [args]: ${artistId}`);
@@ -136,9 +136,9 @@ export class Music {
         let originType = getOrigin(artistId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.artistAlbums(originType.id, offset, limit);
+                return await this.xiamiApi.artistAlbums(originType.id, offset + 1, limit);
             case ORIGIN.netease:
-                return await this.neteaseApi.artistAlbums(originType.id, offset, limit);
+                return await this.neteaseApi.artistAlbums(originType.id, offset * limit, limit);
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artistAlbums] Here will never be occured. [args]: ${artistId}`);
@@ -180,10 +180,13 @@ export class Music {
     }
 
 
-    public async searchSongs(keyword: string, offset: number = 1, limit: number = 10): Promise<Array<ISong>> {
+    /**
+     * xiami searching based on page
+     */
+    public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
         let songs = [];
-        let xiamiSongs = await this.xiamiApi.searchSongs(keyword, offset, limit);
-        let neteaseSongs = await this.neteaseApi.searchSongs(keyword, offset, limit);
+        let xiamiSongs = await this.xiamiApi.searchSongs(keyword, offset + 1, limit);
+        let neteaseSongs = await this.neteaseApi.searchSongs(keyword, offset * limit, limit);
 
         let maxLength = Math.max(xiamiSongs.length, neteaseSongs.length);
         for (let index = 0; index < maxLength; index++) {
@@ -197,10 +200,10 @@ export class Music {
     }
 
 
-    public async searchArtists(keyword: string, offset: number = 1, limit: number = 10): Promise<Array<IArtist>> {
+    public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
         let songs = [];
-        let xiamiArtists = await this.xiamiApi.searchArtists(keyword, offset, limit);
-        let neteaseArtists = await this.neteaseApi.searchArtists(keyword, offset, limit);
+        let xiamiArtists = await this.xiamiApi.searchArtists(keyword, offset + 1, limit);
+        let neteaseArtists = await this.neteaseApi.searchArtists(keyword, offset * limit, limit);
 
         let maxLength = Math.max(xiamiArtists.length, neteaseArtists.length);
         for (let index = 0; index < maxLength; index++) {
@@ -214,10 +217,10 @@ export class Music {
     }
 
 
-    public async searchAlbums(keyword: string, offset: number = 1, limit: number = 10): Promise<Array<IAlbum>> {
+    public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
         let songs = [];
-        let xiamiAlbums = await this.xiamiApi.searchAlbums(keyword, offset, limit);
-        let neteaseAlbums = await this.neteaseApi.searchAlbums(keyword, offset, limit);
+        let xiamiAlbums = await this.xiamiApi.searchAlbums(keyword, offset + 1, limit);
+        let neteaseAlbums = await this.neteaseApi.searchAlbums(keyword, offset * limit, limit);
 
         let maxLength = Math.max(xiamiAlbums.length, neteaseAlbums.length);
         for (let index = 0; index < maxLength; index++) {
@@ -231,10 +234,10 @@ export class Music {
     }
 
 
-    public async searchCollections(keyword: string, offset: number = 1, limit: number = 10): Promise<Array<ICollection>> {
+    public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
         let songs = [];
-        let xiamiCollections = await this.xiamiApi.searchCollections(keyword, offset, limit);
-        let neteaseCollections = await this.neteaseApi.searchCollections(keyword, offset, limit);
+        let xiamiCollections = await this.xiamiApi.searchCollections(keyword, offset + 1, limit);
+        let neteaseCollections = await this.neteaseApi.searchCollections(keyword, offset * limit, limit);
 
         let maxLength = Math.max(xiamiCollections.length, neteaseCollections.length);
         for (let index = 0; index < maxLength; index++) {
