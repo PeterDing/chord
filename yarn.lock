@@ -348,6 +348,10 @@ better-sqlite3@^4.1.4:
     bindings "^1.3.0"
     integer "^1.0.5"
 
+big-integer@^1.6.36:
+  version "1.6.36"
+  resolved "http://registry.npm.taobao.org/big-integer/download/big-integer-1.6.36.tgz#78631076265d4ae3555c04f85e7d9d2f3a071a36"
+
 bindings@^1.3.0:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/bindings/download/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
