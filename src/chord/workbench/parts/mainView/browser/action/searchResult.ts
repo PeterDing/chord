@@ -1,6 +1,5 @@
 'use strict';
 
-import { aliMusicApi } from 'chord/music/xiami/api';
 import {
     ISearchMoreSongsAct,
     ISearchMoreAlbumsAct,
@@ -9,11 +8,13 @@ import {
 } from 'chord/workbench/api/common/action/mainView';
 import { IPage } from 'chord/workbench/api/common/state/page';
 
+import { musicApi } from 'chord/music/core/api';
+
 
 export async function searchMoreSongs(keyword: string, page: IPage): Promise<ISearchMoreSongsAct> {
     let songs = [];
     if (page.more) {
-        songs = await aliMusicApi.searchSongs(keyword, page.page + 1, page.size);
+        songs = await musicApi.searchSongs(keyword, page.page, page.size);
         page.page += 1;
     }
     if (songs.length == 0) {
@@ -31,7 +32,7 @@ export async function searchMoreSongs(keyword: string, page: IPage): Promise<ISe
 export async function searchMoreAlbums(keyword: string, page: IPage): Promise<ISearchMoreAlbumsAct> {
     let albums = [];
     if (page.more) {
-        albums = await aliMusicApi.searchAlbums(keyword, page.page + 1, page.size);
+        albums = await musicApi.searchAlbums(keyword, page.page, page.size);
         page.page += 1;
     }
     if (albums.length == 0) {
@@ -49,7 +50,7 @@ export async function searchMoreAlbums(keyword: string, page: IPage): Promise<IS
 export async function searchMoreArtists(keyword: string, page: IPage): Promise<ISearchMoreArtistsAct> {
     let artists = [];
     if (page.more) {
-        artists = await aliMusicApi.searchArtists(keyword, page.page + 1, page.size);
+        artists = await musicApi.searchArtists(keyword, page.page, page.size);
         page.page += 1;
     }
     if (artists.length == 0) {
@@ -67,7 +68,7 @@ export async function searchMoreArtists(keyword: string, page: IPage): Promise<I
 export async function searchMoreCollections(keyword: string, page: IPage): Promise<ISearchMoreCollectionsAct> {
     let collections = [];
     if (page.more) {
-        collections = await aliMusicApi.searchCollections(keyword, page.page + 1, page.size);
+        collections = await musicApi.searchCollections(keyword, page.page, page.size);
         page.page += 1;
     }
     if (collections.length == 0) {

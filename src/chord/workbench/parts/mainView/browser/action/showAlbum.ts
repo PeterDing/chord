@@ -4,13 +4,12 @@ import { IShowAlbumAct } from 'chord/workbench/api/common/action/mainView';
 
 import { IAlbum } from 'chord/music/api/album';
 
-import { aliMusicApi } from 'chord/music/xiami/api';
+import { musicApi } from 'chord/music/core/api';
 
 
 export async function handleShowAlbumView(album: IAlbum): Promise<IShowAlbumAct> {
     if (!album.songs || !album.songs.length) {
-        // TODO, Check album origin to pick correct api
-        album = await aliMusicApi.album(album.albumOriginalId);
+        album = await musicApi.album(album.albumId);
     }
     return {
         type: 'c:mainView:showAlbumView',
@@ -21,6 +20,6 @@ export async function handleShowAlbumView(album: IAlbum): Promise<IShowAlbumAct>
 
 
 export async function handleShowAlbumViewById(albumId: string): Promise<IShowAlbumAct> {
-    let album = await aliMusicApi.album(albumId.split('|')[2]);
+    let album = await musicApi.album(albumId);
     return handleShowAlbumView(album);
 }

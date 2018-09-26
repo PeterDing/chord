@@ -7,7 +7,7 @@ import { IArtist } from 'chord/music/api/artist';
 import { getMoreSongs, getMoreAlbums } from 'chord/workbench/parts/mainView/browser/action/artist';
 import { initiatePage } from 'chord/workbench/api/common/state/page';
 
-import { aliMusicApi } from 'chord/music/xiami/api';
+import { musicApi } from 'chord/music/core/api';
 
 
 export async function handleShowArtistView(artist: IArtist): Promise<IShowArtistAct> {
@@ -32,6 +32,6 @@ export async function handleShowArtistView(artist: IArtist): Promise<IShowArtist
 
 
 export async function handleShowArtistViewById(artistId: string): Promise<IShowArtistAct> {
-    let artist = await aliMusicApi.artist(artistId.split('|')[2]);
+    let artist = await musicApi.artist(artistId);
     return handleShowArtistView(artist);
 }

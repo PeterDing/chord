@@ -2,15 +2,15 @@
 
 import { ISearchInputAct } from 'chord/workbench/api/common/action/mainView';
 
-import { aliMusicApi } from 'chord/music/xiami/api';
+import { musicApi } from 'chord/music/core/api';
 
 
 export async function search(keyword: string): Promise<ISearchInputAct> {
     let [songs, albums, artists, collections] = await Promise.all([
-        aliMusicApi.searchSongs(keyword),
-        aliMusicApi.searchAlbums(keyword),
-        aliMusicApi.searchArtists(keyword),
-        aliMusicApi.searchCollections(keyword)
+        musicApi.searchSongs(keyword, 0, 10),
+        musicApi.searchAlbums(keyword, 0, 10),
+        musicApi.searchArtists(keyword, 0, 10),
+        musicApi.searchCollections(keyword, 0, 10)
     ]);
 
     return {
