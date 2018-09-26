@@ -42,13 +42,13 @@ suite('music/xiami/AliMusicApi', () => {
     });
 
     test('album', async function() {
-        let album = await aliApi.album('168572');
+        let album = await aliApi.album('1');
 
         let albumId = album.albumId;
-        assert.equal(albumId, 'xm|a|168572');
+        assert.equal(albumId, 'xm|a|1');
 
         let songsSize = album.songs.length;
-        assert.equal(songsSize, 26);
+        assert.equal(songsSize, 11);
 
         let audios = album.songs[0].audios;
         assert.equal(audios.length > 0, true);
