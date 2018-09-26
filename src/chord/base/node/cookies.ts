@@ -5,6 +5,7 @@ import * as rp from 'request-promise';
 import { CookieJar } from 'request';
 
 
+export type Cookie = Cookie;
 export type CookieJar = CookieJar;
 
 export function makeCookieJar(rawCookies: Array<string>): CookieJar {
@@ -19,4 +20,8 @@ export function makeCookieJar(rawCookies: Array<string>): CookieJar {
 
 export function makeCookie(key: string, value: string, domain?: string): Cookie {
     return Cookie.fromJSON({key, value, domain});
+}
+
+export function makeCookieFrom(input: string): Cookie {
+    return Cookie.parse(input);
 }
