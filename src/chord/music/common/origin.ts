@@ -3,10 +3,10 @@
 import { ok } from 'chord/base/common/assert';
 
 
-// TODO: change to full name
 export enum ORIGIN {
     xiami = 'xiami',
     netease = 'netease',
+    qq = 'qq',
 }
 
 export interface IOriginType {
@@ -35,21 +35,25 @@ export function getOrigin(id: string): IOriginType {
 export enum OriginSongUrl {
     xiami = 'https://www.xiami.com/song/{id}',
     netease = 'https://music.163.com/#/song?id={id}',
+    qq = 'https://y.qq.com/n/yqq/song/{id}.html',
 }
 
 export enum OriginAlbumUrl {
     xiami = 'https://www.xiami.com/album/{id}',
     netease = 'https://music.163.com/#/album?id={id}',
+    qq = 'https://y.qq.com/n/yqq/album/{id}.html',
 }
 
 export enum OriginArtistUrl {
     xiami = 'https://www.xiami.com/artist/{id}',
     netease = 'https://music.163.com/#/artist?id={id}',
+    qq = 'https://y.qq.com/n/yqq/singer/{id}.html',
 }
 
 export enum OriginCollectionUrl {
     xiami = 'https://www.xiami.com/collect/{id}',
     netease = 'https://music.163.com/#/playlist?id={id}',
+    qq = 'https://y.qq.com/n/yqq/playsquare/{id}.html',
 }
 
 
