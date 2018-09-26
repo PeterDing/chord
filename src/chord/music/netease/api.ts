@@ -200,6 +200,7 @@ export class NeteaseMusicApi {
         return makeAlbum(json);
     }
 
+
     public async artist(artistId: string): Promise<IArtist> {
         let node = NeteaseMusicApi.NODE_MAP.artist + '/' + artistId;
         let data = {
@@ -209,6 +210,7 @@ export class NeteaseMusicApi {
         return makeArtist(json);
     }
 
+
     /**
      * There gets an artist's top 50 songs
      * It can't be more
@@ -217,6 +219,7 @@ export class NeteaseMusicApi {
         let { songs } = await this.artist(artistId);
         return songs;
     }
+
 
     public async artistAlbums(artistId: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
         let node = NeteaseMusicApi.NODE_MAP.artistAlbums + '/' + artistId;
@@ -229,6 +232,7 @@ export class NeteaseMusicApi {
         let json = await this.request(node, data);
         return makeArtistAlbums(json);
     }
+
 
     public async collection(collectionId: string): Promise<ICollection> {
         let node = NeteaseMusicApi.NODE_MAP.collection;
@@ -243,6 +247,7 @@ export class NeteaseMusicApi {
         let json = await this.request(node, data);
         return makeCollection(json['playlist']);
     }
+
 
     /**
      * Search
