@@ -15,6 +15,8 @@ import { handleShowAlbumViewById } from 'chord/workbench/parts/mainView/browser/
 
 import { showSongMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
+import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
+
 
 class SongItemView extends React.Component<ISongItemViewProps, object> {
 
@@ -34,6 +36,7 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
             : (this.props.short ? 'tracklist-row tracklist-row--oneline' : 'tracklist-row');
 
         let tracklistAlign = this.props.short ? 'tracklist-middle-align' : 'tracklist-top-align';
+        let originIcon = OriginIcon(song.origin, 'tracklist-col xiami-icon');
 
         let secondLine = this.props.short ? null : (
             <span className='second-line ellipsis-one-line'>
@@ -104,6 +107,13 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
                         <div className='tracklist-col tracklist-col-duration'>
                             <div className={`tracklist-duration ${tracklistAlign}`}>
                                 <span>{getHumanDuration(song.duration)}</span>
+                            </div>
+                        </div>
+
+                        {/* Origin Icon */}
+                        <div className='tracklist-col tracklist-col-duration'>
+                            <div className={`${tracklistAlign}`}>
+                                <span>{originIcon}</span>
                             </div>
                         </div>
                     </li>

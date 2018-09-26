@@ -12,6 +12,8 @@ import { CollectionIcon } from 'chord/workbench/parts/common/component/common';
 
 import { showCollectionMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
+import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
+
 
 /**
  * Album item view
@@ -29,6 +31,7 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
     render() {
         let collection = this.props.collection;
         let cover = collection.collectionCoverPath || collection.collectionCoverUrl;
+        let originIcon = OriginIcon(collection.origin, 'cover-icon xiami-icon');
 
         return (
             <div>
@@ -56,6 +59,8 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
                             {/* Collection Name */}
                             <div className="mo-info">
                                 <div className="react-contextmenu-wrapper">
+                                    {/* Origin Icon */}
+                                    <span className="mo-info-name">{originIcon}</span>
                                     <span className="mo-info-name">{collection.collectionName}</span>
                                 </div>
                             </div>

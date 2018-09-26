@@ -11,6 +11,8 @@ import { handlePlayArtist } from 'chord/workbench/parts/player/browser/action/pl
 
 import { showArtistMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
+import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
+
 
 class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
 
@@ -21,6 +23,7 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
     render() {
         let artist = this.props.artist;
         let cover = artist.artistAvatarPath || artist.artistAvatarUrl;
+        let originIcon = OriginIcon(artist.origin, 'cover-icon xiami-icon');
 
         return (
             <div>
@@ -47,6 +50,8 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
 
                             <div className="mo-info ellipsis-one-line">
                                 <div className="react-contextmenu-wrapper">
+                                    {/* Origin Icon */}
+                                    <span className="mo-info-name">{originIcon}</span>
 
                                     {/* TODO: Add show artist handler */}
                                     <span className="mo-info-name">{artist.artistName}</span>
