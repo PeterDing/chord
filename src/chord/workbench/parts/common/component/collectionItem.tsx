@@ -59,8 +59,6 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
                             {/* Collection Name */}
                             <div className="mo-info">
                                 <div className="react-contextmenu-wrapper">
-                                    {/* Origin Icon */}
-                                    <span className="mo-info-name">{originIcon}</span>
                                     <span className="mo-info-name">{collection.collectionName}</span>
                                 </div>
                             </div>
@@ -72,7 +70,8 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
 
                         <div className="mo-meta ellipsis-one-line">
                             <div className="react-contextmenu-wrapper">
-                                <span>{getDateYear(collection.releaseDate)} • {collection.songCount} tracks</span>
+                                {/* Origin Icon */}
+                                <span>{originIcon} {getDateYear(collection.releaseDate)} • {collection.songCount} tracks</span>
                             </div>
                         </div>
                     </div>

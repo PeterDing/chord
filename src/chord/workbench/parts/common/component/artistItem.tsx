@@ -51,7 +51,7 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
                             <div className="mo-info ellipsis-one-line">
                                 <div className="react-contextmenu-wrapper">
                                     {/* Origin Icon */}
-                                    <span className="mo-info-name">{originIcon}</span>
+                                    {originIcon}
 
                                     {/* TODO: Add show artist handler */}
                                     <span className="mo-info-name">{artist.artistName}</span>

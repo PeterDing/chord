@@ -59,9 +59,6 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, object> {
                             {/* Album Name */}
                             <div className="mo-info">
                                 <div className="react-contextmenu-wrapper">
-                                    {/* Origin Icon */}
-                                    <span className="mo-info-name">{originIcon}</span>
-
                                     <span className="mo-info-name">{album.albumName}</span>
                                 </div>
                             </div>
@@ -77,7 +74,8 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, object> {
 
                         <div className="mo-meta ellipsis-one-line">
                             <div className="react-contextmenu-wrapper">
-                                <span>{getDateYear(album.releaseDate)} • {album.songCount} tracks</span>
+                                {/* Origin Icon */}
+                                <span>{originIcon} {getDateYear(album.releaseDate)} • {album.songCount} tracks</span>
                             </div>
                         </div>
                     </div>
