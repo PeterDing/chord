@@ -21,6 +21,7 @@ export function makeAudio(info: any): IAudio {
 export function makeSong(info: any): ISong {
     let song = { ...info };
     jsonLoadValue(song);
+    song.disable = !!song.disable;
     return <ISong>song;
 }
 

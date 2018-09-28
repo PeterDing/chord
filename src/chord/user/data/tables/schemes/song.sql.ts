@@ -11,6 +11,8 @@ create table if not exists song (
 
     songOriginalId text,
 
+    songMid text,
+
     url text,
 
     songName text,
@@ -23,12 +25,14 @@ create table if not exists song (
 
     albumId text,
     albumOriginalId text,
+    albumMid text,
     albumName text,
     albumCoverUrl text,
     albumCoverPath text,
 
     artistId text,
     artistOriginalId text,
+    artistMid text,
     artistName text,
     artistAvatarUrl text,
     artistAvatarPath text,
@@ -55,9 +59,11 @@ create table if not exists song (
 
     playCountWeb integer,
 
-    playCount integer
+    playCount integer,
 
     -- audios store at audio table
     --  audios text
+
+    disable integer
 )
 `;
