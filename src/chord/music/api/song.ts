@@ -17,6 +17,9 @@ export interface ISong {
     // song id at its origin website
     songOriginalId?: string;
 
+    // song mid for qq
+    songMid?: string;
+
     // song's url from web
     url?: string;
 
@@ -32,6 +35,8 @@ export interface ISong {
     // albumId is the database primary key
     albumId?: string;
     albumOriginalId?: string;
+    // album mid for qq
+    albumMid?: string;
     albumName?: string;
     albumCoverUrl?: string;
     albumCoverPath?: string;
@@ -39,6 +44,8 @@ export interface ISong {
     // artistId is the database primary key
     artistId?: string;
     artistOriginalId?: string;
+    // artist mid for qq
+    artistMid?: string;
     artistName?: string;
     artistAvatarUrl?: string;
     artistAvatarPath?: string;
@@ -67,4 +74,7 @@ export interface ISong {
     playCount?: number;
 
     audios?: Array<IAudio>;
+
+    // if disable is true, this song is blocked
+    disable?: boolean;
 }
