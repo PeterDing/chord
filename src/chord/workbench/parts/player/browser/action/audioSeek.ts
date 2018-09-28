@@ -1,3 +1,7 @@
+/**
+ * WARN: use `handleSeek` of `chord/workbench/parts/player/browser/component/processBar` to handle seeking
+ */
+
 'use strict';
 
 import * as React from 'react';

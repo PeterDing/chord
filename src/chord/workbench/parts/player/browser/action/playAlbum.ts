@@ -1,10 +1,12 @@
 'use strict';
 
+import { ORIGIN } from 'chord/music/common/origin';
+
 import { IAlbum } from 'chord/music/api/album';
 
 import { IPlayAlbumAct } from 'chord/workbench/api/common/action/player';
 
-import { filterSongWithAudios } from 'chord/workbench/api/utils/song';
+import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workbench/api/utils/song';
 
 import { musicApi } from 'chord/music/core/api';
 
@@ -14,10 +16,12 @@ export async function handlePlayAlbum(album: IAlbum): Promise<IPlayAlbumAct> {
 
     if (!songs.length) {
         let _album = await musicApi.album(album.albumId);
-        let _songs = _album.songs;
-        if (!filterSongWithAudios(_songs).length) {
-            let songsAudios = await musicApi.songsAudios(_songs.map(song => song.songId));
-            _songs.forEach((song, index) => song.audios = songsAudios[index]);
+        let _songs = _album.songs
+            .filter(song => !song.disable)
+            .filter(song => song.origin == ORIGIN.netease || hasSongAudio(song));
+
+        if (_songs.length) {
+            await addSongAudios(_songs[0]);
         }
         album.songs = _songs;
     }

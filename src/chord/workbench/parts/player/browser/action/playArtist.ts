@@ -1,12 +1,14 @@
 'use strict';
 
+import { ORIGIN } from 'chord/music/common/origin';
+
 import { IArtist } from 'chord/music/api/artist';
 
 import { IPlayArtistAct } from 'chord/workbench/api/common/action/player';
 
 import { musicApi } from 'chord/music/core/api';
 
-import { filterSongWithAudios } from 'chord/workbench/api/utils/song';
+import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workbench/api/utils/song';
 
 
 export async function handlePlayArtist(artist: IArtist): Promise<IPlayArtistAct> {
@@ -14,10 +16,13 @@ export async function handlePlayArtist(artist: IArtist): Promise<IPlayArtistAct>
 
     // default size of songs readed from settings
     if (songs.length < 50) {
-        songs = await musicApi.artistSongs(artist.artistId, 0, 50);
-        if (!filterSongWithAudios(songs).length) {
-            let songsAudios = await musicApi.songsAudios(songs.map(song => song.songId));
-            songs.forEach((song, index) => song.audios = songsAudios[index]);
+        let _songs = await musicApi.artistSongs(artist.artistId, 0, 50);
+        songs = _songs
+            .filter(song => !song.disable)
+            .filter(song => song.origin == ORIGIN.netease || hasSongAudio(song));
+
+        if (songs.length) {
+            await addSongAudios(songs[0]);
         }
     }
 
