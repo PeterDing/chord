@@ -6,7 +6,11 @@ import { connect } from 'react-redux';
 import { IControllerProps } from 'chord/workbench/parts/player/browser/props/controller';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 
-import { handleRewind, handlePlayPause, handleForward } from 'chord/workbench/parts/player/browser/action/control';
+import {
+    handleRewind,
+    handlePlayPause,
+    handleForward
+} from 'chord/workbench/parts/player/browser/action/control';
 
 
 export class Controller extends React.Component<IControllerProps, object> {
@@ -46,9 +50,9 @@ function mapStateToProps(state: IStateGlobal) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        rewind: () => dispatch(handleRewind()),
-        playPause: () => dispatch(handlePlayPause()),
-        forward: () => dispatch(handleForward()),
+        rewind: () => handleRewind().then(act => dispatch(act)),
+        playPause: () => handlePlayPause().then(act => dispatch(act)),
+        forward: () => handleForward().then(act => dispatch(act)),
     }
 }
 

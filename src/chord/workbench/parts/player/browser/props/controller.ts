@@ -5,7 +5,7 @@ import { IRewindAct, IPlayPauseAct, IForwardAct } from 'chord/workbench/api/comm
 
 export interface IControllerProps {
     playing: boolean;
-    rewind: () => IRewindAct;
-    playPause: () => IPlayPauseAct;
-    forward: () => IForwardAct;
+    rewind: () => Promise<IRewindAct>;
+    playPause: () => Promise<IPlayPauseAct>;
+    forward: () => Promise<IForwardAct>;
 }

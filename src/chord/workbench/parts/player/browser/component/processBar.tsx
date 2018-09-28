@@ -6,6 +6,8 @@ import { getHumanDuration } from 'chord/base/common/time';
 import { CAudio } from 'chord/workbench/api/node/audio';
 import { Store } from 'redux';
 
+import { handleForward } from 'chord/workbench/parts/player/browser/action/control';
+
 
 type RefDiv = React.RefObject<HTMLDivElement>;
 
@@ -21,7 +23,7 @@ const intervalDuration = 1000;
 function step() {
     let duration: number = CAudio.playing() ? CAudio.duration() : 0;
     let seek: number = CAudio.playing() ? CAudio.seek() as number || 0 : 0;
-    let percent: number = duration ? seek / duration * 100 : 0 ;
+    let percent: number = duration ? seek / duration * 100 : 0;
 
     _bar.style.width = `${percent}%`;
     _slider.style.left = `${percent}%`;
@@ -44,10 +46,7 @@ export function onEnd(soundId: number, store: Store) {
     step();
 
     // play next song
-    store.dispatch({
-        type: 'c:player:forward',
-        act: 'c:player:forward',
-    });
+    handleForward().then(act => store.dispatch(act));
 }
 
 

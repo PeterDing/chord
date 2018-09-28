@@ -9,7 +9,7 @@ import { handlePlay } from 'chord/workbench/parts/player/browser/action/playList
 import SongItemView from 'chord/workbench/parts/common/component/songItem';
 
 
-export class PlayList extends React.Component<IPlayListProps, object> {
+class PlayList extends React.Component<IPlayListProps, object> {
 
     playList: React.RefObject<HTMLDivElement>;
     show: boolean;
@@ -63,7 +63,7 @@ function mapStateToProps(state: IStateGlobal) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        handlePlay: (index: number) => dispatch(handlePlay(index)),
+        handlePlay: (index: number) => handlePlay(index).then(act => dispatch(act)),
     };
 }
 
