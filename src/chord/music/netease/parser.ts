@@ -39,10 +39,15 @@ export function makeAudio(info: any): IAudio {
         size: info['size'],
         kbps: Math.floor(info['br'] / 1000),
         url: info['url'],
+        path: null,
     };
 }
 
-export function makeSong(info: any): ISong {
+export function makeSong(info: any, privilege?: any): ISong {
+    if (!privilege) {
+        privilege = info['privilege'];
+    }
+
     let songOriginalId = info['id'].toString();
 
     // info['album'] for similarSongs
@@ -50,6 +55,8 @@ export function makeSong(info: any): ISong {
     let artistInfo = (info['ar'] && info['ar'][0]) || (info['artists'] && info['artists'][0]);
 
     let albumCoverUrl: string = albumInfo['picUrl'];
+
+    let disable = privilege['st'] != 0;
 
     let song: ISong = {
         songId: _getSongId(songOriginalId),
@@ -84,6 +91,8 @@ export function makeSong(info: any): ISong {
         playCount: 0,
 
         audios: [],
+
+        disable,
     };
     return song;
 }
@@ -135,11 +144,11 @@ export function makeAlbums(info: any): Array<IAlbum> {
     return info.map(albumInfo => makeAlbum(albumInfo));
 }
 
-export function makeCollection(info: any): ICollection {
+export function makeCollection(info: any, privileges: any = []): ICollection {
     let collectionOriginalId = info['id'].toString();
     let collectionCoverUrl = info['coverImgUrl'];
     let tags: Array<ITag> = (info['tags'] || []).map(tag => ({ name: tag }));
-    let songs: Array<ISong> = (info['tracks'] || []).map(songInfo => makeSong(songInfo));
+    let songs: Array<ISong> = (info['tracks'] || []).map((songInfo, index) => makeSong(songInfo, privileges[index]));
     let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
 
     let collection: ICollection = {

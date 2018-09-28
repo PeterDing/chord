@@ -14,7 +14,8 @@ suite('music/netease/NeteaseMusicApi', () => {
     });
 
     test('audios', async function() {
-        let r = await neteaseApi.audios('298317');
+        let id = '108795';
+        let r = await neteaseApi.audios(id);
     });
 
     test('songsAudios', async function() {
@@ -22,13 +23,13 @@ suite('music/netease/NeteaseMusicApi', () => {
     });
 
     test('song', async function() {
-        let id = '1309814819';
+        let id = '546769020';
         let song = await neteaseApi.song(id);
         assert.equal(song.songOriginalId, id);
     });
 
     test('album', async function() {
-        let id = '73257170';
+        let id = '18893';
         let album = await neteaseApi.album(id);
     });
 
@@ -73,8 +74,8 @@ suite('music/netease/NeteaseMusicApi', () => {
     });
 
     // test('similarArtists', async function() {
-        // let id = '10563';
-        // let artists = await neteaseApi.similarArtists(id);
+    // let id = '10563';
+    // let artists = await neteaseApi.similarArtists(id);
     // });
 
     test('similarCollections', async function() {

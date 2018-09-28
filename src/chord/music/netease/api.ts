@@ -151,14 +151,14 @@ export class NeteaseMusicApi {
 
 
     /**
-     * to get directly link
+     * to get directly link (128kbps)
      * http://music.163.com/song/media/outer/url?id=${songId}.mp3
      */
     public async audios(songId: string): Promise<Array<IAudio>> {
         let node = NeteaseMusicApi.NODE_MAP.audio;
         let data = {
             ids: [songId],
-            br: 999000,
+            br: 320000,
             csrf_token: '',
         };
         let json = await this.request(node, data);
@@ -187,7 +187,7 @@ export class NeteaseMusicApi {
             csrf_token: '',
         };
         let json = await this.request(node, data);
-        return makeSong(json['songs'][0]);
+        return makeSong(json['songs'][0], json['privileges'][0]);
     }
 
 
@@ -245,7 +245,7 @@ export class NeteaseMusicApi {
             csrf_token: '',
         };
         let json = await this.request(node, data);
-        return makeCollection(json['playlist']);
+        return makeCollection(json['playlist'], json['privileges']);
     }
 
 
