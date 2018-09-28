@@ -4,8 +4,8 @@
 }
 
 .cover-icon.xiami-icon {
-    position: relative;
-    display: block;
+    position: absolute;
+    display: inline-block;
     width: 10%;
-    left: 45%
+    left: 8%
 }
