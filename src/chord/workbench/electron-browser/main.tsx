@@ -20,6 +20,9 @@ import RootView from 'chord/workbench/electron-browser/rootView';
 
 const store = createStore(mainReducer);
 
+// Set global store
+(window as any).store = store;
+
 
 function App() {
     return (
