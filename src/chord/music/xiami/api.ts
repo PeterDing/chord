@@ -716,7 +716,7 @@ export class AliMusicApi {
     /**
      * TODO, parser is need
      */
-    public async collections(keyword: string, type: string = 'new', page: number = 1, size: number = 10): Promise<any> {
+    public async collections(keyword: string, type: string = 'new', page: number = 1, size: number = 10): Promise<Array<ICollection>> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.collections,
             {
