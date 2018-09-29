@@ -29,7 +29,7 @@ export async function getMoreSongs(artist: IArtist, page: IPage): Promise<IGetMo
 export async function getMoreAlbums(artist: IArtist, page: IPage): Promise<IGetMoreArtistAlbumsAct> {
     let albums = [];
     if (page.more) {
-        albums = await musicApi.artistAlbums(artist.artistId, page.page, page.size);
+        albums = await musicApi.artistAlbums(artist.artistId, page.page, page.size, artist.artistMid);
         page.page += 1;
     }
     if (albums.length == 0) {
