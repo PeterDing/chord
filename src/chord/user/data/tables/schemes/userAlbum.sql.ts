@@ -9,6 +9,7 @@ create table if not exists user_album (
 
     origin text,
     albumOriginalId text,
+    albumMid text,
     url text,
 
     albumName text,
@@ -17,6 +18,7 @@ create table if not exists user_album (
 
     artistId text,
     artistOriginalId text,
+    artistMid text,
     artistName text,
 
     subTitle text,

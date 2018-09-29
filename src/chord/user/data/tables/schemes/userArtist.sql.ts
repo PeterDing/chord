@@ -9,6 +9,7 @@ create table if not exists user_artist (
 
     origin text,
     artistOriginalId text,
+    artistMid text,
     url text,
 
     artistName text,
