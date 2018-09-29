@@ -150,7 +150,8 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
     }
 
     topResult() {
-        let defaultSize = 20;
+        // TODO: Get size from config
+        let defaultSize = 30;
         let songsView = this._getSongsView(defaultSize);
         let albumsView = this._getAlbumsView(defaultSize);
         let artistsView = this._getArtistsView(defaultSize);
