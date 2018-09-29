@@ -18,7 +18,7 @@ export async function handlePlayAlbum(album: IAlbum): Promise<IPlayAlbumAct> {
         let _album = await musicApi.album(album.albumId);
         let _songs = _album.songs
             .filter(song => !song.disable)
-            .filter(song => song.origin == ORIGIN.netease || hasSongAudio(song));
+            .filter(song => song.origin != ORIGIN.xiami || hasSongAudio(song));
 
         if (_songs.length) {
             await addSongAudios(_songs[0]);
