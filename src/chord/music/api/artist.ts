@@ -12,6 +12,8 @@ export interface IArtist {
 
     origin?: string;
     artistOriginalId?: string;
+    // for qq music
+    artistMid?: string;
     url?: string;
 
     artistName?: string;

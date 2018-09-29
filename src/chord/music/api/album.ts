@@ -11,6 +11,8 @@ export interface IAlbum {
 
     origin?: string;
     albumOriginalId?: string;
+    // for qq music
+    albumMid?: string;
     url?: string;
 
     albumName?: string;
@@ -19,6 +21,8 @@ export interface IAlbum {
 
     artistId?: string;
     artistOriginalId?: string;
+    // for qq music
+    artistMid?: string;
     artistName?: string;
 
     subTitle?: string;
