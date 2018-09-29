@@ -274,6 +274,28 @@ export function makeCollection(info: any, collectionOriginalId: string): ICollec
 }
 
 
+function getKbps(str: string): number {
+    let r = /m(\d{2,3})\./.exec(str.slice(0, 20));
+    if (r) {
+        return parseInt(r[1]);
+    } else {
+        return 128;
+    }
+}
+
+
+function makeAudio(info: any): IAudio {
+    let url = info['listenFile'];
+    let audio: IAudio = {
+        format: info['format'],
+        size: info['fileSize'],
+        kbps: getKbps(url),
+        url,
+    }
+    return audio;
+}
+
+
 export function makeAliSong(info: any): ISong {
     let lyricUrl: string;
     if (!!info['lyricInfo']) {
@@ -288,26 +310,12 @@ export function makeAliSong(info: any): ISong {
 
     let audios = [];
     if (info['listenFiles'] && info['listenFiles'].length > 0) {
-        audios = info['listenFiles'].map(a => {
-            let audio: IAudio = {
-                format: a['format'],
-                size: a['fileSize'],
-                url: a['listenFile'],
-            }
-            return audio;
-        }).sort((x, y) => x.size < y.size);
+        audios = info['listenFiles'].map(a => makeAudio(a)).sort((x, y) => x.size < y.size);
     } else {
         // block song audio may be at here
         let backupSong = info['bakSong'];
         if (backupSong && backupSong['listenFiles'] && backupSong['listenFiles'].length > 0) {
-            audios = backupSong['listenFiles'].map(a => {
-                let audio: IAudio = {
-                    format: a['format'],
-                    size: a['fileSize'],
-                    url: a['listenFile'],
-                }
-                return audio;
-            }).sort((x, y) => x.size < y.size);
+            audios = backupSong['listenFiles'].map(a => makeAudio(a)).sort((x, y) => x.size < y.size);
         }
     }
 
