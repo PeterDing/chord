@@ -1,5 +1,7 @@
 'use strict';
 
+import { decodeHtml } from 'chord/base/browser/htmlContent';
+
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
@@ -92,15 +94,18 @@ export function makeSong(info: any): ISong {
     let songOriginalId = (songInfo['id'] || songInfo['songid']).toString();
     let songMid = songInfo['mid'] || songInfo['songmid'];
     let songName = songInfo['name'] || songInfo['songname'];
+    songName = decodeHtml(songName);
 
     let albumOriginalId = songInfo['album'] ? songInfo['album']['id'].toString() : songInfo['albumid'].toString();
     let albumMid = songInfo['album'] ? songInfo['album']['mid'] : songInfo['albummid'];
     let albumName = songInfo['album'] ? songInfo['album']['name'] : songInfo['albumname'];
+    albumName = decodeHtml(albumName);
     let albumCoverUrl = getQQAlbumCoverUrl(albumMid);
 
     let artistOriginalId = songInfo['singer'][0]['id'].toString();
     let artistMid = songInfo['singer'][0]['mid'];
     let artistName = songInfo['singer'][0]['name'];
+    artistName = decodeHtml(artistName);
     let artistAvatarUrl = getQQArtistAvatarUrl(artistMid);
 
     let track = songInfo['index_album'] || songInfo['belongCD'];
@@ -194,11 +199,13 @@ export function makeAlbum(info: any): IAlbum {
     let albumOriginalId = (info['id'] || info['albumid'] || info['albumID']).toString();
     let albumMid = info['mid'] || info['album_mid'] || info['albumMID'];
     let albumName = info['name'] || info['album_name'] || info['albumName'];
+    albumName = decodeHtml(albumName);
     let albumCoverUrl = getQQAlbumCoverUrl(albumMid);
 
     let artistOriginalId = (info['singerid'] || info['singer_id'] || info['singerID']).toString();
     let artistMid = info['singermid'] || info['singer_mid'] || info['singerMID'];
     let artistName = info['singername'] || info['singer_name'] || info['singerName'];
+    artistName = decodeHtml(artistName);
 
     let tags: Array<ITag> = info['genre'] ? [{ id: null, name: info['genre'] }] : [];
 
@@ -231,7 +238,7 @@ export function makeAlbum(info: any): IAlbum {
         company: info['company'] || null,
 
         songs: songs,
-        songCount: info['total_song_num'] || null,
+        songCount: info['total_song_num'] || info['song_count'],
     };
     return album;
 }
@@ -246,6 +253,7 @@ export function makeArtist(info: any): IArtist {
     let artistOriginalId = info['singer_id'].toString();
     let artistMid = info['singer_mid'];
     let artistName = info['singer_name'];
+    artistName = decodeHtml(artistName);
     let artistAvatarUrl = getQQArtistAvatarUrl(artistMid);
 
     let artist: IArtist = {
@@ -271,9 +279,15 @@ export function makeArtist(info: any): IArtist {
 export function makeCollection(info: any): ICollection {
     let collectionOriginalId = (info['disstid'] || info['dissid']).toString();
     let collectionCoverUrl = info['logo'] || info['imgurl'];
+    let collectionName = info['dissname'];
+    collectionName = decodeHtml(collectionName);
+
     let tags: Array<ITag> = (info['tags'] || []).map(tag => ({ id: tag['id'].toString(), name: tag['name'] }));
     let songs: Array<ISong> = (info['songlist'] || []).map(songInfo => makeSong(songInfo));
     let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
+
+    let userName = info['nickname'] || info['creator']['name'];
+    userName = decodeHtml(userName);
 
     let collection: ICollection = {
         collectionId: _getCollectionId(collectionOriginalId),
@@ -282,11 +296,11 @@ export function makeCollection(info: any): ICollection {
         collectionOriginalId,
         url: _getCollectionUrl(collectionOriginalId),
 
-        collectionName: info['dissname'],
+        collectionName,
 
         collectionCoverUrl,
 
-        userName: info['nickname'] || info['creator']['name'],
+        userName,
 
         // millisecond
         releaseDate: info['ctime'] * 1000 || Date.parse(info['createtime']),
