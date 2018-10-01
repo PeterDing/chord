@@ -1,5 +1,9 @@
 'use strict';
 
+import * as path from 'path';
+import * as os from 'os';
+import { mkdirp } from 'chord/base/node/pfs';
+
 import { ok } from 'chord/base/common/assert';
 
 import * as fs from 'fs';
@@ -123,4 +127,7 @@ export class User {
 
 
 // WARN: no using defaultUser for production
-export const defaultUser = new User('default', './default-user-library.db');
+const chordDir = path.join(os.homedir(), '.chord');
+mkdirp(chordDir);
+const defaultDBPath = path.join(chordDir, 'default-user-library.db');
+export const defaultUser = new User('default', defaultDBPath);
