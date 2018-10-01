@@ -38,6 +38,8 @@ function createWindow() {
     win = new BrowserWindow({
         height: 800,
         width: 1150,
+        // For mac, linux
+        titleBarStyle: 'hiddenInset',
     });
 
 
