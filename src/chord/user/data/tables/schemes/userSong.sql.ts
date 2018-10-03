@@ -6,6 +6,7 @@ create table if not exists user_song (
     id integer primary key asc,
 
     songId text unique on conflict ignore,
+    type text,
     addAt integer
 )
 `;

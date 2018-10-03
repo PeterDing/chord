@@ -7,6 +7,7 @@ create table if not exists song (
 
     songId text unique on conflict ignore,
 
+    type text,
     origin text,
 
     songOriginalId text,
@@ -64,6 +65,8 @@ create table if not exists song (
     -- audios store at audio table
     --  audios text
 
-    disable integer
+    disable integer,
+
+    like integer
 )
 `;

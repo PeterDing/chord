@@ -7,6 +7,7 @@ create table if not exists user_playlist (
 
     playListId text unique on conflict ignore,
 
+    type text,
     playListName text,
 
     -- json array, ["songId"]

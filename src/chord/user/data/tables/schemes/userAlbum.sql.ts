@@ -7,6 +7,7 @@ create table if not exists user_album (
 
     albumId text unique on conflict ignore,
 
+    type text,
     origin text,
     albumOriginalId text,
     albumMid text,
@@ -41,6 +42,8 @@ create table if not exists user_album (
     songs text,
     songCount integer,
 
-    addAt integer
+    addAt integer,
+
+    like integer
 )
 `;

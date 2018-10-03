@@ -7,6 +7,7 @@ create table if not exists user_collection (
 
     collectionId text unique on conflict ignore,
 
+    type text,
     origin text,
     collectionOriginalId text,
     url text,
@@ -31,6 +32,8 @@ create table if not exists user_collection (
     songs text,
     songCount text,
 
-    addAt integer
+    addAt integer,
+
+    like integer
 )
 `;

@@ -7,6 +7,7 @@ create table if not exists user_artist (
 
     artistId text unique on conflict ignore,
 
+    type text,
     origin text,
     artistOriginalId text,
     artistMid text,
@@ -29,6 +30,8 @@ create table if not exists user_artist (
 
     description text,
 
-    addAt integer
+    addAt integer,
+
+    like integer
 )
 `;
