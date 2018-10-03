@@ -9,7 +9,9 @@ export function jsonDumpValue(obj: any): any {
 }
 
 export function jsonLoadValue(obj: any): any {
-    Object.keys(obj).filter(key => key.startsWith('[') || key.startsWith('{'))
+    Object.keys(obj)
+        .filter(key => typeof obj[key] == 'string')
+        .filter(key => obj[key].startsWith('[') || obj[key].startsWith('{'))
         .forEach(key => obj[key] = JSON.parse(obj[key]));
     return obj;
 }
