@@ -15,7 +15,7 @@ export function NavigationView() {
     return (
         <div className='nav-bar-container'>
             {/* Search */}
-            <div className='navBar' style={isWindows ? null : {'padding-top': '40px'}}>
+            <div className='navBar' style={isWindows ? null : {paddingTop: '40px'}}>
                 <div className='navBar-expand'>
                     <ul>
 
