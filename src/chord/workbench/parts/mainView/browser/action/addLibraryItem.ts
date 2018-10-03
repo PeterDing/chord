@@ -16,6 +16,7 @@ import { defaultUser as user } from 'chord/user/core/user';
 
 
 export function handleAddLibrarySong(song: ISong): IAddLibrarySongAct {
+    song.like = true;
     let userSong = user.addSong(song);
     return {
         type: 'c:mainView:addLibrarySong',
@@ -25,6 +26,7 @@ export function handleAddLibrarySong(song: ISong): IAddLibrarySongAct {
 }
 
 export function handleAddLibraryArtist(artist: IArtist): IAddLibraryArtistAct {
+    artist.like = true;
     let userArtist = user.addArtist(artist);
     return {
         type: 'c:mainView:addLibraryArtist',
@@ -34,6 +36,7 @@ export function handleAddLibraryArtist(artist: IArtist): IAddLibraryArtistAct {
 }
 
 export function handleAddLibraryAlbum(album: IAlbum): IAddLibraryAlbumAct {
+    album.like = true;
     let userAlbum = user.addAlbum(album);
     return {
         type: 'c:mainView:addLibraryAlbum',
@@ -43,6 +46,7 @@ export function handleAddLibraryAlbum(album: IAlbum): IAddLibraryAlbumAct {
 }
 
 export function handleAddLibraryCollection(collection: ICollection): IAddLibraryCollectionAct {
+    collection.like = true;
     let userCollection = user.addCollection(collection);
     return {
         type: 'c:mainView:addLibraryCollection',
