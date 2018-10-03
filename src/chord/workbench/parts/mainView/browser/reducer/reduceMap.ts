@@ -28,7 +28,8 @@ import {
     addLibrarySong,
     addLibraryArtist,
     addLibraryAlbum,
-    addLibraryCollection
+    addLibraryCollection,
+    removeFromLibrary,
 } from 'chord/workbench/parts/mainView/browser/reducer/library';
 
 
@@ -150,6 +151,11 @@ export function map(act: string): IReducerMap {
         case 'c:mainView:addLibraryCollection':
             return {
                 reducer: addLibraryCollection,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:removeFromLibrary':
+            return {
+                reducer: removeFromLibrary,
                 node: 'libraryView.result',
             };
 
