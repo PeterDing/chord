@@ -63,8 +63,10 @@ export class Music {
         let xiamiSongIds = songsOriginType.filter(originType => originType.origin == ORIGIN.xiami).reverse().map(originType => originType.id);
         let neteaseSongIds = songsOriginType.filter(originType => originType.origin == ORIGIN.netease).reverse().map(originType => originType.id);
 
-        let [xiamiSongsAudios, neteaseSongsAudios] = await Promise.all(
-            [this.xiamiApi.songsAudios(xiamiSongIds), this.neteaseApi.songsAudios(neteaseSongIds)]);
+        let [xiamiSongsAudios, neteaseSongsAudios] = await Promise.all([
+            this.xiamiApi.songsAudios(xiamiSongIds),
+            this.neteaseApi.songsAudios(neteaseSongIds)
+        ]);
 
         let songsAudios = [];
         songsOriginType.forEach(originType => {
@@ -151,7 +153,7 @@ export class Music {
                 songs = await this.neteaseApi.artistSongs(originType.id, offset * limit, limit);
                 break;
             case ORIGIN.qq:
-                songs =  await this.qqApi.artistSongs(originType.id, offset * limit, limit);
+                songs = await this.qqApi.artistSongs(originType.id, offset * limit, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -170,14 +172,14 @@ export class Music {
         let originType = getOrigin(artistId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                albums =  await this.xiamiApi.artistAlbums(originType.id, offset + 1, limit);
+                albums = await this.xiamiApi.artistAlbums(originType.id, offset + 1, limit);
                 break;
             case ORIGIN.netease:
-                albums =  await this.neteaseApi.artistAlbums(originType.id, offset * limit, limit);
+                albums = await this.neteaseApi.artistAlbums(originType.id, offset * limit, limit);
                 break;
             // there needs qq's mid
             case ORIGIN.qq:
-                albums =  await this.qqApi.artistAlbums(artistMid, offset * limit, limit);
+                albums = await this.qqApi.artistAlbums(artistMid, offset * limit, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -224,7 +226,7 @@ export class Music {
                 collection = await this.xiamiApi.collection(originType.id);
                 break;
             case ORIGIN.netease:
-                collection  =await this.neteaseApi.collection(originType.id);
+                collection = await this.neteaseApi.collection(originType.id);
                 break;
             case ORIGIN.qq:
                 collection = await this.qqApi.collection(originType.id);
@@ -243,9 +245,11 @@ export class Music {
      */
     public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
         let items = [];
-        let xiamiSongs = await this.xiamiApi.searchSongs(keyword, offset + 1, limit);
-        let neteaseSongs = await this.neteaseApi.searchSongs(keyword, offset * limit, limit);
-        let qqSongs = await this.qqApi.searchSongs(keyword, offset * limit, limit);
+        let [xiamiSongs, neteaseSongs, qqSongs] = await Promise.all([
+            this.xiamiApi.searchSongs(keyword, offset + 1, limit),
+            this.neteaseApi.searchSongs(keyword, offset * limit, limit),
+            this.qqApi.searchSongs(keyword, offset * limit, limit),
+        ]);
 
         let maxLength = Math.max(xiamiSongs.length, neteaseSongs.length);
         for (let index = 0; index < maxLength; index++) {
@@ -264,8 +268,10 @@ export class Music {
 
     public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
         let items = [];
-        let xiamiArtists = await this.xiamiApi.searchArtists(keyword, offset + 1, limit);
-        let neteaseArtists = await this.neteaseApi.searchArtists(keyword, offset * limit, limit);
+        let [xiamiArtists, neteaseArtists] = await Promise.all([
+            this.xiamiApi.searchArtists(keyword, offset + 1, limit),
+            this.neteaseApi.searchArtists(keyword, offset * limit, limit),
+        ]);
         // qq doesn't support to search artist
 
         let maxLength = Math.max(xiamiArtists.length, neteaseArtists.length);
@@ -283,9 +289,11 @@ export class Music {
 
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
         let items = [];
-        let xiamiAlbums = await this.xiamiApi.searchAlbums(keyword, offset + 1, limit);
-        let neteaseAlbums = await this.neteaseApi.searchAlbums(keyword, offset * limit, limit);
-        let qqAlbums = await this.qqApi.searchAlbums(keyword, offset * limit, limit);
+        let [xiamiAlbums, neteaseAlbums, qqAlbums] = await Promise.all([
+            this.xiamiApi.searchAlbums(keyword, offset + 1, limit),
+            this.neteaseApi.searchAlbums(keyword, offset * limit, limit),
+            this.qqApi.searchAlbums(keyword, offset * limit, limit),
+        ]);
 
         let maxLength = Math.max(xiamiAlbums.length, neteaseAlbums.length);
         for (let index = 0; index < maxLength; index++) {
@@ -304,9 +312,11 @@ export class Music {
 
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
         let items = [];
-        let xiamiCollections = await this.xiamiApi.searchCollections(keyword, offset + 1, limit);
-        let neteaseCollections = await this.neteaseApi.searchCollections(keyword, offset * limit, limit);
-        let qqCollections = await this.qqApi.searchCollections(keyword, offset * limit, limit);
+        let [xiamiCollections, neteaseCollections, qqCollections] = await Promise.all([
+            this.xiamiApi.searchCollections(keyword, offset + 1, limit),
+            this.neteaseApi.searchCollections(keyword, offset * limit, limit),
+            this.qqApi.searchCollections(keyword, offset * limit, limit),
+        ]);
 
         let maxLength = Math.max(xiamiCollections.length, neteaseCollections.length);
         for (let index = 0; index < maxLength; index++) {
