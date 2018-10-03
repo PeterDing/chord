@@ -10,7 +10,9 @@ import { ICollection } from 'chord/music/api/collection';
 
 import { AliMusicApi } from 'chord/music/xiami/api';
 import { NeteaseMusicApi } from 'chord/music/netease/api';
-import {QQMusicApi} from 'chord/music/qq/api';
+import { QQMusicApi } from 'chord/music/qq/api';
+
+import { makeItem, makeItems } from 'chord/music/core/parser';
 
 
 export class Music {
@@ -89,18 +91,24 @@ export class Music {
      * songId is Chord's song id, not song original id
      */
     public async song(songId: string): Promise<ISong> {
+        let song;
         let originType = getOrigin(songId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.song(originType.id);
+                song = await this.xiamiApi.song(originType.id);
+                break;
             case ORIGIN.netease:
-                return await this.neteaseApi.song(originType.id);
+                song = await this.neteaseApi.song(originType.id);
+                break;
             case ORIGIN.qq:
-                return await this.qqApi.song(originType.id);
+                song = await this.qqApi.song(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.song] Here will never be occured. [args]: ${songId}`);
         }
+        song = makeItem(song);
+        return song;
     }
 
 
@@ -108,18 +116,24 @@ export class Music {
      * artistId is Chord's artist id, not artist original id
      */
     public async artist(artistId: string): Promise<IArtist> {
+        let artist;
         let originType = getOrigin(artistId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.artist(originType.id);
+                artist = await this.xiamiApi.artist(originType.id);
+                break;
             case ORIGIN.netease:
-                return await this.neteaseApi.artist(originType.id);
+                artist = await this.neteaseApi.artist(originType.id);
+                break;
             case ORIGIN.qq:
-                return await this.qqApi.artist(originType.id);
+                artist = await this.qqApi.artist(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artist] Here will never be occured. [args]: ${artistId}`);
         }
+        artist = makeItem(artist);
+        return artist;
     }
 
 
@@ -127,18 +141,24 @@ export class Music {
      * artistId is Chord's artist id, not artist original id
      */
     public async artistSongs(artistId: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let songs = [];
         let originType = getOrigin(artistId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.artistSongs(originType.id, offset + 1, limit);
+                songs = await this.xiamiApi.artistSongs(originType.id, offset + 1, limit);
+                break;
             case ORIGIN.netease:
-                return await this.neteaseApi.artistSongs(originType.id, offset * limit, limit);
+                songs = await this.neteaseApi.artistSongs(originType.id, offset * limit, limit);
+                break;
             case ORIGIN.qq:
-                return await this.qqApi.artistSongs(originType.id, offset * limit, limit);
+                songs =  await this.qqApi.artistSongs(originType.id, offset * limit, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artistSongs] Here will never be occured. [args]: ${artistId}`);
         }
+        songs = makeItems(songs);
+        return songs;
     }
 
 
@@ -146,19 +166,25 @@ export class Music {
      * artistId is Chord's artist id, not artist original id
      */
     public async artistAlbums(artistId: string, offset: number = 0, limit: number = 10, artistMid?: string): Promise<Array<IAlbum>> {
+        let albums = [];
         let originType = getOrigin(artistId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.artistAlbums(originType.id, offset + 1, limit);
+                albums =  await this.xiamiApi.artistAlbums(originType.id, offset + 1, limit);
+                break;
             case ORIGIN.netease:
-                return await this.neteaseApi.artistAlbums(originType.id, offset * limit, limit);
+                albums =  await this.neteaseApi.artistAlbums(originType.id, offset * limit, limit);
+                break;
             // there needs qq's mid
             case ORIGIN.qq:
-                return await this.qqApi.artistAlbums(artistMid, offset * limit, limit);
+                albums =  await this.qqApi.artistAlbums(artistMid, offset * limit, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artistAlbums] Here will never be occured. [args]: ${artistId}`);
         }
+        albums = makeItems(albums);
+        return albums;
     }
 
 
@@ -166,18 +192,24 @@ export class Music {
      * albumId is Chord's album id, not album original id
      */
     public async album(albumId: string): Promise<IAlbum> {
+        let album;
         let originType = getOrigin(albumId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.album(originType.id);
+                album = await this.xiamiApi.album(originType.id);
+                break;
             case ORIGIN.netease:
-                return await this.neteaseApi.album(originType.id);
+                album = await this.neteaseApi.album(originType.id);
+                break;
             case ORIGIN.qq:
-                return await this.qqApi.album(originType.id);
+                album = await this.qqApi.album(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.album] Here will never be occured. [args]: ${albumId}`);
         }
+        album = makeItem(album);
+        return album;
     }
 
 
@@ -185,18 +217,24 @@ export class Music {
      * collectionId is Chord's collection id, not collection original id
      */
     public async collection(collectionId: string): Promise<ICollection> {
+        let collection;
         let originType = getOrigin(collectionId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.collection(originType.id);
+                collection = await this.xiamiApi.collection(originType.id);
+                break;
             case ORIGIN.netease:
-                return await this.neteaseApi.collection(originType.id);
+                collection  =await this.neteaseApi.collection(originType.id);
+                break;
             case ORIGIN.qq:
-                return await this.qqApi.collection(originType.id);
+                collection = await this.qqApi.collection(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.collection] Here will never be occured. [args]: ${collectionId}`);
         }
+        collection = makeItem(collection);
+        return collection;
     }
 
 
@@ -204,7 +242,7 @@ export class Music {
      * xiami searching based on page
      */
     public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
-        let songs = [];
+        let items = [];
         let xiamiSongs = await this.xiamiApi.searchSongs(keyword, offset + 1, limit);
         let neteaseSongs = await this.neteaseApi.searchSongs(keyword, offset * limit, limit);
         let qqSongs = await this.qqApi.searchSongs(keyword, offset * limit, limit);
@@ -212,19 +250,20 @@ export class Music {
         let maxLength = Math.max(xiamiSongs.length, neteaseSongs.length);
         for (let index = 0; index < maxLength; index++) {
             let s1 = xiamiSongs[index];
-            s1 ? songs.push(s1) : null;
+            s1 ? items.push(s1) : null;
             let s2 = neteaseSongs[index];
-            s2 ? songs.push(s2) : null;
+            s2 ? items.push(s2) : null;
             let s3 = qqSongs[index];
-            s3 ? songs.push(s3) : null;
+            s3 ? items.push(s3) : null;
         }
 
-        return songs;
+        items = makeItems(items);
+        return items;
     }
 
 
     public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
-        let songs = [];
+        let items = [];
         let xiamiArtists = await this.xiamiApi.searchArtists(keyword, offset + 1, limit);
         let neteaseArtists = await this.neteaseApi.searchArtists(keyword, offset * limit, limit);
         // qq doesn't support to search artist
@@ -232,17 +271,18 @@ export class Music {
         let maxLength = Math.max(xiamiArtists.length, neteaseArtists.length);
         for (let index = 0; index < maxLength; index++) {
             let s1 = xiamiArtists[index];
-            s1 ? songs.push(s1) : null;
+            s1 ? items.push(s1) : null;
             let s2 = neteaseArtists[index];
-            s2 ? songs.push(s2) : null;
+            s2 ? items.push(s2) : null;
         }
 
-        return songs;
+        items = makeItems(items);
+        return items;
     }
 
 
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
-        let songs = [];
+        let items = [];
         let xiamiAlbums = await this.xiamiApi.searchAlbums(keyword, offset + 1, limit);
         let neteaseAlbums = await this.neteaseApi.searchAlbums(keyword, offset * limit, limit);
         let qqAlbums = await this.qqApi.searchAlbums(keyword, offset * limit, limit);
@@ -250,19 +290,20 @@ export class Music {
         let maxLength = Math.max(xiamiAlbums.length, neteaseAlbums.length);
         for (let index = 0; index < maxLength; index++) {
             let s1 = xiamiAlbums[index];
-            s1 ? songs.push(s1) : null;
+            s1 ? items.push(s1) : null;
             let s2 = neteaseAlbums[index];
-            s2 ? songs.push(s2) : null;
+            s2 ? items.push(s2) : null;
             let s3 = qqAlbums[index];
-            s3 ? songs.push(s3) : null;
+            s3 ? items.push(s3) : null;
         }
 
-        return songs;
+        items = makeItems(items);
+        return items;
     }
 
 
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
-        let songs = [];
+        let items = [];
         let xiamiCollections = await this.xiamiApi.searchCollections(keyword, offset + 1, limit);
         let neteaseCollections = await this.neteaseApi.searchCollections(keyword, offset * limit, limit);
         let qqCollections = await this.qqApi.searchCollections(keyword, offset * limit, limit);
@@ -270,14 +311,15 @@ export class Music {
         let maxLength = Math.max(xiamiCollections.length, neteaseCollections.length);
         for (let index = 0; index < maxLength; index++) {
             let s1 = xiamiCollections[index];
-            s1 ? songs.push(s1) : null;
+            s1 ? items.push(s1) : null;
             let s2 = neteaseCollections[index];
-            s2 ? songs.push(s2) : null;
+            s2 ? items.push(s2) : null;
             let s3 = qqCollections[index];
-            s3 ? songs.push(s3) : null;
+            s3 ? items.push(s3) : null;
         }
 
-        return songs;
+        items = makeItems(items);
+        return items;
     }
 }
 
