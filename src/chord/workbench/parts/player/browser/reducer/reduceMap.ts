@@ -8,7 +8,7 @@ import { playArtist } from 'chord/workbench/parts/player/browser/reducer/playArt
 import { playAlbum } from 'chord/workbench/parts/player/browser/reducer/playAlbum';
 import { playCollection } from 'chord/workbench/parts/player/browser/reducer/playCollection';
 import { changeVolume } from 'chord/workbench/parts/player/browser/reducer/volume';
-import { addSong } from 'chord/workbench/parts/player/browser/reducer/addSong';
+import { addToQueue } from 'chord/workbench/parts/player/browser/reducer/addToQueue';
 import { IReducerMap } from 'chord/workbench/api/common/reducer/reducerMap';
 
 
@@ -64,9 +64,9 @@ export function map(act: string): IReducerMap {
                 reducer: forward,
                 node: '.',
             };
-        case 'c:player:addSong':
+        case 'c:player:addToQueue':
             return {
-                reducer: addSong,
+                reducer: addToQueue,
                 node: '.',
             };
         default:
