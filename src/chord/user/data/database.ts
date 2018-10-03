@@ -1,5 +1,7 @@
 'use strict';
 
+import { removeEmtryAttributes } from 'chord/base/common/objects';
+
 import { jsonDumpValue } from 'chord/base/common/json';
 
 import Database = require('better-sqlite3');
@@ -16,12 +18,15 @@ import { IUserArtist } from 'chord/user/api/artist';
 import { IUserCollection } from 'chord/user/api/collection';
 
 import {
+    toNumber,
     makeAudio,
     makeSong,
     makeAlbum,
     makeArtist,
     makeCollection
 } from 'chord/user/data/parser';
+
+import { TABLES } from 'chord/user/data/common';
 
 
 export class UserDatabase {
@@ -186,6 +191,10 @@ export class UserDatabase {
 
         let _song = <any>{ ...song };
         delete _song.audios;
+
+        removeEmtryAttributes(_song);
+        toNumber(_song);
+
         jsonDumpValue(_song);
 
         let columns = Object.keys(_song);
@@ -213,6 +222,10 @@ export class UserDatabase {
 
         let _album = <any>{ ...album };
         _album.songs = album.songs.map(song => song.songId);
+
+        removeEmtryAttributes(_album);
+        toNumber(_album);
+
         jsonDumpValue(_album);
 
         _album.addAt = addAt;
@@ -230,6 +243,10 @@ export class UserDatabase {
         let _artist = <any>{ ...artist };
         delete _artist.songs;
         delete _artist.albums;
+
+        removeEmtryAttributes(_artist);
+        toNumber(_artist);
+
         jsonDumpValue(_artist);
 
         _artist.addAt = addAt;
@@ -249,6 +266,10 @@ export class UserDatabase {
 
         let _collection = <any>{ ...collection };
         _collection.songs = collection.songs.map(song => song.songId);
+
+        removeEmtryAttributes(_collection);
+        toNumber(_collection);
+
         jsonDumpValue(_collection);
 
         _collection.addAt = addAt;
@@ -297,5 +318,11 @@ export class UserDatabase {
 
         collection.songs.forEach(song => this.removeSong(song));
         return true;
+    }
+
+    public exists(item: ISong | IArtist | IAlbum | ICollection): boolean {
+        let sql = `select 'id' from ${TABLES[item.type]} where ${item.type}Id = ?`;
+        let result = this.db.prepare(sql).get(item[item.type + 'Id']);
+        return !!result;
     }
 }
