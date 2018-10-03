@@ -61,6 +61,7 @@ export function makeSong(info: any, privilege?: any): ISong {
     let song: ISong = {
         songId: _getSongId(songOriginalId),
 
+        type: 'song',
         origin: _origin,
 
         songOriginalId,
@@ -115,6 +116,7 @@ export function makeAlbum(info: any): IAlbum {
     let album: IAlbum = {
         albumId: _getAlbumId(albumOriginalId),
 
+        type: 'album',
         origin: _origin,
         albumOriginalId: albumOriginalId,
         url: _getAlbumUrl(albumOriginalId),
@@ -154,6 +156,7 @@ export function makeCollection(info: any, privileges: any = []): ICollection {
     let collection: ICollection = {
         collectionId: _getCollectionId(collectionOriginalId),
 
+        type: 'collection',
         origin: _origin,
         collectionOriginalId,
         url: _getCollectionUrl(collectionOriginalId),
@@ -194,6 +197,7 @@ export function makeArtist(info: any): IArtist {
 
     let artist: IArtist = {
         artistId: _getArtistId(artistOriginalId),
+        type: 'artist',
         origin: _origin,
         artistOriginalId: artistOriginalId,
         url: _getArtistUrl(artistOriginalId),

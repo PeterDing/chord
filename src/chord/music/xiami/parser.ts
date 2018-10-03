@@ -58,6 +58,7 @@ export function makeSong(info: any): ISong {
     let song: ISong = {
         songId: _getSongId(info['song_id']),
 
+        type: 'song',
         origin: _origin,
 
         songOriginalId: info['song_id'],
@@ -93,7 +94,7 @@ export function makeSong(info: any): ISong {
         // millisecond
         releaseDate: info['demoCreateTime'],
 
-        playCountWeb: info['playCount'],
+        playCountWeb: info['playCount'] || null,
         playCount: 0,
 
         audios: audios,
@@ -116,6 +117,7 @@ export function makeAlbum(info: any): IAlbum {
     let album: IAlbum = {
         albumId: _getAlbumId(albumOriginalId),
 
+        type: 'album',
         origin: _origin,
         albumOriginalId: albumOriginalId,
         url: _getAlbumUrl(albumOriginalId),
@@ -181,6 +183,7 @@ export function makeArtist(html: string): IArtist {
             let songOriginalId: string = r.value;
             let song: ISong = {
                 songId: _getSongId(songOriginalId),
+                type: 'song',
                 songOriginalId: songOriginalId,
 
                 url: _getSongUrl(songOriginalId),
@@ -212,6 +215,7 @@ export function makeArtist(html: string): IArtist {
             let albumOriginalId: string = /'(\d+)',\sthis/.exec(el.innerHTML)[1];
             let album: IAlbum = {
                 albumId: _getAlbumId(albumOriginalId),
+                type: 'album',
                 albumOriginalId: albumOriginalId,
                 origin: _origin,
                 url: _getAlbumUrl(albumOriginalId),
@@ -227,6 +231,7 @@ export function makeArtist(html: string): IArtist {
 
         let artist: IArtist = {
             artistId: artistId,
+            type: 'artist',
             origin: _origin,
             artistOriginalId: artistOriginalId,
             url: _url,
@@ -261,6 +266,7 @@ export function makeCollection(info: any, collectionOriginalId: string): ICollec
     let collection: ICollection = {
         collectionId: _getCollectionId(collectionOriginalId),
 
+        type: 'collection',
         origin: _origin,
         collectionOriginalId: collectionOriginalId,
         url: _getCollectionUrl(collectionOriginalId),
@@ -322,6 +328,7 @@ export function makeAliSong(info: any): ISong {
     let song: ISong = {
         songId: _getSongId(songOriginalId),
 
+        type: 'song',
         origin: _origin,
 
         songOriginalId,
@@ -382,6 +389,7 @@ export function makeAliAlbum(info: any): IAlbum {
     let album: IAlbum = {
         albumId: _getAlbumId(albumOriginalId),
 
+        type: 'album',
         origin: _origin,
         albumOriginalId: albumOriginalId,
         url: _getAlbumUrl(albumOriginalId),
@@ -421,6 +429,7 @@ export function makeAliArtist(info: any): IArtist {
     let artistAlias = info['alias'].split('/').filter(a => a.trim() != '').map(a => a.trim());
     let artist: IArtist = {
         artistId: _getArtistId(artistOriginalId),
+        type: 'artist',
         origin: _origin,
         artistOriginalId: artistOriginalId,
         url: _getArtistUrl(artistOriginalId),
@@ -456,6 +465,7 @@ export function makeAliCollection(info: any): ICollection {
     let collection: ICollection = {
         collectionId: _getCollectionId(collectionOriginalId),
 
+        type: 'collection',
         origin: _origin,
         collectionOriginalId,
         url: _getCollectionUrl(collectionOriginalId),
