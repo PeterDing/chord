@@ -10,6 +10,9 @@ export interface ISong {
     // songId is the database primary key
     songId: string | null;
 
+    // 'song' or 'artist' or 'album' or 'collection'
+    type?: string;
+
     // where song is from.
     // e.g. xiami or netease
     origin?: string;
@@ -77,4 +80,7 @@ export interface ISong {
 
     // if disable is true, this song is blocked
     disable?: boolean;
+
+    // If user collect the item, `like` is true
+    like?: boolean;
 }

@@ -7,6 +7,7 @@ import { ITag } from 'chord/music/api/tag';
 export interface ICollection {
     collectionId: string;
 
+    type?: string;
     origin?: string;
     collectionOriginalId?: string;
     url?: string;
@@ -29,4 +30,7 @@ export interface ICollection {
 
     songs?: Array<ISong>;
     songCount?: number;
+
+    // If user collect the item, `like` is true
+    like?: boolean;
 }

@@ -10,6 +10,7 @@ import { ITag } from 'chord/music/api/tag';
 export interface IArtist {
     artistId: string | null;
 
+    type?: string;
     origin?: string;
     artistOriginalId?: string;
     // for qq music
@@ -32,4 +33,7 @@ export interface IArtist {
 
     songs?: Array<ISong>;
     albums?: Array<IAlbum>;
+
+    // If user collect the item, `like` is true
+    like?: boolean;
 }
