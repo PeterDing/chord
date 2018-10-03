@@ -206,3 +206,10 @@ export interface IAddLibraryCollectionAct extends Act {
     act: string;
     collection: IUserCollection;
 }
+
+export interface IRemoveFromLibraryAct extends Act {
+    // 'c:mainView:removeFromLibrary'
+    type: string;
+    act: string;
+    item: ISong | IArtist | IAlbum | ICollection;
+}

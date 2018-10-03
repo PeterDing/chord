@@ -106,9 +106,11 @@ export interface IForwardAct extends Act {
     act: string;
 }
 
-export interface IAddSongAct extends Act {
-    // 'c:player:addSong'
+// add songs to play queue
+export interface IAddToQueueAct extends Act {
+    // 'c:player:addToQueue'
     type: string;
     act: string;
     songs: Array<ISong>;
+    direction: string;
 }
