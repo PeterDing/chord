@@ -123,6 +123,10 @@ export class User {
     deleteCollection(collection: ICollection): boolean {
         return this.db.deleteCollection(collection);
     }
+
+    exists(item: ISong | IArtist | IAlbum | ICollection): boolean {
+        return this.db.exists(item);
+    }
 }
 
 
