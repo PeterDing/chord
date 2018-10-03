@@ -7,6 +7,8 @@ import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import { ISongMenuProps } from 'chord/workbench/parts/menu/browser/props/songMenu';
 
 import { handleAddLibrarySong } from 'chord/workbench/parts/mainView/browser/action/addLibraryItem';
+import { handleAddToQueue } from 'chord/workbench/parts/player/browser/action/addToQueue';
+import { handleRemoveFromLibrary } from 'chord/workbench/parts/mainView/browser/action/removeFromLibrary';
 
 
 class SongMenu extends React.Component<ISongMenuProps, any> {
@@ -29,15 +31,31 @@ class SongMenu extends React.Component<ISongMenuProps, any> {
         let top = this.props.top;
         let left = this.props.left;
 
+        let addLibraryItem = song && !song.like ? (
+                <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
+                    onClick={() => this.props.handleAddLibrarySong(song)}>
+                    Save to your Favorite Songs</div>
+        ) : null;
+
+        let removeFromLibraryItem = song && song.like ? (
+            <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
+                onClick={() => this.props.handleRemoveFromLibrary(song)}>
+                Remove from library</div>
+        ) : null;
+
         return this.props.view == 'songMenuView' ? (
             <nav ref={this.menu} role="menu" tabIndex={-1} className="react-contextmenu"
                 style={{ position: 'fixed', opacity: '1', pointerEvents: 'auto', top: `${top}px`, left: `${left}px` }}>
 
+                {addLibraryItem}
                 <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
-                    onClick={() => this.props.handleAddLibrarySong(song)}>
-                    Save to your Favorite Songs</div>
-                <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}>Add to Queue</div>
-                <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}>Add to Playlist</div>
+                    onClick={() => this.props.handleAddToQueue(song, 'tail')}>
+                    Add to Queue (After)</div>
+                <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
+                    onClick={() => this.props.handleAddToQueue(song, 'head')}>
+                    Add to Queue (Before)</div>
+                {/*<div className="react-contextmenu-item" role="menuitem" tabIndex={-1}>Add to Playlist</div>*/}
+                {removeFromLibraryItem}
 
             </nav>
         ) : null;
@@ -55,6 +73,8 @@ function mapStateToProps(state: IStateGlobal) {
 function mapDispatchToProps(dispatch) {
     return {
         handleAddLibrarySong: (song) => dispatch(handleAddLibrarySong(song)),
+        handleAddToQueue: (item, direction) => handleAddToQueue(item, direction).then(act => dispatch(act)),
+        handleRemoveFromLibrary: (item) => dispatch(handleRemoveFromLibrary(item)),
     };
 }
 
