@@ -269,6 +269,11 @@ export class AliMusicApi {
     static refreshToken: string;
 
 
+    constructor() {
+        AliMusicApi.cookieJar = makeCookieJar([]);
+    }
+
+
     public static makeCookie(key: string, value: string): Cookie {
         let domain = getHost(AliMusicApi.BASICURL);
         return Cookie.fromJSON({key, value, domain});
@@ -338,6 +343,11 @@ export class AliMusicApi {
             return null;
         }
 
+        // userId is needed to anti-creep
+        if (AliMusicApi.userId) {
+            this.setUserIdCookie();
+        }
+
         let etag = await this.getEtag();
 
         return this.request(
@@ -352,11 +362,12 @@ export class AliMusicApi {
 
 
     public setUserIdCookie(userId?: string): void {
-        ok(AliMusicApi.cookieJar, 'no AliMusicApi.cookieJar');
-        ok(userId || AliMusicApi.userId, 'no userId');
+        userId = userId || AliMusicApi.userId;
+
+        ok(userId, 'no userId');
 
         let key = 'uidXM';
-        let value = AliMusicApi.userId;
+        let value = userId;
         let cookie = AliMusicApi.makeCookie(key, value);
         let domain = cookie.domain;
 
@@ -383,8 +394,6 @@ export class AliMusicApi {
 
 
     public setEtagCookie(etag: string): void {
-        ok(AliMusicApi.cookieJar, 'no AliMusicApi.cookieJar');
-
         let key = 'cna';
         let value = etag;
         let cookie = AliMusicApi.makeCookie(key, value);
