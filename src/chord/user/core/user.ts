@@ -52,7 +52,6 @@ export class User {
             // auth
             let encPasswd1 = this.db.getEncryptedPassword();
             let encPasswd2 = encryptPassword(this.password);
-            console.log(encPasswd1, encPasswd2);
             ok(encPasswd1 == encPasswd2, `[user] password not match: ${encPasswd1} != ${encPasswd2}`);
         } else {
             this.db = new UserDatabase(this.databasePath);
