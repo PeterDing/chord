@@ -3,8 +3,8 @@
 import { ok } from 'chord/base/common/assert';
 import { assign } from 'chord/base/common/objects';
 import { md5 } from 'chord/base/node/crypto';
-import { makeCookieJar, CookieJar } from 'chord/base/node/cookies';
-import { querystringify, getHost } from 'chord/base/node/url';
+import { makeCookieJar, makeCookies } from 'chord/base/node/cookies';
+import { querystringify } from 'chord/base/node/url';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 import { Cookie } from 'tough-cookie';
 import { IAudio } from 'chord/music/api/audio';
@@ -27,6 +27,11 @@ import {
     makeAliCollection,
     makeAliCollections,
 } from "chord/music/xiami/parser";
+
+const DOMAIN = 'xiami.com';
+
+const UIDXM = 'uidXM';
+const CNA = 'cna';
 
 
 /**
@@ -261,7 +266,7 @@ export class AliMusicApi {
     }
 
     static token: string;
-    static cookieJar: CookieJar;
+    static cookies: { [key: string]: Cookie; } = {};
 
     // For user authority
     static userId: string;
@@ -270,19 +275,24 @@ export class AliMusicApi {
 
 
     constructor() {
-        AliMusicApi.cookieJar = makeCookieJar([]);
+        AliMusicApi.userId = '1';
+
+        // Get cna
+        this.getEtag().then((etag) => {
+            this.setEtagCookie(etag);
+        });
     }
 
 
     public static makeCookie(key: string, value: string): Cookie {
-        let domain = getHost(AliMusicApi.BASICURL);
-        return Cookie.fromJSON({key, value, domain});
+        let domain = DOMAIN;
+        return Cookie.fromJSON({ key, value, domain });
     }
 
 
     public static reset() {
         AliMusicApi.token = null;
-        AliMusicApi.cookieJar = null;
+        AliMusicApi.cookies = {};
     }
 
 
@@ -348,16 +358,12 @@ export class AliMusicApi {
             this.setUserIdCookie();
         }
 
-        let etag = await this.getEtag();
-
         return this.request(
             AliMusicApi.NODE_MAP.album,
             { albumId: '1' },
             'http://h.xiami.com/album_detail.html?id=1&f=&from=&ch=',
             true,
-        ).then((_) => {
-            this.setEtagCookie(etag);
-        });
+        );
     }
 
 
@@ -369,9 +375,8 @@ export class AliMusicApi {
         let key = 'uidXM';
         let value = userId;
         let cookie = AliMusicApi.makeCookie(key, value);
-        let domain = cookie.domain;
 
-        AliMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+        AliMusicApi.cookies['uidXM'] = cookie;
     }
 
 
@@ -383,13 +388,12 @@ export class AliMusicApi {
         let options: IRequestOptions = {
             method: 'GET',
             url: url,
-            jar: AliMusicApi.cookieJar || null,
             headers: { ...AliMusicApi.HEADERS },
             gzip: true,
             resolveWithFullResponse: true,
         };
         let result: any = await request(options);
-        return result.headers['Etag'];
+        return result.headers['etag'];
     }
 
 
@@ -397,21 +401,20 @@ export class AliMusicApi {
         let key = 'cna';
         let value = etag;
         let cookie = AliMusicApi.makeCookie(key, value);
-        let domain = cookie.domain;
 
-        AliMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+        AliMusicApi.cookies['cna'] = cookie;
     }
 
 
     /**
      * If init is true, request returns response, NOT json
      */
-    public async request(node: string, apiParams: object, referer?: string, init: boolean = false): Promise<any | null> {
+    public async request(node: string, apiParams: object, referer?: string, init: boolean = false, excludedCookies: Array<string> = []): Promise<any | null> {
         if (!init) {
             await this.getToken();
         }
 
-        let url = AliMusicApi.BASICURL + node + '/' + AliMusicApi.VERSION + '/'
+        let url = AliMusicApi.BASICURL + node + '/' + AliMusicApi.VERSION + '/';
         let queryStr = this.makeQueryStr(apiParams);
         let time = Date.now();
         let sign = this.makeSign(queryStr, time);
@@ -419,34 +422,40 @@ export class AliMusicApi {
 
         let headers = !!referer ? { ...AliMusicApi.HEADERS, Referer: referer } : { ...AliMusicApi.HEADERS };
 
+        // Make cookie jar
+        let cookieJar = makeCookieJar();
+        let cookies = { ...AliMusicApi.cookies };
+        excludedCookies.forEach(key => { delete cookies[key]; });
+        for (let key in cookies) {
+            cookieJar.setCookie(cookies[key], 'http://' + DOMAIN);
+        }
+
         url = url + '?' + params;
         let options: IRequestOptions = {
             method: 'GET',
             url: url,
-            jar: AliMusicApi.cookieJar || null,
+            // Cookies is excepted to get token
+            jar: !init ? cookieJar : null,
             headers: headers,
             gzip: true,
             resolveWithFullResponse: init,
         };
         let result: any = await request(options);
         if (init && result.headers.hasOwnProperty('set-cookie')) {
-            let cookieJar = makeCookieJar(result.headers['set-cookie']);
-            AliMusicApi.cookieJar = cookieJar;
-            for (let c of cookieJar.getCookies(AliMusicApi.BASICURL)) {
-                if (c.key == '_m_h5_tk') {
-                    AliMusicApi.token = c.value.split('_')[0];
-                    break;
+            makeCookies(result.headers['set-cookie']).forEach(cookie => {
+                AliMusicApi.cookies[cookie.key] = cookie;
+                if (cookie.key == '_m_h5_tk') {
+                    AliMusicApi.token = cookie.value.split('_')[0];
                 }
-            }
-            this.setUserIdCookie();
+            });
             return null;
         }
         let json = JSON.parse(result.trim().slice(11, -1));
 
         // TODO: Handle each errors
         if (json.ret[0].search('SUCCESS') == -1) {
-            console.log('[AliMusicApi.request] [Error]:')
-            console.log(json);
+            console.warn('[AliMusicApi.request] [Error]: request params:', options);
+            console.warn(json);
         }
 
         // FAIL_SYS_TOKEN_EXOIRED::令牌过期
@@ -538,6 +547,8 @@ export class AliMusicApi {
             AliMusicApi.NODE_MAP.album,
             { albumId },
             `http://h.xiami.com/album_detail.html?id=${albumId}&f=&from=&ch=`,
+            false,
+            [UIDXM],
         );
 
         let info = json.data.data.albumDetail;
@@ -947,12 +958,3 @@ export class AliMusicApi {
         return collections;
     }
 }
-
-
-let aliMusicApi = new AliMusicApi();
-aliMusicApi.setUserId('1');
-
-let xiamiApi = new XiamiApi();
-
-// Global Xiami Api objects
-export { aliMusicApi, xiamiApi };
