@@ -8,14 +8,18 @@ import { CookieJar } from 'request';
 export type Cookie = Cookie;
 export type CookieJar = CookieJar;
 
-export function makeCookieJar(rawCookies: Array<string>): CookieJar {
-    let cookieJar = rp.jar();
+
+export function makeCookieJar(): CookieJar {
+    return rp.jar();
+}
+
+export function makeCookies(rawCookies: Array<string>, jar?: CookieJar): Array<Cookie> {
+    let cookies = [];
     rawCookies.forEach(r => {
         let cookie = Cookie.parse(r);
-        let domain = cookie.domain;
-        cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+        cookies.push(cookie);
     });
-    return cookieJar;
+    return cookies;
 }
 
 export function makeCookie(key: string, value: string, domain?: string): Cookie {
