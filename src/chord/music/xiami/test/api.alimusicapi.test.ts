@@ -3,7 +3,9 @@
 import * as assert from 'assert';
 import { suite, test } from 'mocha';
 
-import { aliMusicApi as aliApi } from 'chord/music/xiami/api';
+import { AliMusicApi } from 'chord/music/xiami/api';
+
+const aliApi = new AliMusicApi();
 
 
 suite('music/xiami/AliMusicApi', () => {
@@ -12,13 +14,13 @@ suite('music/xiami/AliMusicApi', () => {
         let song = await aliApi.song('1');
 
         let songId = song.songId;
-        assert.equal(songId, 'xm|s|1');
+        assert.equal(songId, 'xiami|song|1');
 
         let songOriginalId = song.songOriginalId;
         assert.equal(songOriginalId, '1');
 
         let albumId = song.albumId;
-        assert.equal(albumId, 'xm|a|1');
+        assert.equal(albumId, 'xiami|album|1');
     });
 
     test('songs', async function() {
@@ -28,10 +30,10 @@ suite('music/xiami/AliMusicApi', () => {
         assert.equal(size, 2);
 
         let songId = songs[0].songId;
-        assert.equal(songId, 'xm|s|1');
+        assert.equal(songId, 'xiami|song|1');
 
         let albumId = songs[1].albumId;
-        assert.equal(albumId, 'xm|a|1');
+        assert.equal(albumId, 'xiami|album|1');
     });
 
     test('similarSongs', async function() {
@@ -45,7 +47,7 @@ suite('music/xiami/AliMusicApi', () => {
         let album = await aliApi.album('1');
 
         let albumId = album.albumId;
-        assert.equal(albumId, 'xm|a|1');
+        assert.equal(albumId, 'xiami|album|1');
 
         let songsSize = album.songs.length;
         assert.equal(songsSize, 11);
@@ -61,14 +63,14 @@ suite('music/xiami/AliMusicApi', () => {
         assert.equal(size, 2);
 
         let albumId = albums[0].albumId;
-        assert.equal(albumId, 'xm|a|1');
+        assert.equal(albumId, 'xiami|album|1');
     });
 
     test('artist', async function() {
-        let artist = await aliApi.album('1');
+        let artist = await aliApi.artist('1');
 
         let artistId = artist.artistId;
-        assert.equal(artistId, 'xm|t|1');
+        assert.equal(artistId, 'xiami|artist|1');
 
         let name = artist.artistName;
         assert.equal(name, 'Alex');
@@ -126,7 +128,7 @@ suite('music/xiami/AliMusicApi', () => {
         assert.equal(songsSize > 0, true);
 
         let collectionId = collection.collectionId;
-        assert.equal(collectionId, 'xm|c|398783788');
+        assert.equal(collectionId, 'xiami|collection|398783788');
     });
 
 
