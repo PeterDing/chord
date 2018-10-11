@@ -1,10 +1,8 @@
 'use strict';
 
-import { getAbsolutUrl } from "chord/base/node/url";
 import { ISong } from "chord/music/api/song";
 import { IAlbum } from "chord/music/api/album";
 import { IArtist } from "chord/music/api/artist";
-import { IGenre } from "chord/music/api/genre";
 import { ITag } from "chord/music/api/tag";
 import { ICollection } from "chord/music/api/collection";
 import { IAudio } from "chord/music/api/audio";
@@ -20,7 +18,6 @@ import {
 } from "chord/music/common/origin";
 
 
-const _staticResourceBasicUrl = 'http://img.xiami.net';
 const _origin = 'netease';
 
 const _getSongUrl: (id: string) => string = getSongUrl.bind(null, _origin);
