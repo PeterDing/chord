@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ESize } from 'chord/music/common/size';
+
 import { IArtistItemViewProps } from 'chord/workbench/parts/common/props/artistItem';
 import { ArtistIcon } from 'chord/workbench/parts/common/component/common';
 
@@ -13,6 +15,8 @@ import { showArtistMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
 import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
 
+import { musicApi } from 'chord/music/core/api';
+
 
 class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
 
@@ -22,7 +26,7 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
 
     render() {
         let artist = this.props.artist;
-        let cover = artist.artistAvatarPath || artist.artistAvatarUrl;
+        let cover = artist.artistAvatarPath || musicApi.resizeImageUrl(artist.origin, artist.artistAvatarUrl, ESize.Large);
         let originIcon = OriginIcon(artist.origin, 'cover-icon xiami-icon');
 
         return (

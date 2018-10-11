@@ -5,6 +5,8 @@ import 'chord/css!../../media/collection';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ESize } from 'chord/music/common/size';
+
 import { getDateYear } from 'chord/base/common/time';
 
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
@@ -18,9 +20,11 @@ import { ICollectionViewProps } from 'chord/workbench/parts/mainView/browser/com
 
 import { showCollectionMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
+import { musicApi } from 'chord/music/core/api';
+
 
 function CollectionEntity({ collection, handlePlayCollection, showCollectionMenu }) {
-    let cover = collection.collectionCoverPath || collection.collectionCoverUrl;
+    let cover = collection.collectionCoverPath || musicApi.resizeImageUrl(collection.origin, collection.collectionCoverUrl, ESize.Large);
     return (
         <header className='entity-info'>
             <div>

@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ESize } from 'chord/music/common/size';
+
 import { getHumanDuration } from 'chord/base/common/time';
 import { ISong } from 'chord/music/api/song';
 import { ISongItemViewProps } from 'chord/workbench/parts/common/props/songItem';
@@ -16,6 +18,8 @@ import { handleShowAlbumViewById } from 'chord/workbench/parts/mainView/browser/
 import { showSongMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
 import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
+
+import { musicApi } from 'chord/music/core/api';
 
 
 class SongItemView extends React.Component<ISongItemViewProps, object> {
@@ -62,7 +66,7 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
             </span>
         );
 
-        let cover = song.albumCoverPath || song.albumCoverUrl;
+        let cover = song.albumCoverPath || musicApi.resizeImageUrl(song.origin, song.albumCoverUrl, ESize.Small);
         let coverThumbView = this.props.thumb ? (
             <div className='tracklist-col tracklist-col-cover-art-thumb'>
                 <div className='cover-art shadow tracklist-middle-align cover-art--with-auto-height'

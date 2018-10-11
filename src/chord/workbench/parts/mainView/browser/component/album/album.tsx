@@ -5,6 +5,8 @@ import 'chord/css!../../media/album';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ESize } from 'chord/music/common/size';
+
 import { getDateYear } from 'chord/base/common/time';
 
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
@@ -20,9 +22,11 @@ import { handleShowArtistViewById } from 'chord/workbench/parts/mainView/browser
 
 import { showAlbumMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
+import { musicApi } from 'chord/music/core/api';
+
 
 function AlbumEntity({ album, handlePlayAlbum, handleShowArtistViewById, showAlbumMenu }) {
-    let cover = album.albumCoverPath || album.albumCoverUrl;
+    let cover = album.albumCoverPath || musicApi.resizeImageUrl(album.origin, album.albumCoverUrl, ESize.Large);
     return (
         <header className='entity-info'>
             <div>

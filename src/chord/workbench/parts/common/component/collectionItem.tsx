@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ESize } from 'chord/music/common/size';
+
 import { getDateYear } from 'chord/base/common/time';
 import { ICollectionItemViewProps } from 'chord/workbench/parts/common/props/collectionItem';
 import { handlePlayCollection } from 'chord/workbench/parts/player/browser/action/playCollection';
@@ -13,6 +15,8 @@ import { CollectionIcon } from 'chord/workbench/parts/common/component/common';
 import { showCollectionMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
 import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
+
+import { musicApi } from 'chord/music/core/api';
 
 
 /**
@@ -30,7 +34,7 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
 
     render() {
         let collection = this.props.collection;
-        let cover = collection.collectionCoverPath || collection.collectionCoverUrl;
+        let cover = collection.collectionCoverPath || musicApi.resizeImageUrl(collection.origin, collection.collectionCoverUrl, ESize.Large);
         let originIcon = OriginIcon(collection.origin, 'cover-icon xiami-icon');
 
         return (

@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ESize } from 'chord/music/common/size';
+
 import { getDateYear } from 'chord/base/common/time';
 import { IAlbumItemViewProps } from 'chord/workbench/parts/common/props/albumItem';
 import { handlePlayAlbum } from 'chord/workbench/parts/player/browser/action/playAlbum';
@@ -13,6 +15,8 @@ import { showAlbumMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 import { AlbumIcon } from 'chord/workbench/parts/common/component/common';
 
 import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
+
+import { musicApi } from 'chord/music/core/api';
 
 
 /**
@@ -30,7 +34,7 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, object> {
 
     render() {
         let album = this.props.album;
-        let cover = album.albumCoverPath || album.albumCoverUrl;
+        let cover = album.albumCoverPath || musicApi.resizeImageUrl(album.origin, album.albumCoverUrl, ESize.Large);
         let originIcon = OriginIcon(album.origin, 'cover-icon xiami-icon');
 
         return (

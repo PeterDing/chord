@@ -5,6 +5,7 @@ import 'chord/css!../../media/artist';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ESize } from 'chord/music/common/size';
 
 import { IArtistViewProps } from 'chord/workbench/parts/mainView/browser/component/artist/props/artist';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
@@ -16,6 +17,8 @@ import { handlePlayArtist } from 'chord/workbench/parts/player/browser/action/pl
 
 import { MenuButton } from 'chord/workbench/parts/common/component/buttons';
 import { showArtistMenu } from 'chord/workbench/parts/menu/browser/action/menu';
+
+import { musicApi } from 'chord/music/core/api';
 
 
 function ArtistNavMenu({ view, changeArtistNavMenuView }) {
@@ -112,10 +115,11 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
     _getArtistHeader() {
         // Maybe need to set background image
         let artist = this.props.artist;
+        let cover = artist.artistAvatarPath || musicApi.resizeImageUrl(artist.origin, artist.artistAvatarUrl, ESize.Large);
         return (
             <header className='artist-header'
                 style={{
-                    backgroundImage: `url("${artist.artistAvatarUrl}")`,
+                    backgroundImage: `url("${cover}")`,
                     backgroundPosition: '100% 12%',
                 }}>
                 <span className='monthly-listeners'>{'\u00A0'}</span>
