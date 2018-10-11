@@ -6,12 +6,13 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 
-import { makeCookieJar, CookieJar } from 'chord/base/node/cookies';
-import { querystringify, getHost } from 'chord/base/node/url';
+import { ESize, resizeImageUrl } from 'chord/music/common/size';
+
+import { CookieJar } from 'chord/base/node/cookies';
+import { querystringify } from 'chord/base/node/url';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 
 import {
-    makeAudio,
     makeSong,
     makeSongs,
     makeAlbum,
@@ -19,8 +20,6 @@ import {
     makeCollection,
     makeCollections,
     makeArtist,
-    makeArtists,
-    makeArtistAlbums,
 } from 'chord/music/qq/parser';
 
 import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
@@ -348,6 +347,21 @@ export class QQMusicApi {
         let url = QQMusicApi.NODE_MAP.searchCollections;
         let json = await this.request('GET', url, params);
         return makeCollections(json['data']['list']);
+    }
+
+
+    public resizeImageUrl(url: string, size: ESize | number): string {
+        return resizeImageUrl(url, size, (url, size) => {
+            if (size <= 300) {
+                return url;
+            } else if (size > 300 && size <= 500) {
+                return url.replace('300x300', '500x500');
+            } else if (size > 500 && size <= 800) {
+                return url.replace('300x300', '800x800');
+            } else {
+                return url.replace('300x300', '800x800');
+            }
+        });
     }
 }
 

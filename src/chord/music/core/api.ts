@@ -8,6 +8,8 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 
+import { ESize } from 'chord/music/common/size';
+
 import { AliMusicApi } from 'chord/music/xiami/api';
 import { NeteaseMusicApi } from 'chord/music/netease/api';
 import { QQMusicApi } from 'chord/music/qq/api';
@@ -330,6 +332,22 @@ export class Music {
 
         items = makeItems(items);
         return items;
+    }
+
+
+    public resizeImageUrl(origin: string, url: string, size: ESize | number): string {
+        if (!url) { return url; }
+        switch (origin) {
+            case ORIGIN.xiami:
+                return this.xiamiApi.resizeImageUrl(url, size);
+            case ORIGIN.netease:
+                return this.neteaseApi.resizeImageUrl(url, size);
+            case ORIGIN.qq:
+                return this.qqApi.resizeImageUrl(url, size);
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.album] Here will never be occured. [args]: ${url}`);
+        }
     }
 }
 

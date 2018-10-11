@@ -11,6 +11,8 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 
+import { ESize, resizeImageUrl } from 'chord/music/common/size';
+
 import { makeCookieJar, makeCookieFrom, CookieJar } from 'chord/base/node/cookies';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 
@@ -385,6 +387,11 @@ export class NeteaseMusicApi {
         };
         let json = await this.request(node, data);
         return makeCollections(json['playlists']);
+    }
+
+
+    public resizeImageUrl(url: string, size: ESize | number): string {
+        return resizeImageUrl(url, size, (url, size) => `${url}?param=${size}y${size}`);
     }
 }
 

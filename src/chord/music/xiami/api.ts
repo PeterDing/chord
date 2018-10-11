@@ -3,15 +3,20 @@
 import { ok } from 'chord/base/common/assert';
 import { assign } from 'chord/base/common/objects';
 import { md5 } from 'chord/base/node/crypto';
+
 import { makeCookieJar, makeCookies } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 import { Cookie } from 'tough-cookie';
+
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+
+import { ESize, resizeImageUrl } from 'chord/music/common/size';
+
 import {
     makeSong,
     makeAlbum,
@@ -27,6 +32,7 @@ import {
     makeAliCollection,
     makeAliCollections,
 } from "chord/music/xiami/parser";
+
 
 const DOMAIN = 'xiami.com';
 
@@ -956,5 +962,10 @@ export class AliMusicApi {
         let info = json.data.data.collects;
         let collections = makeAliCollections(info);
         return collections;
+    }
+
+
+    public resizeImageUrl(url: string, size: ESize | number): string {
+        return resizeImageUrl(url, size, (url, size) => `${url}?x-oss-process=image/resize,m_fill,w_${size},h_${size}/format,webp`);
     }
 }
