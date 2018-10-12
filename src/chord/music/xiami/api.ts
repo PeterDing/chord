@@ -751,7 +751,7 @@ export class AliMusicApi {
                 // dataType: 'new', ''
                 dataType: type,
                 info: 1,
-                key: keyword.replace(/\s+/, '+'),
+                key: keyword.replace(/\s+/g, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -773,7 +773,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.searchSongs,
             {
-                key: keyword.replace(/\s+/, '+'),
+                key: keyword.replace(/\s+/g, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -797,7 +797,7 @@ export class AliMusicApi {
             {
                 // isRecommendCorrection: false,
                 // isTouFu: true,
-                key: keyword.replace(/\s+/, '+'),
+                key: keyword.replace(/\s+/g, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -814,7 +814,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.searchArtists,
             {
-                key: keyword.replace(/\s+/, '+'),
+                key: keyword.replace(/\s+/g, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -831,7 +831,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.searchCollections,
             {
-                key: keyword.replace(/\s+/, '+'),
+                key: keyword.replace(/\s+/g, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
