@@ -232,6 +232,7 @@ export class AliMusicApi {
     };
 
     static readonly BASICURL = 'http://h5api.m.xiami.com/h5/';
+    static readonly PLATFORM_ID = 'android_phone';
     static readonly VERSION = '1.0';
     static readonly APPKEY = '23649156';
     static readonly JSV = '2.4.0';
@@ -304,10 +305,10 @@ export class AliMusicApi {
 
     public makeQueryStr(params: object): string {
         let header = {
-            platformId: 'h5',
+            platformId: AliMusicApi.PLATFORM_ID,
             callId: Date.now(),
             appVersion: 1000000,
-            resolution: '150*704',
+            resolution: '2560x1440',
             appId: 200,
             openId: 0,
         };
@@ -750,7 +751,7 @@ export class AliMusicApi {
                 // dataType: 'new', ''
                 dataType: type,
                 info: 1,
-                key: keyword,
+                key: keyword.replace(/\s+/, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -772,7 +773,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.searchSongs,
             {
-                key: keyword,
+                key: keyword.replace(/\s+/, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -796,7 +797,7 @@ export class AliMusicApi {
             {
                 // isRecommendCorrection: false,
                 // isTouFu: true,
-                key: keyword,
+                key: keyword.replace(/\s+/, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -813,7 +814,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.searchArtists,
             {
-                key: keyword,
+                key: keyword.replace(/\s+/, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -830,7 +831,7 @@ export class AliMusicApi {
         let json = await this.request(
             AliMusicApi.NODE_MAP.searchCollections,
             {
-                key: keyword,
+                key: keyword.replace(/\s+/, '+'),
                 pagingVO: {
                     page: page,
                     pageSize: size,
