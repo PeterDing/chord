@@ -301,6 +301,7 @@ export class QQMusicApi {
         };
         let url = QQMusicApi.NODE_MAP.searchSongs;
         let json = await this.request('GET', url, params);
+        if (!json['data']) { return []; }
         return makeSongs(json['data']['song']['list']);
     }
 
@@ -323,6 +324,7 @@ export class QQMusicApi {
         };
         let url = QQMusicApi.NODE_MAP.searchAlbums;
         let json = await this.request('GET', url, params);
+        if (!json['data']) { return []; }
         return makeAlbums(json['data']['album']['list']);
     }
 
@@ -346,6 +348,7 @@ export class QQMusicApi {
         };
         let url = QQMusicApi.NODE_MAP.searchCollections;
         let json = await this.request('GET', url, params);
+        if (!json['data']) { return []; }
         return makeCollections(json['data']['list']);
     }
 

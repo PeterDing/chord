@@ -256,7 +256,15 @@ export class NeteaseMusicApi {
      *
      * data params:
      * @type:
-     * 1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频
+     * 1: 单曲
+     * 10: 专辑
+     * 100: 歌手
+     * 1000: 歌单
+     * 1002: 用
+     * 1004: M
+     * 1006: 歌
+     * 1009: 电
+     * 1014: 视频
      */
     public async search(type: number, keyword: string, offset: number = 0, limit: number = 10): Promise<any> {
         let node = NeteaseMusicApi.NODE_MAP.search;
@@ -282,6 +290,7 @@ export class NeteaseMusicApi {
      */
     public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
         let json = await this.search(1, keyword, offset, limit);
+        if (!json['result']) { return []; }
         return makeSongs(json['result']['songs'] || []);
     }
 
@@ -292,6 +301,7 @@ export class NeteaseMusicApi {
      */
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
         let json = await this.search(10, keyword, offset, limit);
+        if (!json['result']) { return []; }
         return makeAlbums(json['result']['albums'] || []);
     }
 
@@ -303,6 +313,7 @@ export class NeteaseMusicApi {
      */
     public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
         let json = await this.search(100, keyword, offset, limit);
+        if (!json['result']) { return []; }
         return makeArtists(json['result']['artists'] || []);
     }
 
@@ -313,6 +324,7 @@ export class NeteaseMusicApi {
      */
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
         let json = await this.search(1000, keyword, offset, limit);
+        if (!json['result']) { return []; }
         return makeCollections(json['result']['playlists'] || []);
     }
 
