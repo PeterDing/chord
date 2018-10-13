@@ -232,7 +232,7 @@ export class AliMusicApi {
     };
 
     static readonly BASICURL = 'http://h5api.m.xiami.com/h5/';
-    static readonly PLATFORM_ID = 'android_phone';
+    static readonly PLATFORM_ID = 'h5';
     static readonly VERSION = '1.0';
     static readonly APPKEY = '23649156';
     static readonly JSV = '2.4.0';
