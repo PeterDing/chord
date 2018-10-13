@@ -14,16 +14,15 @@ import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workben
 export async function handlePlayArtist(artist: IArtist): Promise<IPlayArtistAct> {
     let songs = filterSongWithAudios(artist.songs);
 
-    // default size of songs readed from settings
     if (songs.length < 50) {
         let _songs = await musicApi.artistSongs(artist.artistId, 0, 50);
         songs = _songs
             .filter(song => !song.disable)
             .filter(song => song.origin != ORIGIN.xiami || hasSongAudio(song));
+    }
 
-        if (songs.length) {
-            await addSongAudios(songs[0]);
-        }
+    if (songs.length) {
+        await addSongAudios(songs[0]);
     }
 
     return {

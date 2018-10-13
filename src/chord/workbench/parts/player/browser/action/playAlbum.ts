@@ -16,19 +16,18 @@ export async function handlePlayAlbum(album: IAlbum): Promise<IPlayAlbumAct> {
 
     if (!songs.length) {
         let _album = await musicApi.album(album.albumId);
-        let _songs = _album.songs
+        songs = _album.songs
             .filter(song => !song.disable)
             .filter(song => song.origin != ORIGIN.xiami || hasSongAudio(song));
+    }
 
-        if (_songs.length) {
-            await addSongAudios(_songs[0]);
-        }
-        album.songs = _songs;
+    if (songs.length) {
+        await addSongAudios(songs[0]);
     }
 
     return {
         type: 'c:player:playAlbum',
         act: 'c:player:playAlbum',
-        album,
+        album: { ...album, songs },
     };
 }

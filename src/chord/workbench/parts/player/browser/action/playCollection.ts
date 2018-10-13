@@ -16,19 +16,18 @@ export async function handlePlayCollection(collection: ICollection): Promise<IPl
 
     if (!songs.length) {
         let _collection = await musicApi.collection(collection.collectionId);
-        let _songs = _collection.songs
+        songs = _collection.songs
             .filter(song => !song.disable)
             .filter(song => song.origin != ORIGIN.xiami || hasSongAudio(song));
 
-        if (_songs.length) {
-            await addSongAudios(_songs[0]);
-        }
-        collection.songs = _songs;
+    }
+    if (songs.length) {
+        await addSongAudios(songs[0]);
     }
 
     return {
         type: 'c:player:playCollection',
         act: 'c:player:playCollection',
-        collection,
+        collection: { ...collection, songs },
     };
 }
