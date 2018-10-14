@@ -91,7 +91,7 @@ export class QQMusicApi {
     public makeAudios(song: ISong, qqKey: string, guid: string): Array<IAudio> {
         return song.audios.filter(audio => !!AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`])
             .map(audio => {
-                audio.url = QQMusicApi.AUDIO_URI + AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`] + song.songMid + '.' + audio.format + '?vkey=' + qqKey + '&guid=' + guid + '&uin=0&fromtag=53';
+                audio.url = QQMusicApi.AUDIO_URI + AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`] + song.songMediaMid + '.' + audio.format + '?vkey=' + qqKey + '&guid=' + guid + '&uin=0&fromtag=53';
                 return audio;
             });
     }
@@ -99,7 +99,6 @@ export class QQMusicApi {
 
     public async audios(songId: string): Promise<Array<IAudio>> {
         let guid = Math.floor(Math.random() * 1000000000).toString();
-        // guid = '2095717240';
         let qqKey = await this.qqKey(guid);
         let song = await this.song(songId);
         return this.makeAudios(song, qqKey, guid);

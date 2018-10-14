@@ -22,6 +22,8 @@ export interface ISong {
 
     // song mid for qq
     songMid?: string;
+    // song media mid for qq
+    songMediaMid?: string;
 
     // song's url from web
     url?: string;

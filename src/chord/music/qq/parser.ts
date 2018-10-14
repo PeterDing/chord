@@ -93,6 +93,7 @@ export function makeSong(info: any): ISong {
 
     let songOriginalId = (songInfo['id'] || songInfo['songid']).toString();
     let songMid = songInfo['mid'] || songInfo['songmid'];
+    let songMediaMid = songInfo['strMediaMid'] || (songInfo['file'] ? songInfo['file']['media_mid'] : songMid);
     let songName = songInfo['name'] || songInfo['songname'];
     songName = decodeHtml(songName);
 
@@ -150,6 +151,7 @@ export function makeSong(info: any): ISong {
 
         songOriginalId,
         songMid,
+        songMediaMid,
 
         url: _getSongUrl(songMid),
 

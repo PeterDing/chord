@@ -13,6 +13,7 @@ create table if not exists song (
     songOriginalId text,
 
     songMid text,
+    songMediaMid text,
 
     url text,
 
