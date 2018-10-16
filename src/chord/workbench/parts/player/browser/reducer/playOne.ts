@@ -3,7 +3,7 @@
 import { equal } from 'chord/base/common/assert';
 import { IPlayerState } from 'chord/workbench/api/common/state/player';
 import { IPlayOneAct } from 'chord/workbench/api/common/action/player';
-import { CAudio } from 'chord/workbench/api/node/audio';
+import { playSongs } from 'chord/workbench/parts/player/browser/reducer/playSongs';
 
 
 export function playOne(state: IPlayerState, act: IPlayOneAct): IPlayerState {
@@ -15,20 +15,5 @@ export function playOne(state: IPlayerState, act: IPlayOneAct): IPlayerState {
     }
 
     let playList = [act.song];
-    let index = 0;
-
-    let audio = act.song.audios.filter(audio => audio.format == 'mp3')[0];
-    let audioUrl = audio.path || audio.url;
-
-    // TODO: audio is blocked by service
-    // if (!audioUrl) {
-    // return state;
-    // }
-
-    CAudio.makeAudio(audioUrl);
-
-    // play now
-    CAudio.play();
-    CAudio.volume(state.volume);
-    return { ...state, playing: true, playList, index };
+    return playSongs(state, playList);
 }
