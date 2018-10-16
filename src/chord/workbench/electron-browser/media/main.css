@@ -61,7 +61,7 @@ body,button,input {
     font-weight: 200;
     color: hsla(0,0%,100%,.6);
     text-transform: none;
-    font-family: spotify-circular,Helvetica Neue,Helvetica,Arial,Hiragino Kaku Gothic Pro,Meiryo,MS Gothic,zh-font,sans-serif;
+    font-family: Helvetica Neue,Helvetica,Arial,Hiragino Kaku Gothic Pro,Meiryo,MS Gothic,zh-font,sans-serif;
 }
 
 body {
