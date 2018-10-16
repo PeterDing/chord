@@ -10,6 +10,7 @@ import { Cover, SongInfo } from 'chord/workbench/parts/player/browser/component/
 import Controller from 'chord/workbench/parts/player/browser/component/controller';
 import VolumeBar from 'chord/workbench/parts/player/browser/component/volume';
 import PlayList from 'chord/workbench/parts/player/browser/component/playList';
+import AudioInfo from 'chord/workbench/parts/player/browser/component/audioInfo';
 
 
 export function PlayerView() {
@@ -35,6 +36,7 @@ export function PlayerView() {
                     <div className='player-bar__right'>
                         <div className='player-bar__right__inner'>
                             <div className='extra-controls'>
+                                <AudioInfo />
                                 <PlayList />
                                 <VolumeBar />
                             </div>
