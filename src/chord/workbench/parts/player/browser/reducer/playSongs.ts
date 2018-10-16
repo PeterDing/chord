@@ -19,7 +19,7 @@ export function playSongs(state: IPlayerState, playList: Array<ISong>): IPlayerS
         CAudio.play();
         CAudio.volume(state.volume);
         playing = true;
-        return { ...state, playList, index, playing };
+        return { ...state, playList, index, playing, kbps: audio.kbps };
     }
     return { ...state };
 }
