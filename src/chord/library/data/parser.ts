@@ -82,7 +82,7 @@ export function makeSong(info: any): ISong {
 export function makeAlbum(info: any): IAlbum {
     let album = { ...info };
 
-    // Get songs use UserDatabase.userAlbumSongs
+    // Get songs use LibraryDatabase.userAlbumSongs
     album.songs = [];
     jsonLoadValue(album);
     toBoolean(album);

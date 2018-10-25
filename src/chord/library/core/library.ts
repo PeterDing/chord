@@ -1,8 +1,8 @@
 'use strict';
 
-import * as path from 'path';
-import * as os from 'os';
-import { mkdirp } from 'chord/base/node/pfs';
+import * as paths from 'path';
+
+import { CHORD_DIR } from 'chord/preference/common/chord';
 
 import { ok } from 'chord/base/common/assert';
 
@@ -14,25 +14,25 @@ import { IArtist } from "chord/music/api/artist";
 import { ICollection } from "chord/music/api/collection";
 // import { IPlayList } from "chord/music/api/playList";
 
-import { IUserSong } from 'chord/user/api/song';
-import { IUserAlbum } from 'chord/user/api/album';
-import { IUserArtist } from 'chord/user/api/artist';
-import { IUserCollection } from 'chord/user/api/collection';
-// import { IUserPlayList } from 'chord/user/api/playList';
+import { IUserSong } from 'chord/library/api/song';
+import { IUserAlbum } from 'chord/library/api/album';
+import { IUserArtist } from 'chord/library/api/artist';
+import { IUserCollection } from 'chord/library/api/collection';
+// import { IUserPlayList } from 'chord/library/api/playList';
 
-import { encryptPassword } from 'chord/user/auth/encrypt';
+import { encryptPassword } from 'chord/library/auth/encrypt';
 
-import { UserDatabase } from 'chord/user/data/database';
+import { LibraryDatabase } from 'chord/library/data/database';
 
-import { createTables } from 'chord/user/core/createTables';
+import { createTables } from 'chord/library/core/createTables';
 
 
-export class User {
+export class Library {
 
     username: string;
     password: string;
 
-    db: UserDatabase;
+    db: LibraryDatabase;
     databasePath: string;
 
 
@@ -46,7 +46,7 @@ export class User {
 
     init() {
         if (fs.existsSync(this.databasePath)) {
-            this.db = new UserDatabase(this.databasePath);
+            this.db = new LibraryDatabase(this.databasePath);
             // TODO: check database table schemes
 
             // auth
@@ -54,32 +54,32 @@ export class User {
             let encPasswd2 = encryptPassword(this.password);
             ok(encPasswd1 == encPasswd2, `[user] password not match: ${encPasswd1} != ${encPasswd2}`);
         } else {
-            this.db = new UserDatabase(this.databasePath);
+            this.db = new LibraryDatabase(this.databasePath);
             createTables(this.db);
             this.db.addUser(this.username, encryptPassword(this.password));
         }
     }
 
-    userSongs(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserSong> {
-        return this.db.userSongs(lastId, size, keyword);
+    librarySongs(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserSong> {
+        return this.db.librarySongs(lastId, size, keyword);
     }
 
-    userAlbums(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserAlbum> {
-        return this.db.userAlbums(lastId, size, keyword);
+    libraryAlbums(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserAlbum> {
+        return this.db.libraryAlbums(lastId, size, keyword);
     }
 
-    userArtists(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserArtist> {
-        return this.db.userArtists(lastId, size, keyword);
+    libraryArtists(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserArtist> {
+        return this.db.libraryArtists(lastId, size, keyword);
     }
 
-    userCollections(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserCollection> {
-        return this.db.userCollections(lastId, size, keyword);
+    libraryCollections(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserCollection> {
+        return this.db.libraryCollections(lastId, size, keyword);
     }
 
-    // userPlayLists(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserPlayList> {
-    // let rows = this.db.userPlayLists(lastId, size, keyword);
-    // let userPlayLists = rows.map(row => makeUserPlayList(row));
-    // return userPlayLists;
+    // libraryPlayLists(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserPlayList> {
+    // let rows = this.db.libraryPlayLists(lastId, size, keyword);
+    // let libraryPlayLists = rows.map(row => makeUserPlayList(row));
+    // return libraryPlayLists;
     // }
 
 
@@ -129,8 +129,6 @@ export class User {
 }
 
 
-// WARN: no using defaultUser for production
-const chordDir = path.join(os.homedir(), '.chord');
-mkdirp(chordDir);
-const defaultDBPath = path.join(chordDir, 'default-user-library.db');
-export const defaultUser = new User('default', defaultDBPath);
+// WARN: no using defaultLibrary for production
+const defaultDBPath = paths.join(CHORD_DIR, 'default-library.db');
+export const defaultLibrary = new Library('default', defaultDBPath);

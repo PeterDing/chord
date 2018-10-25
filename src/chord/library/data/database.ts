@@ -12,10 +12,10 @@ import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IAudio } from 'chord/music/api/audio';
 
-import { IUserSong } from 'chord/user/api/song';
-import { IUserAlbum } from 'chord/user/api/album';
-import { IUserArtist } from 'chord/user/api/artist';
-import { IUserCollection } from 'chord/user/api/collection';
+import { IUserSong } from 'chord/library/api/song';
+import { IUserAlbum } from 'chord/library/api/album';
+import { IUserArtist } from 'chord/library/api/artist';
+import { IUserCollection } from 'chord/library/api/collection';
 
 import {
     toNumber,
@@ -24,12 +24,12 @@ import {
     makeAlbum,
     makeArtist,
     makeCollection
-} from 'chord/user/data/parser';
+} from 'chord/library/data/parser';
 
-import { TABLES } from 'chord/user/data/common';
+import { TABLES } from 'chord/library/data/common';
 
 
-export class UserDatabase {
+export class LibraryDatabase {
 
     databasePath: string;
     private db: Database;
@@ -38,7 +38,7 @@ export class UserDatabase {
         this.db = new Database(databasePath);
     }
 
-    public getDatabase() {
+    public getDatabase(): Database {
         return this.db;
     }
 
@@ -65,7 +65,7 @@ export class UserDatabase {
             });
     }
 
-    protected userItem(sql: string, lastId: number, size: number, keyword?: string): Array<any> {
+    protected libraryItem(sql: string, lastId: number, size: number, keyword?: string): Array<any> {
         if (keyword) {
             let kw = `%${keyword}%`;
             return this.db.prepare(sql).all({ lastId, kw, size });
@@ -74,13 +74,13 @@ export class UserDatabase {
         }
     }
 
-    public userSongs(lastId: number, size: number, keyword?: string): Array<IUserSong> {
+    public librarySongs(lastId: number, size: number, keyword?: string): Array<IUserSong> {
         let searchCondition = '';
         if (keyword) {
             searchCondition = '((song.songName like @kw) OR (song.subTitle like @kw) OR (song.albumName like @kw) OR (song.artistName like @kw) OR (song.genres like @kw))';
         }
-        let sql = `SELECT * FROM user_song INNER JOIN song ON user_song.songId = song.songId WHERE user_song.id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY user_song.id DESC LIMIT @size`;
-        return this.userItem(sql, lastId, size, keyword)
+        let sql = `SELECT * FROM library_song INNER JOIN song ON library_song.songId = song.songId WHERE library_song.id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY library_song.id DESC LIMIT @size`;
+        return this.libraryItem(sql, lastId, size, keyword)
             .map(row => {
                 let addAt = row.addAt;
                 let id = row.id;
@@ -93,13 +93,13 @@ export class UserDatabase {
             })
     }
 
-    public userAlbums(lastId: number, size: number, keyword?: string): Array<IUserAlbum> {
+    public libraryAlbums(lastId: number, size: number, keyword?: string): Array<IUserAlbum> {
         let searchCondition = '';
         if (keyword) {
             searchCondition = '((subTitle like @kw) OR (albumName like @kw) OR (artistName like @kw) OR (genres like @kw))';
         }
-        let sql = `SELECT * FROM user_album WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
-        return this.userItem(sql, lastId, size, keyword)
+        let sql = `SELECT * FROM library_album WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
+        return this.libraryItem(sql, lastId, size, keyword)
             .map(row => {
                 let addAt = row.addAt;
                 let id = row.id;
@@ -111,8 +111,8 @@ export class UserDatabase {
             });
     }
 
-    public userAlbumSongs(albumId: string): Array<ISong> {
-        let sql = `SELECT * FROM user_album WHERE albumId = ?`;
+    public libraryAlbumSongs(albumId: string): Array<ISong> {
+        let sql = `SELECT * FROM library_album WHERE albumId = ?`;
         let row = this.db.prepare(sql).get(albumId);
         if (row) {
             return this.songs(JSON.parse(row.songs).map(row => { delete row.id; return row }));
@@ -121,13 +121,13 @@ export class UserDatabase {
         }
     }
 
-    public userArtists(lastId: number, size: number, keyword?: string): Array<IUserArtist> {
+    public libraryArtists(lastId: number, size: number, keyword?: string): Array<IUserArtist> {
         let searchCondition = '';
         if (keyword) {
             searchCondition = '((artistName like @kw) OR (genres like @kw))';
         }
-        let sql = `SELECT * FROM user_artist WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
-        return this.userItem(sql, lastId, size, keyword)
+        let sql = `SELECT * FROM library_artist WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
+        return this.libraryItem(sql, lastId, size, keyword)
             .map(row => {
                 let addAt = row.addAt;
                 let id = row.id;
@@ -139,13 +139,13 @@ export class UserDatabase {
             });
     }
 
-    public userCollections(lastId: number, size: number, keyword?: string): Array<IUserCollection> {
+    public libraryCollections(lastId: number, size: number, keyword?: string): Array<IUserCollection> {
         let searchCondition = '';
         if (keyword) {
             searchCondition = '((collectionName like @kw) OR (tags like @kw))';
         }
-        let sql = `SELECT * FROM user_collection WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
-        return this.userItem(sql, lastId, size, keyword)
+        let sql = `SELECT * FROM library_collection WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
+        return this.libraryItem(sql, lastId, size, keyword)
             .map(row => {
                 let addAt = row.addAt;
                 let id = row.id;
@@ -157,8 +157,8 @@ export class UserDatabase {
             });
     }
 
-    public userCollectionSongs(collectionId: string): Array<ISong> {
-        let sql = 'SELECT * FROM user_collection WHERE collectionId = ?';
+    public libraryCollectionSongs(collectionId: string): Array<ISong> {
+        let sql = 'SELECT * FROM library_collection WHERE collectionId = ?';
         let row = this.db.prepare(sql).get(collectionId);
         if (row) {
             return this.songs(JSON.parse(row.songs).map(row => { delete row.id; return row }));
@@ -179,6 +179,7 @@ export class UserDatabase {
         return true;
     }
 
+    // XXX: NO use this
     public addUser(username: string, encrypted_password: string): boolean {
         let sql = `insert or ignore into user (username, encrypted_password) values (?, ?)`
         this.db.prepare(sql).run(username, encrypted_password);
@@ -210,7 +211,7 @@ export class UserDatabase {
 
         let param = { addAt, songId: song.songId };
 
-        let sql = 'INSERT OR IGNORE INTO user_song (songId, addAt) VALUES (@songId, @addAt)';
+        let sql = 'INSERT OR IGNORE INTO library_song (songId, addAt) VALUES (@songId, @addAt)';
         let result = this.db.prepare(sql).run(param);
 
         return { id: <number>result.lastInsertROWID, song, addAt };
@@ -233,7 +234,7 @@ export class UserDatabase {
         let columns = Object.keys(_album);
         let columnsStr = columns.join(',')
         let param = columns.map(c => '@' + c).join(',');
-        let sql = `INSERT OR IGNORE INTO user_album (${columnsStr}) VALUES (${param})`;
+        let sql = `INSERT OR IGNORE INTO library_album (${columnsStr}) VALUES (${param})`;
         let result = this.db.prepare(sql).run(_album);
 
         return { id: <number>result.lastInsertROWID, album, addAt };
@@ -254,7 +255,7 @@ export class UserDatabase {
         let columns = Object.keys(_artist);
         let columnsStr = columns.join(',')
         let param = columns.map(c => '@' + c).join(',');
-        let sql = `INSERT OR IGNORE INTO user_artist (${columnsStr}) VALUES (${param})`;
+        let sql = `INSERT OR IGNORE INTO library_artist (${columnsStr}) VALUES (${param})`;
         let result = this.db.prepare(sql).run(_artist);
 
         return { id: <number>result.lastInsertROWID, artist, addAt };
@@ -277,20 +278,20 @@ export class UserDatabase {
         let columns = Object.keys(_collection);
         let columnsStr = columns.join(',')
         let param = columns.map(c => '@' + c).join(',');
-        let sql = `INSERT OR IGNORE INTO user_collection (${columnsStr}) VALUES (${param})`;
+        let sql = `INSERT OR IGNORE INTO library_collection (${columnsStr}) VALUES (${param})`;
         let result = this.db.prepare(sql).run(_collection);
 
         return { id: <number>result.lastInsertROWID, collection, addAt };
     }
 
     public removeSong(song: ISong): boolean {
-        let sql = `DELETE FROM song WHERE songId = @songId AND songId NOT IN (SELECT songId FROM user_song WHERE songId = @songId)`;
+        let sql = `DELETE FROM song WHERE songId = @songId AND songId NOT IN (SELECT songId FROM library_song WHERE songId = @songId)`;
         this.db.prepare(sql).run({ songId: song.songId });
         return true;
     }
 
     public deleteSong(song: ISong): boolean {
-        let sql = `DELETE FROM user_song WHERE songId = ?`;
+        let sql = `DELETE FROM library_song WHERE songId = ?`;
         this.db.prepare(sql).run(song.songId);
 
         // WARN: no remove song from `song` table, that song may be need by album or collection
@@ -299,7 +300,7 @@ export class UserDatabase {
     }
 
     public deleteAlbum(album: IAlbum): boolean {
-        let sql = `DELETE FROM user_album WHERE albumId = ?`;
+        let sql = `DELETE FROM library_album WHERE albumId = ?`;
         this.db.prepare(sql).run(album.albumId);
 
         album.songs.forEach(song => this.removeSong(song));
@@ -307,13 +308,13 @@ export class UserDatabase {
     }
 
     public deleteArtist(artist: IArtist): boolean {
-        let sql = `DELETE FROM user_artist WHERE artistId = ?`;
+        let sql = `DELETE FROM library_artist WHERE artistId = ?`;
         this.db.prepare(sql).run(artist.artistId);
         return true;
     }
 
     public deleteCollection(collection: ICollection): boolean {
-        let sql = `DELETE FROM user_collection WHERE collectionId = ?`;
+        let sql = `DELETE FROM library_collection WHERE collectionId = ?`;
         this.db.prepare(sql).run(collection.collectionId);
 
         collection.songs.forEach(song => this.removeSong(song));
