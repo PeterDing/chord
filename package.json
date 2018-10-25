@@ -8,7 +8,7 @@
     "license": "MIT",
     "scripts": {
         "compile": "gulp compile",
-        "test": "gulp compile && ./node_modules/mocha/bin/mocha --delay",
+        "test": "./node_modules/mocha/bin/mocha --delay",
         "start": "ELECTRON_DEV=true electron ./out/main.js",
         "dist": "electron-builder --win --mac --linux deb",
         "dist:mac": "electron-builder --mac",
@@ -29,6 +29,7 @@
     "dependencies": {
         "better-sqlite3": "^4.1.4",
         "big-integer": "^1.6.36",
+        "cheerio": "^1.0.0-rc.2",
         "howler": "^2.0.15",
         "react": "^16.5.0",
         "react-dom": "^16.5.0",
@@ -40,6 +41,7 @@
     },
     "devDependencies": {
         "@types/better-sqlite3": "^3.1.3",
+        "@types/cheerio": "^0.22.9",
         "@types/howler": "^2.0.5",
         "@types/mocha": "^5.2.5",
         "@types/react": "^16.4.14",
@@ -50,10 +52,10 @@
         "@types/tough-cookie": "^2.3.3",
         "electron": "^2.0.9",
         "electron-builder": "^20.28.4",
-        "gulp": "^3.9.1",
+        "gulp": "^4.0.0",
         "gulp-clean": "^0.4.0",
         "gulp-filter": "^5.1.0",
-        "gulp-tsb": "^2.0.5",
+        "gulp-typescript": "^5.0.0-alpha.3",
         "mocha": "^5.2.0",
         "requirejs": "^2.3.6",
         "rimraf": "^2.6.2",
