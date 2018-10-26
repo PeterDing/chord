@@ -9,42 +9,58 @@ import { Cover, SongInfo } from 'chord/workbench/parts/player/browser/component/
 // import Like from 'chord/workbench/parts/player/browser/component/like';
 import Controller from 'chord/workbench/parts/player/browser/component/controller';
 import VolumeBar from 'chord/workbench/parts/player/browser/component/volume';
-import PlayList from 'chord/workbench/parts/player/browser/component/playList';
+import { PlayListButtom, PlayListContent } from 'chord/workbench/parts/player/browser/component/playList';
 import AudioInfo from 'chord/workbench/parts/player/browser/component/audioInfo';
 
 
-export function PlayerView() {
-    return (
-        <div className='playerBar-container'>
-            <footer className='player-bar-container'>
-                <div className='player-bar'>
+export class PlayerView extends React.Component<any, any> {
 
-                    <div className='player-bar__left'>
-                        <div className='now-player'>
-                            <Cover />
-                            <SongInfo />
-                        </div>
-                    </div>
+    playListContentRef: React.RefObject<HTMLDivElement>;
 
-                    <div className='player-bar__center'>
-                        <div className='player-controls'>
-                            <Controller />
-                            <ProcessBar />
-                        </div>
-                    </div>
+    constructor(props: any) {
+        super(props);
+        this.playListContentRef = React.createRef();
+    }
 
-                    <div className='player-bar__right'>
-                        <div className='player-bar__right__inner'>
-                            <div className='extra-controls'>
-                                <AudioInfo />
-                                <PlayList />
-                                <VolumeBar />
-                            </div>
-                        </div>
-                    </div>
-
+    render() {
+        return (
+            <div>
+                <div ref={this.playListContentRef} className='playlist-content-container'>
+                    <PlayListContent />
                 </div>
-            </footer>
-        </div>
-    );
+
+                <div className='playerBar-container'>
+                    <footer className='player-bar-container'>
+                        <div className='player-bar'>
+
+                            <div className='player-bar__left'>
+                                <div className='now-player'>
+                                    <Cover />
+                                    <SongInfo />
+                                </div>
+                            </div>
+
+                            <div className='player-bar__center'>
+                                <div className='player-controls'>
+                                    <Controller />
+                                    <ProcessBar />
+                                </div>
+                            </div>
+
+                            <div className='player-bar__right'>
+                                <div className='player-bar__right__inner'>
+                                    <div className='extra-controls'>
+                                        <AudioInfo />
+                                        <PlayListButtom playListContent={this.playListContentRef} />
+                                        <VolumeBar />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        );
+    }
 }
