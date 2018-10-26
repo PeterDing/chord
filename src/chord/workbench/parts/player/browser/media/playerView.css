@@ -352,17 +352,34 @@
     position: relative
 }
 
-.player-list-songs {
+.playlist-content-container {
     display: none;
-    position: absolute;
-    min-width: 500px;
-    max-height: 60vh;
-    bottom: 75px;
-    right: -430%;
+    position: fixed;
+    width: 100%;
+    height: 60vh;
+    bottom: 0;
     z-index: 100;
-    padding: 10px;
     overflow: scroll;
-    background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+    background-image: linear-gradient(60deg, #29323c 0%, #020304 100%);
+}
+
+.playlist-content-songs {
+    position: absolute;
+    padding: 10px 10px 91px 10px;
+    width: 60%;
+    left: 0;
+}
+
+.playlist-content-song-detail {
+    position: fixed;
+    align-items: center;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    -webkit-box-align: center;
+    bottom: 180px;
+    width: 40%;
+    right: 0;
 }
 
 .player-list__song {
