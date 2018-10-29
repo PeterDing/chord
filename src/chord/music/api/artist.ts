@@ -34,6 +34,11 @@ export interface IArtist {
     songs?: Array<ISong>;
     albums?: Array<IAlbum>;
 
+    playCount?: number;
+
+    // how many people collect this artist
+    likeCount?: number;
+
     // If user collect the item, `like` is true
     like?: boolean;
 }

@@ -18,6 +18,8 @@ export interface ICollection {
     collectionCoverPath?: string;
 
     userId?: string;
+    // For qq music
+    userMid?: string;
     userName?: string;
 
     releaseDate?: number;
@@ -30,6 +32,10 @@ export interface ICollection {
 
     songs?: Array<ISong>;
     songCount?: number;
+
+    playCount?: number;
+
+    likeCount?: number;
 
     // If user collect the item, `like` is true
     like?: boolean;

@@ -72,16 +72,18 @@ export interface ISong {
 
     releaseDate?: number;
 
+    audios?: Array<IAudio>;
+
+    // if disable is true, this song is blocked
+    disable?: boolean;
+
     // song playing count from origin
     playCountWeb?: number;
 
     // song playing count from local user
     playCount?: number;
 
-    audios?: Array<IAudio>;
-
-    // if disable is true, this song is blocked
-    disable?: boolean;
+    likeCount?: number;
 
     // If user collect the item, `like` is true
     like?: boolean;

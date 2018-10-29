@@ -42,6 +42,10 @@ export interface IAlbum {
     songs?: Array<ISong>;
     songCount?: number;
 
+    playCount?: number;
+
+    likeCount?: number;
+
     // If user collect the item, `like` is true
     like?: boolean;
 }
