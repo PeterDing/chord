@@ -9,6 +9,7 @@ import { isWindows } from 'chord/base/common/platform';
 import Search from 'chord/workbench/parts/navigation/browser/component/search';
 import Comeback from 'chord/workbench/parts/navigation/browser/component/comeback';
 import Library from 'chord/workbench/parts/navigation/browser/component/library';
+import Preference from 'chord/workbench/parts/navigation/browser/component/preference';
 
 
 export function NavigationView() {
@@ -29,6 +30,10 @@ export function NavigationView() {
 
                         <li className='navBar-group'>
                             <Library />
+                        </li>
+
+                        <li className='navBar-group'>
+                            <Preference />
                         </li>
 
                     </ul>
