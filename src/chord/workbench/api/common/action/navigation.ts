@@ -16,3 +16,10 @@ export interface INavigationComebackAct extends Act {
     act: string;
     view: string;
 }
+
+
+export interface INavigationPreferenceAct extends Act {
+    // 'c:mainview:preferenceView'
+    type: string;
+    act: string;
+}

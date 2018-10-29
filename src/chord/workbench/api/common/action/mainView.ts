@@ -7,10 +7,10 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 
-import { IUserSong } from 'chord/user/api/song';
-import { IUserAlbum } from 'chord/user/api/album';
-import { IUserArtist } from 'chord/user/api/artist';
-import { IUserCollection } from 'chord/user/api/collection';
+import { IUserSong } from 'chord/library/api/song';
+import { IUserAlbum } from 'chord/library/api/album';
+import { IUserArtist } from 'chord/library/api/artist';
+import { IUserCollection } from 'chord/library/api/collection';
 
 import { IPage } from 'chord/workbench/api/common/state/page';
 import { IOffset } from 'chord/workbench/api/common/state/offset';
@@ -212,4 +212,14 @@ export interface IRemoveFromLibraryAct extends Act {
     type: string;
     act: string;
     item: ISong | IArtist | IAlbum | ICollection;
+}
+
+
+/**
+ * For preference view
+ */
+export interface IPreferenceViewAct extends Act {
+    // 'c:mainView:preferenceView'
+    type: string;
+    act: string;
 }
