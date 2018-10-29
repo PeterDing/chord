@@ -1,20 +1,27 @@
 'use strict';
 
+import * as cheerio from 'cheerio';
+
 import { ISong } from "chord/music/api/song";
 import { IAlbum } from "chord/music/api/album";
 import { IArtist } from "chord/music/api/artist";
 import { ITag } from "chord/music/api/tag";
 import { ICollection } from "chord/music/api/collection";
 import { IAudio } from "chord/music/api/audio";
+
+import { IUserProfile, IAccount } from "chord/music/api/user";
+
 import {
     getSongUrl,
     getAlbumUrl,
     getArtistUrl,
     getCollectionUrl,
+    getUserUrl,
     getSongId,
     getAlbumId,
     getArtistId,
-    getCollectionId
+    getCollectionId,
+    getUserId,
 } from "chord/music/common/origin";
 
 
@@ -28,6 +35,8 @@ const _getArtistUrl: (id: string) => string = getArtistUrl.bind(null, _origin);
 const _getArtistId: (id: string) => string = getArtistId.bind(null, _origin);
 const _getCollectionUrl: (id: string) => string = getCollectionUrl.bind(null, _origin);
 const _getCollectionId: (id: string) => string = getCollectionId.bind(null, _origin);
+const _getUserUrl: (id: string) => string = getUserUrl.bind(null, _origin);
+const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 
 
 export function makeAudio(info: any): IAudio {
@@ -175,6 +184,9 @@ export function makeCollection(info: any, privileges: any = []): ICollection {
 
         songs,
         songCount: info['trackCount'],
+
+        playCount: info['playCount'],
+        likeCount: info['subscribedCount'],
     };
     return collection;
 }
@@ -208,6 +220,8 @@ export function makeArtist(info: any): IArtist {
 
         songs,
         albums: [],
+
+        playCount: info['playCount'],
     };
     return artist;
 }
@@ -218,4 +232,47 @@ export function makeArtists(info: any): Array<IArtist> {
 
 export function makeArtistAlbums(info: any): Array<IAlbum> {
     return (info['hotAlbums'] || []).map(albumInfo => makeAlbum(albumInfo));
+}
+
+export function makeUserProfile(info: any, userId?: string): IUserProfile {
+    let userOriginalId = userId || info['userId'].toString();
+    let user = {
+        userId: _getUserId(userOriginalId),
+
+        type: 'user',
+
+        origin: _origin,
+
+        userOriginalId,
+
+        url: _getUserUrl(userOriginalId),
+
+        userName: info['nickname'],
+
+        userAvatarUrl: info['avatarImg'] || info['avatarUrl'],
+        listenCount: info['playCount'],
+
+        followingCount: info['follows'],
+        followerCount: info['followeds'],
+
+        collectionCount: info['playlistCount'],
+
+        description: info['signature'],
+    }
+    return user;
+}
+
+export function makeUserProfiles(info: any): Array<IUserProfile> {
+    return info.map(userProfile => makeUserProfile(userProfile));
+}
+
+export function getInfosFromHtml(html: string): any {
+    let $ = cheerio.load(html);
+    let info = {
+        userId: /window.hostId\s*=\s*(\d+)/.exec(html)[1],
+        followingCount: parseInt($('#follow_count').text().trim()),
+        followerCount: parseInt($('#fan_count').text().trim()),
+        collectionCount: parseInt(/cCount\s*:\s*(\d+)/g.exec(html)[1]),
+    };
+    return info;
 }

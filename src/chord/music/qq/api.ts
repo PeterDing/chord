@@ -1,14 +1,20 @@
 'use strict';
 
+import { ok } from 'chord/base/common/assert';
+
+import { ORIGIN } from 'chord/music/common/origin';
+
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 
+import { IUserProfile, IAccount } from 'chord/music/api/user';
+
 import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
-import { CookieJar } from 'chord/base/node/cookies';
+import { CookieJar, makeCookie, makeCookieJar } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 
@@ -20,6 +26,10 @@ import {
     makeCollection,
     makeCollections,
     makeArtist,
+    makeArtists,
+
+    makeUserProfile,
+    makeUserProfiles,
 } from 'chord/music/qq/parser';
 
 import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
@@ -42,17 +52,34 @@ export class QQMusicApi {
         album: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg',
 
         artist: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg',
+        artistLikeCount: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_order_singer_getnum.fcg',
         artistSongs: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg',
         artistAlbums: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
 
         collection: 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
+        collectionAddons: 'https://c.y.qq.com/3gmusic/fcgi-bin/3g_dir_order_uinlist',
 
         searchSongs: 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp',
         searchAlbums: 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp',
         searchCollections: 'https://c.y.qq.com/soso/fcgi-bin/client_music_search_songlist',
+
+        userProfile: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_get_profile_homepage.fcg',
+        userFavoriteSongs: 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
+        userFavoriteAlbums: 'https://c.y.qq.com/fav/fcgi-bin/fcg_get_profile_order_asset.fcg',
+        userFavoriteArtists: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_order_singer_getlist.fcg',
+        userFavoriteCollections: 'https://c.y.qq.com/fav/fcgi-bin/fcg_get_profile_order_asset.fcg',
+        userCreatedCollections: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_user_created_diss',
+        userFollow: 'https://c.y.qq.com/rsc/fcgi-bin/friend_follow_or_listen_list.fcg',
     };
 
     static cookieJar: CookieJar;
+
+
+    constructor() {
+        if (!QQMusicApi.cookieJar) {
+            QQMusicApi.cookieJar = makeCookieJar();
+        }
+    }
 
 
     public async request(method: string, url: string, params?: any, data?: any, referer?: string): Promise<any> {
@@ -174,6 +201,25 @@ export class QQMusicApi {
     }
 
 
+    public async artistLikeCount(artistMid: string): Promise<number> {
+        let params = {
+            loginUin: '0',
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+            singermid: artistMid,
+            utf8: '1',
+        }
+        let url = QQMusicApi.NODE_MAP.artistLikeCount;
+        let json = await this.request('GET', url, params);
+        return json.num;
+    }
+
+
     public async artist(artistId: string): Promise<IArtist> {
         let params = {
             singerid: artistId,
@@ -193,7 +239,10 @@ export class QQMusicApi {
         };
         let url = QQMusicApi.NODE_MAP.artist;
         let json = await this.request('GET', url, params);
-        return makeArtist(json['data']);
+        let artist = makeArtist(json['data']);
+        let likeCount = await this.artistLikeCount(artist.artistMid);
+        artist.likeCount = likeCount;
+        return artist;
     }
 
 
@@ -255,7 +304,28 @@ export class QQMusicApi {
     }
 
 
-    public async collection(collectionId: string): Promise<ICollection> {
+    public async collectionAddons(collectionId: string): Promise<any> {
+        let params = {
+            loginUin: '0',
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+            cid: '322',
+            nocompress: '1',
+            disstid: collectionId,
+        };
+        let url = QQMusicApi.NODE_MAP.collectionAddons;
+        let referer = `https://y.qq.com/n/yqq/playlist/${collectionId}.html`;
+        let json = await this.request('GET', url, params, null, referer);
+        return json;
+    }
+
+
+    public async collection(collectionId: string, offset: number = 0, limit: number = 1000): Promise<ICollection> {
         let params = {
             g_tk: '5381',
             uin: '0',
@@ -274,14 +344,18 @@ export class QQMusicApi {
             onlysong: '0',
             picmid: '1',
             nosign: '1',
-            song_begin: 0,
-            song_num: 1000,
+            song_begin: offset,
+            song_num: limit,
             '_': Date.now(),
         };
         let url = QQMusicApi.NODE_MAP.collection;
         let referer = 'https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge&id=' + collectionId;
         let json = await this.request('GET', url, params, null, referer);
-        return makeCollection(json['cdlist'][0]);
+        let collection = makeCollection(json['cdlist'][0]);
+        let addons = await this.collectionAddons(collection.collectionId);
+        collection.userId = addons['diruin'].toString();
+        collection.likeCount = addons['totalnum'];
+        return collection;
     }
 
 
@@ -349,6 +423,216 @@ export class QQMusicApi {
         let json = await this.request('GET', url, params);
         if (!json['data']) { return []; }
         return makeCollections(json['data']['list']);
+    }
+
+
+    /**
+     * TODO: use qr code login
+     */
+    public async login(): Promise<IAccount> {
+    }
+
+
+    public setAccount(account: IAccount): void {
+        ok(account.user.origin == ORIGIN.qq, `[QQMusicApi.setAccount]: this account is not a qq account`);
+
+        let domain = 'yy.com';
+        Object.keys(account.cookies).forEach(key => {
+            let cookie = makeCookie(key, account.cookies[key], domain);
+            QQMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+        });
+    }
+
+
+    public async userProfile(userMid: string): Promise<IUserProfile> {
+        let params = {
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+            cid: '205360838',
+            ct: '20',
+            userid: userMid,
+            reqfrom: '1',
+            reqtype: '0',
+        };
+        let url = QQMusicApi.NODE_MAP.userProfile;
+        let json = await this.request('GET', url, params);
+        return makeUserProfile(json.data);
+    }
+
+
+    /**
+     * No need to login
+     */
+    public async userFavoriteSongs(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let params = {
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+            cid: '205360838',
+            ct: '20',
+            userid: userMid,
+            reqfrom: '1',
+            reqtype: '0',
+        };
+        let url = QQMusicApi.NODE_MAP.userProfile;
+        let json = await this.request('GET', url, params);
+        let collectionId = json.data['mymusic'][1] ? json.data['mymusic'][1]['id'] : null;
+        if (!collectionId) { return []; }
+        let collection = await this.collection(collectionId, offset, limit);
+        return collection.songs;
+    }
+
+
+    /**
+     * No need to login
+     */
+    public async userFavoriteAlbums(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let params = {
+            loginUin: '0',
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+            ct: '20',
+            cid: '205360956',
+            userid: userMid,
+            reqtype: '2',
+            sin: offset,
+            ein: limit,
+        };
+        let url = QQMusicApi.NODE_MAP.userFavoriteAlbums;
+        let json = await this.request('GET', url, params);
+        if (!json.data) { return []; }
+        return makeAlbums(json.data.albumlist);
+    }
+
+
+    /**
+     * TODO: Need to logined
+     */
+    public async userFavoriteArtists(userMid: string, offset: number = 1, limit: number = 10): Promise<Array<IArtist>> {
+        let params = {
+            utf8: '1',
+            page: offset,
+            perpage: limit,
+            uin: userMid,
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+        };
+        let url = QQMusicApi.NODE_MAP.userFavoriteArtists;
+        let json = await this.request('GET', url, params);
+        return makeArtists(json.list);
+    }
+
+
+    public async userFavoriteCollections(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let params = {
+            loginUin: '0',
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+            ct: '20',
+            cid: '205360956',
+            userid: userMid,
+            reqtype: '3',
+            sin: offset,
+            ein: limit,
+        };
+        let url = QQMusicApi.NODE_MAP.userFavoriteCollections;
+        let json = await this.request('GET', url, params);
+        if (!json.data) { return []; }
+        return makeCollections(json.data.cdlist);
+    }
+
+
+    public async userCreatedCollections(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let params = {
+            hostuin: userMid,
+            sin: offset,
+            size: limit,
+            loginUin: '0',
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+        };
+        let url = QQMusicApi.NODE_MAP.userCreatedCollections;
+        let json = await this.request('GET', url, params);
+        if (!json.data) { return []; }
+        let userId = json.data['hostuin'].toString();
+        userMid = json.data['encrypt_uin'];
+        let userName = json.data['hostname'];
+        let collections = makeCollections(offset == 0 ? json.data.disslist.slice(1) : json.data.disslist)
+        collections.filter(collection => {
+            collection.userId = userId;
+            collection.userMid = userMid;
+            collection.userName = userName;
+        });
+        return collections;
+    }
+
+
+    /**
+     * TODO: Need to logined
+     *
+     * offset begins from 0
+     *
+     * followings: `is_listen = 0`
+     * followers: `is_listen = 1`
+     */
+    protected async userFollows(userMid: string, offset: number = 0, limit: number = 10, ing: boolean = true): Promise<Array<IUserProfile>> {
+        let params = {
+            utf8: '1',
+            start: offset,
+            num: limit,
+            is_listen: ing ? '0' : '1',
+            uin: userMid,
+            loginUin: '0',
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+        };
+        let url = QQMusicApi.NODE_MAP.userFollow;
+        let json = await this.request('GET', url, params);
+        return makeUserProfiles(json.list);
+    }
+
+
+    public async userFollowings(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<IUserProfile>> {
+        return this.userFollows(userMid, offset, limit, true);
+    }
+
+
+    public async userFollowers(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<IUserProfile>> {
+        return this.userFollows(userMid, offset, limit, false);
     }
 
 

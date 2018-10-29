@@ -1,5 +1,7 @@
 'use strict';
 
+import { decodeHtml } from 'chord/base/browser/htmlContent';
+
 import { getAbsolutUrl } from "chord/base/node/url";
 
 import { ISong } from "chord/music/api/song";
@@ -10,15 +12,19 @@ import { ITag } from "chord/music/api/tag";
 import { ICollection } from "chord/music/api/collection";
 import { IAudio } from "chord/music/api/audio";
 
+import { IUserProfile, IAccount } from "chord/music/api/user";
+
 import {
     getSongUrl,
     getAlbumUrl,
     getArtistUrl,
     getCollectionUrl,
+    getUserUrl,
     getSongId,
     getAlbumId,
     getArtistId,
-    getCollectionId
+    getCollectionId,
+    getUserId,
 } from "chord/music/common/origin";
 import { decrypt } from "chord/music/xiami/crypto";
 import { xpathSelect } from 'chord/workbench/api/browser/xpath';
@@ -35,7 +41,8 @@ const _getArtistUrl: (id: string) => string = getArtistUrl.bind(null, _origin);
 const _getArtistId: (id: string) => string = getArtistId.bind(null, _origin);
 const _getCollectionUrl: (id: string) => string = getCollectionUrl.bind(null, _origin);
 const _getCollectionId: (id: string) => string = getCollectionId.bind(null, _origin);
-
+const _getUserUrl: (id: string) => string = getUserUrl.bind(null, _origin);
+const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 
 
 /**
@@ -365,7 +372,9 @@ export function makeAliSong(info: any): ISong {
         releaseDate: info['gmtCreate'],
 
         playCountWeb: info['playCount'],
-        playCount: 0,
+        playCount: info['playCount'],
+
+        description: decodeHtml(info['description']),
 
         audios: audios,
     };
@@ -406,7 +415,7 @@ export function makeAliAlbum(info: any): IAlbum {
 
         tags: tags,
 
-        description: info['description'] || null,
+        description: decodeHtml(info['description']),
 
         releaseDate: info['gmtPublish'],
 
@@ -414,6 +423,9 @@ export function makeAliAlbum(info: any): IAlbum {
 
         songs: songs,
         songCount: info['songCount'],
+
+        playCount: info['playCount'],
+        likeCount: info['collects'],
     };
     return album;
 }
@@ -442,10 +454,13 @@ export function makeAliArtist(info: any): IArtist {
         artistAvatarUrl: artistAvatarUrl,
         area: info['area'],
 
-        description: info['description'],
+        description: decodeHtml(info['description']),
 
         songs: [],
         albums: [],
+
+        playCount: info['playCount'],
+        likeCount: info['countLikes'],
     };
     return artist;
 }
@@ -481,7 +496,7 @@ export function makeAliCollection(info: any): ICollection {
 
         releaseDate: info['gmtCreate'],
 
-        description: info['description'],
+        description: decodeHtml(info['description']),
 
         tags,
 
@@ -489,6 +504,9 @@ export function makeAliCollection(info: any): ICollection {
 
         songs,
         songCount: info['songCount'],
+
+        playCount: info['playCount'],
+        likeCount: info['collects'],
     };
     return collection;
 }
@@ -497,4 +515,72 @@ export function makeAliCollection(info: any): ICollection {
 export function makeAliCollections(info: any): Array<ICollection> {
     let collections = info.map(collectionInfo => makeAliCollection(collectionInfo));
     return collections;
+}
+
+
+export function makeUserProfile(info: any): IUserProfile {
+    let userOriginalId = info['userId'].toString();
+    let user = {
+        userId: _getUserId(userOriginalId),
+
+        type: 'user',
+
+        origin: _origin,
+
+        userOriginalId,
+
+        url: _getUserUrl(userOriginalId),
+
+        userName: info['nickName'],
+
+        userAvatarUrl: info['avatar'],
+
+        followersCount: info['fans'] || null,
+        followingsCount: info['followers'] || null,
+
+        listenCount: info['listens'] || null,
+
+        description: decodeHtml(info['description']),
+    };
+    return user;
+}
+
+
+export function makeUserProfiles(info: any): Array<IUserProfile> {
+    return info.map(userProfile => makeUserProfile(userProfile));
+}
+
+
+export function makeUserProfileMore(info: any): IUserProfile {
+    let userFavoriteInfo = info['userFavoriteInfo'];
+
+    let user = {
+        userId: info['userFavoriteSongCollect']['userId'].toString(),
+        origin: _origin,
+
+        type: 'user',
+
+        artistCount: userFavoriteInfo['artistCount'],
+        albumCount: userFavoriteInfo['albumCount'],
+        likedCollectionCount: info['userFavouriteCollectCount'],
+    };
+    return user;
+}
+
+
+export function makeAccount(info: any): IAccount {
+    let user: IUserProfile = {
+        userId: info['userId'].toString(),
+
+        userName: info['nickName'],
+        origin: _origin,
+
+        type: 'user',
+    };
+    return {
+        user,
+        type: 'account',
+        accessToken: info['accessToken'],
+        refreshToken: info['refreshToken'],
+    };
 }

@@ -8,11 +8,15 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 
+import { IUserProfile, IAccount } from 'chord/music/api/user';
+
 import { ESize } from 'chord/music/common/size';
 
 import { AliMusicApi } from 'chord/music/xiami/api';
 import { NeteaseMusicApi } from 'chord/music/netease/api';
 import { QQMusicApi } from 'chord/music/qq/api';
+
+import { userConfiguration } from 'chord/preference/configuration/user';
 
 import { makeItem, makeItems } from 'chord/music/core/parser';
 
@@ -35,6 +39,12 @@ export class Music {
 
         // initiate qq api
         this.qqApi = new QQMusicApi();
+
+        // set user configuration
+        let userConfig = userConfiguration.getConfig();
+        this.setAccount(userConfig.xiami && userConfig.xiami.account);
+        this.setAccount(userConfig.netease && userConfig.netease.account);
+        this.setAccount(userConfig.qq && userConfig.qq.account);
     }
 
 
@@ -335,6 +345,230 @@ export class Music {
     }
 
 
+    public async login(origin: string, accountName: string, password: string): Promise<IAccount> {
+        let account: IAccount;
+        switch (origin) {
+            case ORIGIN.xiami:
+                account = await this.xiamiApi.login(accountName, password);
+                this.xiamiApi.setAccessToken(account.accessToken, account.refreshToken);
+                this.xiamiApi.setUserId(account.user.userId);
+                break;
+            case ORIGIN.netease:
+                account = await this.neteaseApi.login(accountName, password);
+                break;
+            case ORIGIN.qq:
+                account = await this.qqApi.login();
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.login] Here will never be occured. [args]: ${origin}, ${accountName}`);
+        }
+        return account;
+    }
+
+
+    public setAccount(account: IAccount): void {
+        if (!account) { return; }
+
+        let origin = account.user.origin;
+        switch (origin) {
+            case ORIGIN.xiami:
+                this.xiamiApi.setAccount(account);
+                break;
+            case ORIGIN.netease:
+                this.neteaseApi.setAccount(account);
+                break;
+            case ORIGIN.qq:
+                this.qqApi.setAccount(account);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.login] Here will never be occured. [args]: ${origin}, ${accountName}`);
+        }
+    }
+
+
+    /**
+     * here, the userId is IUserProfile.userId
+     */
+    public async userProfile(userId: string, userMid?: string): Promise<IUserProfile> {
+        let userProfile;
+        let originType = getOrigin(userId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                userProfile = await this.xiamiApi.userProfile(originType.id);
+                break;
+            case ORIGIN.netease:
+                userProfile = await this.neteaseApi.userProfile(originType.id);
+                break;
+            case ORIGIN.qq:
+                userProfile = await this.qqApi.userProfile(userMid);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.login] Here will never be occured. [args]: ${userId}`);
+        }
+        return makeItem(userProfile);
+    }
+
+
+    /**
+     * here, the userId is IUserProfile.userId
+     */
+    public async userFavoriteSongs(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<ISong>> {
+        let songs;
+        let originType = getOrigin(userId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                songs = await this.xiamiApi.userFavoriteSongs(originType.id, offset + 1, limit);
+                break;
+            // netease only give favorite collections
+            case ORIGIN.netease:
+                songs = [];
+                break;
+            case ORIGIN.qq:
+                songs = await this.qqApi.userFavoriteSongs(userMid, offset * limit, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.userFavoriteSongs] Here will never be occured. [args]: ${userId}`);
+        }
+        return makeItems(songs);
+    }
+
+
+    public async userFavoriteAlbums(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<IAlbum>> {
+        let albums;
+        let originType = getOrigin(userId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                albums = await this.xiamiApi.userFavoriteAlbums(originType.id, offset + 1, limit);
+                break;
+            // netease only give favorite collections
+            case ORIGIN.netease:
+                albums = [];
+                break;
+            case ORIGIN.qq:
+                albums = await this.qqApi.userFavoriteAlbums(userMid, offset * limit, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.userFavoriteAlbums] Here will never be occured. [args]: ${userId}`);
+        }
+        return makeItems(albums);
+    }
+
+
+    public async userFavoriteArtists(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<IArtist>> {
+        let artists;
+        let originType = getOrigin(userId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                artists = await this.xiamiApi.userFavoriteArtists(originType.id, offset + 1, limit);
+                break;
+            // netease only give favorite collections
+            case ORIGIN.netease:
+                artists = [];
+                break;
+            case ORIGIN.qq:
+                artists = await this.qqApi.userFavoriteArtists(userMid, offset + 1, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.userFavoriteArtists] Here will never be occured. [args]: ${userId}`);
+        }
+        return makeItems(artists);
+    }
+
+
+    public async userFavoriteCollections(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<ICollection>> {
+        let collections;
+        let originType = getOrigin(userId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                collections = await this.xiamiApi.userFavoriteCollections(originType.id, offset + 1, limit);
+                break;
+            // netease only give favorite collections
+            case ORIGIN.netease:
+                collections = await this.neteaseApi.userFavoriteCollections(originType.id, offset * limit, limit);
+                break;
+            case ORIGIN.qq:
+                collections = await this.qqApi.userFavoriteCollections(userMid, offset * limit, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.userFavoriteCollections] Here will never be occured. [args]: ${userId}`);
+        }
+        return makeItems(collections);
+    }
+
+
+    public async userCreatedCollections(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<ICollection>> {
+        let collections;
+        let originType = getOrigin(userId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                collections = await this.xiamiApi.userCreatedCollections(originType.id, offset + 1, limit);
+                break;
+            // netease only give favorite collections
+            case ORIGIN.netease:
+                collections = [];
+                break;
+            case ORIGIN.qq:
+                collections = await this.qqApi.userCreatedCollections(userMid, offset * limit, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.userCreatedCollections] Here will never be occured. [args]: ${userId}`);
+        }
+        return makeItems(collections);
+    }
+
+
+    public async userFollowings(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<IUserProfile>> {
+        let userProfiles;
+        let originType = getOrigin(userId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                userProfiles = await this.xiamiApi.userFollowings(originType.id, offset + 1, limit);
+                break;
+            // netease only give favorite collections
+            case ORIGIN.netease:
+                userProfiles = await this.neteaseApi.userFollowings(originType.id, offset * limit, limit);
+                break;
+            case ORIGIN.qq:
+                userProfiles = await this.qqApi.userFollowings(userMid, offset * limit, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.userFollowings] Here will never be occured. [args]: ${userId}`);
+        }
+        return makeItems(userProfiles);
+    }
+
+
+    public async userFollowers(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<IUserProfile>> {
+        let userProfiles;
+        let originType = getOrigin(userId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                userProfiles = await this.xiamiApi.userFollowers(originType.id, offset + 1, limit);
+                break;
+            // netease only give favorite collections
+            case ORIGIN.netease:
+                userProfiles = await this.neteaseApi.userFollowers(originType.id, offset * limit, limit);
+                break;
+            case ORIGIN.qq:
+                userProfiles = await this.qqApi.userFollowers(userMid, offset * limit, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.userFollowers] Here will never be occured. [args]: ${userId}`);
+        }
+        return makeItems(userProfiles);
+    }
+
+
     public resizeImageUrl(origin: string, url: string, size: ESize | number): string {
         if (!url) { return url; }
         switch (origin) {
@@ -346,7 +580,7 @@ export class Music {
                 return this.qqApi.resizeImageUrl(url, size);
             default:
                 // Here will never be occured.
-                throw new Error(`[ERROR] [Music.album] Here will never be occured. [args]: ${url}`);
+                throw new Error(`[ERROR] [Music.resizeImageUrl] Here will never be occured. [args]: ${url}`);
         }
     }
 }

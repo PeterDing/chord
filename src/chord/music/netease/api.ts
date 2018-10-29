@@ -5,15 +5,19 @@ import { md5 } from 'chord/base/node/crypto';
 
 import { jsonDumpValue } from 'chord/base/common/json';
 
+import { ORIGIN } from 'chord/music/common/origin';
+
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 
+import { IUserProfile, IAccount } from 'chord/music/api/user';
+
 import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
-import { makeCookieJar, makeCookieFrom, CookieJar } from 'chord/base/node/cookies';
+import { makeCookieJar, makeCookieFrom, makeCookie, CookieJar } from 'chord/base/node/cookies';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 
 import { encrypt } from 'chord/music/netease/crypto';
@@ -30,6 +34,11 @@ import {
     makeArtist,
     makeArtists,
     makeArtistAlbums,
+
+    makeUserProfile,
+    getInfosFromHtml,
+    makeUserProfiles,
+    // makeAccount,
 } from 'chord/music/netease/parser';
 
 const MAX_RETRY = 3;
@@ -60,9 +69,6 @@ export class NeteaseMusicApi {
     static readonly BASICURL = 'http://music.163.com/';
 
     static readonly NODE_MAP = {
-        login: 'weapi/login',
-        loginRefresh: 'weapi/login/token/refresh',
-
         audio: 'weapi/song/enhance/player/url',
         song: 'weapi/v3/song/detail',
         album: 'weapi/v1/album',
@@ -77,6 +83,13 @@ export class NeteaseMusicApi {
         similarSongs: 'weapi/v1/discovery/simiSong',
         similarArtists: 'weapi/discovery/simiArtist',
         similarCollections: 'weapi/discovery/simiPlaylist',
+
+        login: 'weapi/login',
+        loginRefresh: 'weapi/login/token/refresh',
+        userProfile: 'weapi/share/userprofile/info',
+        userFavoriteCollections: 'weapi/user/playlist',
+        userFollowings: 'weapi/user/getfollows/',
+        userFollowers: 'weapi/user/getfolloweds',
     }
 
     static cookieJar: CookieJar;
@@ -84,7 +97,7 @@ export class NeteaseMusicApi {
 
     constructor() {
         if (!NeteaseMusicApi.cookieJar) {
-            let cookieJar = makeCookieJar([]);
+            let cookieJar = makeCookieJar();
             initiateCookies().forEach(cookie => {
                 let domain = cookie.domain;
                 cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
@@ -118,37 +131,6 @@ export class NeteaseMusicApi {
         let resultCode = init ? result.body['code'] : result['code'];
         ok(resultCode == 200, `[ERROR] [NeteaseMusicApi.request]: result.code is ${resultCode}, result is ${JSON.stringify(result)}`);
         return result;
-    }
-
-
-    public async login(username: string, password: string): Promise<any> {
-        let node = NeteaseMusicApi.NODE_MAP.login;
-        let data = {
-            username,
-            password: md5(password),
-            rememberLogin: 'true',
-        };
-        let result = await this.request(node, data, true);
-
-        // set user cookies
-        result.headers['set-cookie'].forEach(cookieStr => {
-            let cookie = makeCookieFrom(cookieStr);
-            let domain = cookie.domain;
-            NeteaseMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
-        });
-
-        return result;
-    }
-
-
-    public async loginRefresh(): Promise<any> {
-        let node = NeteaseMusicApi.NODE_MAP.loginRefresh;
-        let data = {
-            csrf_token: '',
-        };
-
-        let r = await this.request(node, data, true);
-        return r.headers;
     }
 
 
@@ -402,10 +384,133 @@ export class NeteaseMusicApi {
     }
 
 
+    public async login(accountName: string, password: string): Promise<IAccount> {
+        let node = NeteaseMusicApi.NODE_MAP.login;
+        let data = {
+            username: accountName,
+            password: md5(password),
+            rememberLogin: 'true',
+        };
+        let result = await this.request(node, data, true);
+
+        // set user cookies
+        // XXX: '__csrf' may be not needed
+        let cookies = {};
+        result.headers['set-cookie'].forEach(cookieStr => {
+            let cookie = makeCookieFrom(cookieStr);
+            let domain = cookie.domain;
+            NeteaseMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+            cookies[cookie.key] = cookie.value;
+        });
+
+        let user = makeUserProfile(result.body.profile);
+
+        let account = {
+            user,
+            cookies,
+            type: 'account',
+        };
+
+        return account;
+    }
+
+
+    public setAccount(account: IAccount): void {
+        ok(account.user.origin == ORIGIN.netease, `[NeteaseMusicApi.setAccount]: this account is not a netease account`);
+
+        let domain = 'music.163.com';
+        Object.keys(account.cookies).forEach(key => {
+            let cookie = makeCookie(key, account.cookies[key], domain);
+            NeteaseMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+        });
+
+    }
+
+
+    public async loginRefresh(): Promise<any> {
+        let node = NeteaseMusicApi.NODE_MAP.loginRefresh;
+        let data = {
+            csrf_token: '',
+        };
+
+        let r = await this.request(node, data, true);
+        return r.headers;
+    }
+
+
+    /**
+     * here, the userId is IUserProfile.userOriginalId, as followings
+     */
+    public async userProfile(userId: string): Promise<IUserProfile> {
+        let node = NeteaseMusicApi.NODE_MAP.userProfile;
+        let data = {
+            userId,
+            csrf_token: '',
+        };
+
+        let json = await this.request(node, data);
+        let user = makeUserProfile(json, userId);
+
+        let webUrl = 'https://music.163.com/user?id=' + userId;
+        let html = await request({
+            method: 'GET',
+            url: webUrl,
+            jar: NeteaseMusicApi.cookieJar || null,
+            headers: NeteaseMusicApi.WEB_HEADERS,
+            gzip: true,
+        });
+
+        let info = getInfosFromHtml(<any>html);
+        return { ...user, ...info };
+    }
+
+
+    /**
+     * user's favorite and created collections are in here,
+     * discriminated by userId
+     */
+    public async userFavoriteCollections(userId: string, offset: number = 0, limit: number = 10, order: boolean = false): Promise<Array<ICollection>> {
+        let node = NeteaseMusicApi.NODE_MAP.userFavoriteCollections;
+        let data = {
+            uid: userId,
+            offset,
+            limit,
+            order,
+        };
+        let json = await this.request(node, data);
+        return makeCollections(json.playlist);
+    }
+
+
+    /**
+     * order is false, ordering by addition time desc
+     */
+    public async userFollowings(userId: string, offset: number = 0, limit: number = 10, order: boolean = false): Promise<Array<IUserProfile>> {
+        let node = NeteaseMusicApi.NODE_MAP.userFollowings + userId;
+        let data = {
+            offset,
+            limit,
+            order,
+        };
+        let json = await this.request(node, data);
+        return makeUserProfiles(json.follow);
+    }
+
+
+    public async userFollowers(userId: string, offset: number = 0, limit: number = 10, order: boolean = false): Promise<Array<IUserProfile>> {
+        let node = NeteaseMusicApi.NODE_MAP.userFollowers;
+        let data = {
+            userId,
+            offset,
+            limit,
+            order,
+        };
+        let json = await this.request(node, data);
+        return makeUserProfiles(json.followeds);
+    }
+
+
     public resizeImageUrl(url: string, size: ESize | number): string {
         return resizeImageUrl(url, size, (url, size) => `${url}?param=${size}y${size}`);
     }
 }
-
-
-export const neteaseMusicApi = new NeteaseMusicApi();

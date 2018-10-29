@@ -3,17 +3,22 @@
 import { ok } from 'chord/base/common/assert';
 import { assign } from 'chord/base/common/objects';
 import { md5 } from 'chord/base/node/crypto';
+import { getRandomInt } from 'chord/base/node/random';
 
 import { makeCookieJar, makeCookies } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 import { Cookie } from 'tough-cookie';
 
+import { ORIGIN } from 'chord/music/common/origin';
+
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+
+import { IUserProfile, IAccount } from 'chord/music/api/user';
 
 import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
@@ -31,6 +36,11 @@ import {
     makeAliArtists,
     makeAliCollection,
     makeAliCollections,
+
+    makeUserProfile,
+    makeUserProfiles,
+    makeUserProfileMore,
+    makeAccount,
 } from "chord/music/xiami/parser";
 
 
@@ -267,9 +277,33 @@ export class AliMusicApi {
         searchArtists: 'mtop.alimusic.search.searchservice.searchartists',
         searchCollections: 'mtop.alimusic.search.searchservice.searchcollects',
 
+        // AI recommands songs
+        radioSongs: 'mtop.alimusic.music.radio.getradiosongs',
+
         login: 'mtop.alimusic.xuser.facade.xiamiuserservice.login',
-        userInfo: 'mtop.alimusic.xuser.facade.xiamiuserservice.getuserinfobyuserid',
+        userProfile: 'mtop.alimusic.xuser.facade.xiamiuserservice.getuserinfobyuserid',
+        userProfileMore: 'mtop.alimusic.xuser.facade.homepageservice.getuserhomeinfo',
         userFavorites: 'mtop.alimusic.fav.favoriteservice.getfavorites',
+        userCreatedCollections: 'mtop.alimusic.music.list.collectservice.getcollectbyuser',
+        // userRecentPlay: 'mtop.alimusic.playlog.facade.playlogservice.getrecentplaylog',
+        userRecentPlay: 'mtop.alimusic.playlog.facade.playlogservice.getrecentsongplaylog',
+        userFollowings: 'mtop.alimusic.social.friendservice.getfollows',
+
+        // no privilege for some users
+        userFollowers: 'mtop.alimusic.social.friendservice.getfans',
+
+        userLikeSong: 'mtop.alimusic.fav.songfavoriteservice.favoritesong',
+        userLikeAlbum: 'mtop.alimusic.fav.albumfavoriteservice.favoritealbum',
+        userLikeArtist: 'mtop.alimusic.fav.artistfavoriteservice.favoriteartist',
+        userLikeCollection: 'mtop.alimusic.fav.collectfavoriteservice.favoritecollect',
+
+        userDislikeSong: 'mtop.alimusic.fav.songfavoriteservice.unfavoritesong',
+        userDislikeAlbum: 'mtop.alimusic.fav.albumfavoriteservice.unfavoritealbum',
+        userDislikeArtist: 'mtop.alimusic.fav.artistfavoriteservice.unfavoriteartist',
+        userDislikeCollection: 'mtop.alimusic.fav.collectfavoriteservice.unfavoritecollect',
+
+        // recommand songs for user logined
+        recommandSongs: 'mtop.alimusic.recommend.songservice.getdailysongs',
     }
 
     static token: string;
@@ -420,6 +454,9 @@ export class AliMusicApi {
         if (!init) {
             await this.getToken();
         }
+
+        // set random use id for anti-spider
+        this.setUserIdCookie(getRandomInt(1, 30000000).toString());
 
         let url = AliMusicApi.BASICURL + node + '/' + AliMusicApi.VERSION + '/';
         let queryStr = this.makeQueryStr(apiParams);
@@ -844,6 +881,21 @@ export class AliMusicApi {
     }
 
 
+    public async radioSongs(radioId: string, size: number = 10): Promise<Array<ISong>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.radioSongs,
+            {
+                extraId: 0,
+                limit: size,
+                radioType: radioId,
+            },
+        );
+        let info = json.data.data.songs;
+        let songs = makeAliSongs(info);
+        return songs;
+    }
+
+
     /**
      * TODO, parser is need
      */
@@ -868,11 +920,11 @@ export class AliMusicApi {
     }
 
 
-    public async login(account: string, password: string): Promise<any> {
+    public async login(accountName: string, password: string): Promise<IAccount> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.login,
             {
-                account,
+                account: accountName,
                 password: md5(password),
             },
             `http://h.xiami.com/`,
@@ -887,7 +939,17 @@ export class AliMusicApi {
          * schemeUrl: string
          * userId: number
          */
-        return json.data.data;
+
+        let info = json.data.data;
+        return makeAccount(info);
+    }
+
+
+    public setAccount(account: IAccount): void {
+        ok(account.user.origin == ORIGIN.xiami, `[AliMusicApi.setAccount]: this account is not a xiami account`);
+
+        this.setAccessToken(account.accessToken, account.refreshToken);
+        this.setUserId(account.user.userOriginalId);
     }
 
 
@@ -898,7 +960,7 @@ export class AliMusicApi {
 
 
     /**
-     * userId is a number string
+     * here, the userId is IUserProfile.userOriginalId, as followings
      */
     public setUserId(userId: string): void {
         AliMusicApi.userId = userId;
@@ -906,17 +968,34 @@ export class AliMusicApi {
 
 
     /**
-     * XXX need to parse
+     * here, the userId is IUserProfile.userOriginalId
      */
-    public async userInfo(userId?: string): Promise<any> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.userInfo,
-            userId ? { userId: parseInt(userId) } : {},
+    public async userProfile(userId: string): Promise<IUserProfile> {
+        let req = this.request(
+            AliMusicApi.NODE_MAP.userProfile,
+            { userId: parseInt(userId) },
         );
-        return json;
+        let [json, userProfileMore] = await Promise.all([req, this.userProfileMore(userId)]);
+        let userProfile = makeUserProfile(json.data.data);
+        return { ...userProfile, ...userProfileMore };
     }
 
 
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
+    public async userProfileMore(userId: string): Promise<IUserProfile> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userProfileMore,
+            { userId: parseInt(userId) },
+        );
+        return makeUserProfileMore(json.data.data);
+    }
+
+
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
     protected async userFavorites(userId: string, type: number, page: number = 1, size: number = 10): Promise<any> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.userFavorites,
@@ -934,6 +1013,9 @@ export class AliMusicApi {
     }
 
 
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
     public async userFavoriteSongs(userId: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
         let json = await this.userFavorites(userId, 1, page, size);
         let info = json.data.data.songs;
@@ -942,6 +1024,9 @@ export class AliMusicApi {
     }
 
 
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
     public async userFavoriteAlbums(userId: string, page: number = 1, size: number = 10): Promise<Array<IAlbum>> {
         let json = await this.userFavorites(userId, 2, page, size);
         let info = json.data.data.albums;
@@ -950,6 +1035,9 @@ export class AliMusicApi {
     }
 
 
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
     public async userFavoriteArtists(userId: string, page: number = 1, size: number = 10): Promise<Array<IArtist>> {
         let json = await this.userFavorites(userId, 3, page, size);
         let info = json.data.data.artists;
@@ -958,11 +1046,209 @@ export class AliMusicApi {
     }
 
 
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
     public async userFavoriteCollections(userId: string, page: number = 1, size: number = 10): Promise<Array<ICollection>> {
         let json = await this.userFavorites(userId, 5, page, size);
         let info = json.data.data.collects;
         let collections = makeAliCollections(info);
         return collections;
+    }
+
+
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
+    public async userCreatedCollections(userId: string, page: number = 1, size: number = 10): Promise<Array<ICollection>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userCreatedCollections,
+            {
+                userId,
+                hideSystemSonglistCover: 1,
+                includeSystemCreate: 1,
+                sort: 0,
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                },
+            },
+        );
+        let info = json.data.data.collects;
+        let collections = makeAliCollections(info);
+        let userName = collections.length ? collections[0].userName : null;
+        if (!userName) {
+            let userProfile = await this.userProfile(userId);
+            userName = userProfile.userName;
+        }
+        collections.forEach(collection => collection.userName = userName);
+        return collections;
+    }
+
+
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
+    public async userRecentPlay(userId: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userRecentPlay,
+            // {
+            // objectType: 'song',
+            // },
+            {
+                userId,
+                fullView: 1,
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                },
+            },
+        );
+        let info = json.data.data.songs;
+        let songs = makeAliSongs(info);
+        return songs;
+    }
+
+
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
+    public async userFollowings(userId: string, page: number = 1, size: number = 10): Promise<Array<IUserProfile>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userFollowings,
+            {
+                userId,
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                },
+            },
+        );
+        let info = json.data.data.friendVOList;
+        return makeUserProfiles(info);
+    }
+
+
+    /**
+     * here, the userId is IUserProfile.userOriginalId
+     */
+    public async userFollowers(userId: string, page: number = 1, size: number = 10): Promise<Array<IUserProfile>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userFollowers,
+            {
+                userId,
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                },
+            },
+        );
+        let info = json.data.data.friendVOList;
+        return makeUserProfiles(info);
+    }
+
+
+    public async recommandSongs(userId: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.recommandSongs,
+            {
+                // no params needed
+            },
+        );
+        let info = json.data.data.songs;
+        let songs = makeAliSongs(info);
+        return songs;
+    }
+
+
+    /**
+     * songId is ISong.songOriginalId, as following
+     */
+    public async userLikeSong(songId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userLikeSong,
+            {
+                songId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    public async userLikeAlbum(albumId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userLikeAlbum,
+            {
+                albumId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    public async userLikeArtist(artistId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userLikeArtist,
+            {
+                artistId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    public async userLikeCollection(collectionId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userLikeCollection,
+            {
+                collectId: collectionId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    public async userDislikeSong(songId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userDislikeSong,
+            {
+                songId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    public async userDislikeAlbum(albumId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userDislikeAlbum,
+            {
+                albumId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    public async userDislikeArtist(artistId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userDislikeArtist,
+            {
+                artistId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    public async userDislikeCollection(collectionId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userDislikeCollection,
+            {
+                collectId: collectionId,
+            },
+        );
+        return json.data.data.status;
     }
 
 

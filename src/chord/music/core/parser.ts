@@ -1,13 +1,13 @@
 'use strict';
 
-import { defaultUser } from 'chord/user/core/user';
+import { defaultLibrary } from 'chord/library/core/library';
 
 
 /**
  * Check whether song, artist, album, collection exists at library
  */
 export function makeItem<T>(item: T): T {
-    if (defaultUser.exists(<any>item)) {
+    if (defaultLibrary.exists(<any>item)) {
         (<any>item).like = true;
     }
     return item;

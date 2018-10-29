@@ -10,15 +10,19 @@ import { ICollection } from 'chord/music/api/collection';
 // import { IGenre } from "chord/music/api/genre";
 import { ITag } from "chord/music/api/tag";
 
+import { IUserProfile, IAccount } from "chord/music/api/user";
+
 import {
     getSongUrl,
     getAlbumUrl,
     getArtistUrl,
     getCollectionUrl,
+    getUserUrl,
     getSongId,
     getAlbumId,
     getArtistId,
-    getCollectionId
+    getCollectionId,
+    getUserId,
 } from "chord/music/common/origin";
 
 const _origin = 'qq';
@@ -31,6 +35,8 @@ const _getArtistUrl: (id: string) => string = getArtistUrl.bind(null, _origin);
 const _getArtistId: (id: string) => string = getArtistId.bind(null, _origin);
 const _getCollectionUrl: (id: string) => string = getCollectionUrl.bind(null, _origin);
 const _getCollectionId: (id: string) => string = getCollectionId.bind(null, _origin);
+const _getUserUrl: (id: string) => string = getUserUrl.bind(null, _origin);
+const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 
 
 export const AUDIO_FORMAT_MAP = {
@@ -254,11 +260,13 @@ export function makeAlbums(info: any): Array<IAlbum> {
 
 
 export function makeArtist(info: any): IArtist {
-    let artistOriginalId = info['singer_id'].toString();
-    let artistMid = info['singer_mid'];
-    let artistName = info['singer_name'];
+    let artistOriginalId = (info['singer_id'] || info['id']).toString();
+    let artistMid = info['singer_mid'] || info['mid'];
+    let artistName = info['singer_name'] || info['name'];
     artistName = decodeHtml(artistName);
     let artistAvatarUrl = getQQArtistAvatarUrl(artistMid);
+
+    let likeCount = info['num'];
 
     let artist: IArtist = {
         artistId: _getArtistId(artistOriginalId),
@@ -276,23 +284,40 @@ export function makeArtist(info: any): IArtist {
 
         songs: [],
         albums: [],
+
+        likeCount,
     };
     return artist;
 }
 
 
+export function makeArtists(info: any): Array<IArtist> {
+    return info.map(artistInfo => makeArtist(artistInfo));
+}
+
+
 export function makeCollection(info: any): ICollection {
-    let collectionOriginalId = (info['disstid'] || info['dissid']).toString();
-    let collectionCoverUrl = info['logo'] || info['imgurl'];
-    let collectionName = info['dissname'];
+    let collectionOriginalId = (info['disstid'] || info['dissid'] || info['tid']).toString();
+    let collectionCoverUrl = info['logo'] || info['imgurl'] || info['diss_cover'];
+    if (!collectionCoverUrl || !collectionCoverUrl.startsWith('http')) {
+        collectionCoverUrl = 'http://y.gtimg.cn/mediastyle/global/img/cover_like.png?max_age=2592000';
+    }
+    let collectionName = info['dissname'] || info['diss_name'];
     collectionName = decodeHtml(collectionName);
 
     let tags: Array<ITag> = (info['tags'] || []).map(tag => ({ id: tag['id'].toString(), name: tag['name'] }));
     let songs: Array<ISong> = (info['songlist'] || []).map(songInfo => makeSong(songInfo));
     let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
 
-    let userName = info['nickname'] || info['creator']['name'];
+    let userId = info['creator'] ? info['creator']['creator_uin'].toString() : info['uin'];
+    let userMid = info['creator'] ? info['creator']['encrypt_uin'].toString() : info['encrypt_uin'] || info['uin'];
+    let userName = info['creator'] ? info['creator']['name'] : info['nickname'];
     userName = decodeHtml(userName);
+
+    let playCount = info['visitnum'] || info['listennum'] || info['listen_num'];
+
+    let releaseDate = (info['ctime'] * 1000) || typeof (info['createtime']) == 'number' ? info['createtime'] * 1000 : Date.parse(info['createtime']);
+    let songCount = info['total_song_num'] || info['song_count'] || info['songnum'] || info['song_cnt'];
 
     let collection: ICollection = {
         collectionId: _getCollectionId(collectionOriginalId),
@@ -306,10 +331,12 @@ export function makeCollection(info: any): ICollection {
 
         collectionCoverUrl,
 
+        userId,
+        userMid,
         userName,
 
         // millisecond
-        releaseDate: info['ctime'] * 1000 || Date.parse(info['createtime']),
+        releaseDate,
 
         description: info['desc'] || info['introduction'],
 
@@ -318,7 +345,9 @@ export function makeCollection(info: any): ICollection {
         duration,
 
         songs,
-        songCount: info['total_song_num'] || info['song_count'],
+        songCount,
+
+        playCount,
     };
     return collection;
 }
@@ -326,4 +355,50 @@ export function makeCollection(info: any): ICollection {
 
 export function makeCollections(info: any): Array<ICollection> {
     return info.map(collectionInfo => makeCollection(collectionInfo));
+}
+
+
+export function makeUserProfile(info: any): IUserProfile {
+    let userInfo = info['creator'] || info;
+    let musicInfo = info['mymusic'] || info;
+    let createdCollectionsInfo = info['mydiss'] || info;
+
+    // qq number
+    // if there is not qq number, using encrypt_uin
+    let userOriginalId = (userInfo['uin'] || info['uin'] || info['encrypt_uin']).toString();
+
+    let userProfile = {
+        userId: _getUserId(userOriginalId),
+
+        type: 'user',
+
+        origin: _origin,
+
+        userOriginalId,
+
+        url: _getUserUrl(userOriginalId),
+
+        userName: userInfo['nick'] || info['nick_name'],
+
+        userMid: userInfo['encrypt_uin'] || info['encrypt_uin'],
+
+        userAvatarUrl: userInfo['headpic'] || info['logo'],
+
+        followersCount: info['listen_num'] || userInfo['nums']['fansnum'],
+        followingsCount: info['follow_num'] || userInfo['nums']['followusernum'],
+
+        songCount: musicInfo[1] ? musicInfo[1]['num0'] : null,
+        artistCount: userInfo['nums']['followsingernum'],
+        albumCount: musicInfo[1] ? musicInfo[1]['num1'] : null,
+        likedCollectionCount: musicInfo[1] ? musicInfo[1]['num2'] : null,
+        createdCollectionCount: info['songlist_num'] || createdCollectionsInfo['num'],
+
+        description: info['desc'],
+    };
+    return userProfile;
+}
+
+
+export function makeUserProfiles(info: any): Array<IUserProfile> {
+    return info.map(_info => makeUserProfile(_info));
 }
