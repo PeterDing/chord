@@ -9,6 +9,7 @@ const MAIN_BACKGROUND_MAP = {
     'artistView': 'linear-gradient(rgb(18, 18, 18), rgb(8, 8, 8) 85%)',
     // 'collectionView': 'linear-gradient(rgb(102, 56, 51), rgb(10, 6, 5) 85%)',
     'libraryView': 'linear-gradient(rgb(132, 25, 54), rgb(6, 8, 10) 85%)',
+    'preferenceView': 'linear-gradient(rgb(74, 62, 52), rgb(7, 6, 5) 85%)',
 }
 
 function pickColor(): string {
