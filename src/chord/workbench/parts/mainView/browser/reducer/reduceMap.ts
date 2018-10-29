@@ -32,6 +32,8 @@ import {
     removeFromLibrary,
 } from 'chord/workbench/parts/mainView/browser/reducer/library';
 
+import { showPreference } from 'chord/workbench/parts/mainView/browser/reducer/preference';
+
 
 export function map(act: string): IReducerMap {
     switch (act) {
@@ -157,6 +159,13 @@ export function map(act: string): IReducerMap {
             return {
                 reducer: removeFromLibrary,
                 node: 'libraryView.result',
+            };
+
+        // preference
+        case 'c:mainView:preferenceView':
+            return {
+                reducer: showPreference,
+                node: '.',
             };
 
         default:

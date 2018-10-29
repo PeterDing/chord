@@ -11,6 +11,7 @@ import AlbumView from 'chord/workbench/parts/mainView/browser/component/album/al
 import ArtistView from 'chord/workbench/parts/mainView/browser/component/artist/artist';
 import CollectionView from 'chord/workbench/parts/mainView/browser/component/collection/collection';
 import LibraryView from 'chord/workbench/parts/mainView/browser/component/library/library';
+import PreferenceView from 'chord/workbench/parts/mainView/browser/component/preference/preference';
 
 
 function MainView({ view }) {
@@ -32,6 +33,9 @@ function MainView({ view }) {
             break;
         case 'libraryView':
             View = <LibraryView />
+            break;
+        case 'preferenceView':
+            View = <PreferenceView />
             break;
         default:
             console.warn(`[WARN] [MainView]: No get view: ${view}`);

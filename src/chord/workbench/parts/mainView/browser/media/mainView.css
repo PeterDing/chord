@@ -72,6 +72,10 @@
     color: #535353
 }
 
+.inputBox-input.small {
+    font-size: 33px;
+    line-height: 33px
+}
 
 /* Search History */
 

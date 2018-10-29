@@ -38,6 +38,9 @@ function handleView(act: string): string {
         case 'c:mainView:getMoreLibraryCollections':
             return 'libraryView';
 
+        case 'c:mainView:preferenceView':
+            return 'preferenceView';
+
         case 'c:mainView:comeback':
         case 'c:mainView:addLibrarySong':
         case 'c:mainView:addLibraryArtist':
