@@ -49,7 +49,7 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
         song.like = like;
 
         let cover = song.albumCoverPath || musicApi.resizeImageUrl(song.origin, song.albumCoverUrl, ESize.Large);
-        let originIcon = OriginIcon(song.origin, 'left-icon xiami-icon');
+        let originIcon = OriginIcon(song.origin, 'top-icon xiami-icon');
 
         let likeIconClass = like ? 'spoticon-heart-active-24' : 'spoticon-heart-24';
 
