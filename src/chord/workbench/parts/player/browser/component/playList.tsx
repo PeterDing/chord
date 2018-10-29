@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ISong } from 'chord/music/api/song';
+
 import { getDateYear } from 'chord/base/common/time';
 import { ESize } from 'chord/music/common/size';
 
@@ -17,7 +19,9 @@ import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
 import { handleShowArtistViewById } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 import { handleShowAlbumViewById } from 'chord/workbench/parts/mainView/browser/action/showAlbum';
 import { handleAddLibrarySong } from 'chord/workbench/parts/mainView/browser/action/addLibraryItem';
+import { handleRemoveFromLibrary } from 'chord/workbench/parts/mainView/browser/action/removeFromLibrary';
 
+import { defaultLibrary } from 'chord/library/core/library';
 import { musicApi } from 'chord/music/core/api';
 
 
@@ -25,6 +29,14 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
 
     constructor(props: IPlayListSongDetailProps) {
         super(props);
+        this.handleLibraryActFunc = this.handleLibraryActFunc.bind(this);
+    }
+
+    handleLibraryActFunc(song: ISong) {
+        let handleLibraryActFunc = song.like ? this.props.handleRemoveFromLibrary : this.props.handleAddLibrarySong;
+        song.like = !song.like;
+        handleLibraryActFunc(song);
+        this.forceUpdate();
     }
 
     render() {
@@ -33,11 +45,13 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
             return null;
         }
 
+        let like = defaultLibrary.exists(song);
+        song.like = like;
+
         let cover = song.albumCoverPath || musicApi.resizeImageUrl(song.origin, song.albumCoverUrl, ESize.Large);
         let originIcon = OriginIcon(song.origin, 'left-icon xiami-icon');
 
-        // TODO: Get `like` real-time from library
-        let likeIconClass = song.like ? 'spoticon-heart-active-16' : 'spoticon-heart-16';
+        let likeIconClass = like ? 'spoticon-heart-active-24' : 'spoticon-heart-24';
 
         return (
             <div className='playlist-content-song-detail'>
@@ -67,10 +81,10 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     </div>
 
                     {/* Album Name */}
-                    <div className="mo-info">
+                    <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper"
                             onClick={() => this.props.handleShowAlbumViewById(song.albumId)}>
-                            <span className="mo-info-name link-subtle">{song.albumName}</span>
+                            <span className="link-subtle">{song.albumName}</span>
                         </div>
                     </div>
 
@@ -93,9 +107,8 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     {/* Like */}
                     <div className="mo-info">
                         <div className="react-contextmenu-wrapper">
-                            <button className={`control-button ${likeIconClass}`}
-                                title="Save to your Favorite Songs"
-                                onClick={() => this.props.handleAddLibrarySong(song)}>
+                            <button className={`link-subtle control-button ${likeIconClass}`}
+                                onClick={() => this.handleLibraryActFunc(song)}>
                             </button>
                         </div>
                     </div>
@@ -112,6 +125,7 @@ function mapDispatchToPropsForSongDetail(dispatch) {
         handleShowArtistViewById: (artistId: string) => handleShowArtistViewById(artistId).then(act => dispatch(act)),
         handleShowAlbumViewById: (albumId: string) => handleShowAlbumViewById(albumId).then(act => dispatch(act)),
         handleAddLibrarySong: (song) => dispatch(handleAddLibrarySong(song)),
+        handleRemoveFromLibrary: (item) => dispatch(handleRemoveFromLibrary(item)),
     };
 }
 

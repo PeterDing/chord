@@ -21,6 +21,7 @@ export async function handlePlayCollection(collection: ICollection): Promise<IPl
             .filter(song => song.origin != ORIGIN.xiami || hasSongAudio(song));
 
     }
+
     if (songs.length) {
         await addSongAudios(songs[0]);
     }
