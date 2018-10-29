@@ -12,45 +12,45 @@ import {
     IAddLibraryCollectionAct,
 } from 'chord/workbench/api/common/action/mainView';
 
-import { defaultUser as user } from 'chord/user/core/user';
+import { defaultLibrary as library } from 'chord/library/core/library';
 
 
 export function handleAddLibrarySong(song: ISong): IAddLibrarySongAct {
     song.like = true;
-    let userSong = user.addSong(song);
+    let librarySong = library.addSong(song);
     return {
         type: 'c:mainView:addLibrarySong',
         act: 'c:mainView:addLibrarySong',
-        song: userSong,
+        song: librarySong,
     };
 }
 
 export function handleAddLibraryArtist(artist: IArtist): IAddLibraryArtistAct {
     artist.like = true;
-    let userArtist = user.addArtist(artist);
+    let libraryArtist = library.addArtist(artist);
     return {
         type: 'c:mainView:addLibraryArtist',
         act: 'c:mainView:addLibraryArtist',
-        artist: userArtist,
+        artist: libraryArtist,
     };
 }
 
 export function handleAddLibraryAlbum(album: IAlbum): IAddLibraryAlbumAct {
     album.like = true;
-    let userAlbum = user.addAlbum(album);
+    let libraryAlbum = library.addAlbum(album);
     return {
         type: 'c:mainView:addLibraryAlbum',
         act: 'c:mainView:addLibraryAlbum',
-        album: userAlbum,
+        album: libraryAlbum,
     };
 }
 
 export function handleAddLibraryCollection(collection: ICollection): IAddLibraryCollectionAct {
     collection.like = true;
-    let userCollection = user.addCollection(collection);
+    let libraryCollection = library.addCollection(collection);
     return {
         type: 'c:mainView:addLibraryCollection',
         act: 'c:mainView:addLibraryCollection',
-        collection: userCollection,
+        collection: libraryCollection,
     };
 }

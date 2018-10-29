@@ -8,13 +8,13 @@ import {
 } from 'chord/workbench/api/common/action/mainView';
 import { IOffset } from 'chord/workbench/api/common/state/offset';
 
-import { defaultUser } from 'chord/user/core/user';
+import { defaultLibrary } from 'chord/library/core/library';
 
 
 export function getMoreSongs(keyword: string, offset: IOffset): IGetMoreLibrarySongsAct {
     let userSongs = [];
     if (offset.more) {
-        userSongs = defaultUser.userSongs(offset.offset, offset.limit, keyword);
+        userSongs = defaultLibrary.librarySongs(offset.offset, offset.limit, keyword);
     }
     if (userSongs.length == 0) {
         offset.more = false;
@@ -32,7 +32,7 @@ export function getMoreSongs(keyword: string, offset: IOffset): IGetMoreLibraryS
 export function getMoreArtists(keyword: string, offset: IOffset): IGetMoreLibraryArtistsAct {
     let userArtists = [];
     if (offset.more) {
-        userArtists = defaultUser.userArtists(offset.offset, offset.limit, keyword);
+        userArtists = defaultLibrary.libraryArtists(offset.offset, offset.limit, keyword);
     }
     if (userArtists.length == 0) {
         offset.more = false;
@@ -50,7 +50,7 @@ export function getMoreArtists(keyword: string, offset: IOffset): IGetMoreLibrar
 export function getMoreAlbums(keyword: string, offset: IOffset): IGetMoreLibraryAlbumsAct {
         let userAlbums = [];
     if (offset.more) {
-        userAlbums = defaultUser.userAlbums(offset.offset, offset.limit, keyword);
+        userAlbums = defaultLibrary.libraryAlbums(offset.offset, offset.limit, keyword);
     }
     if (userAlbums.length == 0) {
         offset.more = false;
@@ -68,7 +68,7 @@ export function getMoreAlbums(keyword: string, offset: IOffset): IGetMoreLibrary
 export function getMoreCollections(keyword: string, offset: IOffset): IGetMoreLibraryCollectionsAct {
     let userCollections = [];
     if (offset.more) {
-        userCollections = defaultUser.userCollections(offset.offset, offset.limit, keyword);
+        userCollections = defaultLibrary.libraryCollections(offset.offset, offset.limit, keyword);
     }
     if (userCollections.length == 0) {
         offset.more = false;

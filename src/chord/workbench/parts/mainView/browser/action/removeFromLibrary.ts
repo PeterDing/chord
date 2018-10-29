@@ -7,7 +7,7 @@ import { ICollection } from 'chord/music/api/collection';
 
 import { IRemoveFromLibraryAct } from 'chord/workbench/api/common/action/mainView';
 
-import { defaultUser } from 'chord/user/core/user';
+import { defaultLibrary } from 'chord/library/core/library';
 
 
 export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollection): IRemoveFromLibraryAct {
@@ -15,16 +15,16 @@ export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollec
 
     switch (item.type) {
         case 'song':
-            defaultUser.deleteSong(<ISong>item);
+            defaultLibrary.deleteSong(<ISong>item);
             break;
         case 'artist':
-            defaultUser.deleteArtist(<IArtist>item);
+            defaultLibrary.deleteArtist(<IArtist>item);
             break;
         case 'album':
-            defaultUser.deleteAlbum(<IAlbum>item);
+            defaultLibrary.deleteAlbum(<IAlbum>item);
             break;
         case 'collection':
-            defaultUser.deleteCollection(<ICollection>item);
+            defaultLibrary.deleteCollection(<ICollection>item);
             break;
         default:
             console.warn('`handleRemoveFromLibrary` act: unknown item\'s type: ' + JSON.stringify(item));
