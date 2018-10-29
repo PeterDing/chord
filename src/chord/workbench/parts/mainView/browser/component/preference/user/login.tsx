@@ -40,10 +40,10 @@ class Login extends React.Component<any, any> {
 
     render() {
         let config = userConfiguration.getConfig();
-        let account: IAccount = config[this.origin];
+        let info: { account: IAccount } = config[this.origin];
 
-        let userId = account && account.user.userId;
-        let userName = account && account.user.userName;
+        let userId = info && info.account.user.userId;
+        let userName = info && info.account.user.userName;
 
         return (
             <div className='inputBox'>
