@@ -56,6 +56,12 @@ export enum OriginCollectionUrl {
     qq = 'https://y.qq.com/n/yqq/playsquare/{id}.html',
 }
 
+export enum OriginUserUrl {
+    xiami = 'https://www.xiami.com/u/{id}',
+    netease = 'https://music.163.com/#/user/home?id={id}',
+    qq = 'https://y.qq.com/portal/profile.html?uin={id}',
+}
+
 
 export function getSongId(origin: string, id: string): string {
     return `${ORIGIN[origin]}|song|${id}`;
@@ -73,6 +79,10 @@ export function getCollectionId(origin: string, id: string): string {
     return `${ORIGIN[origin]}|collection|${id}`;
 }
 
+export function getUserId(origin: string, id: string): string {
+    return `${ORIGIN[origin]}|user|${id}`;
+}
+
 export function getSongUrl(origin: string, id: string): string {
     return OriginSongUrl[origin].replace('{id}', id);
 }
@@ -87,4 +97,8 @@ export function getArtistUrl(origin: string, id: string): string {
 
 export function getCollectionUrl(origin: string, id: string): string {
     return OriginCollectionUrl[origin].replace('{id}', id);
+}
+
+export function getUserUrl(origin: string, id: string): string {
+    return OriginUserUrl[origin].replace('{id}', id);
 }
