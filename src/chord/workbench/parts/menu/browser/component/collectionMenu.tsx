@@ -10,6 +10,8 @@ import { handleAddLibraryCollection } from 'chord/workbench/parts/mainView/brows
 import { handleAddToQueue } from 'chord/workbench/parts/player/browser/action/addToQueue';
 import { handleRemoveFromLibrary } from 'chord/workbench/parts/mainView/browser/action/removeFromLibrary';
 
+import { defaultLibrary } from 'chord/library/core/library';
+
 
 class CollectionMenu extends React.Component<ICollectionMenuProps, any> {
 
@@ -28,20 +30,27 @@ class CollectionMenu extends React.Component<ICollectionMenuProps, any> {
 
     render() {
         let collection = this.props.collection;
+        if (!collection) {
+            return null;
+        }
+
         let top = this.props.top;
         let left = this.props.left;
 
-        let addLibraryItem = collection && !collection.like ? (
+        let like = defaultLibrary.exists(collection);
+        collection.like = like;
+
+        let addLibraryItem = collection && (!like ? (
             <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                 onClick={() => this.props.handleAddLibraryCollection(collection)}>
                 Save to your Favorite Collections</div>
-        ) : null;
+        ) : null);
 
-        let removeFromLibraryItem = collection && collection.like ? (
+        let removeFromLibraryItem = collection && (like ? (
             <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                 onClick={() => this.props.handleRemoveFromLibrary(collection)}>
                 Remove from library</div>
-        ) : null;
+        ) : null);
 
         return this.props.view == 'collectionMenuView' ? (
             <nav ref={this.menu} role="menu" tabIndex={-1} className="react-contextmenu"

@@ -10,6 +10,8 @@ import { handleAddLibrarySong } from 'chord/workbench/parts/mainView/browser/act
 import { handleAddToQueue } from 'chord/workbench/parts/player/browser/action/addToQueue';
 import { handleRemoveFromLibrary } from 'chord/workbench/parts/mainView/browser/action/removeFromLibrary';
 
+import { defaultLibrary } from 'chord/library/core/library';
+
 
 class SongMenu extends React.Component<ISongMenuProps, any> {
 
@@ -28,20 +30,27 @@ class SongMenu extends React.Component<ISongMenuProps, any> {
 
     render() {
         let song = this.props.song;
+        if (!song) {
+            return null;
+        }
+
         let top = this.props.top;
         let left = this.props.left;
 
-        let addLibraryItem = song && !song.like ? (
+        let like = defaultLibrary.exists(song);
+        song.like = like;
+
+        let addLibraryItem = song && (!like ? (
                 <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                     onClick={() => this.props.handleAddLibrarySong(song)}>
                     Save to your Favorite Songs</div>
-        ) : null;
+        ) : null);
 
-        let removeFromLibraryItem = song && song.like ? (
+        let removeFromLibraryItem = song && (like ? (
             <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                 onClick={() => this.props.handleRemoveFromLibrary(song)}>
                 Remove from library</div>
-        ) : null;
+        ) : null);
 
         return this.props.view == 'songMenuView' ? (
             <nav ref={this.menu} role="menu" tabIndex={-1} className="react-contextmenu"

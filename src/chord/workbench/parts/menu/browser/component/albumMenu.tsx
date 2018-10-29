@@ -10,6 +10,8 @@ import { handleAddLibraryAlbum } from 'chord/workbench/parts/mainView/browser/ac
 import { handleAddToQueue } from 'chord/workbench/parts/player/browser/action/addToQueue';
 import { handleRemoveFromLibrary } from 'chord/workbench/parts/mainView/browser/action/removeFromLibrary';
 
+import { defaultLibrary } from 'chord/library/core/library';
+
 
 class AlbumMenu extends React.Component<IAlbumMenuProps, any> {
 
@@ -28,20 +30,27 @@ class AlbumMenu extends React.Component<IAlbumMenuProps, any> {
 
     render() {
         let album = this.props.album;
+        if (!album) {
+            return null;
+        }
+
         let top = this.props.top;
         let left = this.props.left;
 
-        let addLibraryItem = album && !album.like ? (
+        let like = defaultLibrary.exists(album);
+        album.like = like;
+
+        let addLibraryItem = album && (!like ? (
             <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                 onClick={() => this.props.handleAddLibraryAlbum(album)}>
                 Save to your Favorite Albums</div>
-        ) : null;
+        ) : null);
 
-        let removeFromLibraryItem = album && album.like ? (
+        let removeFromLibraryItem = album && (like ? (
             <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                 onClick={() => this.props.handleRemoveFromLibrary(album)}>
                 Remove from library</div>
-        ) : null;
+        ) : null);
 
         return this.props.view == 'albumMenuView' ? (
             <nav ref={this.menu} role="menu" tabIndex={-1} className="react-contextmenu"
