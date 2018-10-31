@@ -383,7 +383,7 @@ export function makeAliSong(info: any): ISong {
 
 
 export function makeAliSongs(info: any): Array<ISong> {
-    let songs: Array<ISong> = info.map(songInfo => makeAliSong(songInfo));
+    let songs: Array<ISong> = (info || []).map(songInfo => makeAliSong(songInfo));
     return songs;
 }
 
@@ -432,7 +432,7 @@ export function makeAliAlbum(info: any): IAlbum {
 
 
 export function makeAliAlbums(info: any): Array<IAlbum> {
-    let albums: Array<IAlbum> = info.map(albumInfo => makeAliAlbum(albumInfo));
+    let albums: Array<IAlbum> = (info || []).map(albumInfo => makeAliAlbum(albumInfo));
     return albums;
 }
 
@@ -467,7 +467,7 @@ export function makeAliArtist(info: any): IArtist {
 
 
 export function makeAliArtists(info: any): Array<IArtist> {
-    let artists: Array<IArtist> = info.map(artistInfo => makeAliArtist(artistInfo));
+    let artists: Array<IArtist> = (info || []).map(artistInfo => makeAliArtist(artistInfo));
     return artists;
 }
 
@@ -491,7 +491,7 @@ export function makeAliCollection(info: any): ICollection {
 
         collectionCoverUrl,
 
-        userId: info['userId'].toString(),
+        userId: _getUserId(info['userId'].toString()),
         userName: info['userName'],
 
         releaseDate: info['gmtCreate'],
@@ -513,7 +513,7 @@ export function makeAliCollection(info: any): ICollection {
 
 
 export function makeAliCollections(info: any): Array<ICollection> {
-    let collections = info.map(collectionInfo => makeAliCollection(collectionInfo));
+    let collections = (info || []).map(collectionInfo => makeAliCollection(collectionInfo));
     return collections;
 }
 
@@ -555,27 +555,31 @@ export function makeUserProfileMore(info: any): IUserProfile {
     let userFavoriteInfo = info['userFavoriteInfo'];
 
     let user = {
-        userId: info['userFavoriteSongCollect']['userId'].toString(),
+        userId: null,
         origin: _origin,
 
         type: 'user',
 
         artistCount: userFavoriteInfo['artistCount'],
         albumCount: userFavoriteInfo['albumCount'],
-        likedCollectionCount: info['userFavouriteCollectCount'],
+        favoriteCollectionCount: info['userFavouriteCollectCount'],
     };
     return user;
 }
 
 
 export function makeAccount(info: any): IAccount {
+    let userOriginalId = info['userId'].toString();
     let user: IUserProfile = {
-        userId: info['userId'].toString(),
-
-        userName: info['nickName'],
-        origin: _origin,
+        userId: _getUserId(userOriginalId),
 
         type: 'user',
+
+        origin: _origin,
+
+        userOriginalId,
+
+        userName: info['nickName'],
     };
     return {
         user,

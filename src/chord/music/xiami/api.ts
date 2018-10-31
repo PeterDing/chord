@@ -977,7 +977,9 @@ export class AliMusicApi {
         );
         let [json, userProfileMore] = await Promise.all([req, this.userProfileMore(userId)]);
         let userProfile = makeUserProfile(json.data.data);
-        return { ...userProfile, ...userProfileMore };
+        let _up =  { ...userProfile, ...userProfileMore };
+        _up.userId = userProfile.userId;
+        return _up;
     }
 
 
