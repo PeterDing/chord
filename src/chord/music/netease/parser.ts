@@ -9,7 +9,7 @@ import { ITag } from "chord/music/api/tag";
 import { ICollection } from "chord/music/api/collection";
 import { IAudio } from "chord/music/api/audio";
 
-import { IUserProfile, IAccount } from "chord/music/api/user";
+import { IUserProfile } from "chord/music/api/user";
 
 import {
     getSongUrl,
@@ -105,7 +105,7 @@ export function makeSong(info: any, privilege?: any): ISong {
 }
 
 export function makeSongs(info: any): Array<ISong> {
-    return info.map(songInfo => makeSong(songInfo));
+    return (info || []).map(songInfo => makeSong(songInfo));
 }
 
 export function makeAlbum(info: any): IAlbum {
@@ -149,7 +149,7 @@ export function makeAlbum(info: any): IAlbum {
 }
 
 export function makeAlbums(info: any): Array<IAlbum> {
-    return info.map(albumInfo => makeAlbum(albumInfo));
+    return (info || []).map(albumInfo => makeAlbum(albumInfo));
 }
 
 export function makeCollection(info: any, privileges: any = []): ICollection {
@@ -171,7 +171,7 @@ export function makeCollection(info: any, privileges: any = []): ICollection {
 
         collectionCoverUrl,
 
-        userId: info['creator']['userId'].toString(),
+        userId: _getUserId(info['creator']['userId'].toString()),
         userName: info['creator']['nickname'],
 
         releaseDate: info['createTime'],
@@ -192,7 +192,7 @@ export function makeCollection(info: any, privileges: any = []): ICollection {
 }
 
 export function makeCollections(info: any): Array<ICollection> {
-    return info.map(collectionInfo => makeCollection(collectionInfo));
+    return (info || []).map(collectionInfo => makeCollection(collectionInfo));
 }
 
 export function makeArtist(info: any): IArtist {
@@ -227,7 +227,7 @@ export function makeArtist(info: any): IArtist {
 }
 
 export function makeArtists(info: any): Array<IArtist> {
-    return info.map(artistInfo => makeArtist(artistInfo));
+    return (info || []).map(artistInfo => makeArtist(artistInfo));
 }
 
 export function makeArtistAlbums(info: any): Array<IAlbum> {
@@ -263,13 +263,14 @@ export function makeUserProfile(info: any, userId?: string): IUserProfile {
 }
 
 export function makeUserProfiles(info: any): Array<IUserProfile> {
-    return info.map(userProfile => makeUserProfile(userProfile));
+    return (info || []).map(userProfile => makeUserProfile(userProfile));
 }
 
 export function getInfosFromHtml(html: string): any {
     let $ = cheerio.load(html);
+    let userOriginalId = /window.hostId\s*=\s*(\d+)/.exec(html)[1];
     let info = {
-        userId: /window.hostId\s*=\s*(\d+)/.exec(html)[1],
+        userId: _getUserId(userOriginalId),
         followingCount: parseInt($('#follow_count').text().trim()),
         followerCount: parseInt($('#fan_count').text().trim()),
         collectionCount: parseInt(/cCount\s*:\s*(\d+)/g.exec(html)[1]),
