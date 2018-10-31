@@ -383,7 +383,7 @@ export class Music {
                 break;
             default:
                 // Here will never be occured.
-                throw new Error(`[ERROR] [Music.login] Here will never be occured. [args]: ${origin}, ${accountName}`);
+                throw new Error(`[ERROR] [Music.login] Here will never be occured. [args]: ${origin}, ${account}`);
         }
     }
 
@@ -408,7 +408,8 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.login] Here will never be occured. [args]: ${userId}`);
         }
-        return makeItem(userProfile);
+        // TODO: return makeItem(userProfile);
+        return userProfile;
     }
 
 
@@ -424,7 +425,7 @@ export class Music {
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
-                songs = [];
+                songs = await this.neteaseApi.userFavoriteSongs(originType.id, offset * limit, limit);
                 break;
             case ORIGIN.qq:
                 songs = await this.qqApi.userFavoriteSongs(userMid, offset * limit, limit);
