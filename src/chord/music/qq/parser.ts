@@ -309,7 +309,8 @@ export function makeCollection(info: any): ICollection {
     let songs: Array<ISong> = (info['songlist'] || []).map(songInfo => makeSong(songInfo));
     let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
 
-    let userId = info['creator'] ? info['creator']['creator_uin'].toString() : info['uin'];
+    let userOriginalId = info['creator'] ? info['creator']['creator_uin'].toString() : info['uin'];
+    let userId = _getUserId(userOriginalId);
     let userMid = info['creator'] ? info['creator']['encrypt_uin'].toString() : info['encrypt_uin'] || info['uin'];
     let userName = info['creator'] ? info['creator']['name'] : info['nickname'];
     userName = decodeHtml(userName);
@@ -390,7 +391,7 @@ export function makeUserProfile(info: any): IUserProfile {
         songCount: musicInfo[1] ? musicInfo[1]['num0'] : null,
         artistCount: userInfo['nums']['followsingernum'],
         albumCount: musicInfo[1] ? musicInfo[1]['num1'] : null,
-        likedCollectionCount: musicInfo[1] ? musicInfo[1]['num2'] : null,
+        favoriteCollectionCount: musicInfo[1] ? musicInfo[1]['num2'] : null,
         createdCollectionCount: info['songlist_num'] || createdCollectionsInfo['num'],
 
         description: info['desc'],
