@@ -9,7 +9,7 @@ import { ICollection } from 'chord/music/api/collection';
 export interface IUserProfile {
     userId: string;
 
-    // 'user'
+    // 'userProfile'
     type: string;
 
     origin: string;
@@ -39,15 +39,17 @@ export interface IUserProfile {
     artistCount?: number;
     albumCount?: number;
     createdCollectionCount?: number;
-    likedCollectionCount?: number;
+    favoriteCollectionCount?: number;
 
     songs?: Array<ISong>;
     artists?: Array<IArtist>;
     albums?: Array<IAlbum>;
     createdCollections?: Array<ICollection>;
-    likedCoollections?: Array<ICollection>;
+    favoriteCollections?: Array<ICollection>;
 
     description?: string;
+
+    like?: boolean;
 }
 
 
