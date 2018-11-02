@@ -371,7 +371,7 @@ export function makeUserProfile(info: any): IUserProfile {
     let userProfile = {
         userId: _getUserId(userOriginalId),
 
-        type: 'user',
+        type: 'userProfile',
 
         origin: _origin,
 

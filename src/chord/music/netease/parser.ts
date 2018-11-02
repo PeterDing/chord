@@ -239,7 +239,7 @@ export function makeUserProfile(info: any, userId?: string): IUserProfile {
     let user = {
         userId: _getUserId(userOriginalId),
 
-        type: 'user',
+        type: 'userProfile',
 
         origin: _origin,
 

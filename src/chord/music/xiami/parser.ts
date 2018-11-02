@@ -523,7 +523,7 @@ export function makeUserProfile(info: any): IUserProfile {
     let user = {
         userId: _getUserId(userOriginalId),
 
-        type: 'user',
+        type: 'userProfile',
 
         origin: _origin,
 
@@ -558,7 +558,7 @@ export function makeUserProfileMore(info: any): IUserProfile {
         userId: null,
         origin: _origin,
 
-        type: 'user',
+        type: 'userProfile',
 
         artistCount: userFavoriteInfo['artistCount'],
         albumCount: userFavoriteInfo['albumCount'],
@@ -573,7 +573,7 @@ export function makeAccount(info: any): IAccount {
     let user: IUserProfile = {
         userId: _getUserId(userOriginalId),
 
-        type: 'user',
+        type: 'userProfile',
 
         origin: _origin,
 
