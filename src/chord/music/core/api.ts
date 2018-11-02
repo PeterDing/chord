@@ -421,14 +421,14 @@ export class Music {
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                songs = await this.xiamiApi.userFavoriteSongs(originType.id, offset + 1, limit);
+                songs = await this.xiamiApi.userFavoriteSongs(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
-                songs = await this.neteaseApi.userFavoriteSongs(originType.id, offset * limit, limit);
+                songs = await this.neteaseApi.userFavoriteSongs(originType.id, offset, limit);
                 break;
             case ORIGIN.qq:
-                songs = await this.qqApi.userFavoriteSongs(userMid, offset * limit, limit);
+                songs = await this.qqApi.userFavoriteSongs(userMid, offset, limit);
                 break;
             default:
                 // Here will never be occured.
