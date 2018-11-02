@@ -7,7 +7,6 @@ import { ICollection } from 'chord/music/api/collection';
 import { Act } from 'chord/workbench/api/common/action/proto';
 
 
-
 export interface IPlayAct extends Act {
     // 'c:player:play'
 
@@ -68,10 +67,16 @@ export interface IPlayAlbumAct extends Act {
  */
 export interface IPlayCollectionAct extends Act {
     // 'c:player:playCollection'
-
     type: string;
     act: string;
     collection: ICollection;
+}
+
+export interface IPlayUserFavoriteSongsAct extends Act {
+    // 'c:player:playUserFavoriteSongs'
+    type: string;
+    act: string;
+    songs: Array<ISong>;
 }
 
 export interface IVolumeAct extends Act {

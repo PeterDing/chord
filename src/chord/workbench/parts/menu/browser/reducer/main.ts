@@ -16,6 +16,8 @@ function handleView(act: string): string {
             return 'albumMenuView';
         case 'c:menu:showCollectionMenu':
             return 'collectionMenuView';
+        case 'c:menu:showUserProfileMenu':
+            return 'userProfileMenuView';
         default:
             return null;
     }

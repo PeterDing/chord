@@ -34,6 +34,15 @@ import {
 
 import { showPreference } from 'chord/workbench/parts/mainView/browser/reducer/preference';
 
+import { showUserProfile } from 'chord/workbench/parts/mainView/browser/reducer/showUserProfile';
+import {
+    getMoreUserFavoriteSongs,
+    getMoreUserFavoriteAlbums,
+    getMoreUserFavoriteArtists,
+    getMoreUserFavoriteCollections,
+    getMoreUserCreatedCollections,
+} from 'chord/workbench/parts/mainView/browser/reducer/userProfile';
+
 
 export function map(act: string): IReducerMap {
     switch (act) {
@@ -166,6 +175,38 @@ export function map(act: string): IReducerMap {
             return {
                 reducer: showPreference,
                 node: '.',
+            };
+
+        // user profile
+        case 'c:mainView:showUserProfileView':
+            return {
+                reducer: showUserProfile,
+                node: 'userProfileView',
+            };
+        case 'c:mainView:getMoreUserFavoriteSongs':
+            return {
+                reducer: getMoreUserFavoriteSongs,
+                node: 'userProfileView',
+            };
+        case 'c:mainView:getMoreUserFavoriteArtists':
+            return {
+                reducer: getMoreUserFavoriteArtists,
+                node: 'userProfileView',
+            };
+        case 'c:mainView:getMoreUserFavoriteAlbums':
+            return {
+                reducer: getMoreUserFavoriteAlbums,
+                node: 'userProfileView',
+            };
+        case 'c:mainView:getMoreUserFavoriteCollections':
+            return {
+                reducer: getMoreUserFavoriteCollections,
+                node: 'userProfileView',
+            };
+        case 'c:mainView:getMoreUserCreatedCollections':
+            return {
+                reducer: getMoreUserCreatedCollections,
+                node: 'userProfileView',
             };
 
         default:

@@ -6,11 +6,13 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+import { IUserProfile } from 'chord/music/api/user';
 import {
     IShowSongMenuAct,
     IShowArtistMenuAct,
     IShowAlbumMenuAct,
     IShowCollectionMenuAct,
+    IShowUserProfileMenuAct,
 } from 'chord/workbench/api/common/action/menu';
 
 
@@ -59,5 +61,17 @@ export function showCollectionMenu(e: React.MouseEvent<HTMLDivElement>, collecti
         top: e.screenY - 50,
         left: e.screenX - 50,
         collection
+    }
+}
+
+export function showUserProfileMenu(e: React.MouseEvent<HTMLDivElement>, userProfile: IUserProfile): IShowUserProfileMenuAct {
+    e.preventDefault();
+    return {
+        type: 'c:menu:showUserProfileMenu',
+        act: 'c:menu:showUserProfileMenu',
+
+        top: e.screenY - 50,
+        left: e.screenX - 50,
+        userProfile
     }
 }

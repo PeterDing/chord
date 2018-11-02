@@ -20,10 +20,12 @@ import { ICollectionViewProps } from 'chord/workbench/parts/mainView/browser/com
 
 import { showCollectionMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
+import { handleShowUserProfileViewById } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
+
 import { musicApi } from 'chord/music/core/api';
 
 
-function CollectionEntity({ collection, handlePlayCollection, showCollectionMenu }) {
+function CollectionEntity({ collection, handlePlayCollection, showCollectionMenu, handleShowUserProfileViewById }) {
     let cover = collection.collectionCoverPath || musicApi.resizeImageUrl(collection.origin, collection.collectionCoverUrl, ESize.Large);
     return (
         <header className='entity-info'>
@@ -49,20 +51,24 @@ function CollectionEntity({ collection, handlePlayCollection, showCollectionMenu
                 </div>
             </div>
 
-            <CollectionInfo collection={collection} handlePlayCollection={handlePlayCollection} />
+            <CollectionInfo
+                collection={collection}
+                handlePlayCollection={handlePlayCollection}
+                handleShowUserProfileViewById={handleShowUserProfileViewById} />
         </header>
     );
 }
 
 
-function CollectionInfo({ collection, handlePlayCollection }) {
+function CollectionInfo({ collection, handlePlayCollection, handleShowUserProfileViewById }) {
     return (
         <div className='media-bd'>
             <div className='entity-name'>
                 <h2>{collection.collectionName}</h2>
                 <div>
                     <span>By </span>
-                    <span>{collection.artistName}</span>
+                    <span onClick={() => handleShowUserProfileViewById(collection.userId)}>
+                        {collection.userName}</span>
                 </div>
             </div>
             <p className="text-silence entity-additional-info">
@@ -110,7 +116,8 @@ class CollectionView extends React.Component<ICollectionViewProps, any> {
                                 <div className='col-xs-12 col-lg-3 col-xl-4 col-sticky'>
                                     <CollectionEntity collection={collection}
                                         handlePlayCollection={this.props.handlePlayCollection}
-                                        showCollectionMenu={this.props.showCollectionMenu} />
+                                        showCollectionMenu={this.props.showCollectionMenu}
+                                        handleShowUserProfileViewById={this.props.handleShowUserProfileViewById} />
                                 </div>
 
                                 <div className='col-xs-12 col-lg-9 col-xl-8'>
@@ -138,6 +145,7 @@ function mapStateToProps(state: IStateGlobal) {
 function mapDispatchToProps(dispatch) {
     return {
         handlePlayCollection: collection => handlePlayCollection(collection).then(act => dispatch(act)),
+        handleShowUserProfileViewById: userId => handleShowUserProfileViewById(userId).then(act => dispatch(act)),
         showCollectionMenu: (e, collection) => dispatch(showCollectionMenu(e, collection)),
     };
 }

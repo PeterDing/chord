@@ -6,6 +6,7 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+import { IUserProfile } from 'chord/music/api/user';
 
 import { IUserSong } from 'chord/library/api/song';
 import { IUserAlbum } from 'chord/library/api/album';
@@ -207,11 +208,18 @@ export interface IAddLibraryCollectionAct extends Act {
     collection: IUserCollection;
 }
 
+export interface IAddLibraryUserProfileAct extends Act {
+    // 'c:mainView:addLibraryUserProfile'
+    type: string;
+    act: string;
+    userProfile: IUserProfile;
+}
+
 export interface IRemoveFromLibraryAct extends Act {
     // 'c:mainView:removeFromLibrary'
     type: string;
     act: string;
-    item: ISong | IArtist | IAlbum | ICollection;
+    item: ISong | IArtist | IAlbum | ICollection | IUserProfile;
 }
 
 
@@ -222,4 +230,62 @@ export interface IPreferenceViewAct extends Act {
     // 'c:mainView:preferenceView'
     type: string;
     act: string;
+}
+
+
+/**
+ * For user profile
+ */
+export interface IShowUserProfileAct extends Act {
+    // 'c:mainView:showUserProfileView'
+    type: string;
+    act: string;
+
+    userProfile: IUserProfile;
+
+    songsOffset: IOffset;
+    artistsOffset: IOffset;
+    albumsOffset: IOffset;
+    favoriteCollectionsOffset: IOffset;
+    createdCollectionsOffset: IOffset;
+}
+
+export interface IGetMoreUserFavoriteSongsAct extends Act {
+    // 'c:mainView:getMoreUserFavoriteSongs'
+    type: string;
+    act: string;
+    songs: Array<ISong>;
+    songsOffset: IOffset;
+}
+
+export interface IGetMoreUserFavoriteAlbumsAct extends Act {
+    // 'c:mainView:getMoreUserFavoriteAlbums'
+    type: string;
+    act: string;
+    albums: Array<IAlbum>;
+    albumsOffset: IOffset;
+}
+
+export interface IGetMoreUserFavoriteArtistsAct extends Act {
+    // 'c:mainView:getMoreUserFavoriteArtists'
+    type: string;
+    act: string;
+    artists: Array<IArtist>;
+    artistsOffset: IOffset;
+}
+
+export interface IGetMoreUserFavoriteCollectionsAct extends Act {
+    // 'c:mainView:getMoreUserFavoriteCollections'
+    type: string;
+    act: string;
+    collections: Array<ICollection>;
+    collectionsOffset: IOffset;
+}
+
+export interface IGetMoreUserCreatedCollectionsAct extends Act {
+    // 'c:mainView:getMoreUserCreatedCollections'
+    type: string;
+    act: string;
+    collections: Array<ICollection>;
+    collectionsOffset: IOffset;
 }

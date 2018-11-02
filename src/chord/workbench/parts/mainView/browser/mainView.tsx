@@ -12,6 +12,7 @@ import ArtistView from 'chord/workbench/parts/mainView/browser/component/artist/
 import CollectionView from 'chord/workbench/parts/mainView/browser/component/collection/collection';
 import LibraryView from 'chord/workbench/parts/mainView/browser/component/library/library';
 import PreferenceView from 'chord/workbench/parts/mainView/browser/component/preference/preference';
+import UserProfileView from 'chord/workbench/parts/mainView/browser/component/user/userProfile';
 
 
 function MainView({ view }) {
@@ -30,6 +31,9 @@ function MainView({ view }) {
             break;
         case 'collectionView':
             View = <CollectionView />
+            break;
+        case 'userProfileView':
+            View = <UserProfileView />
             break;
         case 'libraryView':
             View = <LibraryView />

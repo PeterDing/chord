@@ -41,6 +41,14 @@ function handleView(act: string): string {
         case 'c:mainView:preferenceView':
             return 'preferenceView';
 
+        case 'c:mainView:showUserProfileView':
+        case 'c:mainView:getMoreUserFavoriteSongs':
+        case 'c:mainView:getMoreUserFavoriteArtists':
+        case 'c:mainView:getMoreUserFavoriteAlbums':
+        case 'c:mainView:getMoreUserFavoriteCollections':
+        case 'c:mainView:getMoreUserCreatedCollections':
+            return 'userProfileView';
+
         case 'c:mainView:comeback':
         case 'c:mainView:addLibrarySong':
         case 'c:mainView:addLibraryArtist':

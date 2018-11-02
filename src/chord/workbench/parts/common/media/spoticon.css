@@ -36,6 +36,11 @@
     font-size: 16px
 }
 
+.spoticon-heart-20:before {
+    content: "\F3DB";
+    font-size: 20px
+}
+
 .spoticon-heart-24:before {
     content: "\F3DB";
     font-size: 24px
@@ -49,6 +54,11 @@
 .spoticon-heart-active-16:before {
     content: "\F322";
     font-size: 16px
+}
+
+.spoticon-heart-active-20:before {
+    content: "\F3DC";
+    font-size: 20px
 }
 
 .spoticon-heart-active-24:before {

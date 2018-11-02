@@ -1,0 +1,67 @@
+.avatar {
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.15);
+  background-size: cover;
+  overflow: hidden;
+  position: relative;
+}
+
+.component-user .public-playlists-header {
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0.015em;
+  font-weight: var(--glue-font-weight-black);
+  color: #fff;
+  text-transform: none;
+  text-align: center;
+  padding: 0 0 35px;
+}
+
+.user-header {
+  padding: 32px 0px;
+}
+
+.user-header .icon {
+  position: absolute;
+  top: 30%;
+  bottom: 30%;
+  left: 30%;
+  right: 30%;
+}
+
+.user-header .icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.user-header .user-info {
+  position: relative;
+  height: auto;
+  text-align: center;
+}
+
+.user-header .user-info .user-name {
+  font-size: 36px;
+  line-height: 44px;
+  letter-spacing: -0.005em;
+  font-weight: var(--glue-font-weight-black);
+  color: #fff;
+  text-transform: none;
+  margin-top: 32px;
+}
+
+.user-header.user-info .user-name {
+  font-size: 36px;
+  line-height: 44px;
+  letter-spacing: -0.005em;
+  font-weight: var(--glue-font-weight-black);
+  color: #fff;
+  text-transform: none;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.user-header .user-info .avatar {
+  margin: 10px auto;
+  background-color: #282828;
+}

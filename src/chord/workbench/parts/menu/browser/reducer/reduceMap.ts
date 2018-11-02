@@ -7,6 +7,7 @@ import {
     showArtistMenu,
     showAlbumMenu,
     showCollectionMenu,
+    showUserProfileMenu,
 } from 'chord/workbench/parts/menu/browser/reducer/show';
 
 
@@ -31,6 +32,11 @@ export function map(act: string): IReducerMap {
             return {
                 reducer: showCollectionMenu,
                 node: 'collectionMenu',
+            };
+        case 'c:menu:showUserProfileMenu':
+            return {
+                reducer: showUserProfileMenu,
+                node: 'userProfileMenu',
             };
 
         default:
