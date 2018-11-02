@@ -12,6 +12,7 @@ import { ISong } from "chord/music/api/song";
 import { IAlbum } from "chord/music/api/album";
 import { IArtist } from "chord/music/api/artist";
 import { ICollection } from "chord/music/api/collection";
+import { IUserProfile } from "chord/music/api/user";
 // import { IPlayList } from "chord/music/api/playList";
 
 import { IUserSong } from 'chord/library/api/song';
@@ -123,7 +124,7 @@ export class Library {
         return this.db.deleteCollection(collection);
     }
 
-    exists(item: ISong | IArtist | IAlbum | ICollection): boolean {
+    exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): boolean {
         return this.db.exists(item);
     }
 }

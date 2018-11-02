@@ -10,6 +10,7 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+import { IUserProfile } from "chord/music/api/user";
 import { IAudio } from 'chord/music/api/audio';
 
 import { IUserSong } from 'chord/library/api/song';
@@ -321,7 +322,7 @@ export class LibraryDatabase {
         return true;
     }
 
-    public exists(item: ISong | IArtist | IAlbum | ICollection): boolean {
+    public exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): boolean {
         let sql = `select 'id' from ${TABLES[item.type]} where ${item.type}Id = ?`;
         let result = this.db.prepare(sql).get(item[item.type + 'Id']);
         return !!result;
