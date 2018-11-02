@@ -34,7 +34,7 @@ export class UserConfiguration {
 
     public saveConfig(config?: IUserConfiguration): void {
         config = config || this.getConfig();
-        fs.writeFileSync(USER_CONFIGURATION_PATH, JSON.stringify(config), { encoding: 'utf-8' });
+        fs.writeFileSync(USER_CONFIGURATION_PATH, JSON.stringify(config, null, 4), { encoding: 'utf-8' });
     }
 }
 
