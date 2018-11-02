@@ -1,10 +1,13 @@
 'use strict';
 
 import * as React from 'react';
+import { connect } from 'react-redux';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
 import { IAccount } from 'chord/music/api/user';
+
+import { handleShowUserProfileViewById } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
 
 import { musicApi } from 'chord/music/core/api';
 
@@ -48,7 +51,8 @@ class Login extends React.Component<any, any> {
         return (
             <div className='inputBox'>
                 <div className='contentSpacing'>
-                    <h4 className='inputBox-label'>
+                    <h4 className='inputBox-label'
+                        onClick={() => this.props.handleShowUserProfileViewById(userId)}>
                         {`${userId ? 'User: ' + userName : this.origin + ' Login'}`}</h4>
                     <form onSubmit={(event) => { event.preventDefault(); this.login(); }}
                         style={{ display: 'flex' }}>
@@ -68,7 +72,7 @@ class Login extends React.Component<any, any> {
 }
 
 
-export class XiamiLogin extends Login {
+class _XiamiLogin extends Login {
     constructor(props: any) {
         super(props);
         this.origin = ORIGIN.xiami;
@@ -76,7 +80,7 @@ export class XiamiLogin extends Login {
 }
 
 
-export class NeteaseLogin extends Login {
+class _NeteaseLogin extends Login {
     constructor(props: any) {
         super(props);
         this.origin = ORIGIN.netease;
@@ -84,9 +88,21 @@ export class NeteaseLogin extends Login {
 }
 
 
-export class QQLogin extends Login {
+class _QQLogin extends Login {
     constructor(props: any) {
         super(props);
         this.origin = ORIGIN.qq;
     }
 }
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        handleShowUserProfileViewById: userId => handleShowUserProfileViewById(userId).then(act => dispatch(act)),
+    };
+}
+
+const cnt = connect(null, mapDispatchToProps);
+export const XiamiLogin = cnt(_XiamiLogin);
+export const NeteaseLogin = cnt(_NeteaseLogin);
+export const QQLogin = cnt(_QQLogin);
