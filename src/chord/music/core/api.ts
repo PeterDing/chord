@@ -425,7 +425,7 @@ export class Music {
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
-                songs = await this.neteaseApi.userFavoriteSongs(originType.id, offset, limit);
+                songs = await this.neteaseApi.userFavoriteSongs(originType.id);
                 break;
             case ORIGIN.qq:
                 songs = await this.qqApi.userFavoriteSongs(userMid, offset, limit);
@@ -443,14 +443,14 @@ export class Music {
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                albums = await this.xiamiApi.userFavoriteAlbums(originType.id, offset + 1, limit);
+                albums = await this.xiamiApi.userFavoriteAlbums(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
                 albums = [];
                 break;
             case ORIGIN.qq:
-                albums = await this.qqApi.userFavoriteAlbums(userMid, offset * limit, limit);
+                albums = await this.qqApi.userFavoriteAlbums(userMid, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -465,14 +465,14 @@ export class Music {
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                artists = await this.xiamiApi.userFavoriteArtists(originType.id, offset + 1, limit);
+                artists = await this.xiamiApi.userFavoriteArtists(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
                 artists = [];
                 break;
             case ORIGIN.qq:
-                artists = await this.qqApi.userFavoriteArtists(userMid, offset + 1, limit);
+                artists = await this.qqApi.userFavoriteArtists(userMid, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -487,14 +487,14 @@ export class Music {
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                collections = await this.xiamiApi.userFavoriteCollections(originType.id, offset + 1, limit);
+                collections = await this.xiamiApi.userFavoriteCollections(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
-                collections = await this.neteaseApi.userFavoriteCollections(originType.id, offset * limit, limit);
+                collections = await this.neteaseApi.userFavoriteCollections(originType.id, offset, limit);
                 break;
             case ORIGIN.qq:
-                collections = await this.qqApi.userFavoriteCollections(userMid, offset * limit, limit);
+                collections = await this.qqApi.userFavoriteCollections(userMid, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -509,14 +509,14 @@ export class Music {
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                collections = await this.xiamiApi.userCreatedCollections(originType.id, offset + 1, limit);
+                collections = await this.xiamiApi.userCreatedCollections(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
                 collections = [];
                 break;
             case ORIGIN.qq:
-                collections = await this.qqApi.userCreatedCollections(userMid, offset * limit, limit);
+                collections = await this.qqApi.userCreatedCollections(userMid, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -531,14 +531,14 @@ export class Music {
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                userProfiles = await this.xiamiApi.userFollowings(originType.id, offset + 1, limit);
+                userProfiles = await this.xiamiApi.userFollowings(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
-                userProfiles = await this.neteaseApi.userFollowings(originType.id, offset * limit, limit);
+                userProfiles = await this.neteaseApi.userFollowings(originType.id, offset, limit);
                 break;
             case ORIGIN.qq:
-                userProfiles = await this.qqApi.userFollowings(userMid, offset * limit, limit);
+                userProfiles = await this.qqApi.userFollowings(userMid, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -553,14 +553,14 @@ export class Music {
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                userProfiles = await this.xiamiApi.userFollowers(originType.id, offset + 1, limit);
+                userProfiles = await this.xiamiApi.userFollowers(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
-                userProfiles = await this.neteaseApi.userFollowers(originType.id, offset * limit, limit);
+                userProfiles = await this.neteaseApi.userFollowers(originType.id, offset, limit);
                 break;
             case ORIGIN.qq:
-                userProfiles = await this.qqApi.userFollowers(userMid, offset * limit, limit);
+                userProfiles = await this.qqApi.userFollowers(userMid, offset, limit);
                 break;
             default:
                 // Here will never be occured.
