@@ -108,7 +108,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         this._itemsView = this._itemsView.bind(this);
 
         this.overviewView = this.overviewView.bind(this);
-        this.viewMore = this.viewMore.bind(this);
+        this._viewMore = this._viewMore.bind(this);
         this.songsView = this.songsView.bind(this);
         this.artistsView = this.artistsView.bind(this);
         this.albumsView = this.albumsView.bind(this);
@@ -263,7 +263,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
                 {/* Albums */}
                 {makeItemsView(albumsView, 'Albums')}
 
-                {/* Liked Collections */}
+                {/* Favorite Collections */}
                 {makeItemsView(favoriteCollectionsView, 'Favorite Collections')}
 
                 {/* Created Collections */}
@@ -273,7 +273,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         );
     }
 
-    viewMore(handler: (size) => any) {
+    _viewMore(handler: (size) => any) {
         return (
             <div className='row'>
                 <div className="view-more row">
@@ -309,7 +309,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         let userProfile = this.props.userProfile;
         let songsView = this._getSongsView();
         let offset = this.props.songsOffset;
-        let viewMore = offset.more ? this.viewMore((size) => this.props.getMoreFavoriteSongs(userProfile, offset, size)) : null;
+        let viewMore = offset.more ? this._viewMore((size) => this.props.getMoreFavoriteSongs(userProfile, offset, size)) : null;
 
         return (
             <section className='artist-music container-fluid'>
@@ -335,6 +335,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
 
     _itemsView(view, handler, offset, title) {
         let userProfile = this.props.userProfile;
+        let viewMore = offset.more ? this._viewMore((size) => handler(userProfile, offset, size)) : null;
 
         return (
             <section className='artist-albums'>
@@ -347,15 +348,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
                         </div>
                     </div>
 
-                    <div className='row'>
-                        <div className="view-more">
-                            <div className="view-more-button">
-                                <div className="btn btn-fg-green"
-                                    onClick={() => handler(userProfile, offset)}>
-                                    View More</div>
-                            </div>
-                        </div>
-                    </div>
+                    {viewMore}
 
                 </div>
             </section>
@@ -437,10 +430,10 @@ function mapStateToProps(state: IStateGlobal) {
 function mapDispatchToProps(dispatch) {
     return {
         getMoreFavoriteSongs: (userProfile, offset, size) => getMoreFavoriteSongs(userProfile, offset, size).then(act => dispatch(act)),
-        getMoreFavoriteArtists: (userProfile, offset) => getMoreFavoriteArtists(userProfile, offset).then(act => dispatch(act)),
-        getMoreFavoriteAlbums: (userProfile, offset) => getMoreFavoriteAlbums(userProfile, offset).then(act => dispatch(act)),
-        getMoreFavoriteCollections: (userProfile, offset) => getMoreFavoriteCollections(userProfile, offset).then(act => dispatch(act)),
-        getMoreCreatedCollections: (userProfile, offset) => getMoreCreatedCollections(userProfile, offset).then(act => dispatch(act)),
+        getMoreFavoriteArtists: (userProfile, offset, size) => getMoreFavoriteArtists(userProfile, offset, size).then(act => dispatch(act)),
+        getMoreFavoriteAlbums: (userProfile, offset, size) => getMoreFavoriteAlbums(userProfile, offset, size).then(act => dispatch(act)),
+        getMoreFavoriteCollections: (userProfile, offset, size) => getMoreFavoriteCollections(userProfile, offset, size).then(act => dispatch(act)),
+        getMoreCreatedCollections: (userProfile, offset, size) => getMoreCreatedCollections(userProfile, offset, size).then(act => dispatch(act)),
         handlePlayUserFavoriteSongs: userProfile => handlePlayUserFavoriteSongs(userProfile).then(act => dispatch(act)),
         showUserProfileMenu: (e, userProfile) => dispatch(showUserProfileMenu(e, userProfile)),
     };

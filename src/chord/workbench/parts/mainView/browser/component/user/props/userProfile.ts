@@ -28,13 +28,12 @@ export interface IUserProfileViewProps {
     // followingsOffset: IOffset;
 
     getMoreFavoriteSongs: (userProfile, offset, size) => Promise<IGetMoreUserFavoriteSongsAct>;
-    getMoreFavoriteArtists: (userProfile, offset) => Promise<IGetMoreUserFavoriteArtistsAct>;
-    getMoreFavoriteAlbums: (userProfile, offset) => Promise<IGetMoreUserFavoriteAlbumsAct>;
-    getMoreFavoriteCollections: (userProfile, offset) => Promise<IGetMoreUserFavoriteCollectionsAct>;
-    getMoreCreatedCollections: (userProfile, offset) => Promise<IGetMoreUserCreatedCollectionsAct>;
-    // getMoreFollowings: (userProfile, offset) => Promise<IGetMoreUserFollowingsAct>;
+    getMoreFavoriteArtists: (userProfile, offset, size) => Promise<IGetMoreUserFavoriteArtistsAct>;
+    getMoreFavoriteAlbums: (userProfile, offset, size) => Promise<IGetMoreUserFavoriteAlbumsAct>;
+    getMoreFavoriteCollections: (userProfile, offset, size) => Promise<IGetMoreUserFavoriteCollectionsAct>;
+    getMoreCreatedCollections: (userProfile, offset, size) => Promise<IGetMoreUserCreatedCollectionsAct>;
+    // getMoreFollowings: (userProfile, offset, size) => Promise<IGetMoreUserFollowingsAct>;
 
     handlePlayUserFavoriteSongs: (userProfile) => Promise<IPlayUserFavoriteSongsAct>;
     showUserProfileMenu: (e: React.MouseEvent<HTMLDivElement>, userProfile: IUserProfile) => IShowUserProfileMenuAct;
 }
-
