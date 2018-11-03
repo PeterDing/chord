@@ -92,12 +92,20 @@ export async function getMoreFavoriteSongs(userProfile: IUserProfile, offset: IO
     let songs = [];
     if (offset.more) {
         let offsets = makeOffsets(userProfile.origin, offset, size);
-        let futs = offsets.map(_offset => musicApi.userFavoriteSongs(userProfile.userId, _offset.offset, _offset.limit));
+        let futs = offsets.map(_offset => musicApi.userFavoriteSongs(userProfile.userId, _offset.offset, _offset.limit, userProfile.userMid));
         let songsList = await Promise.all(futs);
-        songs = songs.concat(...songsList).slice(0, size);
+
+        songs = songs.concat(...songsList);
+        // user favorite songs api of netease does not support offset
+        if (userProfile.origin != ORIGIN.netease) {
+            songs = songs.slice(0, size);
+        }
+
         offset = setCurrectOffset(userProfile.origin, offset, songs.length);
     }
-    if (songs.length == 0) {
+
+    // user favorite songs api of netease does not support offset
+    if (songs.length == 0 || userProfile.origin == ORIGIN.netease) {
         offset.more = false;
     }
     return {
@@ -108,11 +116,14 @@ export async function getMoreFavoriteSongs(userProfile: IUserProfile, offset: IO
     };
 }
 
-export async function getMoreFavoriteArtists(userProfile: IUserProfile, offset: IOffset): Promise<IGetMoreUserFavoriteArtistsAct> {
+export async function getMoreFavoriteArtists(userProfile: IUserProfile, offset: IOffset, size: number = 10): Promise<IGetMoreUserFavoriteArtistsAct> {
     let artists = [];
     if (offset.more) {
-        artists = await musicApi.userFavoriteArtists(userProfile.userId, offset.offset, offset.limit, userProfile.userMid);
-        offset.offset += 1;
+        let offsets = makeOffsets(userProfile.origin, offset, size);
+        let futs = offsets.map(_offset => musicApi.userFavoriteArtists(userProfile.userId, _offset.offset, _offset.limit, userProfile.userMid));
+        let artistsList = await Promise.all(futs);
+        artists = artists.concat(...artistsList).slice(0, size);
+        offset = setCurrectOffset(userProfile.origin, offset, artists.length);
     }
     if (artists.length == 0) {
         offset.more = false;
@@ -125,11 +136,14 @@ export async function getMoreFavoriteArtists(userProfile: IUserProfile, offset: 
     };
 }
 
-export async function getMoreFavoriteAlbums(userProfile: IUserProfile, offset: IOffset): Promise<IGetMoreUserFavoriteAlbumsAct> {
+export async function getMoreFavoriteAlbums(userProfile: IUserProfile, offset: IOffset, size: number = 10): Promise<IGetMoreUserFavoriteAlbumsAct> {
     let albums = [];
     if (offset.more) {
-        albums = await musicApi.userFavoriteAlbums(userProfile.userId, offset.offset, offset.limit, userProfile.userMid);
-        offset.offset += 1;
+        let offsets = makeOffsets(userProfile.origin, offset, size);
+        let futs = offsets.map(_offset => musicApi.userFavoriteAlbums(userProfile.userId, _offset.offset, _offset.limit, userProfile.userMid));
+        let albumsList = await Promise.all(futs);
+        albums = albums.concat(...albumsList).slice(0, size);
+        offset = setCurrectOffset(userProfile.origin, offset, albums.length);
     }
     if (albums.length == 0) {
         offset.more = false;
@@ -142,11 +156,14 @@ export async function getMoreFavoriteAlbums(userProfile: IUserProfile, offset: I
     };
 }
 
-export async function getMoreFavoriteCollections(userProfile: IUserProfile, offset: IOffset): Promise<IGetMoreUserFavoriteCollectionsAct> {
+export async function getMoreFavoriteCollections(userProfile: IUserProfile, offset: IOffset, size: number = 10): Promise<IGetMoreUserFavoriteCollectionsAct> {
     let collections = [];
     if (offset.more) {
-        collections = await musicApi.userFavoriteCollections(userProfile.userId, offset.offset, offset.limit, userProfile.userMid);
-        offset.offset += 1;
+        let offsets = makeOffsets(userProfile.origin, offset, size);
+        let futs = offsets.map(_offset => musicApi.userFavoriteCollections(userProfile.userId, _offset.offset, _offset.limit, userProfile.userMid));
+        let albumsList = await Promise.all(futs);
+        collections = collections.concat(...albumsList).slice(0, size);
+        offset = setCurrectOffset(userProfile.origin, offset, collections.length);
     }
     if (collections.length == 0) {
         offset.more = false;
@@ -159,11 +176,14 @@ export async function getMoreFavoriteCollections(userProfile: IUserProfile, offs
     };
 }
 
-export async function getMoreCreatedCollections(userProfile: IUserProfile, offset: IOffset): Promise<IGetMoreUserCreatedCollectionsAct> {
+export async function getMoreCreatedCollections(userProfile: IUserProfile, offset: IOffset, size: number = 10): Promise<IGetMoreUserCreatedCollectionsAct> {
     let collections = [];
     if (offset.more) {
-        collections = await musicApi.userCreatedCollections(userProfile.userId, offset.offset, offset.limit, userProfile.userMid);
-        offset.offset += 1;
+        let offsets = makeOffsets(userProfile.origin, offset, size);
+        let futs = offsets.map(_offset => musicApi.userCreatedCollections(userProfile.userId, _offset.offset, _offset.limit, userProfile.userMid));
+        let albumsList = await Promise.all(futs);
+        collections = collections.concat(...albumsList).slice(0, size);
+        offset = setCurrectOffset(userProfile.origin, offset, collections.length);
     }
     if (collections.length == 0) {
         offset.more = false;
