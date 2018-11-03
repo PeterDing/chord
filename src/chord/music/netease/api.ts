@@ -218,14 +218,14 @@ export class NeteaseMusicApi {
     }
 
 
-    public async collection(collectionId: string, offset: number = 0, limit: number = 1000): Promise<ICollection> {
+    public async collection(collectionId: string, size: number = 10000): Promise<ICollection> {
         let node = NeteaseMusicApi.NODE_MAP.collection;
         let data = {
             id: collectionId,
             total: true,
-            offest: offset,
-            limit: limit,
-            n: limit,
+            // offset: offset,  // offset, limit do not support
+            // limit: limit,
+            n: size,
             csrf_token: '',
         };
         let json = await this.request(node, data);
@@ -468,11 +468,11 @@ export class NeteaseMusicApi {
     /**
      * user's favorite songs is at a collection
      */
-    public async userFavoriteSongs(userId: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+    public async userFavoriteSongs(userId: string): Promise<Array<ISong>> {
         let collections = await this.userFavoriteCollections(userId, 0, 1);
         if (collections.length < 1) { return [];}
         let collectionId = collections[0].collectionOriginalId;
-        let collection = await this.collection(collectionId, offset, limit);
+        let collection = await this.collection(collectionId);
         return collection.songs;
     }
 
