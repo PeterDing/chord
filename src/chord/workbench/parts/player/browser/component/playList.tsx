@@ -100,7 +100,7 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     {/* Publish Date */}
                     <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper">
-                            <span>{getDateYear(song.releaseDate)}</span>
+                            <span>{song.releaseDate ? getDateYear(song.releaseDate) : null}</span>
                         </div>
                     </div>
 
