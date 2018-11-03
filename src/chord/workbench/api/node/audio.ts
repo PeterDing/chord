@@ -111,6 +111,10 @@ class Audio {
 
     static destroy() {
         if (Audio.audio) {
+            // Unload and destroy a Howl object.
+            // This will immediately stop all sounds attached to this sound
+            // and remove it from the cache.
+            Audio.audio.unload();
             delete Audio.audio;
             Audio.audio = null;
         }
