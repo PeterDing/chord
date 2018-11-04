@@ -9,7 +9,7 @@ import { IUserProfileItemViewProps } from 'chord/workbench/parts/common/props/us
 import { UserProfileIcon } from 'chord/workbench/parts/common/component/common';
 
 import { handleShowUserProfileView } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
-import { handlePlayUserSongs } from 'chord/workbench/parts/player/browser/action/playUserProfile';
+import { handlePlayUserFavoriteSongs } from 'chord/workbench/parts/player/browser/action/playUser';
 
 import { showUserProfileMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
@@ -46,7 +46,7 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
                                         </div>
                                     </div>
                                     <button className="cover-art-playback"
-                                        onClick={() => this.props.handlePlayUserSongs(userProfile)}>
+                                        onClick={() => this.props.handlePlayUserFavoriteSongs(userProfile)}>
                                         <svg className="icon-play" viewBox="0 0 85 100"><path fill="currentColor" d="M81 44.6c5 3 5 7.8 0 10.8L9 98.7c-5 3-9 .7-9-5V6.3c0-5.7 4-8 9-5l72 43.3z"><title>PLAY</title></path></svg></button>
                                 </div>
 
@@ -73,7 +73,7 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
 function mapDispatchToProps(dispatch) {
     return {
         handleShowUserProfileView: userProfile => handleShowUserProfileView(userProfile).then(act => dispatch(act)),
-        handlePlayUserSongs: userProfile => handlePlayUserSongs(userProfile).then(act => dispatch(act)),
+        handlePlayUserFavoriteSongs: userProfile => handlePlayUserFavoriteSongs(userProfile).then(act => dispatch(act)),
         showUserProfileMenu: (e, userProfile) => dispatch(showUserProfileMenu(e, userProfile)),
     };
 }
