@@ -159,13 +159,13 @@ export class Music {
         let originType = getOrigin(artistId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                songs = await this.xiamiApi.artistSongs(originType.id, offset + 1, limit);
+                songs = await this.xiamiApi.artistSongs(originType.id, offset, limit);
                 break;
             case ORIGIN.netease:
-                songs = await this.neteaseApi.artistSongs(originType.id, offset * limit, limit);
+                songs = await this.neteaseApi.artistSongs(originType.id, offset, limit);
                 break;
             case ORIGIN.qq:
-                songs = await this.qqApi.artistSongs(originType.id, offset * limit, limit);
+                songs = await this.qqApi.artistSongs(originType.id, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -184,14 +184,14 @@ export class Music {
         let originType = getOrigin(artistId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                albums = await this.xiamiApi.artistAlbums(originType.id, offset + 1, limit);
+                albums = await this.xiamiApi.artistAlbums(originType.id, offset, limit);
                 break;
             case ORIGIN.netease:
-                albums = await this.neteaseApi.artistAlbums(originType.id, offset * limit, limit);
+                albums = await this.neteaseApi.artistAlbums(originType.id, offset, limit);
                 break;
             // there needs qq's mid
             case ORIGIN.qq:
-                albums = await this.qqApi.artistAlbums(artistMid, offset * limit, limit);
+                albums = await this.qqApi.artistAlbums(artistMid, offset, limit);
                 break;
             default:
                 // Here will never be occured.
