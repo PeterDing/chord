@@ -1,7 +1,7 @@
 'use strict';
 
 import { IArtist } from 'chord/music/api/artist';
-import { IPage, initiatePage } from 'chord/workbench/api/common/state/page';
+import { IOffset, initiateOffset } from 'chord/workbench/api/common/state/offset';
 
 
 export interface IArtistViewState {
@@ -11,8 +11,8 @@ export interface IArtistViewState {
 
     artist: IArtist;
 
-    songsPage: IPage;
-    albumsPage: IPage;
+    songsOffset: IOffset;
+    albumsOffset: IOffset;
 }
 
 
@@ -22,7 +22,7 @@ export function initiateArtistViewState() {
 
         artist: null,
 
-        songsPage: initiatePage(),
-        albumsPage: initiatePage(),
+        songsOffset: initiateOffset(),
+        albumsOffset: initiateOffset(),
     }
 }

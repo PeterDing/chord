@@ -13,7 +13,7 @@ export function showArtistView(state: IArtistViewState, act: IShowArtistAct): IA
     return { 
         view: 'overview',
         artist: act.artist,
-        songsPage: act.songsPage,
-        albumsPage: act.albumsPage,
+        songsOffset: act.songsOffset,
+        albumsOffset: act.albumsOffset,
     };
 }

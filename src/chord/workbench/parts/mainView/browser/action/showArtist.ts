@@ -5,18 +5,14 @@ import { IShowArtistAct } from 'chord/workbench/api/common/action/mainView';
 import { IArtist } from 'chord/music/api/artist';
 
 import { getMoreSongs, getMoreAlbums } from 'chord/workbench/parts/mainView/browser/action/artist';
-import { initiatePage } from 'chord/workbench/api/common/state/page';
+import { initiateOffset } from 'chord/workbench/api/common/state/offset';
 
 import { musicApi } from 'chord/music/core/api';
 
 
 export async function handleShowArtistView(artist: IArtist): Promise<IShowArtistAct> {
-    let songsPage = initiatePage();
-    let albumsPage = initiatePage();
-
-    // TODO, Check album origin to pick correct api
-    let { songs } = await getMoreSongs(artist, songsPage);
-    let { albums } = await getMoreAlbums(artist, albumsPage);
+    let { songs, songsOffset } = await getMoreSongs(artist, initiateOffset());
+    let { albums, albumsOffset } = await getMoreAlbums(artist, initiateOffset());
 
     artist.songs = songs;
     artist.albums = albums;
@@ -25,8 +21,8 @@ export async function handleShowArtistView(artist: IArtist): Promise<IShowArtist
         type: 'c:mainView:showArtistView',
         act: 'c:mainView:showArtistView',
         artist,
-        songsPage,
-        albumsPage,
+        songsOffset,
+        albumsOffset,
     };
 }
 

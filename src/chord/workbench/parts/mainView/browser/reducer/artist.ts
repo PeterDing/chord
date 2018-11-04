@@ -12,8 +12,8 @@ export function getMoreArtistSongs(state: IArtistViewState, act: IGetMoreArtistS
 
     let songs = [...state.artist.songs, ...act.songs];
     let artist = { ...state.artist, songs };
-    let songsPage = act.songsPage;
-    return { ...state, artist, songsPage };
+    let songsOffset = act.songsOffset;
+    return { ...state, artist, songsOffset };
 }
 
 
@@ -22,6 +22,6 @@ export function getMoreArtistAlbums(state: IArtistViewState, act: IGetMoreArtist
 
     let albums = [...state.artist.albums, ...act.albums];
     let artist = { ...state.artist, albums };
-    let albumsPage = act.albumsPage;
-    return { ...state, artist, albumsPage };
+    let albumsOffset = act.albumsOffset;
+    return { ...state, artist, albumsOffset };
 }

@@ -113,8 +113,8 @@ export interface IShowArtistAct extends Act {
     type: string;
     act: string;
     artist: IArtist;
-    songsPage: IPage;
-    albumsPage: IPage;
+    songsOffset: IOffset;
+    albumsOffset: IOffset;
 }
 
 export interface IGetMoreArtistSongsAct extends Act {
@@ -122,7 +122,7 @@ export interface IGetMoreArtistSongsAct extends Act {
     type: string;
     act: string;
     songs: Array<ISong>;
-    songsPage: IPage;
+    songsOffset: IOffset;
 }
 
 export interface IGetMoreArtistAlbumsAct extends Act {
@@ -130,7 +130,7 @@ export interface IGetMoreArtistAlbumsAct extends Act {
     type: string;
     act: string;
     albums: Array<IAlbum>;
-    albumsPage: IPage;
+    albumsOffset: IOffset;
 }
 
 

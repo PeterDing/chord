@@ -11,6 +11,7 @@ import { IArtistViewProps } from 'chord/workbench/parts/mainView/browser/compone
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import SongItemView from 'chord/workbench/parts/common/component/songItem';
 import AlbumItemView from 'chord/workbench/parts/common/component/albumItem';
+import { ViewMorePlusItem } from 'chord/workbench/parts/common/component/viewMoreItem';
 
 import { getMoreSongs, getMoreAlbums } from 'chord/workbench/parts/mainView/browser/action/artist';
 import { handlePlayArtist } from 'chord/workbench/parts/player/browser/action/playArtist';
@@ -178,7 +179,8 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
     songsView() {
         let artist = this.props.artist;
         let songsView = this._getSongsView();
-        let page = this.props.songsPage;
+        let offset = this.props.songsOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreSongs(artist, offset, size)} />) : null;
 
         return (
             <section className='artist-music container-fluid'>
@@ -196,15 +198,7 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
                     </div>
                 </div>
 
-                <div className='row'>
-                    <div className="view-more">
-                        <div className="view-more-button">
-                            <div className="btn btn-fg-green"
-                                onClick={() => this.props.getMoreSongs(artist, page)}>
-                                View More</div>
-                        </div>
-                    </div>
-                </div>
+                {viewMore}
 
             </section>
         );
@@ -213,7 +207,8 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
     albumsView() {
         let artist = this.props.artist;
         let albumsView = this._getAlbumsView();
-        let page = this.props.albumsPage;
+        let offset = this.props.albumsOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreAlbums(artist, offset, size)} />) : null;
 
         return (
             <section className='artist-albums'>
@@ -226,15 +221,7 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
                         </div>
                     </div>
 
-                    <div className='row'>
-                        <div className="view-more">
-                            <div className="view-more-button">
-                                <div className="btn btn-fg-green"
-                                    onClick={() => this.props.getMoreAlbums(artist, page)}>
-                                    View More</div>
-                            </div>
-                        </div>
-                    </div>
+                    {viewMore}
 
                 </div>
             </section>
@@ -274,8 +261,8 @@ function mapStateToProps(state: IStateGlobal) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getMoreSongs: (artist, page) => getMoreSongs(artist, page).then(act => dispatch(act)),
-        getMoreAlbums: (artist, page) => getMoreAlbums(artist, page).then(act => dispatch(act)),
+        getMoreSongs: (artist, offset, size) => getMoreSongs(artist, offset, size).then(act => dispatch(act)),
+        getMoreAlbums: (artist, offset, size) => getMoreAlbums(artist, offset, size).then(act => dispatch(act)),
         handlePlayArtist: artist => handlePlayArtist(artist).then(act => dispatch(act)),
         showArtistMenu: (e, artist) => dispatch(showArtistMenu(e, artist)),
     };
