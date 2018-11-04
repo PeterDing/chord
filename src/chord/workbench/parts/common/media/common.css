@@ -506,4 +506,11 @@ button:hover {
     .entity-info .media-bd .tracklist-header__extra-buttons {
         margin-left: 13px
     }
+
+    .cover-icon.xiami-icon {
+        position: absolute;
+        display: inline-block;
+        width: 10%;
+        left: 8%
+    }
 }
