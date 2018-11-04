@@ -13,6 +13,7 @@ import SongItemView from 'chord/workbench/parts/common/component/songItem';
 import AlbumItemView from 'chord/workbench/parts/common/component/albumItem';
 import ArtistItemView from 'chord/workbench/parts/common/component/artistItem';
 import CollectionItemView from 'chord/workbench/parts/common/component/collectionItem';
+import { ViewMorePlusItem } from 'chord/workbench/parts/common/component/viewMoreItem';
 
 import {
     getMoreFavoriteSongs,
@@ -108,7 +109,6 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         this._itemsView = this._itemsView.bind(this);
 
         this.overviewView = this.overviewView.bind(this);
-        this._viewMore = this._viewMore.bind(this);
         this.songsView = this.songsView.bind(this);
         this.artistsView = this.artistsView.bind(this);
         this.albumsView = this.albumsView.bind(this);
@@ -273,43 +273,11 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         );
     }
 
-    _viewMore(handler: (size) => any) {
-        return (
-            <div className='row'>
-                <div className="view-more row">
-                    <div className="btn btn-fg-green"
-                        onClick={() => handler(10)}>
-                        View More +10</div>
-
-                    <div className="btn btn-fg-green"
-                        onClick={() => handler(20)}>
-                        View More +20</div>
-
-                    <div className="btn btn-fg-green"
-                        onClick={() => handler(50)}>
-                        View More +50</div>
-
-                    <div className="btn btn-fg-green"
-                        onClick={() => handler(100)}>
-                        View More +100</div>
-
-                    <div className="btn btn-fg-green"
-                        onClick={() => handler(500)}>
-                        View More +500</div>
-
-                    <div className="btn btn-fg-green"
-                        onClick={() => handler(1000)}>
-                        View More +1000</div>
-                </div>
-            </div>
-        );
-    }
-
     songsView() {
         let userProfile = this.props.userProfile;
         let songsView = this._getSongsView();
         let offset = this.props.songsOffset;
-        let viewMore = offset.more ? this._viewMore((size) => this.props.getMoreFavoriteSongs(userProfile, offset, size)) : null;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreFavoriteSongs(userProfile, offset, size)} />) : null;
 
         return (
             <section className='artist-music container-fluid'>
@@ -335,7 +303,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
 
     _itemsView(view, handler, offset, title) {
         let userProfile = this.props.userProfile;
-        let viewMore = offset.more ? this._viewMore((size) => handler(userProfile, offset, size)) : null;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => handler(userProfile, offset, size)} />) : null;
 
         return (
             <section className='artist-albums'>
