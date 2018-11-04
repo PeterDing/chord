@@ -4,7 +4,7 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
-import { IPage } from 'chord/workbench/api/common/state/page';
+import { IOffset } from 'chord/workbench/api/common/state/offset';
 import {
     ISearchMoreSongsAct,
     ISearchMoreAlbumsAct,
@@ -25,13 +25,13 @@ export interface ISearchResultProps {
     artists: Array<IArtist>;
     collections: Array<ICollection>;
 
-    songsPage: IPage;
-    albumsPage: IPage;
-    artistsPage: IPage;
-    collectionsPage: IPage;
+    songsOffset: IOffset;
+    albumsOffset: IOffset;
+    artistsOffset: IOffset;
+    collectionsOffset: IOffset;
 
-    searchMoreSongs: (keyword, page) => Promise<ISearchMoreSongsAct>;
-    searchMoreAlbums: (keyword, page) => Promise<ISearchMoreAlbumsAct>;
-    searchMoreArtists: (keyword, page) => Promise<ISearchMoreArtistsAct>;
-    searchMoreCollections: (keyword, page) => Promise<ISearchMoreCollectionsAct>;
+    searchMoreSongs: (keyword, offset) => Promise<ISearchMoreSongsAct>;
+    searchMoreAlbums: (keyword, offset) => Promise<ISearchMoreAlbumsAct>;
+    searchMoreArtists: (keyword, offset) => Promise<ISearchMoreArtistsAct>;
+    searchMoreCollections: (keyword, offset) => Promise<ISearchMoreCollectionsAct>;
 }

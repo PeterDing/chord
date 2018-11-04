@@ -4,7 +4,7 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
-import { IPage, initiatePage } from 'chord/workbench/api/common/state/page';
+import { IOffset, initiateOffset } from 'chord/workbench/api/common/state/offset';
 
 
 export interface ISearchResultState {
@@ -17,10 +17,10 @@ export interface ISearchResultState {
     artists: Array<IArtist>;
     collections: Array<ICollection>;
 
-    songsPage: IPage;
-    albumsPage: IPage;
-    artistsPage: IPage;
-    collectionsPage: IPage;
+    songsOffset: IOffset;
+    albumsOffset: IOffset;
+    artistsOffset: IOffset;
+    collectionsOffset: IOffset;
 }
 
 
@@ -50,10 +50,10 @@ export function initiateSearchResultState(): ISearchResultState {
         artists: [],
         collections: [],
 
-        songsPage: initiatePage(),
-        albumsPage: initiatePage(),
-        artistsPage: initiatePage(),
-        collectionsPage: initiatePage(),
+        songsOffset: initiateOffset(),
+        albumsOffset: initiateOffset(),
+        artistsOffset: initiateOffset(),
+        collectionsOffset: initiateOffset(),
     };
 }
 

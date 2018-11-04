@@ -6,79 +6,79 @@ import {
     ISearchMoreArtistsAct,
     ISearchMoreCollectionsAct,
 } from 'chord/workbench/api/common/action/mainView';
-import { IPage } from 'chord/workbench/api/common/state/page';
+import { IOffset } from 'chord/workbench/api/common/state/offset';
 
 import { musicApi } from 'chord/music/core/api';
 
 
-export async function searchMoreSongs(keyword: string, page: IPage): Promise<ISearchMoreSongsAct> {
+export async function searchMoreSongs(keyword: string, offset: IOffset): Promise<ISearchMoreSongsAct> {
     let songs = [];
-    if (page.more) {
-        songs = await musicApi.searchSongs(keyword, page.page, page.size);
-        page.page += 1;
+    if (offset.more) {
+        songs = await musicApi.searchSongs(keyword, offset.offset, offset.limit);
+        offset.offset += 1;
     }
     if (songs.length == 0) {
-        page.more = false;
+        offset.more = false;
     }
     return {
         type: 'c:mainView:searchMoreSongs',
         act: 'c:mainView:searchMoreSongs',
         keyword,
         songs,
-        songsPage: page,
+        songsOffset: offset,
     };
 }
 
-export async function searchMoreAlbums(keyword: string, page: IPage): Promise<ISearchMoreAlbumsAct> {
+export async function searchMoreAlbums(keyword: string, offset: IOffset): Promise<ISearchMoreAlbumsAct> {
     let albums = [];
-    if (page.more) {
-        albums = await musicApi.searchAlbums(keyword, page.page, page.size);
-        page.page += 1;
+    if (offset.more) {
+        albums = await musicApi.searchAlbums(keyword, offset.offset, offset.limit);
+        offset.offset += 1;
     }
     if (albums.length == 0) {
-        page.more = false;
+        offset.more = false;
     }
     return {
         type: 'c:mainView:searchMoreAlbums',
         act: 'c:mainView:searchMoreAlbums',
         keyword,
         albums,
-        albumsPage: page,
+        albumsOffset: offset,
     };
 }
 
-export async function searchMoreArtists(keyword: string, page: IPage): Promise<ISearchMoreArtistsAct> {
+export async function searchMoreArtists(keyword: string, offset: IOffset): Promise<ISearchMoreArtistsAct> {
     let artists = [];
-    if (page.more) {
-        artists = await musicApi.searchArtists(keyword, page.page, page.size);
-        page.page += 1;
+    if (offset.more) {
+        artists = await musicApi.searchArtists(keyword, offset.offset, offset.limit);
+        offset.offset += 1;
     }
     if (artists.length == 0) {
-        page.more = false;
+        offset.more = false;
     }
     return {
         type: 'c:mainView:searchMoreArtists',
         act: 'c:mainView:searchMoreArtists',
         keyword,
         artists,
-        artistsPage: page,
+        artistsOffset: offset,
     };
 }
 
-export async function searchMoreCollections(keyword: string, page: IPage): Promise<ISearchMoreCollectionsAct> {
+export async function searchMoreCollections(keyword: string, offset: IOffset): Promise<ISearchMoreCollectionsAct> {
     let collections = [];
-    if (page.more) {
-        collections = await musicApi.searchCollections(keyword, page.page, page.size);
-        page.page += 1;
+    if (offset.more) {
+        collections = await musicApi.searchCollections(keyword, offset.offset, offset.limit);
+        offset.offset += 1;
     }
     if (collections.length == 0) {
-        page.more = false;
+        offset.more = false;
     }
     return {
         type: 'c:mainView:searchMoreCollections',
         act: 'c:mainView:searchMoreCollections',
         keyword,
         collections,
-        collectionsPage: page,
+        collectionsOffset: offset,
     };
 }

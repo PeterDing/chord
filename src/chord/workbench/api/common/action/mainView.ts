@@ -13,7 +13,6 @@ import { IUserAlbum } from 'chord/library/api/album';
 import { IUserArtist } from 'chord/library/api/artist';
 import { IUserCollection } from 'chord/library/api/collection';
 
-import { IPage } from 'chord/workbench/api/common/state/page';
 import { IOffset } from 'chord/workbench/api/common/state/offset';
 
 
@@ -51,7 +50,7 @@ export interface ISearchMoreSongsAct extends Act {
     act: string;
     keyword: string;
     songs: Array<ISong>;
-    songsPage: IPage;
+    songsOffset: IOffset;
 }
 
 export interface ISearchMoreAlbumsAct extends Act {
@@ -60,7 +59,7 @@ export interface ISearchMoreAlbumsAct extends Act {
     act: string;
     keyword: string;
     albums: Array<IAlbum>;
-    albumsPage: IPage;
+    albumsOffset: IOffset;
 }
 
 export interface ISearchMoreArtistsAct extends Act {
@@ -69,7 +68,7 @@ export interface ISearchMoreArtistsAct extends Act {
     act: string;
     keyword: string;
     artists: Array<IArtist>;
-    artistsPage: IPage;
+    artistsOffset: IOffset;
 }
 
 export interface ISearchMoreCollectionsAct extends Act {
@@ -78,7 +77,7 @@ export interface ISearchMoreCollectionsAct extends Act {
     act: string;
     keyword: string;
     collections: Array<ICollection>;
-    collectionsPage: IPage;
+    collectionsOffset: IOffset;
 }
 
 

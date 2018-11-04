@@ -31,31 +31,31 @@ export function showSearchResult(state: ISearchViewState, act: ISearchInputAct):
 export function addSearchSongs(state: ISearchResultState, act: ISearchMoreSongsAct): ISearchResultState {
     equal(act.act, 'c:mainView:searchMoreSongs')
 
-    let songsPage = act.songsPage;
+    let songsOffset = act.songsOffset;
     let songs = [...state.songs, ...act.songs];
-    return { ...state, songs, songsPage };
+    return { ...state, songs, songsOffset };
 }
 
 export function addSearchAlbums(state: ISearchResultState, act: ISearchMoreAlbumsAct): ISearchResultState {
     equal(act.act, 'c:mainView:searchMoreAlbums')
 
-    let albumsPage = act.albumsPage;
+    let albumsOffset = act.albumsOffset;
     let albums = [...state.albums, ...act.albums];
-    return { ...state, albums, albumsPage };
+    return { ...state, albums, albumsOffset };
 }
 
 export function addSearchArtists(state: ISearchResultState, act: ISearchMoreArtistsAct): ISearchResultState {
     equal(act.act, 'c:mainView:searchMoreArtists')
 
-    let artistsPage = act.artistsPage;
+    let artistsOffset = act.artistsOffset;
     let artists = [...state.artists, ...act.artists];
-    return { ...state, artists, artistsPage };
+    return { ...state, artists, artistsOffset };
 }
 
 export function addSearchCollections(state: ISearchResultState, act: ISearchMoreCollectionsAct): ISearchResultState {
     equal(act.act, 'c:mainView:searchMoreCollections')
 
-    let collectionsPage = act.collectionsPage;
+    let collectionsOffset = act.collectionsOffset;
     let collections = [...state.collections, ...act.collections];
-    return { ...state, collections, collectionsPage };
+    return { ...state, collections, collectionsOffset };
 }

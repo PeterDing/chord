@@ -227,7 +227,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
         let songsView = this._getSongsView();
         let searchNavMenu = this._getSearchNavMenu();
         let keyword = this.props.keyword;
-        let page = this.props.songsPage;
+        let offset = this.props.songsOffset;
 
         return (
             <div>
@@ -253,7 +253,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
                             <div className="view-more">
                                 <div className="view-more-button">
                                     <div className="btn btn-fg-green"
-                                        onClick={() => this.props.searchMoreSongs(keyword, page)}>
+                                        onClick={() => this.props.searchMoreSongs(keyword, offset)}>
                                         View More</div>
                                 </div>
                             </div>
@@ -269,7 +269,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
         let artistsView = this._getArtistsView();
         let searchNavMenu = this._getSearchNavMenu();
         let keyword = this.props.keyword;
-        let page = this.props.artistsPage;
+        let offset = this.props.artistsOffset;
 
         return (
             <div>
@@ -297,7 +297,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
                             <div className="view-more">
                                 <div className="view-more-button">
                                     <div className="btn btn-fg-green"
-                                        onClick={() => this.props.searchMoreArtists(keyword, page)}>
+                                        onClick={() => this.props.searchMoreArtists(keyword, offset)}>
                                         View More</div>
                                 </div>
                             </div>
@@ -313,7 +313,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
         let albumsView = this._getAlbumsView();
         let searchNavMenu = this._getSearchNavMenu();
         let keyword = this.props.keyword;
-        let page = this.props.albumsPage;
+        let offset = this.props.albumsOffset;
 
         return (
             <div>
@@ -341,7 +341,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
                             <div className="view-more">
                                 <div className="view-more-button">
                                     <div className="btn btn-fg-green"
-                                        onClick={() => this.props.searchMoreAlbums(keyword, page)}>
+                                        onClick={() => this.props.searchMoreAlbums(keyword, offset)}>
                                         View More</div>
                                 </div>
                             </div>
@@ -358,7 +358,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
         let collectionsView = this._getCollectionsView();
         let searchNavMenu = this._getSearchNavMenu();
         let keyword = this.props.keyword;
-        let page = this.props.collectionsPage;
+        let offset = this.props.collectionsOffset;
 
         return (
             <div>
@@ -386,7 +386,7 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
                             <div className="view-more">
                                 <div className="view-more-button">
                                     <div className="btn btn-fg-green"
-                                        onClick={() => this.props.searchMoreCollections(keyword, page)}>
+                                        onClick={() => this.props.searchMoreCollections(keyword, offset)}>
                                         View More</div>
                                 </div>
                             </div>
@@ -426,10 +426,10 @@ function mapStateToProps(state: IStateGlobal) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        searchMoreSongs: (keyword, page) => searchMoreSongs(keyword, page).then(act => dispatch(act)),
-        searchMoreAlbums: (keyword, page) => searchMoreAlbums(keyword, page).then(act => dispatch(act)),
-        searchMoreArtists: (keyword, page) => searchMoreArtists(keyword, page).then(act => dispatch(act)),
-        searchMoreCollections: (keyword, page) => searchMoreCollections(keyword, page).then(act => dispatch(act)),
+        searchMoreSongs: (keyword, offset) => searchMoreSongs(keyword, offset).then(act => dispatch(act)),
+        searchMoreAlbums: (keyword, offset) => searchMoreAlbums(keyword, offset).then(act => dispatch(act)),
+        searchMoreArtists: (keyword, offset) => searchMoreArtists(keyword, offset).then(act => dispatch(act)),
+        searchMoreCollections: (keyword, offset) => searchMoreCollections(keyword, offset).then(act => dispatch(act)),
     };
 }
 
