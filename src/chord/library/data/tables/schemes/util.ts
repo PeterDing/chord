@@ -30,7 +30,7 @@ export function addMissColumns(tableName: string, columns: string[][], db: Datab
     columns
         .filter(([col, desc]) => !cols.has(col))
         .forEach(([col, desc]) => {
-            let sql = `ALTER TABLE ${tableName} ADD COLUMN ${col} {desc}`;
+            let sql = `ALTER TABLE ${tableName} ADD COLUMN ${col} ${desc}`;
             db.exec(sql);
         });
 }
