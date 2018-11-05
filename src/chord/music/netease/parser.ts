@@ -255,7 +255,7 @@ export function makeUserProfile(info: any, userId?: string): IUserProfile {
         followingCount: info['follows'],
         followerCount: info['followeds'],
 
-        collectionCount: info['playlistCount'],
+        favoriteCollectionCount: info['playlistCount'],
 
         description: info['signature'],
     }
@@ -273,7 +273,7 @@ export function getInfosFromHtml(html: string): any {
         userId: _getUserId(userOriginalId),
         followingCount: parseInt($('#follow_count').text().trim()),
         followerCount: parseInt($('#fan_count').text().trim()),
-        collectionCount: parseInt(/cCount\s*:\s*(\d+)/g.exec(html)[1]),
+        favoriteCollectionCount: parseInt(/cCount\s*:\s*(\d+)/g.exec(html)[1]),
     };
     return info;
 }
