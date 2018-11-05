@@ -8,10 +8,10 @@ import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IUserProfile } from 'chord/music/api/user';
 
-import { IUserSong } from 'chord/library/api/song';
-import { IUserAlbum } from 'chord/library/api/album';
-import { IUserArtist } from 'chord/library/api/artist';
-import { IUserCollection } from 'chord/library/api/collection';
+import { ILibrarySong } from 'chord/library/api/song';
+import { ILibraryAlbum } from 'chord/library/api/album';
+import { ILibraryArtist } from 'chord/library/api/artist';
+import { ILibraryCollection } from 'chord/library/api/collection';
 
 import { IOffset } from 'chord/workbench/api/common/state/offset';
 
@@ -141,17 +141,17 @@ export interface ILibraryInputAct extends Act {
     type: string;
     act: string;
     keyword: string;
-    songs: Array<IUserSong>;
-    albums: Array<IUserAlbum>;
-    artists: Array<IUserArtist>;
-    collections: Array<IUserCollection>;
+    songs: Array<ILibrarySong>;
+    albums: Array<ILibraryAlbum>;
+    artists: Array<ILibraryArtist>;
+    collections: Array<ILibraryCollection>;
 }
 
 export interface IGetMoreLibrarySongsAct extends Act {
     // 'c:mainView:getMoreLibrarySongs'
     type: string;
     act: string;
-    songs: Array<IUserSong>;
+    songs: Array<ILibrarySong>;
     songsOffset: IOffset;
 }
 
@@ -159,7 +159,7 @@ export interface IGetMoreLibraryAlbumsAct extends Act {
     // 'c:mainView:getMoreLibraryAlbums'
     type: string;
     act: string;
-    albums: Array<IUserAlbum>;
+    albums: Array<ILibraryAlbum>;
     albumsOffset: IOffset;
 }
 
@@ -167,7 +167,7 @@ export interface IGetMoreLibraryArtistsAct extends Act {
     // 'c:mainView:getMoreLibraryArtists'
     type: string;
     act: string;
-    artists: Array<IUserArtist>;
+    artists: Array<ILibraryArtist>;
     artistsOffset: IOffset;
 }
 
@@ -175,7 +175,7 @@ export interface IGetMoreLibraryCollectionsAct extends Act {
     // 'c:mainView:getMoreLibraryCollections'
     type: string;
     act: string;
-    collections: Array<IUserCollection>;
+    collections: Array<ILibraryCollection>;
     collectionsOffset: IOffset;
 }
 
@@ -183,28 +183,28 @@ export interface IAddLibrarySongAct extends Act {
     // 'c:mainView:addLibrarySong'
     type: string;
     act: string;
-    song: IUserSong;
+    song: ILibrarySong;
 }
 
 export interface IAddLibraryArtistAct extends Act {
     // 'c:mainView:addLibraryArtist'
     type: string;
     act: string;
-    artist: IUserArtist;
+    artist: ILibraryArtist;
 }
 
 export interface IAddLibraryAlbumAct extends Act {
     // 'c:mainView:addLibraryAlbum'
     type: string;
     act: string;
-    album: IUserAlbum;
+    album: ILibraryAlbum;
 }
 
 export interface IAddLibraryCollectionAct extends Act {
     // 'c:mainView:addLibraryCollection'
     type: string;
     act: string;
-    collection: IUserCollection;
+    collection: ILibraryCollection;
 }
 
 export interface IAddLibraryUserProfileAct extends Act {

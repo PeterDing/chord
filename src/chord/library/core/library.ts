@@ -15,10 +15,10 @@ import { ICollection } from "chord/music/api/collection";
 import { IUserProfile } from "chord/music/api/user";
 // import { IPlayList } from "chord/music/api/playList";
 
-import { IUserSong } from 'chord/library/api/song';
-import { IUserAlbum } from 'chord/library/api/album';
-import { IUserArtist } from 'chord/library/api/artist';
-import { IUserCollection } from 'chord/library/api/collection';
+import { ILibrarySong } from 'chord/library/api/song';
+import { ILibraryAlbum } from 'chord/library/api/album';
+import { ILibraryArtist } from 'chord/library/api/artist';
+import { ILibraryCollection } from 'chord/library/api/collection';
 // import { IUserPlayList } from 'chord/library/api/playList';
 
 import { encryptPassword } from 'chord/library/auth/encrypt';
@@ -61,19 +61,19 @@ export class Library {
         }
     }
 
-    librarySongs(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserSong> {
+    librarySongs(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibrarySong> {
         return this.db.librarySongs(lastId, size, keyword);
     }
 
-    libraryAlbums(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserAlbum> {
+    libraryAlbums(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryAlbum> {
         return this.db.libraryAlbums(lastId, size, keyword);
     }
 
-    libraryArtists(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserArtist> {
+    libraryArtists(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryArtist> {
         return this.db.libraryArtists(lastId, size, keyword);
     }
 
-    libraryCollections(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserCollection> {
+    libraryCollections(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryCollection> {
         return this.db.libraryCollections(lastId, size, keyword);
     }
 
@@ -88,22 +88,22 @@ export class Library {
         return this.db.addUser(username, password);
     }
 
-    addSong(song: ISong): IUserSong {
+    addSong(song: ISong): ILibrarySong {
         let addAt = Date.now();
         return this.db.addSong(song, addAt);
     }
 
-    addAlbum(album: IAlbum): IUserAlbum {
+    addAlbum(album: IAlbum): ILibraryAlbum {
         let addAt = Date.now();
         return this.db.addAlbum(album, addAt);
     }
 
-    addArtist(artist: IArtist): IUserArtist {
+    addArtist(artist: IArtist): ILibraryArtist {
         let addAt = Date.now();
         return this.db.addArtist(artist, addAt);
     }
 
-    addCollection(collection: ICollection): IUserCollection {
+    addCollection(collection: ICollection): ILibraryCollection {
         let addAt = Date.now();
         return this.db.addCollection(collection, addAt);
     }

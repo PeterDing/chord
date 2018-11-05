@@ -1,9 +1,9 @@
 'use strict';
 
-import { IUserSong } from 'chord/library/api/song';
-import { IUserAlbum } from 'chord/library/api/album';
-import { IUserArtist } from 'chord/library/api/artist';
-import { IUserCollection } from 'chord/library/api/collection';
+import { ILibrarySong } from 'chord/library/api/song';
+import { ILibraryAlbum } from 'chord/library/api/album';
+import { ILibraryArtist } from 'chord/library/api/artist';
+import { ILibraryCollection } from 'chord/library/api/collection';
 import { IOffset, initiateOffset } from 'chord/workbench/api/common/state/offset';
 
 
@@ -12,10 +12,10 @@ export interface ILibraryResultState {
     // For searching result navigation
     view: string;
 
-    songs: Array<IUserSong>;
-    albums: Array<IUserAlbum>;
-    artists: Array<IUserArtist>;
-    collections: Array<IUserCollection>;
+    songs: Array<ILibrarySong>;
+    albums: Array<ILibraryAlbum>;
+    artists: Array<ILibraryArtist>;
+    collections: Array<ILibraryCollection>;
 
     // offset is lastId
     songsOffset: IOffset;

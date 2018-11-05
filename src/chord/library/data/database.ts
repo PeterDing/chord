@@ -13,10 +13,10 @@ import { ICollection } from 'chord/music/api/collection';
 import { IUserProfile } from "chord/music/api/user";
 import { IAudio } from 'chord/music/api/audio';
 
-import { IUserSong } from 'chord/library/api/song';
-import { IUserAlbum } from 'chord/library/api/album';
-import { IUserArtist } from 'chord/library/api/artist';
-import { IUserCollection } from 'chord/library/api/collection';
+import { ILibrarySong } from 'chord/library/api/song';
+import { ILibraryAlbum } from 'chord/library/api/album';
+import { ILibraryArtist } from 'chord/library/api/artist';
+import { ILibraryCollection } from 'chord/library/api/collection';
 
 import {
     toNumber,
@@ -75,7 +75,7 @@ export class LibraryDatabase {
         }
     }
 
-    public librarySongs(lastId: number, size: number, keyword?: string): Array<IUserSong> {
+    public librarySongs(lastId: number, size: number, keyword?: string): Array<ILibrarySong> {
         let searchCondition = '';
         if (keyword) {
             searchCondition = '((song.songName like @kw) OR (song.subTitle like @kw) OR (song.albumName like @kw) OR (song.artistName like @kw) OR (song.genres like @kw))';
@@ -94,7 +94,7 @@ export class LibraryDatabase {
             })
     }
 
-    public libraryAlbums(lastId: number, size: number, keyword?: string): Array<IUserAlbum> {
+    public libraryAlbums(lastId: number, size: number, keyword?: string): Array<ILibraryAlbum> {
         let searchCondition = '';
         if (keyword) {
             searchCondition = '((subTitle like @kw) OR (albumName like @kw) OR (artistName like @kw) OR (genres like @kw))';
@@ -122,7 +122,7 @@ export class LibraryDatabase {
         }
     }
 
-    public libraryArtists(lastId: number, size: number, keyword?: string): Array<IUserArtist> {
+    public libraryArtists(lastId: number, size: number, keyword?: string): Array<ILibraryArtist> {
         let searchCondition = '';
         if (keyword) {
             searchCondition = '((artistName like @kw) OR (genres like @kw))';
@@ -140,7 +140,7 @@ export class LibraryDatabase {
             });
     }
 
-    public libraryCollections(lastId: number, size: number, keyword?: string): Array<IUserCollection> {
+    public libraryCollections(lastId: number, size: number, keyword?: string): Array<ILibraryCollection> {
         let searchCondition = '';
         if (keyword) {
             searchCondition = '((collectionName like @kw) OR (tags like @kw))';
@@ -207,7 +207,7 @@ export class LibraryDatabase {
         return true;
     }
 
-    public addSong(song: ISong, addAt: number): IUserSong {
+    public addSong(song: ISong, addAt: number): ILibrarySong {
         this.storeSong(song, addAt);
 
         let param = { addAt, songId: song.songId };
@@ -218,7 +218,7 @@ export class LibraryDatabase {
         return { id: <number>result.lastInsertROWID, song, addAt };
     }
 
-    public addAlbum(album: IAlbum, addAt: number): IUserAlbum {
+    public addAlbum(album: IAlbum, addAt: number): ILibraryAlbum {
         // First add song;
         album.songs.map(song => this.storeSong(song, addAt));
 
@@ -241,7 +241,7 @@ export class LibraryDatabase {
         return { id: <number>result.lastInsertROWID, album, addAt };
     }
 
-    public addArtist(artist: IArtist, addAt: number): IUserArtist {
+    public addArtist(artist: IArtist, addAt: number): ILibraryArtist {
         let _artist = <any>{ ...artist };
         delete _artist.songs;
         delete _artist.albums;
@@ -262,7 +262,7 @@ export class LibraryDatabase {
         return { id: <number>result.lastInsertROWID, artist, addAt };
     }
 
-    public addCollection(collection: ICollection, addAt: number): IUserCollection {
+    public addCollection(collection: ICollection, addAt: number): ILibraryCollection {
         // First add song;
         collection.songs.map(song => this.storeSong(song, addAt));
 

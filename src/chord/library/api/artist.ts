@@ -3,7 +3,7 @@
 import { IArtist } from "chord/music/api/artist";
 
 
-export interface IUserArtist {
+export interface ILibraryArtist {
     // id for database
     id: number;
     addAt: number;  // millisecond
