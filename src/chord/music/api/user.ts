@@ -27,8 +27,8 @@ export interface IUserProfile {
     userAvatarUrl?: string;
     userAvatarPath?: string;
 
-    followersCount?: number;
-    followingsCount?: number;
+    followerCount?: number;
+    followingCount?: number;
 
     followers?: Array<IUserProfile>;
     followings?: Array<IUserProfile>;

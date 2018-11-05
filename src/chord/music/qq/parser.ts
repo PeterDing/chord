@@ -385,8 +385,8 @@ export function makeUserProfile(info: any): IUserProfile {
 
         userAvatarUrl: userInfo['headpic'] || info['logo'],
 
-        followersCount: info['listen_num'] || userInfo['nums']['fansnum'],
-        followingsCount: info['follow_num'] || userInfo['nums']['followusernum'],
+        followerCount: info['listen_num'] || userInfo['nums']['fansnum'],
+        followingCount: info['follow_num'] || userInfo['nums']['followusernum'],
 
         songCount: musicInfo[1] ? musicInfo[1]['num0'] : null,
         artistCount: userInfo['nums']['followsingernum'],

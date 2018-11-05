@@ -535,8 +535,8 @@ export function makeUserProfile(info: any): IUserProfile {
 
         userAvatarUrl: info['avatar'],
 
-        followersCount: info['fans'] || null,
-        followingsCount: info['followers'] || null,
+        followerCount: info['fans'] || null,
+        followingCount: info['followers'] || null,
 
         listenCount: info['listens'] || null,
 
