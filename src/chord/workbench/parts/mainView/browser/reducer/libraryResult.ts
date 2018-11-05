@@ -8,6 +8,7 @@ import {
     IGetMoreLibraryAlbumsAct,
     IGetMoreLibraryArtistsAct,
     IGetMoreLibraryCollectionsAct,
+    IGetMoreLibraryUserProfilesAct,
 } from 'chord/workbench/api/common/action/mainView';
 
 import { ILibraryViewState, ILibraryResultState } from 'chord/workbench/api/common/state/mainView/libraryView';
@@ -35,6 +36,10 @@ export function showLibraryResult(state: ILibraryViewState, act: ILibraryInputAc
     if (act.collections.length) {
         collectionsOffset.offset = act.collections[act.collections.length - 1].id;
     }
+    let userProfilesOffset = { ...initiateOffset() };
+    if (act.userProfiles.length) {
+        userProfilesOffset.offset = act.userProfiles[act.userProfiles.length - 1].id;
+    }
 
     let result = {
         view: 'top',
@@ -43,11 +48,13 @@ export function showLibraryResult(state: ILibraryViewState, act: ILibraryInputAc
         artists: act.artists,
         albums: act.albums,
         collections: act.collections,
+        userProfiles: act.userProfiles,
 
         songsOffset,
         artistsOffset,
         albumsOffset,
         collectionsOffset,
+        userProfilesOffset,
     };
 
     return { keyword, result };
@@ -85,3 +92,10 @@ export function getMoreLibraryCollections(state: ILibraryResultState, act: IGetM
     return { ...state, collections, collectionsOffset };
 }
 
+export function getMoreLibraryUserProfiles(state: ILibraryResultState, act: IGetMoreLibraryUserProfilesAct): ILibraryResultState {
+    equal(act.act, 'c:mainView:getMoreLibraryCollections');
+
+    let collectionsOffset = act.userProfilesOffset;
+    let userProfiles = [...state.userProfiles, ...act.userProfiles];
+    return { ...state, userProfiles, collectionsOffset };
+}

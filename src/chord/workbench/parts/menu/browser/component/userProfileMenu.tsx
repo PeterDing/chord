@@ -43,7 +43,7 @@ class UserProfileMenu extends React.Component<IUserProfileMenuProps, any> {
         let addLibraryItem = userProfile && (!like ? (
             <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                 onClick={() => this.props.handleAddLibraryUserProfile(userProfile)}>
-                Save to your Favorite UserProfiles</div>
+                Follow</div>
         ) : null);
 
         let removeFromLibraryItem = userProfile && (like ? (
@@ -59,10 +59,10 @@ class UserProfileMenu extends React.Component<IUserProfileMenuProps, any> {
                 {addLibraryItem}
                 <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                     onClick={() => this.props.handleAddToQueue(userProfile, 'tail')}>
-                    Add to Queue (After)</div>
+                    Add Favorite Songs to Queue (After)</div>
                 <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
                     onClick={() => this.props.handleAddToQueue(userProfile, 'head')}>
-                    Add to Queue (Before)</div>
+                    Add Favorite Songs to Queue (Before)</div>
                 {/*<div className="react-contextmenu-item" role="menuitem" tabIndex={-1}>Add to Playlist</div>*/}
                 {removeFromLibraryItem}
 

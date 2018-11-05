@@ -22,13 +22,15 @@ import {
     getMoreLibrarySongs,
     getMoreLibraryArtists,
     getMoreLibraryAlbums,
-    getMoreLibraryCollections
+    getMoreLibraryCollections,
+    getMoreLibraryUserProfiles,
 } from 'chord/workbench/parts/mainView/browser/reducer/libraryResult';
 import {
     addLibrarySong,
     addLibraryArtist,
     addLibraryAlbum,
     addLibraryCollection,
+    addLibraryUserProfile,
     removeFromLibrary,
 } from 'chord/workbench/parts/mainView/browser/reducer/library';
 
@@ -144,6 +146,11 @@ export function map(act: string): IReducerMap {
                 reducer: getMoreLibraryCollections,
                 node: 'libraryView.result',
             };
+        case 'c:mainView:getMoreLibraryUserProfiles':
+            return {
+                reducer: getMoreLibraryUserProfiles,
+                node: 'libraryView.result',
+            };
         case 'c:mainView:addLibrarySong':
             return {
                 reducer: addLibrarySong,
@@ -162,6 +169,11 @@ export function map(act: string): IReducerMap {
         case 'c:mainView:addLibraryCollection':
             return {
                 reducer: addLibraryCollection,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:addLibraryUserProfile':
+            return {
+                reducer: addLibraryUserProfile,
                 node: 'libraryView.result',
             };
         case 'c:mainView:removeFromLibrary':

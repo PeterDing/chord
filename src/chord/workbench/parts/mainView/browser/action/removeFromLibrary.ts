@@ -4,13 +4,14 @@ import { ISong } from 'chord/music/api/song';
 import { IArtist } from 'chord/music/api/artist';
 import { IAlbum } from 'chord/music/api/album';
 import { ICollection } from 'chord/music/api/collection';
+import { IUserProfile } from 'chord/music/api/user';
 
 import { IRemoveFromLibraryAct } from 'chord/workbench/api/common/action/mainView';
 
 import { defaultLibrary } from 'chord/library/core/library';
 
 
-export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollection): IRemoveFromLibraryAct {
+export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): IRemoveFromLibraryAct {
     item.like = false;
 
     switch (item.type) {
@@ -25,6 +26,9 @@ export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollec
             break;
         case 'collection':
             defaultLibrary.deleteCollection(<ICollection>item);
+            break;
+        case 'userProfile':
+            defaultLibrary.deleteUserProfile(<IUserProfile>item);
             break;
         default:
             console.warn('`handleRemoveFromLibrary` act: unknown item\'s type: ' + JSON.stringify(item));

@@ -9,6 +9,7 @@ import {
     IAddLibraryArtistAct,
     IAddLibraryAlbumAct,
     IAddLibraryCollectionAct,
+    IAddLibraryUserProfileAct,
     IRemoveFromLibraryAct,
 } from 'chord/workbench/api/common/action/mainView';
 
@@ -41,6 +42,13 @@ export function addLibraryCollection(state: ILibraryResultState, act: IAddLibrar
     return { ...state, collections };
 }
 
+export function addLibraryUserProfile(state: ILibraryResultState, act: IAddLibraryUserProfileAct): ILibraryResultState {
+    equal(act.act, 'c:mainView:addLibraryUserProfile');
+
+    let userProfiles = [act.userProfile, ...state.userProfiles];
+    return { ...state, userProfiles };
+}
+
 export function removeFromLibrary(state: ILibraryResultState, act: IRemoveFromLibraryAct): ILibraryResultState {
     equal(act.act, 'c:mainView:removeFromLibrary');
 
@@ -59,6 +67,9 @@ export function removeFromLibrary(state: ILibraryResultState, act: IRemoveFromLi
         case 'collection':
             let collections = state.collections.filter(collection => collection.collection.collectionId != (<any>item).collectionId);
             return { ...state, collections };
+        case 'userProfile':
+            let userProfiles = state.userProfiles.filter(userProfile => userProfile.userProfile.userId != (<any>item).userId);
+            return { ...state, userProfiles };
         default:
             console.warn('`removeFromLibrary` reducer: unknown item\'s type: ' + JSON.stringify(item));
     }

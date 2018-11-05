@@ -12,6 +12,7 @@ export function librarySearch(keyword: string): ILibraryInputAct {
     let artists = defaultLibrary.libraryArtists(MAX_ID, 10, keyword);
     let albums = defaultLibrary.libraryAlbums(MAX_ID, 10, keyword);
     let collections = defaultLibrary.libraryCollections(MAX_ID, 10, keyword);
+    let userProfiles = defaultLibrary.libraryUserProfiles(MAX_ID, 10, keyword);
 
     return {
         type: 'c:mainView:libraryInput',
@@ -21,5 +22,6 @@ export function librarySearch(keyword: string): ILibraryInputAct {
         albums,
         artists,
         collections,
+        userProfiles,
     };
 }

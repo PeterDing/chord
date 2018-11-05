@@ -4,12 +4,14 @@ import { ISong } from 'chord/music/api/song';
 import { IArtist } from 'chord/music/api/artist';
 import { IAlbum } from 'chord/music/api/album';
 import { ICollection } from 'chord/music/api/collection';
+import { IUserProfile } from 'chord/music/api/user';
 
 import {
     IAddLibrarySongAct,
     IAddLibraryArtistAct,
     IAddLibraryAlbumAct,
     IAddLibraryCollectionAct,
+    IAddLibraryUserProfileAct,
 } from 'chord/workbench/api/common/action/mainView';
 
 import { defaultLibrary as library } from 'chord/library/core/library';
@@ -52,5 +54,15 @@ export function handleAddLibraryCollection(collection: ICollection): IAddLibrary
         type: 'c:mainView:addLibraryCollection',
         act: 'c:mainView:addLibraryCollection',
         collection: libraryCollection,
+    };
+}
+
+export function handleAddLibraryUserProfile(userProfile: IUserProfile): IAddLibraryUserProfileAct {
+    userProfile.like = true;
+    let libraryUserProfile = library.addUserProfile(userProfile);
+    return {
+        type: 'c:mainView:addLibraryUserProfile',
+        act: 'c:mainView:addLibraryUserProfile',
+        userProfile: libraryUserProfile,
     };
 }

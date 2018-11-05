@@ -36,6 +36,7 @@ function handleView(act: string): string {
         case 'c:mainView:getMoreLibraryArtists':
         case 'c:mainView:getMoreLibraryAlbums':
         case 'c:mainView:getMoreLibraryCollections':
+        case 'c:mainView:getMoreLibraryUserProfiles':
             return 'libraryView';
 
         case 'c:mainView:preferenceView':
@@ -54,6 +55,7 @@ function handleView(act: string): string {
         case 'c:mainView:addLibraryArtist':
         case 'c:mainView:addLibraryAlbum':
         case 'c:mainView:addLibraryCollection':
+        case 'c:mainView:addLibraryUserProfile':
         default:
             return null;
     }

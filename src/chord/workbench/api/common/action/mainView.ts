@@ -12,6 +12,7 @@ import { ILibrarySong } from 'chord/library/api/song';
 import { ILibraryAlbum } from 'chord/library/api/album';
 import { ILibraryArtist } from 'chord/library/api/artist';
 import { ILibraryCollection } from 'chord/library/api/collection';
+import { ILibraryUserProfile } from 'chord/library/api/userProfile';
 
 import { IOffset } from 'chord/workbench/api/common/state/offset';
 
@@ -145,6 +146,7 @@ export interface ILibraryInputAct extends Act {
     albums: Array<ILibraryAlbum>;
     artists: Array<ILibraryArtist>;
     collections: Array<ILibraryCollection>;
+    userProfiles: Array<ILibraryUserProfile>;
 }
 
 export interface IGetMoreLibrarySongsAct extends Act {
@@ -179,6 +181,14 @@ export interface IGetMoreLibraryCollectionsAct extends Act {
     collectionsOffset: IOffset;
 }
 
+export interface IGetMoreLibraryUserProfilesAct extends Act {
+    // 'c:mainView:getMoreLibraryUserProfiles'
+    type: string;
+    act: string;
+    userProfiles: Array<ILibraryUserProfile>;
+    userProfilesOffset: IOffset;
+}
+
 export interface IAddLibrarySongAct extends Act {
     // 'c:mainView:addLibrarySong'
     type: string;
@@ -211,7 +221,7 @@ export interface IAddLibraryUserProfileAct extends Act {
     // 'c:mainView:addLibraryUserProfile'
     type: string;
     act: string;
-    userProfile: IUserProfile;
+    userProfile: ILibraryUserProfile;
 }
 
 export interface IRemoveFromLibraryAct extends Act {
