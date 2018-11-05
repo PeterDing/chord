@@ -35,10 +35,12 @@ const TABLE_COLUMNS = [
     // json array: ["songId"] only for local songs
     ['songs', 'text'],
     ['songCount', 'integer'],
-    ['addAt', 'integer'],
+
     ['playCount', 'integer'],
     ['likeCount', 'integer'],
     ['like', 'integer'],
+
+    ['addAt', 'integer'],
 ];
 const ADDONS = null;
 

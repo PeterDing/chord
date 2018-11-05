@@ -26,10 +26,10 @@ const TABLE_COLUMNS = [
     // json array ["songId"]
     ['songs', 'text'],
     ['songCount', 'text'],
-    ['addAt', 'integer'],
     ['playCount', 'integer'],
     ['likeCount', 'integer'],
     ['like', 'integer'],
+    ['addAt', 'integer'],
 ];
 const ADDONS = null;
 

@@ -26,10 +26,10 @@ const TABLE_COLUMNS = [
     // json array
     ['tags', 'text'],
     ['description', 'text'],
-    ['addAt', 'integer'],
     ['playCount', 'integer'],
     ['likeCount', 'integer'],
     ['like', 'integer'],
+    ['addAt', 'integer'],
 ];
 const ADDONS = null;
 
