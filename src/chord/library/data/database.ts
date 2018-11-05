@@ -17,6 +17,7 @@ import { ILibrarySong } from 'chord/library/api/song';
 import { ILibraryAlbum } from 'chord/library/api/album';
 import { ILibraryArtist } from 'chord/library/api/artist';
 import { ILibraryCollection } from 'chord/library/api/collection';
+import { ILibraryUserProfile } from 'chord/library/api/userProfile';
 
 import {
     toNumber,
@@ -24,7 +25,8 @@ import {
     makeSong,
     makeAlbum,
     makeArtist,
-    makeCollection
+    makeCollection,
+    makeUserProfile,
 } from 'chord/library/data/parser';
 
 import { TABLES } from 'chord/library/data/common';
@@ -168,6 +170,24 @@ export class LibraryDatabase {
         }
     }
 
+    public libraryUserProfiles(lastId: number, size: number, keyword?: string): Array<ILibraryUserProfile> {
+        let searchCondition = '';
+        if (keyword) {
+            searchCondition = '(userName like @kw)';
+        }
+        let sql = `SELECT * FROM library_user_profile WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
+        return this.libraryItem(sql, lastId, size, keyword)
+            .map(row => {
+                let addAt = row.addAt;
+                let id = row.id;
+                delete row.id;
+                delete row.addAt;
+
+                let userProfile = makeUserProfile(row);
+                return { id, addAt, userProfile };
+            });
+    }
+
     public storeAudio(audio: IAudio, songId: string): boolean {
         let _audio = <any>{ ...audio };
         _audio.songId = songId;
@@ -285,6 +305,33 @@ export class LibraryDatabase {
         return { id: <number>result.lastInsertROWID, collection, addAt };
     }
 
+    public addUserProfile(userProfile: IUserProfile, addAt: number): ILibraryUserProfile {
+        let _userProfile = <any>{ ...userProfile };
+        delete _userProfile.songs;
+        delete _userProfile.artists;
+        delete _userProfile.albums;
+        delete _userProfile.favoriteCollections;
+        delete _userProfile.createdCollections;
+        delete _userProfile.followings;
+        delete _userProfile.followers;
+
+        removeEmtryAttributes(_userProfile);
+        toNumber(_userProfile);
+
+        jsonDumpValue(_userProfile);
+
+        _userProfile.addAt = addAt;
+
+        let columns = Object.keys(_userProfile);
+        let columnsStr = columns.join(',')
+        let param = columns.map(c => '@' + c).join(',');
+        let sql = `INSERT OR IGNORE INTO library_user_profile (${columnsStr}) VALUES (${param})`;
+        let result = this.db.prepare(sql).run(_userProfile);
+
+        return { id: <number>result.lastInsertROWID, userProfile, addAt };
+    }
+
+
     public removeSong(song: ISong): boolean {
         let sql = `DELETE FROM song WHERE songId = @songId AND songId NOT IN (SELECT songId FROM library_song WHERE songId = @songId)`;
         this.db.prepare(sql).run({ songId: song.songId });
@@ -322,9 +369,16 @@ export class LibraryDatabase {
         return true;
     }
 
+    public deleteUserProfile(userProfile: IUserProfile): boolean {
+        let sql = `DELETE FROM library_user_profile WHERE userId = ?`;
+        this.db.prepare(sql).run(userProfile.userId);
+        return true;
+    }
+
     public exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): boolean {
-        let sql = `select 'id' from ${TABLES[item.type]} where ${item.type}Id = ?`;
-        let result = this.db.prepare(sql).get(item[item.type + 'Id']);
+        let idName = item.type == 'userProfile' ? 'userId' : `${item.type}Id`;
+        let sql = `select 'id' from ${TABLES[item.type]} where ${idName} = ?`;
+        let result = this.db.prepare(sql).get(item[idName]);
         return !!result;
     }
 }

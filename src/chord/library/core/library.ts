@@ -19,6 +19,7 @@ import { ILibrarySong } from 'chord/library/api/song';
 import { ILibraryAlbum } from 'chord/library/api/album';
 import { ILibraryArtist } from 'chord/library/api/artist';
 import { ILibraryCollection } from 'chord/library/api/collection';
+import { ILibraryUserProfile } from 'chord/library/api/userProfile';
 // import { IUserPlayList } from 'chord/library/api/playList';
 
 import { encryptPassword } from 'chord/library/auth/encrypt';
@@ -45,10 +46,12 @@ export class Library {
         this.init();
     }
 
-    init() {
+    public init() {
         if (fs.existsSync(this.databasePath)) {
             this.db = new LibraryDatabase(this.databasePath);
-            // TODO: check database table schemes
+
+            // create and check database table schemes
+            createTables(this.db);
 
             // auth
             let encPasswd1 = this.db.getEncryptedPassword();
@@ -61,20 +64,24 @@ export class Library {
         }
     }
 
-    librarySongs(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibrarySong> {
+    public librarySongs(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibrarySong> {
         return this.db.librarySongs(lastId, size, keyword);
     }
 
-    libraryAlbums(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryAlbum> {
+    public libraryAlbums(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryAlbum> {
         return this.db.libraryAlbums(lastId, size, keyword);
     }
 
-    libraryArtists(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryArtist> {
+    public libraryArtists(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryArtist> {
         return this.db.libraryArtists(lastId, size, keyword);
     }
 
-    libraryCollections(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryCollection> {
+    public libraryCollections(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryCollection> {
         return this.db.libraryCollections(lastId, size, keyword);
+    }
+
+    public libraryUserProfiles(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryUserProfile> {
+        return this.db.libraryUserProfiles(lastId, size, keyword);
     }
 
     // libraryPlayLists(lastId: number = 0, size: number = 20, keyword?: string): Array<IUserPlayList> {
@@ -84,47 +91,56 @@ export class Library {
     // }
 
 
-    addUser(username: string, password: string): boolean {
+    public addUser(username: string, password: string): boolean {
         return this.db.addUser(username, password);
     }
 
-    addSong(song: ISong): ILibrarySong {
+    public addSong(song: ISong): ILibrarySong {
         let addAt = Date.now();
         return this.db.addSong(song, addAt);
     }
 
-    addAlbum(album: IAlbum): ILibraryAlbum {
+    public addAlbum(album: IAlbum): ILibraryAlbum {
         let addAt = Date.now();
         return this.db.addAlbum(album, addAt);
     }
 
-    addArtist(artist: IArtist): ILibraryArtist {
+    public addArtist(artist: IArtist): ILibraryArtist {
         let addAt = Date.now();
         return this.db.addArtist(artist, addAt);
     }
 
-    addCollection(collection: ICollection): ILibraryCollection {
+    public addCollection(collection: ICollection): ILibraryCollection {
         let addAt = Date.now();
         return this.db.addCollection(collection, addAt);
     }
 
-    deleteSong(song: ISong): boolean {
+    public addUserProfile(userProfile: IUserProfile): ILibraryUserProfile {
+        let addAt = Date.now();
+        return this.db.addUserProfile(userProfile, addAt);
+    }
+
+    public deleteSong(song: ISong): boolean {
         return this.db.deleteSong(song);
     }
 
-    deleteAlbum(album: IAlbum): boolean {
+    public deleteAlbum(album: IAlbum): boolean {
         return this.db.deleteAlbum(album);
     }
 
-    deleteArtist(artist: IArtist): boolean {
+    public deleteArtist(artist: IArtist): boolean {
         return this.db.deleteArtist(artist);
     }
 
-    deleteCollection(collection: ICollection): boolean {
+    public deleteCollection(collection: ICollection): boolean {
         return this.db.deleteCollection(collection);
     }
 
-    exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): boolean {
+    public deleteUserProfile(userProfile: IUserProfile):  boolean{
+        return this.db.deleteUserProfile(userProfile);
+    }
+
+    public exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): boolean {
         return this.db.exists(item);
     }
 }

@@ -6,4 +6,5 @@ export const TABLES = {
     artist: 'library_artist',
     album: 'library_album',
     collection: 'library_collection',
+    userProfile: 'library_user_profile',
 };

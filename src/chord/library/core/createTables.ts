@@ -7,6 +7,7 @@ import { makeTable as makeTableLibrarySong, fixTable as fixTableLibrarySong } fr
 import { makeTable as makeTableLibraryAlbum, fixTable as fixTableLibraryAlbum } from 'chord/library/data/tables/schemes/libraryAlbum.sql';
 import { makeTable as makeTableLibraryArtist, fixTable as fixTableLibraryArtist } from 'chord/library/data/tables/schemes/libraryArtist.sql';
 import { makeTable as makeTableLibraryCollection, fixTable as fixTableLibraryCollection } from 'chord/library/data/tables/schemes/libraryCollection.sql';
+import { makeTable as makeTableLibraryUserProfile, fixTable as fixTableLibraryUserProfile } from 'chord/library/data/tables/schemes/libraryUserProfile.sql';
 
 import { LibraryDatabase } from 'chord/library/data/database';
 
@@ -20,6 +21,7 @@ export function createTables(db: LibraryDatabase): boolean {
     makeTableLibraryAlbum(db.getDatabase());
     makeTableLibraryArtist(db.getDatabase());
     makeTableLibraryCollection(db.getDatabase());
+    makeTableLibraryUserProfile(db.getDatabase());
 
     // fix tables
     fixTableAudio(db.getDatabase());
@@ -29,6 +31,7 @@ export function createTables(db: LibraryDatabase): boolean {
     fixTableLibraryAlbum(db.getDatabase());
     fixTableLibraryArtist(db.getDatabase());
     fixTableLibraryCollection(db.getDatabase());
+    fixTableLibraryUserProfile(db.getDatabase());
 
     return true;
 }

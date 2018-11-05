@@ -6,6 +6,7 @@ import { ISong } from "chord/music/api/song";
 import { IAlbum } from "chord/music/api/album";
 import { IArtist } from "chord/music/api/artist";
 import { ICollection } from "chord/music/api/collection";
+import { IUserProfile } from "chord/music/api/user";
 import { IAudio } from "chord/music/api/audio";
 
 
@@ -104,4 +105,17 @@ export function makeCollection(info: any): ICollection {
     collection.songs = [];
     toBoolean(collection);
     return <ICollection>collection;
+}
+
+export function makeUserProfile(info: any): IUserProfile {
+    let userProfile: IUserProfile = { ...info };
+    jsonLoadValue(userProfile);
+    userProfile.songs = [];
+    userProfile.albums = [];
+    userProfile.favoriteCollections = [];
+    userProfile.createdCollections = [];
+    userProfile.followers = [];
+    userProfile.followings = [];
+    toBoolean(userProfile);
+    return <IUserProfile>userProfile;
 }
