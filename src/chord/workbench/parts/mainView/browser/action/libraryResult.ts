@@ -1,38 +1,41 @@
 'use strict';
 
+import { IOffset } from 'chord/workbench/api/common/state/offset';
+
 import {
     IGetMoreLibrarySongsAct,
     IGetMoreLibraryAlbumsAct,
     IGetMoreLibraryArtistsAct,
     IGetMoreLibraryCollectionsAct,
+    IGetMoreLibraryUserProfilesAct,
 } from 'chord/workbench/api/common/action/mainView';
-import { IOffset } from 'chord/workbench/api/common/state/offset';
 
 import { defaultLibrary } from 'chord/library/core/library';
 
 
-export function getMoreSongs(keyword: string, offset: IOffset): IGetMoreLibrarySongsAct {
-    let userSongs = [];
+export function getMoreSongs(keyword: string, offset: IOffset, size: number = 10): IGetMoreLibrarySongsAct {
+    let librarySongs = [];
     if (offset.more) {
-        userSongs = defaultLibrary.librarySongs(offset.offset, offset.limit, keyword);
+        librarySongs = defaultLibrary.librarySongs(offset.offset, size, keyword);
     }
-    if (userSongs.length == 0) {
+    if (librarySongs.length == 0) {
         offset.more = false;
     } else {
-        offset.offset = userSongs[userSongs.length - 1].id;
+        // offset = lastId
+        offset.offset = librarySongs[librarySongs.length - 1].id;
     }
     return {
         type: 'c:mainView:getMoreLibrarySongs',
         act: 'c:mainView:getMoreLibrarySongs',
-        songs: userSongs,
+        songs: librarySongs,
         songsOffset: offset,
     };
 }
 
-export function getMoreArtists(keyword: string, offset: IOffset): IGetMoreLibraryArtistsAct {
+export function getMoreArtists(keyword: string, offset: IOffset, size: number = 10): IGetMoreLibraryArtistsAct {
     let userArtists = [];
     if (offset.more) {
-        userArtists = defaultLibrary.libraryArtists(offset.offset, offset.limit, keyword);
+        userArtists = defaultLibrary.libraryArtists(offset.offset, size, keyword);
     }
     if (userArtists.length == 0) {
         offset.more = false;
@@ -47,10 +50,10 @@ export function getMoreArtists(keyword: string, offset: IOffset): IGetMoreLibrar
     };
 }
 
-export function getMoreAlbums(keyword: string, offset: IOffset): IGetMoreLibraryAlbumsAct {
+export function getMoreAlbums(keyword: string, offset: IOffset, size: number = 10): IGetMoreLibraryAlbumsAct {
         let userAlbums = [];
     if (offset.more) {
-        userAlbums = defaultLibrary.libraryAlbums(offset.offset, offset.limit, keyword);
+        userAlbums = defaultLibrary.libraryAlbums(offset.offset, size, keyword);
     }
     if (userAlbums.length == 0) {
         offset.more = false;
@@ -65,10 +68,10 @@ export function getMoreAlbums(keyword: string, offset: IOffset): IGetMoreLibrary
     };
 }
 
-export function getMoreCollections(keyword: string, offset: IOffset): IGetMoreLibraryCollectionsAct {
+export function getMoreCollections(keyword: string, offset: IOffset, size: number = 10): IGetMoreLibraryCollectionsAct {
     let userCollections = [];
     if (offset.more) {
-        userCollections = defaultLibrary.libraryCollections(offset.offset, offset.limit, keyword);
+        userCollections = defaultLibrary.libraryCollections(offset.offset, size, keyword);
     }
     if (userCollections.length == 0) {
         offset.more = false;
@@ -80,5 +83,23 @@ export function getMoreCollections(keyword: string, offset: IOffset): IGetMoreLi
         act: 'c:mainView:getMoreLibraryCollections',
         collections: userCollections,
         collectionsOffset: offset,
+    };
+}
+
+export function getMoreUserProfiles(keyword: string, offset: IOffset, size: number = 10): IGetMoreLibraryUserProfilesAct {
+    let userProfile = [];
+    if (offset.more) {
+        userProfile = defaultLibrary.libraryUserProfiles(offset.offset, size, keyword);
+    }
+    if (userProfile.length == 0) {
+        offset.more = false;
+    } else {
+        offset.offset = userProfile[userProfile.length - 1].id;
+    }
+    return {
+        type: 'c:mainView:getMoreLibraryUserProfiles',
+        act: 'c:mainView:getMoreLibraryUserProfiles',
+        userProfiles: userProfile,
+        userProfilesOffset: offset,
     };
 }

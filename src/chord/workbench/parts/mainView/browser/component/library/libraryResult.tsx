@@ -8,12 +8,16 @@ import SongItemView from 'chord/workbench/parts/common/component/songItem';
 import ArtistItemView from 'chord/workbench/parts/common/component/artistItem';
 import AlbumItemView from 'chord/workbench/parts/common/component/albumItem';
 import CollectionItemView from 'chord/workbench/parts/common/component/collectionItem';
+import UserProfileItemView from 'chord/workbench/parts/common/component/userProfileItem';
+
+import { ViewMorePlusItem } from 'chord/workbench/parts/common/component/viewMoreItem';
 
 import {
     getMoreSongs,
     getMoreAlbums,
     getMoreArtists,
     getMoreCollections,
+    getMoreUserProfiles,
 } from 'chord/workbench/parts/mainView/browser/action/libraryResult';
 
 import { ILibraryResultProps } from 'chord/workbench/parts/mainView/browser/component/library/props/libraryResult';
@@ -52,6 +56,12 @@ function LibraryNavMenu({ view, changeLibraryResultView }) {
                         onClick={() => changeLibraryResultView('collections')}>
                         PLAYLISTS</div>
                 </li>
+
+                <li className='search-nav-li'>
+                    <div className={`search-nav-item link-subtle ${view == 'userProfiles' ? 'search-nav-item__active' : ''}`}
+                        onClick={() => changeLibraryResultView('userProfiles')}>
+                        FOLLOWINGS</div>
+                </li>
             </ul>
         </nav>
     );
@@ -77,6 +87,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         this._getAlbumsView = this._getAlbumsView.bind(this);
         this._getArtistsView = this._getArtistsView.bind(this);
         this._getCollectionsView = this._getCollectionsView.bind(this);
+        this._getUserProfilesView = this._getUserProfilesView.bind(this);
         this._getLibraryNavMenu = this._getLibraryNavMenu.bind(this);
 
         this.topResult = this.topResult.bind(this);
@@ -84,6 +95,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         this.artistsResult = this.artistsResult.bind(this);
         this.albumsResult = this.albumsResult.bind(this);
         this.collectionsResult = this.collectionsResult.bind(this);
+        this.userProfilesResult = this.userProfilesResult.bind(this);
     }
 
     changeLibraryResultView(view: string) {
@@ -142,6 +154,18 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         return collectionsView;
     }
 
+    _getUserProfilesView(size?: number) {
+        let userProfilesView = this.props.userProfiles.slice(0, size ? size : Infinity).map(
+            (userUserProfile, index) => (
+                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'
+                    key={'userProfile_library_' + index.toString().padStart(3, '0')}>
+                    <UserProfileItemView userProfile={userUserProfile.userProfile} />
+                </div>
+            )
+        );
+        return userProfilesView;
+    }
+
     _getLibraryNavMenu() {
         return (
             <LibraryNavMenu
@@ -156,6 +180,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         let albumsView = this._getAlbumsView(defaultSize);
         let artistsView = this._getArtistsView(defaultSize);
         let collectionsView = this._getCollectionsView(defaultSize);
+        let userProfilesView = this._getUserProfilesView(defaultSize);
         let searchNavMenu = this._getLibraryNavMenu();
 
         return (
@@ -212,6 +237,19 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                                 <div className='container-fluid container-fluid--noSpaceAround'>
                                     <div className='align-row-wrap row'>
                                         {collectionsView}
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        {/* UserProfiles View */}
+                        <div className='row'>
+                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                                Followings</h1>
+                            <section>
+                                <div className='container-fluid container-fluid--noSpaceAround'>
+                                    <div className='align-row-wrap row'>
+                                        {userProfilesView}
                                     </div>
                                 </div>
                             </section>
@@ -228,6 +266,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         let searchNavMenu = this._getLibraryNavMenu();
         let keyword = this.props.keyword;
         let offset = this.props.songsOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreSongs(keyword, offset, size)} />) : null;
 
         return (
             <div>
@@ -249,15 +288,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                             </section>
                         </div>
 
-                        <div className='row'>
-                            <div className="view-more">
-                                <div className="view-more-button">
-                                    <div className="btn btn-fg-green"
-                                        onClick={() => this.props.getMoreSongs(keyword, offset)}>
-                                        View More</div>
-                                </div>
-                            </div>
-                        </div>
+                        {viewMore}
 
                     </div>
                 </div>
@@ -270,6 +301,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         let searchNavMenu = this._getLibraryNavMenu();
         let keyword = this.props.keyword;
         let offset = this.props.artistsOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreArtists(keyword, offset, size)} />) : null;
 
         return (
             <div>
@@ -293,15 +325,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                             </section>
                         </div>
 
-                        <div className='row'>
-                            <div className="view-more">
-                                <div className="view-more-button">
-                                    <div className="btn btn-fg-green"
-                                        onClick={() => this.props.getMoreArtists(keyword, offset)}>
-                                        View More</div>
-                                </div>
-                            </div>
-                        </div>
+                        {viewMore}
 
                     </div>
                 </div>
@@ -314,6 +338,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         let searchNavMenu = this._getLibraryNavMenu();
         let keyword = this.props.keyword;
         let offset = this.props.albumsOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreAlbums(keyword, offset, size)} />) : null;
 
         return (
             <div>
@@ -337,15 +362,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                             </section>
                         </div>
 
-                        <div className='row'>
-                            <div className="view-more">
-                                <div className="view-more-button">
-                                    <div className="btn btn-fg-green"
-                                        onClick={() => this.props.getMoreAlbums(keyword, offset)}>
-                                        View More</div>
-                                </div>
-                            </div>
-                        </div>
+                        {viewMore}
 
                     </div>
                 </div>
@@ -359,6 +376,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         let searchNavMenu = this._getLibraryNavMenu();
         let keyword = this.props.keyword;
         let offset = this.props.collectionsOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreCollections(keyword, offset, size)} />) : null;
 
         return (
             <div>
@@ -382,20 +400,49 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                             </section>
                         </div>
 
-                        <div className='row'>
-                            <div className="view-more">
-                                <div className="view-more-button">
-                                    <div className="btn btn-fg-green"
-                                        onClick={() => this.props.getMoreCollections(keyword, offset)}>
-                                        View More</div>
-                                </div>
-                            </div>
-                        </div>
+                        {viewMore}
 
                     </div>
                 </div>
             </div>
 
+        );
+    }
+
+    userProfilesResult() {
+        let artistsView = this._getUserProfilesView();
+        let searchNavMenu = this._getLibraryNavMenu();
+        let keyword = this.props.keyword;
+        let offset = this.props.userProfilesOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreUserProfiles(keyword, offset, size)} />) : null;
+
+        return (
+            <div>
+
+                {/* Library Result Nagivation Menu */}
+                {searchNavMenu}
+
+                <div className='contentSpacing'>
+                    <div className='container-fluid container-fluid--noSpaceAround'>
+
+                        {/* Artists View */}
+                        <div className='row'>
+                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                                Artists</h1>
+                            <section>
+                                <div className='container-fluid container-fluid--noSpaceAround'>
+                                    <div className='align-row-wrap row'>
+                                        {artistsView}
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        {viewMore}
+
+                    </div>
+                </div>
+            </div>
         );
     }
 
@@ -410,6 +457,8 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                 return this.albumsResult();
             case 'collections':
                 return this.collectionsResult();
+            case 'userProfiles':
+                return this.userProfilesResult();
             default: // view == 'top'
                 return this.topResult();
         }
@@ -426,10 +475,11 @@ function mapStateToProps(state: IStateGlobal) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getMoreSongs: (keyword, offset) => dispatch(getMoreSongs(keyword, offset)),
-        getMoreAlbums: (keyword, offset) => dispatch(getMoreAlbums(keyword, offset)),
-        getMoreArtists: (keyword, offset) => dispatch(getMoreArtists(keyword, offset)),
-        getMoreCollections: (keyword, offset) => dispatch(getMoreCollections(keyword, offset)),
+        getMoreSongs: (keyword, offset, size) => dispatch(getMoreSongs(keyword, offset, size)),
+        getMoreAlbums: (keyword, offset, size) => dispatch(getMoreAlbums(keyword, offset, size)),
+        getMoreArtists: (keyword, offset, size) => dispatch(getMoreArtists(keyword, offset, size)),
+        getMoreCollections: (keyword, offset, size) => dispatch(getMoreCollections(keyword, offset, size)),
+        getMoreUserProfiles: (keyword, offset, size) => dispatch(getMoreUserProfiles(keyword, offset, size)),
     };
 }
 

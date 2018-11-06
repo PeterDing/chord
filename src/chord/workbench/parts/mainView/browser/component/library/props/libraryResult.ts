@@ -4,6 +4,7 @@ import { ILibrarySong } from 'chord/library/api/song';
 import { ILibraryAlbum } from 'chord/library/api/album';
 import { ILibraryArtist } from 'chord/library/api/artist';
 import { ILibraryCollection } from 'chord/library/api/collection';
+import { ILibraryUserProfile } from 'chord/library/api/userProfile';
 import { IOffset } from 'chord/workbench/api/common/state/offset';
 
 import {
@@ -11,11 +12,12 @@ import {
     IGetMoreLibraryAlbumsAct,
     IGetMoreLibraryArtistsAct,
     IGetMoreLibraryCollectionsAct,
+    IGetMoreLibraryUserProfilesAct,
 } from 'chord/workbench/api/common/action/mainView';
 
 
 export interface ILibraryResultProps {
-    // 'top' | 'artists' | 'songs' | 'albums' | 'collections'
+    // 'top' | 'artists' | 'songs' | 'albums' | 'collections' | 'userProfiles'
     // For library searching result navigation
     view: string;
 
@@ -25,14 +27,17 @@ export interface ILibraryResultProps {
     albums: Array<ILibraryAlbum>;
     artists: Array<ILibraryArtist>;
     collections: Array<ILibraryCollection>;
+    userProfiles: Array<ILibraryUserProfile>;
 
     songsOffset: IOffset;
     albumsOffset: IOffset;
     artistsOffset: IOffset;
     collectionsOffset: IOffset;
+    userProfilesOffset: IOffset;
 
-    getMoreSongs: (keyword, offset) => IGetMoreLibrarySongsAct;
-    getMoreAlbums: (keyword, offset) => IGetMoreLibraryAlbumsAct;
-    getMoreArtists: (keyword, offset) => IGetMoreLibraryArtistsAct;
-    getMoreCollections: (keyword, offset) => IGetMoreLibraryCollectionsAct;
+    getMoreSongs: (keyword, offset, size) => IGetMoreLibrarySongsAct;
+    getMoreAlbums: (keyword, offset, size) => IGetMoreLibraryAlbumsAct;
+    getMoreArtists: (keyword, offset, size) => IGetMoreLibraryArtistsAct;
+    getMoreCollections: (keyword, offset, size) => IGetMoreLibraryCollectionsAct;
+    getMoreUserProfiles: (keyword, offset, size) => IGetMoreLibraryUserProfilesAct;
 }
