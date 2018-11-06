@@ -35,13 +35,6 @@ class Audio {
      * Make a Howl instance
      */
     protected static doMakeAudio(url: string): Howl {
-        // prevent request pending
-        if (url.match(/\?/)) {
-            url += `&t=${Date.now()}`;
-        } else {
-            url += `?t=${Date.now()}`;
-        }
-
         let audioOptions = {
             src: url,
 
