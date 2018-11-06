@@ -520,6 +520,7 @@ export function makeAliCollections(info: any): Array<ICollection> {
 
 export function makeUserProfile(info: any): IUserProfile {
     let userOriginalId = info['userId'].toString();
+    let userAvatarUrl = (info['avatar'] || '').split('@')[0];
     let user = {
         userId: _getUserId(userOriginalId),
 
@@ -533,7 +534,7 @@ export function makeUserProfile(info: any): IUserProfile {
 
         userName: info['nickName'],
 
-        userAvatarUrl: info['avatar'],
+        userAvatarUrl,
 
         followerCount: info['fans'] || null,
         followingCount: info['followers'] || null,
