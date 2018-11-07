@@ -3,7 +3,7 @@
 import { app } from 'electron';
 
 
-export const menuTemplate = [
+export const menuTemplate = (win) => [
     {
         label: "Application",
         submenu: [
@@ -22,6 +22,19 @@ export const menuTemplate = [
             { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
             { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
             { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+        ]
+    },
+    {
+        label: "View",
+        submenu: [
+            {
+                label: 'Toggle DevTools',
+                accelerator: 'Alt+Command+I',
+                click() {
+                    win.show();
+                    win.toggleDevTools();
+                }
+            },
         ]
     }
 ];

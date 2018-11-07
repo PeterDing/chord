@@ -55,7 +55,7 @@ function createWindow() {
     });
 
     // set menu
-    Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
+    Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate(win)));
 }
 
 createWindow();
