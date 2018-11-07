@@ -18,8 +18,19 @@
         "postinstall": "electron-builder install-app-deps"
     },
     "build": {
+        "productName": "chord",
         "asar": false,
         "appId": "chord.music",
+        "compression": "maximum",
+        "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+        "win": {
+            "target": "nsis"
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": true,
+            "allowToChangeInstallationDirectory": true
+        },
         "files": [
             "./out/**/*",
             "!**/*.ts",
