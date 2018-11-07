@@ -12,7 +12,7 @@ import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workben
 
 
 export async function handlePlayArtist(artist: IArtist): Promise<IPlayArtistAct> {
-    let songs = filterSongWithAudios(artist.songs);
+    let songs = filterSongWithAudios(artist.songs || []);
 
     if (songs.length < 50) {
         let _songs = await musicApi.artistSongs(artist.artistId, 0, 50);

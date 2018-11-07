@@ -12,7 +12,7 @@ import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workben
 
 
 export async function handlePlayCollection(collection: ICollection): Promise<IPlayCollectionAct> {
-    let songs = filterSongWithAudios(collection.songs);
+    let songs = filterSongWithAudios(collection.songs || []);
 
     if (!songs.length) {
         let _collection = await musicApi.collection(collection.collectionId);

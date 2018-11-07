@@ -12,7 +12,7 @@ import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workben
 
 
 export async function handlePlayUserFavoriteSongs(userProfile: IUserProfile): Promise<IPlayUserFavoriteSongsAct> {
-    let songs = filterSongWithAudios(userProfile.songs);
+    let songs = filterSongWithAudios(userProfile.songs || []);
 
     if (songs.length < 100) {
         let _songs = await musicApi.userFavoriteSongs(userProfile.userId, 0, 100);

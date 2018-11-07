@@ -42,6 +42,8 @@ export async function handleAddToQueue(item: ISong | IArtist | IAlbum | ICollect
             console.warn('`handleAddToQueue` act: unknown item\'s type: ' + JSON.stringify(item));
     }
 
+    songs = songs || [];
+
     return {
         type: 'c:player:addToQueue',
         act: 'c:player:addToQueue',

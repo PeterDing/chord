@@ -12,7 +12,7 @@ import { musicApi } from 'chord/music/core/api';
 
 
 export async function handlePlayAlbum(album: IAlbum): Promise<IPlayAlbumAct> {
-    let songs = filterSongWithAudios(album.songs);
+    let songs = filterSongWithAudios(album.songs || []);
 
     if (!songs.length) {
         let _album = await musicApi.album(album.albumId);
