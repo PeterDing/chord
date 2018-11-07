@@ -19,9 +19,7 @@ export function showUserProfile(state: IUserProfileViewState, act: IShowUserProf
         albumsOffset: act.albumsOffset,
         favoriteCollectionsOffset: act.favoriteCollectionsOffset,
         createdCollectionsOffset: act.createdCollectionsOffset,
-
-        // TODO
-        followingsOffset: null,
+        followingsOffset: act.followingsOffset,
     };
 }
 

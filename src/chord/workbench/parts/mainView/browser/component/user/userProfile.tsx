@@ -13,6 +13,7 @@ import SongItemView from 'chord/workbench/parts/common/component/songItem';
 import AlbumItemView from 'chord/workbench/parts/common/component/albumItem';
 import ArtistItemView from 'chord/workbench/parts/common/component/artistItem';
 import CollectionItemView from 'chord/workbench/parts/common/component/collectionItem';
+import UserProfileItemView from 'chord/workbench/parts/common/component/userProfileItem';
 import { ViewMorePlusItem } from 'chord/workbench/parts/common/component/viewMoreItem';
 
 import {
@@ -21,6 +22,7 @@ import {
     getMoreFavoriteAlbums,
     getMoreFavoriteCollections,
     getMoreCreatedCollections,
+    getMoreFollowings,
 } from 'chord/workbench/parts/mainView/browser/action/userProfile';
 import { handlePlayUserFavoriteSongs } from 'chord/workbench/parts/player/browser/action/playUser';
 
@@ -104,7 +106,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         this._getAlbumsView = this._getAlbumsView.bind(this);
         this._getFavoriteCollectionsView = this._getFavoriteCollectionsView.bind(this);
         this._getCreatedCollectionsView = this._getCreatedCollectionsView.bind(this);
-        // this._getFollowingsView = this._getFollowingsView.bind(this);
+        this._getFollowingsView = this._getFollowingsView.bind(this);
 
         this._itemsView = this._itemsView.bind(this);
 
@@ -114,7 +116,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         this.albumsView = this.albumsView.bind(this);
         this.favoriteCollectionsView = this.favoriteCollectionsView.bind(this);
         this.createdCollectionsView = this.createdCollectionsView.bind(this);
-        // this.followingsView = this.followingsView.bind(this);
+        this.followingsView = this.followingsView.bind(this);
     }
 
     componentDidMount() {
@@ -193,6 +195,19 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
             )
         );
         return createdCollectionsView;
+    }
+
+    _getFollowingsView(size?: number) {
+        let userProfile = this.props.userProfile;
+        let followings = userProfile.followings.slice(0, size ? size : Infinity).map(
+            (userProfile, index) => (
+                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'
+                    key={'user_collection_' + index.toString().padStart(4, '0')}>
+                    <UserProfileItemView userProfile={userProfile} />
+                </div>
+            )
+        );
+        return followings;
     }
 
     _getUserProfileHeader() {
@@ -359,6 +374,15 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         );
     }
 
+    followingsView() {
+        return this._itemsView(
+            this._getFollowingsView(),
+            this.props.getMoreFollowings,
+            this.props.followingsOffset,
+            'Followings'
+        );
+    }
+
     render() {
         let userHeaderView = this._getUserProfileHeader();
         let view = UserProfileView.view;
@@ -375,6 +399,8 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
             contentView = this.favoriteCollectionsView();
         } else if (view == 'createdCollections') {
             contentView = this.createdCollectionsView();
+        } else if (view == 'followings') {
+            contentView = this.followingsView();
         } else {
             return null;
         }
@@ -402,6 +428,7 @@ function mapDispatchToProps(dispatch) {
         getMoreFavoriteAlbums: (userProfile, offset, size) => getMoreFavoriteAlbums(userProfile, offset, size).then(act => dispatch(act)),
         getMoreFavoriteCollections: (userProfile, offset, size) => getMoreFavoriteCollections(userProfile, offset, size).then(act => dispatch(act)),
         getMoreCreatedCollections: (userProfile, offset, size) => getMoreCreatedCollections(userProfile, offset, size).then(act => dispatch(act)),
+        getMoreFollowings: (userProfile, offset, size) => getMoreFollowings(userProfile, offset, size).then(act => dispatch(act)),
         handlePlayUserFavoriteSongs: userProfile => handlePlayUserFavoriteSongs(userProfile).then(act => dispatch(act)),
         showUserProfileMenu: (e, userProfile) => dispatch(showUserProfileMenu(e, userProfile)),
     };

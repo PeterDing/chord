@@ -10,6 +10,7 @@ import {
     getMoreFavoriteAlbums,
     getMoreFavoriteCollections,
     getMoreCreatedCollections,
+    getMoreFollowings,
 } from 'chord/workbench/parts/mainView/browser/action/userProfile';
 import { initiateOffset } from 'chord/workbench/api/common/state/offset';
 
@@ -22,12 +23,14 @@ export async function handleShowUserProfileView(userProfile: IUserProfile): Prom
     let { albums, albumsOffset } = await getMoreFavoriteAlbums(userProfile, initiateOffset());
     let { collections: favoriteCollections, collectionsOffset: favoriteCollectionsOffset } = await getMoreFavoriteCollections(userProfile, initiateOffset());
     let { collections: createdCollections, collectionsOffset: createdCollectionsOffset } = await getMoreCreatedCollections(userProfile, initiateOffset());
+    let { followings, followingsOffset } = await getMoreFollowings(userProfile, initiateOffset());
 
     userProfile.songs = songs;
     userProfile.artists = artists;
     userProfile.albums = albums;
     userProfile.favoriteCollections = favoriteCollections;
     userProfile.createdCollections = createdCollections;
+    userProfile.followings = followings;
 
     return {
         type: 'c:mainView:showUserProfileView',
@@ -38,6 +41,7 @@ export async function handleShowUserProfileView(userProfile: IUserProfile): Prom
         albumsOffset,
         favoriteCollectionsOffset,
         createdCollectionsOffset,
+        followingsOffset,
     };
 }
 

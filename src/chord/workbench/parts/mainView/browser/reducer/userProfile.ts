@@ -8,6 +8,7 @@ import {
     IGetMoreUserFavoriteArtistsAct,
     IGetMoreUserFavoriteCollectionsAct,
     IGetMoreUserCreatedCollectionsAct,
+    IGetMoreUserFollowingsAct,
 } from 'chord/workbench/api/common/action/mainView';
 
 import { IUserProfileViewState } from 'chord/workbench/api/common/state/mainView/userProfileView';
@@ -56,4 +57,13 @@ export function getMoreUserCreatedCollections(state: IUserProfileViewState, act:
     let createdCollections = [...state.userProfile.createdCollections, ...act.collections];
     let userProfile = { ...state.userProfile, createdCollections };
     return { ...state, userProfile, createdCollectionsOffset };
+}
+
+export function getMoreUserFollowings(state: IUserProfileViewState, act: IGetMoreUserFollowingsAct): IUserProfileViewState {
+    equal(act.act, 'c:mainView:getMoreUserFollowings');
+
+    let followingsOffset = act.followingsOffset;
+    let followings = [...state.userProfile.followings, ...act.followings];
+    let userProfile = { ...state.userProfile, followings };
+    return { ...state, userProfile, followingsOffset };
 }

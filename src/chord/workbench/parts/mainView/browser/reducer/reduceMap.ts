@@ -43,6 +43,7 @@ import {
     getMoreUserFavoriteArtists,
     getMoreUserFavoriteCollections,
     getMoreUserCreatedCollections,
+    getMoreUserFollowings,
 } from 'chord/workbench/parts/mainView/browser/reducer/userProfile';
 
 
@@ -218,6 +219,11 @@ export function map(act: string): IReducerMap {
         case 'c:mainView:getMoreUserCreatedCollections':
             return {
                 reducer: getMoreUserCreatedCollections,
+                node: 'userProfileView',
+            };
+        case 'c:mainView:getMoreUserFollowings':
+            return {
+                reducer: getMoreUserFollowings,
                 node: 'userProfileView',
             };
 

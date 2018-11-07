@@ -12,6 +12,7 @@ import {
     IGetMoreUserFavoriteAlbumsAct,
     IGetMoreUserFavoriteCollectionsAct,
     IGetMoreUserCreatedCollectionsAct,
+    IGetMoreUserFollowingsAct,
 } from 'chord/workbench/api/common/action/mainView';
 
 import { makeOffsets, setCurrectOffset } from 'chord/workbench/api/utils/offset';
@@ -93,8 +94,8 @@ export async function getMoreFavoriteCollections(userProfile: IUserProfile, offs
     if (offset.more) {
         let offsets = makeOffsets(userProfile.origin, offset, size);
         let futs = offsets.map(_offset => musicApi.userFavoriteCollections(userProfile.userId, _offset.offset, _offset.limit, userProfile.userMid));
-        let albumsList = await Promise.all(futs);
-        collections = collections.concat(...albumsList).slice(0, size);
+        let collectonsList = await Promise.all(futs);
+        collections = collections.concat(...collectonsList).slice(0, size);
         offset = setCurrectOffset(userProfile.origin, offset, collections.length);
     }
     if (collections.length == 0) {
@@ -113,8 +114,8 @@ export async function getMoreCreatedCollections(userProfile: IUserProfile, offse
     if (offset.more) {
         let offsets = makeOffsets(userProfile.origin, offset, size);
         let futs = offsets.map(_offset => musicApi.userCreatedCollections(userProfile.userId, _offset.offset, _offset.limit, userProfile.userMid));
-        let albumsList = await Promise.all(futs);
-        collections = collections.concat(...albumsList).slice(0, size);
+        let collectonsList = await Promise.all(futs);
+        collections = collections.concat(...collectonsList).slice(0, size);
         offset = setCurrectOffset(userProfile.origin, offset, collections.length);
     }
     if (collections.length == 0) {
@@ -125,5 +126,25 @@ export async function getMoreCreatedCollections(userProfile: IUserProfile, offse
         act: 'c:mainView:getMoreUserCreatedCollections',
         collections: collections,
         collectionsOffset: offset,
+    };
+}
+
+export async function getMoreFollowings(userProfile: IUserProfile, offset: IOffset, size: number = 10): Promise<IGetMoreUserFollowingsAct> {
+    let followings = [];
+    if (offset.more) {
+        let offsets = makeOffsets(userProfile.origin, offset, size);
+        let futs = offsets.map(_offset => musicApi.userFollowings(userProfile.userId, _offset.offset, _offset.limit, userProfile.userMid));
+        let userProfilesList = await Promise.all(futs);
+        followings = followings.concat(...userProfilesList).slice(0, size);
+        offset = setCurrectOffset(userProfile.origin, offset, followings.length);
+    }
+    if (followings.length == 0) {
+        offset.more = false;
+    }
+    return {
+        type: 'c:mainView:getMoreUserFollowings',
+        act: 'c:mainView:getMoreUserFollowings',
+        followings: followings,
+        followingsOffset: offset,
     };
 }

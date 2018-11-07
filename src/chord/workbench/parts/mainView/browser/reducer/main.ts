@@ -48,6 +48,7 @@ function handleView(act: string): string {
         case 'c:mainView:getMoreUserFavoriteAlbums':
         case 'c:mainView:getMoreUserFavoriteCollections':
         case 'c:mainView:getMoreUserCreatedCollections':
+        case 'c:mainView:getMoreUserFollowings':
             return 'userProfileView';
 
         case 'c:mainView:comeback':

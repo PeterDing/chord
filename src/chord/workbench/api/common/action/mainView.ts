@@ -257,6 +257,7 @@ export interface IShowUserProfileAct extends Act {
     albumsOffset: IOffset;
     favoriteCollectionsOffset: IOffset;
     createdCollectionsOffset: IOffset;
+    followingsOffset: IOffset;
 }
 
 export interface IGetMoreUserFavoriteSongsAct extends Act {
@@ -297,4 +298,12 @@ export interface IGetMoreUserCreatedCollectionsAct extends Act {
     act: string;
     collections: Array<ICollection>;
     collectionsOffset: IOffset;
+}
+
+export interface IGetMoreUserFollowingsAct extends Act {
+    // 'c:mainView:getMoreUserFollowings'
+    type: string;
+    act: string;
+    followings: Array<IUserProfile>;
+    followingsOffset: IOffset;
 }
