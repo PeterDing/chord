@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import ProcessBar from 'chord/workbench/parts/player/browser/component/processBar';
 import { Cover, SongInfo } from 'chord/workbench/parts/player/browser/component/songInfo';
+import LikeButton from 'chord/workbench/parts/player/browser/component/like';
 // import Like from 'chord/workbench/parts/player/browser/component/like';
 import Controller from 'chord/workbench/parts/player/browser/component/controller';
 import VolumeBar from 'chord/workbench/parts/player/browser/component/volume';
@@ -37,6 +38,7 @@ export class PlayerView extends React.Component<any, any> {
                                 <div className='now-player'>
                                     <Cover />
                                     <SongInfo />
+                                    <LikeButton />
                                 </div>
                             </div>
 

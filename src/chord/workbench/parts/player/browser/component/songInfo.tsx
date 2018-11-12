@@ -37,14 +37,6 @@ function Song({ song }) {
     );
 }
 
-function Album({ song }) {
-    return (
-        <span>
-            {song ? song.albumName : ''}
-        </span>
-    );
-}
-
 function Artist({ song }) {
     return (
         <span>
