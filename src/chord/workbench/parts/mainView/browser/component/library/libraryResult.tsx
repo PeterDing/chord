@@ -34,15 +34,15 @@ function LibraryNavMenu({ view, changeLibraryResultView }) {
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'artists' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeLibraryResultView('artists')}>
-                        ARTISTS</div>
-                </li>
-
-                <li className='search-nav-li'>
                     <div className={`search-nav-item link-subtle ${view == 'songs' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeLibraryResultView('songs')}>
                         SONGS</div>
+                </li>
+
+                <li className='search-nav-li'>
+                    <div className={`search-nav-item link-subtle ${view == 'artists' ? 'search-nav-item__active' : ''}`}
+                        onClick={() => changeLibraryResultView('artists')}>
+                        ARTISTS</div>
                 </li>
 
                 <li className='search-nav-li'>
