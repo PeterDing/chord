@@ -20,23 +20,23 @@ export function showLibraryResult(state: ILibraryViewState, act: ILibraryInputAc
 
     let keyword = act.keyword;
 
-    let songsOffset = { ...initiateOffset() };
+    let songsOffset = initiateOffset();
     if (act.songs.length) {
         songsOffset.offset = act.songs[act.songs.length - 1].id;
     }
-    let artistsOffset = { ...initiateOffset() };
+    let artistsOffset = initiateOffset();
     if (act.artists.length) {
         artistsOffset.offset = act.artists[act.artists.length - 1].id;
     }
-    let albumsOffset = { ...initiateOffset() };
+    let albumsOffset = initiateOffset();
     if (act.albums.length) {
         albumsOffset.offset = act.albums[act.albums.length - 1].id;
     }
-    let collectionsOffset = { ...initiateOffset() };
+    let collectionsOffset = initiateOffset();
     if (act.collections.length) {
         collectionsOffset.offset = act.collections[act.collections.length - 1].id;
     }
-    let userProfilesOffset = { ...initiateOffset() };
+    let userProfilesOffset = initiateOffset();
     if (act.userProfiles.length) {
         userProfilesOffset.offset = act.userProfiles[act.userProfiles.length - 1].id;
     }
