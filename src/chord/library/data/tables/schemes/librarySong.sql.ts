@@ -9,7 +9,6 @@ const TABLE_NAME = 'library_song';
 const TABLE_COLUMNS = [
     ['id', 'integer primary key asc'],
     ['songId', 'text unique on conflict ignore'],
-    ['type', 'text'],
     ['addAt', 'integer'],
 ];
 const ADDONS = null;

@@ -82,7 +82,7 @@ export class LibraryDatabase {
         if (keyword) {
             searchCondition = '((song.songName like @kw) OR (song.subTitle like @kw) OR (song.albumName like @kw) OR (song.artistName like @kw) OR (song.genres like @kw))';
         }
-        let sql = `SELECT * FROM library_song INNER JOIN song ON library_song.songId = song.songId WHERE library_song.id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY library_song.id DESC LIMIT @size`;
+        let sql = `SELECT song.*, library_song.* FROM library_song INNER JOIN song ON library_song.songId = song.songId WHERE library_song.id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY library_song.id DESC LIMIT @size`;
         return this.libraryItem(sql, lastId, size, keyword)
             .map(row => {
                 let addAt = row.addAt;
@@ -93,7 +93,7 @@ export class LibraryDatabase {
                 let song = makeSong(row);
                 song.audios = this.audio(song.songId);
                 return { id, addAt, song };
-            })
+            });
     }
 
     public libraryAlbums(lastId: number, size: number, keyword?: string): Array<ILibraryAlbum> {
