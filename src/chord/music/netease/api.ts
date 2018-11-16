@@ -7,6 +7,8 @@ import { jsonDumpValue } from 'chord/base/common/json';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
+import { NoLoginError, ServerError } from 'chord/music/common/errors';
+
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
@@ -40,6 +42,9 @@ import {
     makeUserProfiles,
     // makeAccount,
 } from 'chord/music/netease/parser';
+
+import { userConfiguration } from 'chord/preference/configuration/user';
+
 
 const MAX_RETRY = 3;
 
@@ -87,22 +92,29 @@ export class NeteaseMusicApi {
         login: 'weapi/login',
         loginRefresh: 'weapi/login/token/refresh',
         userProfile: 'weapi/share/userprofile/info',
+        userFavoriteArtists: 'weapi/artist/sublist',
         userFavoriteCollections: 'weapi/user/playlist',
         userFollowings: 'weapi/user/getfollows/',
         userFollowers: 'weapi/user/getfolloweds',
+        userLikeSong: 'weapi/playlist/manipulate/tracks',
+        userLikeArtist: 'weapi/artist/sub',
+        userLikeCollection: 'weapi/playlist/subscribe',
+        userDislikeArtist: 'weapi/artist/unsub',
+        userDislikeCollection: 'weapi/playlist/unsubscribe',
     }
 
-    static cookieJar: CookieJar;
+    private account: IAccount;
+    private cookieJar: CookieJar;
 
 
     constructor() {
-        if (!NeteaseMusicApi.cookieJar) {
+        if (!this.cookieJar) {
             let cookieJar = makeCookieJar();
             initiateCookies().forEach(cookie => {
                 let domain = cookie.domain;
                 cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
             });
-            NeteaseMusicApi.cookieJar = cookieJar;
+            this.cookieJar = cookieJar;
         }
     }
 
@@ -113,7 +125,7 @@ export class NeteaseMusicApi {
         let options: IRequestOptions = {
             method: 'POST',
             url: url,
-            jar: NeteaseMusicApi.cookieJar || null,
+            jar: this.cookieJar || null,
             headers: NeteaseMusicApi.HEADERS,
             form: encrypt(jsonDumpValue(data)),
             gzip: true,
@@ -385,21 +397,21 @@ export class NeteaseMusicApi {
 
 
     public async login(accountName: string, password: string): Promise<IAccount> {
+        let tmpApi = new NeteaseMusicApi();
+
         let node = NeteaseMusicApi.NODE_MAP.login;
         let data = {
             username: accountName,
             password: md5(password),
             rememberLogin: 'true',
         };
-        let result = await this.request(node, data, true);
+        let result = await tmpApi.request(node, data, true);
 
         // set user cookies
         // XXX: '__csrf' may be not needed
         let cookies = {};
         result.headers['set-cookie'].forEach(cookieStr => {
             let cookie = makeCookieFrom(cookieStr);
-            let domain = cookie.domain;
-            NeteaseMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
             cookies[cookie.key] = cookie.value;
         });
 
@@ -419,11 +431,23 @@ export class NeteaseMusicApi {
         ok(account.user.origin == ORIGIN.netease, `[NeteaseMusicApi.setAccount]: this account is not a netease account`);
 
         let domain = 'music.163.com';
+
         Object.keys(account.cookies).forEach(key => {
             let cookie = makeCookie(key, account.cookies[key], domain);
-            NeteaseMusicApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+            this.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
         });
 
+        this.account = account;
+    }
+
+
+    public getAccount(): IAccount {
+        return this.account;
+    }
+
+
+    public logined(): boolean {
+        return !!this.account && !!this.account.cookies && !!this.account.cookies['MUSIC_U'];
     }
 
 
@@ -455,7 +479,7 @@ export class NeteaseMusicApi {
         let html = await request({
             method: 'GET',
             url: webUrl,
-            jar: NeteaseMusicApi.cookieJar || null,
+            jar: this.cookieJar || null,
             headers: NeteaseMusicApi.WEB_HEADERS,
             gzip: true,
         });
@@ -470,10 +494,33 @@ export class NeteaseMusicApi {
      */
     public async userFavoriteSongs(userId: string): Promise<Array<ISong>> {
         let collections = await this.userFavoriteCollections(userId, 0, 1);
-        if (collections.length < 1) { return [];}
+        if (collections.length < 1) { return []; }
         let collectionId = collections[0].collectionOriginalId;
         let collection = await this.collection(collectionId);
         return collection.songs;
+    }
+
+
+    public async userFavoriteArtists(userId: string, offset: number = 0, limit: number = 10, order: boolean = false): Promise<Array<IArtist>> {
+        if (!this.logined()) {
+            return [];
+        }
+
+        let account = this.account;
+
+        // logined user's favorite artists list can only be got
+        if (account.user.userOriginalId != userId) {
+            return [];
+        }
+
+        let node = NeteaseMusicApi.NODE_MAP.userFavoriteArtists;
+        let data = {
+            offset,
+            limit,
+            order,
+        };
+        let json = await this.request(node, data);
+        return makeArtists(json.data);
     }
 
 
@@ -519,6 +566,130 @@ export class NeteaseMusicApi {
         };
         let json = await this.request(node, data);
         return makeUserProfiles(json.followeds);
+    }
+
+
+    /**
+     * songId is ISong.songOriginalId, as following
+     */
+    public async userLikeSong(songId: string, _?, dislike: boolean = false): Promise<boolean> {
+        if (!this.logined()) {
+            throw new NoLoginError(
+                dislike ?
+                    '[NeteaseMusicApi] deleting one song from favorite songs list needs to login' :
+                    '[NeteaseMusicApi] Saving one song to favorite songs list needs to login');
+        }
+        let userId = this.account.user.userOriginalId;
+
+        let collections = await this.userFavoriteCollections(userId, 0, 1);
+        if (collections.length < 1) {
+            throw new ServerError('[NeteaseMusicApi] No user favorite collection');
+        }
+        let collectionId = collections[0].collectionOriginalId;
+
+        let node = NeteaseMusicApi.NODE_MAP.userLikeSong;
+        let data = {
+            op: dislike ? 'del' : 'add',
+            pid: collectionId,
+            trackIds: JSON.stringify([songId]),
+        };
+        let json = await this.request(node, data);
+        return json.code == 200;
+    }
+
+
+    public async createCollection(collectionName: string): Promise<ICollection> {
+        if (!this.logined()) {
+            throw new NoLoginError('[NeteaseMusicApi] Creating one collection needs to login');
+        }
+
+        let node = NeteaseMusicApi.NODE_MAP.userLikeSong;
+        let data = {
+            name: collectionName,
+        };
+        let json = await this.request(node, data);
+        return makeCollection(json.playlist);
+    }
+
+
+    public async userLikeArtist(artistId: string, _?, dislike: boolean = false): Promise<boolean> {
+        if (!this.logined()) {
+            throw new NoLoginError(
+                dislike ?
+                    '[NeteaseMusicApi] deleting one artist needs to login' :
+                    '[NeteaseMusicApi] Saving one artist needs to login');
+        }
+
+        let node = dislike ?
+            NeteaseMusicApi.NODE_MAP.userDislikeArtist :
+            NeteaseMusicApi.NODE_MAP.userLikeArtist;
+        let data = {
+            artistId,
+            artistIds: JSON.stringify([artistId]),
+        };
+        let json = await this.request(node, data);
+        return json.code == 200;
+    }
+
+
+    public async userLikeAlbum(albumId: string, _?): Promise<boolean> {
+        if (!this.logined()) {
+            throw new NoLoginError('[NeteaseMusicApi] Save one album needs to login');
+        }
+
+        let album = await this.album(albumId);
+        let songIds = album.songs.map(song => song.songOriginalId);
+        let collection = await this.createCollection(album.albumName);
+
+        let node = NeteaseMusicApi.NODE_MAP.userLikeSong;
+        let data = {
+            op: 'add', // 'del'
+            pid: collection.collectionOriginalId,
+            trackIds: JSON.stringify(songIds),
+        };
+        let json = await this.request(node, data);
+        return json.code == 200;
+    }
+
+
+    public async userLikeCollection(collectionId: string, _?, dislike: boolean = false): Promise<boolean> {
+        if (!this.logined()) {
+            throw new NoLoginError(
+                dislike ?
+                    '[NeteaseMusicApi] deleting one collection needs to login' :
+                    '[NeteaseMusicApi] Saving one collection needs to login'
+            );
+        }
+
+        let node = dislike ?
+            NeteaseMusicApi.NODE_MAP.userDislikeCollection :
+            NeteaseMusicApi.NODE_MAP.userLikeCollection;
+        let data = {
+            id: collectionId,
+        };
+        let json = await this.request(node, data);
+        return json.code == 200;
+    }
+
+
+    public async userDislikeSong(songId: string, _?): Promise<boolean> {
+        return this.userLikeSong(songId, null, true);
+    }
+
+
+    public async userDislikeAlbum(albumId: string, _?): Promise<boolean> {
+        // there is no album saved at netease music
+        return false;
+    }
+
+
+    public async userDislikeArtist(artistId: string, _?): Promise<boolean> {
+        return this.userLikeArtist(artistId, null, true);
+    }
+
+
+    public async userDislikeCollection(collectionId: string, _?): Promise<boolean> {
+        return this.userLikeCollection(collectionId, null, true);
     }
 
 

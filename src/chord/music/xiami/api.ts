@@ -306,17 +306,19 @@ export class AliMusicApi {
         recommandSongs: 'mtop.alimusic.recommend.songservice.getdailysongs',
     }
 
-    static token: string;
-    static cookies: { [key: string]: Cookie; } = {};
+    // account
+    private account: IAccount;
+    private token: string;
+    private cookies: { [key: string]: Cookie; } = {};
 
     // For user authority
-    static userId: string;
-    static accessToken: string;
-    static refreshToken: string;
+    private userId: string;
+    private accessToken: string;
+    private refreshToken: string;
 
 
     constructor() {
-        AliMusicApi.userId = '1';
+        this.userId = '1';
 
         // Get cna
         this.getEtag().then((etag) => {
@@ -325,15 +327,15 @@ export class AliMusicApi {
     }
 
 
-    public static makeCookie(key: string, value: string): Cookie {
-        let domain = DOMAIN;
-        return Cookie.fromJSON({ key, value, domain });
+    public reset() {
+        this.token = null;
+        this.cookies = {};
     }
 
 
-    public static reset() {
-        AliMusicApi.token = null;
-        AliMusicApi.cookies = {};
+    public static makeCookie(key: string, value: string): Cookie {
+        let domain = DOMAIN;
+        return Cookie.fromJSON({ key, value, domain });
     }
 
 
@@ -346,8 +348,8 @@ export class AliMusicApi {
             appId: 200,
             openId: 0,
         };
-        if (AliMusicApi.accessToken) {
-            header = assign({}, header, { accessToken: AliMusicApi.accessToken });
+        if (this.accessToken) {
+            header = assign({}, header, { accessToken: this.accessToken });
         }
 
         return JSON.stringify(
@@ -363,7 +365,7 @@ export class AliMusicApi {
 
 
     public makeSign(queryStr: string, time: number): string {
-        let token = AliMusicApi.token || 'undefined';
+        let token = this.token || 'undefined';
         let str = token + '&' + time + '&' + AliMusicApi.APPKEY + '&' + queryStr;
         return md5(str);
     }
@@ -390,12 +392,12 @@ export class AliMusicApi {
 
 
     public async getToken(): Promise<any | null> {
-        if (AliMusicApi.token) {
+        if (this.token) {
             return null;
         }
 
         // userId is needed to anti-creep
-        if (AliMusicApi.userId) {
+        if (this.userId) {
             this.setUserIdCookie();
         }
 
@@ -409,7 +411,7 @@ export class AliMusicApi {
 
 
     public setUserIdCookie(userId?: string): void {
-        userId = userId || AliMusicApi.userId;
+        userId = userId || this.userId;
 
         ok(userId, 'no userId');
 
@@ -417,7 +419,7 @@ export class AliMusicApi {
         let value = userId;
         let cookie = AliMusicApi.makeCookie(key, value);
 
-        AliMusicApi.cookies['uidXM'] = cookie;
+        this.cookies['uidXM'] = cookie;
     }
 
 
@@ -443,7 +445,7 @@ export class AliMusicApi {
         let value = etag;
         let cookie = AliMusicApi.makeCookie(key, value);
 
-        AliMusicApi.cookies['cna'] = cookie;
+        this.cookies['cna'] = cookie;
     }
 
 
@@ -468,7 +470,7 @@ export class AliMusicApi {
 
         // Make cookie jar
         let cookieJar = makeCookieJar();
-        let cookies = { ...AliMusicApi.cookies };
+        let cookies = { ...this.cookies };
         excludedCookies.forEach(key => { delete cookies[key]; });
         for (let key in cookies) {
             cookieJar.setCookie(cookies[key], 'http://' + DOMAIN);
@@ -487,9 +489,9 @@ export class AliMusicApi {
         let result: any = await request(options);
         if (init && result.headers.hasOwnProperty('set-cookie')) {
             makeCookies(result.headers['set-cookie']).forEach(cookie => {
-                AliMusicApi.cookies[cookie.key] = cookie;
+                this.cookies[cookie.key] = cookie;
                 if (cookie.key == '_m_h5_tk') {
-                    AliMusicApi.token = cookie.value.split('_')[0];
+                    this.token = cookie.value.split('_')[0];
                 }
             });
             return null;
@@ -504,7 +506,7 @@ export class AliMusicApi {
 
         // FAIL_SYS_TOKEN_EXOIRED::令牌过期
         if (json.ret && json.ret[0].search('FAIL_SYS_TOKEN_EXOIRED') != -1) {
-            AliMusicApi.reset();
+            this.reset();
             await this.getToken();
             return this.request(node, apiParams, referer, init);
         }
@@ -921,7 +923,10 @@ export class AliMusicApi {
 
 
     public async login(accountName: string, password: string): Promise<IAccount> {
-        let json = await this.request(
+        // Create a new AliMusicApi instance to handle login
+        let tmpApi = new AliMusicApi();
+
+        let json = await tmpApi.request(
             AliMusicApi.NODE_MAP.login,
             {
                 account: accountName,
@@ -945,17 +950,27 @@ export class AliMusicApi {
     }
 
 
+    /**
+     * WARN !! This is only way of setting an account to an AliMusicApi instance
+     */
     public setAccount(account: IAccount): void {
         ok(account.user.origin == ORIGIN.xiami, `[AliMusicApi.setAccount]: this account is not a xiami account`);
 
         this.setAccessToken(account.accessToken, account.refreshToken);
         this.setUserId(account.user.userOriginalId);
+
+        this.account = account;
+    }
+
+
+    public getAccount(): IAccount {
+        return this.account;
     }
 
 
     public setAccessToken(accessToken: string, refreshToken?: string): void {
-        AliMusicApi.accessToken = accessToken;
-        AliMusicApi.refreshToken = refreshToken;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
 
@@ -963,7 +978,12 @@ export class AliMusicApi {
      * here, the userId is IUserProfile.userOriginalId, as followings
      */
     public setUserId(userId: string): void {
-        AliMusicApi.userId = userId;
+        this.userId = userId;
+    }
+
+
+    public logined(): boolean {
+        return !!this.account && !!this.account.accessToken;
     }
 
 
@@ -977,7 +997,7 @@ export class AliMusicApi {
         );
         let [json, userProfileMore] = await Promise.all([req, this.userProfileMore(userId)]);
         let userProfile = makeUserProfile(json.data.data);
-        let _up =  { ...userProfile, ...userProfileMore };
+        let _up = { ...userProfile, ...userProfileMore };
         _up.userId = userProfile.userId;
         return _up;
     }
