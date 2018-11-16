@@ -350,14 +350,15 @@ export class Music {
         switch (origin) {
             case ORIGIN.xiami:
                 account = await this.xiamiApi.login(accountName, password);
-                this.xiamiApi.setAccessToken(account.accessToken, account.refreshToken);
-                this.xiamiApi.setUserId(account.user.userId);
+                this.xiamiApi.setAccount(account);
                 break;
             case ORIGIN.netease:
                 account = await this.neteaseApi.login(accountName, password);
+                this.neteaseApi.setAccount(account);
                 break;
             case ORIGIN.qq:
                 account = await this.qqApi.login();
+                this.qqApi.setAccount(account);
                 break;
             default:
                 // Here will never be occured.
@@ -567,6 +568,68 @@ export class Music {
                 throw new Error(`[ERROR] [Music.userFollowers] Here will never be occured. [args]: ${userId}`);
         }
         return makeItems(userProfiles);
+    }
+
+
+    protected async userLikeOrDislike(funcName: string, itemId: string, itemMid?: string): Promise<boolean> {
+        let result;
+        let originType = getOrigin(itemId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                result = await this.xiamiApi[funcName](originType.id, itemMid);
+                break;
+            // netease only give favorite collections
+            case ORIGIN.netease:
+                result = await this.neteaseApi[funcName](originType.id, itemMid);
+                break;
+            case ORIGIN.qq:
+                result = await this.qqApi[funcName](originType.id, itemMid);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.userLikeOrDislike] Here will never be occured. [args]: ${funcName} ${itemId}`);
+        }
+        return result;
+    }
+
+
+    public async userLikeSong(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userLikeSong', itemId, itemMid);
+    }
+
+
+    public async userLikeArtist(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userLikeArtist', itemId, itemMid);
+    }
+
+
+    public async userLikeAlbum(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userLikeAlbum', itemId, itemMid);
+    }
+
+
+    public async userLikeCollection(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userLikeCollection', itemId, itemMid);
+    }
+
+
+    public async userDislikeSong(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userDislikeSong', itemId, itemMid);
+    }
+
+
+    public async userDislikeArtist(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userDislikeArtist', itemId, itemMid);
+    }
+
+
+    public async userDislikeAlbum(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userDislikeAlbum', itemId, itemMid);
+    }
+
+
+    public async userDislikeCollection(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userDislikeCollection', itemId, itemMid);
     }
 
 
