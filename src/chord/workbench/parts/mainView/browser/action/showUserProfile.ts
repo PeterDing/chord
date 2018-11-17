@@ -46,7 +46,7 @@ export async function handleShowUserProfileView(userProfile: IUserProfile): Prom
 }
 
 
-export async function handleShowUserProfileViewById(userId: string): Promise<IShowUserProfileAct> {
-    let userProfile = await musicApi.userProfile(userId);
+export async function handleShowUserProfileViewById(userId: string, userMid?: string): Promise<IShowUserProfileAct> {
+    let userProfile = await musicApi.userProfile(userId, userMid);
     return handleShowUserProfileView(userProfile);
 }

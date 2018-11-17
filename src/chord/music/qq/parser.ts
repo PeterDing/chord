@@ -10,7 +10,7 @@ import { ICollection } from 'chord/music/api/collection';
 // import { IGenre } from "chord/music/api/genre";
 import { ITag } from "chord/music/api/tag";
 
-import { IUserProfile, IAccount } from "chord/music/api/user";
+import { IUserProfile } from "chord/music/api/user";
 
 import {
     getSongUrl,
@@ -200,13 +200,13 @@ export function makeSong(info: any): ISong {
 
 
 export function makeSongs(info: any): Array<ISong> {
-    return info.map(songInfo => makeSong(songInfo));
+    return (info || []).map(songInfo => makeSong(songInfo));
 }
 
 
 export function makeAlbum(info: any): IAlbum {
     let albumOriginalId = (info['id'] || info['albumid'] || info['albumID']).toString();
-    let albumMid = info['mid'] || info['album_mid'] || info['albumMID'];
+    let albumMid = info['mid'] || info['album_mid'] || info['albumMID'] || info['albummid'];
     let albumName = info['name'] || info['album_name'] || info['albumName'];
     albumName = decodeHtml(albumName);
     let albumCoverUrl = getQQAlbumCoverUrl(albumMid);
@@ -255,14 +255,14 @@ export function makeAlbum(info: any): IAlbum {
 
 
 export function makeAlbums(info: any): Array<IAlbum> {
-    return info.map(albumInfo => makeAlbum(albumInfo));
+    return (info || []).map(albumInfo => makeAlbum(albumInfo));
 }
 
 
 export function makeArtist(info: any): IArtist {
-    let artistOriginalId = (info['singer_id'] || info['id']).toString();
-    let artistMid = info['singer_mid'] || info['mid'];
-    let artistName = info['singer_name'] || info['name'];
+    let artistOriginalId = (info['singer_id'] || info['id'] || info['singerid']).toString();
+    let artistMid = info['singer_mid'] || info['mid'] || info['singermid'];
+    let artistName = info['singer_name'] || info['name'] || info['singername'];
     artistName = decodeHtml(artistName);
     let artistAvatarUrl = getQQArtistAvatarUrl(artistMid);
 
@@ -292,7 +292,7 @@ export function makeArtist(info: any): IArtist {
 
 
 export function makeArtists(info: any): Array<IArtist> {
-    return info.map(artistInfo => makeArtist(artistInfo));
+    return (info || []).map(artistInfo => makeArtist(artistInfo));
 }
 
 
@@ -354,8 +354,22 @@ export function makeCollection(info: any): ICollection {
 }
 
 
+export function makeEmptyCollection(collectionOriginalId: string): ICollection {
+    let collection: ICollection = {
+        collectionId: _getCollectionId(collectionOriginalId),
+
+        type: 'collection',
+        origin: _origin,
+        collectionOriginalId,
+        url: _getCollectionUrl(collectionOriginalId),
+        songs: [],
+    };
+    return collection;
+}
+
+
 export function makeCollections(info: any): Array<ICollection> {
-    return info.map(collectionInfo => makeCollection(collectionInfo));
+    return (info || []).map(collectionInfo => makeCollection(collectionInfo));
 }
 
 
@@ -389,7 +403,7 @@ export function makeUserProfile(info: any): IUserProfile {
         followingCount: info['follow_num'] || userInfo['nums']['followusernum'],
 
         songCount: musicInfo[1] ? musicInfo[1]['num0'] : null,
-        artistCount: userInfo['nums']['followsingernum'],
+        artistCount: userInfo['nums'] ? userInfo['nums']['followsingernum'] : null,
         albumCount: musicInfo[1] ? musicInfo[1]['num1'] : null,
         favoriteCollectionCount: musicInfo[1] ? musicInfo[1]['num2'] : null,
         createdCollectionCount: info['songlist_num'] || createdCollectionsInfo['num'],
@@ -401,5 +415,5 @@ export function makeUserProfile(info: any): IUserProfile {
 
 
 export function makeUserProfiles(info: any): Array<IUserProfile> {
-    return info.map(_info => makeUserProfile(_info));
+    return (info || []).map(_info => makeUserProfile(_info));
 }

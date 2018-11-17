@@ -46,13 +46,14 @@ class Login extends React.Component<any, any> {
         let info: { account: IAccount } = config[this.origin];
 
         let userId = info && info.account.user.userId;
+        let userMid = info && info.account.user.userMid;
         let userName = info && info.account.user.userName;
 
         return (
             <div className='inputBox'>
                 <div className='contentSpacing'>
                     <h4 className='inputBox-label'
-                        onClick={() => this.props.handleShowUserProfileViewById(userId)}>
+                        onClick={() => this.props.handleShowUserProfileViewById(userId, userMid)}>
                         {`${userId ? 'User: ' + userName : this.origin + ' Login'}`}</h4>
                     <form onSubmit={(event) => { event.preventDefault(); this.login(); }}
                         style={{ display: 'flex' }}>
@@ -98,7 +99,7 @@ class _QQLogin extends Login {
 
 function mapDispatchToProps(dispatch) {
     return {
-        handleShowUserProfileViewById: userId => handleShowUserProfileViewById(userId).then(act => dispatch(act)),
+        handleShowUserProfileViewById: (userId, userMid) => handleShowUserProfileViewById(userId, userMid).then(act => dispatch(act)),
     };
 }
 

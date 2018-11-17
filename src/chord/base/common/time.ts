@@ -12,3 +12,8 @@ export function getHumanDuration(millisecond: number): string {
 export function getDateYear(millisecond: number): number {
     return new Date(millisecond).getFullYear();
 }
+
+
+export function sleep(millisecond: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, millisecond));
+}

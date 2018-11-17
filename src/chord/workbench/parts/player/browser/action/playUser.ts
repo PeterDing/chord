@@ -15,7 +15,7 @@ export async function handlePlayUserFavoriteSongs(userProfile: IUserProfile): Pr
     let songs = filterSongWithAudios(userProfile.songs || []);
 
     if (songs.length < 100) {
-        let _songs = await musicApi.userFavoriteSongs(userProfile.userId, 0, 100);
+        let _songs = await musicApi.userFavoriteSongs(userProfile.userId, 0, 100, userProfile.userMid);
         songs = _songs
             .filter(song => !song.disable)
             .filter(song => song.origin != ORIGIN.xiami || hasSongAudio(song));
