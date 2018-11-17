@@ -1,10 +1,13 @@
 'use strict';
 
+import { remote } from 'electron';
+
 import { ok } from 'chord/base/common/assert';
+import { sleep } from 'chord/base/common/time';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
-import { NoLoginError, ServerError } from 'chord/music/common/errors';
+import { NoLoginError, LoginTimeoutError } from 'chord/music/common/errors';
 
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
@@ -26,6 +29,7 @@ import {
     makeAlbum,
     makeAlbums,
     makeCollection,
+    makeEmptyCollection,
     makeCollections,
     makeArtist,
     makeArtists,
@@ -33,6 +37,8 @@ import {
     makeUserProfile,
     makeUserProfiles,
 } from 'chord/music/qq/parser';
+
+import { getACSRFToken } from 'chord/music/qq/util';
 
 import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
 
@@ -88,6 +94,11 @@ export class QQMusicApi {
 
     constructor() {
         this.cookieJar = makeCookieJar();
+    }
+
+
+    private getACSRFToken(): string {
+        return this.account ? getACSRFToken(this.account.cookies) : null;
     }
 
 
@@ -151,7 +162,6 @@ export class QQMusicApi {
     public async song(songId: string): Promise<ISong> {
         let data = {
             "comm": {
-                "g_tk": 5381,
                 "uin": 0,
                 "format": "json",
                 "inCharset": "utf-8",
@@ -194,7 +204,6 @@ export class QQMusicApi {
     public async album(albumId: string): Promise<IAlbum> {
         let params = {
             albumid: albumId,
-            g_tk: '5381',
             uin: '0',
             format: 'json',
             inCharset: 'utf-8',
@@ -232,7 +241,6 @@ export class QQMusicApi {
     public async artist(artistId: string): Promise<IArtist> {
         let params = {
             singerid: artistId,
-            g_tk: '5381',
             uin: '0',
             format: 'json',
             inCharset: 'utf-8',
@@ -258,7 +266,6 @@ export class QQMusicApi {
     public async artistSongs(artistId: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
         let params = {
             singerid: artistId,
-            g_tk: '5381',
             uin: '0',
             format: 'json',
             inCharset: 'utf-8',
@@ -296,7 +303,6 @@ export class QQMusicApi {
             }
         });
         let params = {
-            g_tk: '5381',
             loginUin: '0',
             hostUin: '0',
             format: 'json',
@@ -336,7 +342,6 @@ export class QQMusicApi {
 
     public async collection(collectionId: string, offset: number = 0, limit: number = 1000): Promise<ICollection> {
         let params = {
-            g_tk: '5381',
             uin: '0',
             format: 'json',
             inCharset: 'utf-8',
@@ -360,9 +365,12 @@ export class QQMusicApi {
         let url = QQMusicApi.NODE_MAP.collection;
         let referer = 'https://y.qq.com/w/taoge.html?ADTAG=newyqq.taoge&id=' + collectionId;
         let json = await this.request('GET', url, params, null, referer);
+        if (!json['cdlist'] || !json['cdlist'].length) {
+            return makeEmptyCollection(collectionId);
+        }
         let collection = makeCollection(json['cdlist'][0]);
-        let addons = await this.collectionAddons(collection.collectionId);
-        collection.userId = addons['diruin'].toString();
+        let addons = await this.collectionAddons(collection.collectionOriginalId);
+        collection.userId = addons['diruin'] ? `qq|collection|${addons['diruin']}` : collection.userId;
         collection.likeCount = addons['totalnum'];
         return collection;
     }
@@ -418,7 +426,6 @@ export class QQMusicApi {
             page_no: offset,
             num_per_page: limit,
             query: keyword,
-            g_tk: '5381',
             loginUin: '0',
             hostUin: '0',
             format: 'json',
@@ -439,13 +446,74 @@ export class QQMusicApi {
      * TODO: use qr code login
      */
     public async login(): Promise<IAccount> {
+        // let url = 'https://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=1006102&daid=384&low_login=1&pt_no_auth=1&s_url=https://y.qq.com/vip/daren_recruit/apply.html&style=40';
+        let url = 'https://y.qq.com'
+        let win = new remote.BrowserWindow(
+            {
+                width: 800, height: 600,
+                webPreferences: {
+                    webSecurity: true,
+                    nodeIntegration: false,
+                    allowRunningInsecureContent: true
+                },
+            });
+        // win.webContents.openDevTools();
+        win.on('close', () => {
+            win = null;
+        });
+        win.loadURL(url);
+        // clear cache
+        win.webContents.session.clearStorageData();
+        win.show();
+
+        // timeout is 2 min
+        // await sleep(5000);
+        for (let timeout = 0; timeout < 12000000; timeout += 1000) {
+            // waiting to login
+            await sleep(1000);
+            let cookiesStr = await win.webContents.executeJavaScript('Promise.resolve(document.cookie)', true);
+            if (cookiesStr.includes('pt4_token')) {
+                let cookies = {};
+                cookiesStr.split('; ').forEach(chunk => {
+                    let index = chunk.indexOf('=');
+                    cookies[chunk.slice(0, index)] = chunk.slice(index + 1);
+                });
+
+                // get user profile
+                let userOriginalId = cookies['ptui_loginuin'];
+                let tmpApi = new QQMusicApi();
+
+                let domain = 'qq.com';
+                Object.keys(cookies).forEach(key => {
+                    let cookie = makeCookie(key, cookies[key], domain);
+                    tmpApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+                });
+
+                let userProfile = await tmpApi.userProfile(userOriginalId);
+
+                let account: IAccount = {
+                    user: userProfile,
+                    type: 'account',
+                    cookies,
+                }
+
+                // close window
+                win.close();
+
+                return account;
+            }
+        }
+
+        // Handle timeout
+        win.close();
+        throw new LoginTimeoutError('Timeout !!!');
     }
 
 
     public setAccount(account: IAccount): void {
         ok(account.user.origin == ORIGIN.qq, `[QQMusicApi.setAccount]: this account is not a qq account`);
 
-        let domain = 'yy.com';
+        let domain = 'qq.com';
         Object.keys(account.cookies).forEach(key => {
             let cookie = makeCookie(key, account.cookies[key], domain);
             this.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
@@ -461,7 +529,7 @@ export class QQMusicApi {
 
 
     public logined(): boolean {
-        return !!this.account && !!this.account.cookies && !!this.account.cookies['lskey'];
+        return !!this.account && !!this.account.cookies && !!this.account.cookies['pt4_token'];
     }
 
 
@@ -490,25 +558,9 @@ export class QQMusicApi {
      * No need to login
      */
     public async userFavoriteSongs(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
-        let params = {
-            hostUin: '0',
-            format: 'json',
-            inCharset: 'utf8',
-            outCharset: 'utf-8',
-            notice: '0',
-            platform: 'yqq',
-            needNewCode: '0',
-            cid: '205360838',
-            ct: '20',
-            userid: userMid,
-            reqfrom: '1',
-            reqtype: '0',
-        };
-        let url = QQMusicApi.NODE_MAP.userProfile;
-        let json = await this.request('GET', url, params);
-        let collectionId = json.data['mymusic'][1] ? json.data['mymusic'][1]['id'] : null;
-        if (!collectionId) { return []; }
-        let collection = await this.collection(collectionId, offset, limit);
+        let collections = await this.userCreatedCollections(userMid, 0, 2);
+        let collectionOriginalId = collections[0].collectionOriginalId;
+        let collection = await this.collection(collectionOriginalId, offset, limit);
         return collection.songs;
     }
 
@@ -517,8 +569,9 @@ export class QQMusicApi {
      * No need to login
      */
     public async userFavoriteAlbums(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let account = this.getAccount();
         let params = {
-            loginUin: '0',
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'json',
             inCharset: 'utf8',
@@ -544,28 +597,41 @@ export class QQMusicApi {
      * TODO: Need to logined
      */
     public async userFavoriteArtists(userMid: string, offset: number = 1, limit: number = 10): Promise<Array<IArtist>> {
+        if (!this.logined()) {
+            throw new NoLoginError("[QQMusicApi] Geting user's favorite artists needs to login");
+        }
+
+        let account = this.getAccount();
         let params = {
             utf8: '1',
             page: offset,
             perpage: limit,
             uin: userMid,
+            g_tk: this.getACSRFToken(),
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'json',
             inCharset: 'utf8',
-            outCharset: 'utf-8',
+            outCharset: 'GB2312',
             notice: '0',
             platform: 'yqq',
             needNewCode: '0',
         };
+        let referer = `https://y.qq.com/portal/profile.html?uin=${userMid}`;
         let url = QQMusicApi.NODE_MAP.userFavoriteArtists;
-        let json = await this.request('GET', url, params);
+        let json = await this.request('GET', url, params, null, referer);
         return makeArtists(json.list);
     }
 
 
     public async userFavoriteCollections(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        if (!this.logined()) {
+            throw new NoLoginError("[QQMusicApi] Geting user's favorite collections needs to login");
+        }
+
+        let account = this.getAccount();
         let params = {
-            loginUin: '0',
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'json',
             inCharset: 'utf8',
@@ -588,11 +654,16 @@ export class QQMusicApi {
 
 
     public async userCreatedCollections(userMid: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        if (!this.logined()) {
+            throw new NoLoginError("[QQMusicApi] Geting user's created collections needs to login");
+        }
+
+        let account = this.getAccount();
         let params = {
             hostuin: userMid,
             sin: offset,
             size: limit,
-            loginUin: '0',
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'json',
             inCharset: 'utf8',
@@ -604,7 +675,7 @@ export class QQMusicApi {
         let url = QQMusicApi.NODE_MAP.userCreatedCollections;
         let json = await this.request('GET', url, params);
         if (!json.data) { return []; }
-        let userId = json.data['hostuin'].toString();
+        let userId = 'qq|user|' + json.data['hostuin'].toString();
         userMid = json.data['encrypt_uin'];
         let userName = json.data['hostname'];
         let collections = makeCollections(offset == 0 ? json.data.disslist.slice(1) : json.data.disslist)
@@ -626,13 +697,17 @@ export class QQMusicApi {
      * followers: `is_listen = 1`
      */
     protected async userFollows(userMid: string, offset: number = 0, limit: number = 10, ing: boolean = true): Promise<Array<IUserProfile>> {
+        if (!this.logined()) {
+            throw new NoLoginError("[QQMusicApi] Geting user's followings list needs to login");
+        }
+        let account = this.getAccount();
         let params = {
             utf8: '1',
             start: offset,
             num: limit,
             is_listen: ing ? '0' : '1',
             uin: userMid,
-            loginUin: '0',
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'json',
             inCharset: 'utf8',
@@ -640,6 +715,7 @@ export class QQMusicApi {
             notice: '0',
             platform: 'yqq',
             needNewCode: '0',
+            g_tk: this.getACSRFToken(),
         };
         let url = QQMusicApi.NODE_MAP.userFollow;
         let json = await this.request('GET', url, params);
@@ -661,13 +737,13 @@ export class QQMusicApi {
         if (!this.logined()) {
             throw new NoLoginError('[QQMusicApi] Saving one song to favorite songs list needs to login');
         }
-        let userId = this.account.user.userOriginalId;
+        let account = this.getAccount();
 
         let params = {
-            g_tk: 1287092998,
+            g_tk: this.getACSRFToken(),
         };
         let data = {
-            loginUin: userId,
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
             inCharset: 'GB2312',
@@ -675,8 +751,8 @@ export class QQMusicApi {
             notice: '0',
             platform: 'yqq',
             needNewCode: '0',
-            g_tk: '1287092998',
-            uin: userId,
+            g_tk: this.getACSRFToken(),
+            uin: account.user.userOriginalId,
             midlist: songMid,
             typelist: '13',
             dirid: '201',
@@ -698,11 +774,11 @@ export class QQMusicApi {
         if (!this.logined()) {
             throw new NoLoginError('[QQMusicApi] Saving one artist needs to login');
         }
-        let userId = this.account.user.userOriginalId;
+        let account = this.getAccount();
 
         let params = {
-            g_tk: '1287092998',
-            loginUin: userId,
+            g_tk: this.getACSRFToken(),
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'json',
             inCharset: 'utf8',
@@ -724,13 +800,13 @@ export class QQMusicApi {
         if (!this.logined()) {
             throw new NoLoginError('[QQMusicApi] Saving one album needs to login');
         }
-        let userId = this.account.user.userOriginalId;
+        let account = this.getAccount();
 
         let params = {
-            g_tk: 1287092998,
+            g_tk: this.getACSRFToken(),
         };
         let data = {
-            loginUin: userId,
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
             inCharset: 'GB2312',
@@ -738,8 +814,8 @@ export class QQMusicApi {
             notice: '0',
             platform: 'yqq',
             needNewCode: '0',
-            g_tk: '1287092998',
-            uin: userId,
+            g_tk: this.getACSRFToken(),
+            uin: account.user.userOriginalId,
             ordertype: '1',
             albumid: albumId,
             albummid: albumMid,
@@ -758,13 +834,13 @@ export class QQMusicApi {
         if (!this.logined()) {
             throw new NoLoginError('[QQMusicApi] Saving one collection needs to login');
         }
-        let userId = this.account.user.userOriginalId;
+        let account = this.getAccount();
 
         let params = {
-            g_tk: 1287092998,
+            g_tk: this.getACSRFToken(),
         };
         let data = {
-            loginUin: userId,
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
             inCharset: 'GB2312',
@@ -772,8 +848,8 @@ export class QQMusicApi {
             notice: '0',
             platform: 'yqq',
             needNewCode: '0',
-            g_tk: '1287092998',
-            uin: userId,
+            g_tk: this.getACSRFToken(),
+            uin: account.user.userOriginalId,
             dissid: collectionId,
             from: '1',
             optype: '1',
@@ -790,13 +866,13 @@ export class QQMusicApi {
         if (!this.logined()) {
             throw new NoLoginError('[QQMusicApi] Deleting one song from favorite songs list needs to login');
         }
-        let userId = this.account.user.userOriginalId;
+        let account = this.getAccount();
 
         let params = {
-            g_tk: 1287092998,
+            g_tk: this.getACSRFToken(),
         };
         let data = {
-            loginUin: userId,
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
             inCharset: 'GB2312',
@@ -804,8 +880,8 @@ export class QQMusicApi {
             notice: '0',
             platform: 'yqq',
             needNewCode: '0',
-            g_tk: '1287092998',
-            uin: userId,
+            g_tk: this.getACSRFToken(),
+            uin: account.user.userOriginalId,
             dirid: '201',
             ids: songId,
             source: '103',
@@ -826,11 +902,11 @@ export class QQMusicApi {
         if (!this.logined()) {
             throw new NoLoginError('[QQMusicApi] Deleting one artist needs to login');
         }
-        let userId = this.account.user.userOriginalId;
+        let account = this.getAccount();
 
         let params = {
-            g_tk: '1287092998',
-            loginUin: userId,
+            g_tk: this.getACSRFToken(),
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'json',
             inCharset: 'utf8',
@@ -852,13 +928,13 @@ export class QQMusicApi {
         if (!this.logined()) {
             throw new NoLoginError('[QQMusicApi] Deleting one album needs to login');
         }
-        let userId = this.account.user.userOriginalId;
+        let account = this.getAccount();
 
         let params = {
-            g_tk: 1287092998,
+            g_tk: this.getACSRFToken(),
         };
         let data = {
-            loginUin: userId,
+            loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
             inCharset: 'GB2312',
@@ -866,8 +942,8 @@ export class QQMusicApi {
             notice: '0',
             platform: 'yqq',
             needNewCode: '0',
-            g_tk: '1287092998',
-            uin: userId,
+            g_tk: this.getACSRFToken(),
+            uin: account.user.userOriginalId,
             ordertype: '1',
             albumid: albumId,
             albummid: albumMid,
@@ -889,7 +965,7 @@ export class QQMusicApi {
         let userId = this.account.user.userOriginalId;
 
         let params = {
-            g_tk: 1287092998,
+            g_tk: this.getACSRFToken(),
         };
         let data = {
             loginUin: userId,
@@ -900,7 +976,7 @@ export class QQMusicApi {
             notice: '0',
             platform: 'yqq',
             needNewCode: '0',
-            g_tk: '1287092998',
+            g_tk: this.getACSRFToken(),
             uin: userId,
             dissid: collectionId,
             from: '1',
