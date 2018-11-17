@@ -446,8 +446,8 @@ export class QQMusicApi {
      * TODO: use qr code login
      */
     public async login(): Promise<IAccount> {
-        // let url = 'https://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=1006102&daid=384&low_login=1&pt_no_auth=1&s_url=https://y.qq.com/vip/daren_recruit/apply.html&style=40';
-        let url = 'https://y.qq.com'
+        let url = 'https://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=1006102&daid=384&low_login=1&pt_no_auth=1&s_url=https://y.qq.com/vip/daren_recruit/apply.html&style=40';
+        // let url = 'https://y.qq.com'
         let win = new remote.BrowserWindow(
             {
                 width: 800, height: 600,
