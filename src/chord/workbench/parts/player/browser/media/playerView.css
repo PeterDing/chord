@@ -1,5 +1,5 @@
 #main .playerBar-container {
-    background-color: #181818;
+    background-image: linear-gradient(60deg, #29323c 0%, #020304 100%);
     position: fixed;
     width: 100%;
     bottom: 0;
@@ -8,7 +8,6 @@
 
 .player-bar-container {
     min-width: 620px;
-    background-color: #282828;
     border-top: 1px solid #000;
     -webkit-box-orient: vertical;
     -ms-flex-direction: column;

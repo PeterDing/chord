@@ -18,7 +18,7 @@ function Cover({ song }: { song: ISong }) {
         <span draggable={true}>
             <div className='player__cover-art'>
                 <div className="cover-art"
-                    style={{ width: '56px', height: '56px' }}>
+                    style={{ width: '56px', height: '56px', background: 'none' }}>
                     <div>
                         <div className="cover-art-image cover-art-image-loaded"
                             style={{ backgroundImage: `url("${img}")` }} ></div>
