@@ -67,7 +67,7 @@ function CollectionInfo({ collection, handlePlayCollection, handleShowUserProfil
                 <h2>{collection.collectionName}</h2>
                 <div>
                     <span>By </span>
-                    <span onClick={() => handleShowUserProfileViewById(collection.userId)}>
+                    <span onClick={() => handleShowUserProfileViewById(collection.userId, collection.userMid)}>
                         {collection.userName}</span>
                 </div>
             </div>
@@ -145,7 +145,7 @@ function mapStateToProps(state: IStateGlobal) {
 function mapDispatchToProps(dispatch) {
     return {
         handlePlayCollection: collection => handlePlayCollection(collection).then(act => dispatch(act)),
-        handleShowUserProfileViewById: userId => handleShowUserProfileViewById(userId).then(act => dispatch(act)),
+        handleShowUserProfileViewById: (userId, userMid) => handleShowUserProfileViewById(userId, userMid).then(act => dispatch(act)),
         showCollectionMenu: (e, collection) => dispatch(showCollectionMenu(e, collection)),
     };
 }
