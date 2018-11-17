@@ -403,7 +403,7 @@ export class Music {
                 userProfile = await this.neteaseApi.userProfile(originType.id);
                 break;
             case ORIGIN.qq:
-                userProfile = await this.qqApi.userProfile(userMid);
+                userProfile = await this.qqApi.userProfile(userId && userMid);
                 break;
             default:
                 // Here will never be occured.
