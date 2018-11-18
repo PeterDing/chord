@@ -7,7 +7,7 @@
 }
 
 .player-bar-container {
-    min-width: 620px;
+    /* min-width: 620px; toggling player animation no need this */
     border-top: 1px solid #000;
     -webkit-box-orient: vertical;
     -ms-flex-direction: column;
@@ -49,6 +49,16 @@
 .player-bar__center {
     width: 40%;
     max-width: 722px
+}
+
+@keyframes player-bar-controller-toggle-on {
+    from { width: 100%; }
+    to { width: 220px; }
+}
+
+@keyframes player-bar-controller-toggle-off {
+    from { width: 220px; }
+    to { width: 100%; }
 }
 
 .now-player {
