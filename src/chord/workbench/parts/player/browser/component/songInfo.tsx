@@ -10,7 +10,7 @@ import { ISongInfoProps } from 'chord/workbench/parts/player/browser/props/songI
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 
 
-function Cover({ song }: { song: ISong }) {
+function Cover({ song, onclick }: { song: ISong, onclick: () => void }) {
     let defaultAvatar = '';
     let img = song ? (song.albumCoverPath || song.albumCoverUrl || defaultAvatar) : defaultAvatar;
 
@@ -18,7 +18,8 @@ function Cover({ song }: { song: ISong }) {
         <span draggable={true}>
             <div className='player__cover-art'>
                 <div className="cover-art"
-                    style={{ width: '56px', height: '56px', background: 'none' }}>
+                    style={{ width: '56px', height: '56px', background: 'none' }}
+                    onClick={onclick}>
                     <div>
                         <div className="cover-art-image cover-art-image-loaded"
                             style={{ backgroundImage: `url("${img}")` }} ></div>
