@@ -469,7 +469,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
 function mapStateToProps(state: IStateGlobal) {
     return {
         ...state.mainView.libraryView.result,
-        keyword: state.mainView.searchView.keyword,
+        keyword: state.mainView.libraryView.keyword,
     };
 }
 

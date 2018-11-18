@@ -93,9 +93,9 @@ export function getMoreLibraryCollections(state: ILibraryResultState, act: IGetM
 }
 
 export function getMoreLibraryUserProfiles(state: ILibraryResultState, act: IGetMoreLibraryUserProfilesAct): ILibraryResultState {
-    equal(act.act, 'c:mainView:getMoreLibraryCollections');
+    equal(act.act, 'c:mainView:getMoreLibraryUserProfiles');
 
-    let collectionsOffset = act.userProfilesOffset;
+    let userProfilesOffset = act.userProfilesOffset;
     let userProfiles = [...state.userProfiles, ...act.userProfiles];
-    return { ...state, userProfiles, collectionsOffset };
+    return { ...state, userProfiles, userProfilesOffset };
 }
