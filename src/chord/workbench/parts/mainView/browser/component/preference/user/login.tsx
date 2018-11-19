@@ -3,11 +3,17 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { ESize } from 'chord/music/common/size';
+
 import { ORIGIN } from 'chord/music/common/origin';
 
 import { IAccount } from 'chord/music/api/user';
 
-import { handleShowUserProfileViewById } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
+import { handleShowUserProfileView } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
+import { handlePlayUserFavoriteSongs } from 'chord/workbench/parts/player/browser/action/playUser';
+
+import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
+import { UserProfileIcon } from 'chord/workbench/parts/common/component/common';
 
 import { musicApi } from 'chord/music/core/api';
 
@@ -41,20 +47,10 @@ class Login extends React.Component<any, any> {
             });
     }
 
-    render() {
-        let config = userConfiguration.getConfig();
-        let info: { account: IAccount } = config[this.origin];
-
-        let userId = info && info.account.user.userId;
-        let userMid = info && info.account.user.userMid;
-        let userName = info && info.account.user.userName;
-
-        return (
+    showLogin() {
+        let input = this.origin != ORIGIN.qq ? (
             <div className='inputBox'>
                 <div className='contentSpacing'>
-                    <h4 className='inputBox-label'
-                        onClick={() => this.props.handleShowUserProfileViewById(userId, userMid)}>
-                        {`${userId ? 'User: ' + userName : this.origin + ' Login'}`}</h4>
                     <form onSubmit={(event) => { event.preventDefault(); this.login(); }}
                         style={{ display: 'flex' }}>
                         <input className='inputBox-input small'
@@ -68,7 +64,76 @@ class Login extends React.Component<any, any> {
                     </form>
                 </div>
             </div>
+        ) : (
+                <button className='btn btn-green'
+                    onClick={(event) => { event.preventDefault(); this.login(); }}>
+                    Login</button>
+            );
+
+        return (
+            <header className="user-header">
+                <div className="row">
+                    <div className="user-info col-md-12">
+                        <h1 className='user-name'>{this.origin.toUpperCase()}</h1>
+                        {input}
+                    </div>
+                </div>
+            </header>
         );
+    }
+
+    showLogined(account: IAccount) {
+        let userProfile = account.user;
+        let userName = userProfile.userName;
+        let cover = userProfile.userAvatarPath || musicApi.resizeImageUrl(userProfile.origin, userProfile.userAvatarUrl.split('@')[0], ESize.Big);
+        let originIcon = OriginIcon(userProfile.origin, 'user-icon xiami-icon');
+
+        return (
+            <header className="user-header">
+                <div className="row">
+                    <div className="user-info col-md-12">
+
+                        <div className="media-object mo-artist" style={{ maxWidth: '220px', margin: '10px auto' }}>
+                            <div className="media-object-hoverable">
+                                <div className="react-contextmenu-wrapper"
+                                    onContextMenu={(e) => this.props.showUserProfileMenu(e, userProfile)}>
+                                    <div className="cover-art shadow actionable rounded linking cover-art--with-auto-height"
+                                        aria-hidden="true" style={{ width: 'auto', height: 'auto' }}>
+                                        <div onClick={() => this.props.handleShowUserProfileView(userProfile)}>
+                                            {UserProfileIcon}
+                                            <div className="cover-art-image cover-art-image-loaded"
+                                                style={{ backgroundImage: `url("${cover}")` }}>
+                                            </div>
+                                        </div>
+                                        <button className="cover-art-playback"
+                                            onClick={() => this.props.handlePlayUserFavoriteSongs(userProfile)}>
+                                            <svg className="icon-play" viewBox="0 0 85 100"><path fill="currentColor" d="M81 44.6c5 3 5 7.8 0 10.8L9 98.7c-5 3-9 .7-9-5V6.3c0-5.7 4-8 9-5l72 43.3z"><title>PLAY</title></path></svg></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {originIcon}
+
+                        <h1 className="user-name">{userName}</h1>
+                        <button className='btn btn-green'
+                            onSubmit={(event) => { event.preventDefault(); this.loginOut(); }}>
+                            Login Out</button>
+                    </div>
+                </div>
+            </header>
+        );
+    }
+
+    render() {
+        let config = userConfiguration.getConfig();
+        let info: { account: IAccount } = config[this.origin];
+
+        if (info) {
+            return this.showLogined(info.account);
+        } else {
+            return this.showLogin();
+        }
     }
 }
 
@@ -99,7 +164,8 @@ class _QQLogin extends Login {
 
 function mapDispatchToProps(dispatch) {
     return {
-        handleShowUserProfileViewById: (userId, userMid) => handleShowUserProfileViewById(userId, userMid).then(act => dispatch(act)),
+        handleShowUserProfileView: userProfile => handleShowUserProfileView(userProfile).then(act => dispatch(act)),
+        handlePlayUserFavoriteSongs: userProfile => handlePlayUserFavoriteSongs(userProfile).then(act => dispatch(act)),
     };
 }
 
