@@ -217,7 +217,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         return (
             <header className='user-header user-info'>
                 <figure className="avatar user-avatar"
-                    style={{ backgroundImage: `url("${cover}")`, width: '200px', height: '200px', left: '40%' }}></figure>
+                    style={{ backgroundImage: `url("${cover}")`, width: '200px', height: '200px', margin: '10px auto' }}></figure>
                 <h1 className='user-name'>{userProfile.userName}</h1>
                 <div className='header-buttons'>
                     <button className='btn btn-green'
