@@ -10,6 +10,11 @@
     left: 0
 }
 
+.user-icon.xiami-icon {
+    position: static;
+    width: 5%;
+}
+
 .top-icon.xiami-icon {
     position: relative;
     width: 14%;
