@@ -946,7 +946,10 @@ export class AliMusicApi {
          */
 
         let info = json.data.data;
-        return makeAccount(info);
+        let account = makeAccount(info);
+        let userProfile = await this.userProfile(account.user.userOriginalId);
+        account.user = userProfile;
+        return account;
     }
 
 
