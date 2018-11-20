@@ -30,6 +30,10 @@ class Login extends React.Component<any, any> {
         this.state = { account: '', password: '' };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.login = this.login.bind(this);
+        this.loginOut = this.loginOut.bind(this);
+        this.showLogin = this.showLogin.bind(this);
+        this.showLogined = this.showLogined.bind(this);
     }
 
     handleInputChange(event, key) {
@@ -45,6 +49,16 @@ class Login extends React.Component<any, any> {
                 userConfiguration.saveConfig();
                 this.setState({ account: '', password: '' });
             });
+    }
+
+    /**
+     * Remove all siginup info
+     */
+    loginOut() {
+        userConfiguration.setConfig(this.origin, null);
+        userConfiguration.saveConfig();
+        musicApi.clean(this.origin);
+        this.forceUpdate();
     }
 
     showLogin() {
@@ -117,7 +131,7 @@ class Login extends React.Component<any, any> {
 
                         <h1 className="user-name">{userName}</h1>
                         <button className='btn btn-green'
-                            onSubmit={(event) => { event.preventDefault(); this.loginOut(); }}>
+                            onClick={(event) => { event.preventDefault(); this.loginOut(); }}>
                             Login Out</button>
                     </div>
                 </div>
