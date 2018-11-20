@@ -49,6 +49,28 @@ export class Music {
 
 
     /**
+     * Clean one music api
+     */
+    public clean(origin: string): void {
+        switch (origin) {
+            case ORIGIN.xiami:
+                this.xiamiApi = new AliMusicApi();
+                this.xiamiApi.setUserId('1');
+                break;
+            case ORIGIN.netease:
+                this.neteaseApi = new NeteaseMusicApi();
+                break;
+            case ORIGIN.qq:
+                this.qqApi = new QQMusicApi();
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.clean] Here will never be occured. [args]: ${origin}`);
+        }
+    }
+
+
+    /**
      * audioId is Chord's audio id, not audio original id
      */
     public async audios(songId: string): Promise<Array<IAudio>> {
