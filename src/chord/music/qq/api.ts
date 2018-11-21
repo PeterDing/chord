@@ -72,20 +72,26 @@ export class QQMusicApi {
         searchCollections: 'https://c.y.qq.com/soso/fcgi-bin/client_music_search_songlist',
 
         userProfile: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_get_profile_homepage.fcg',
+
         userFavoriteSongs: 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
         userFavoriteAlbums: 'https://c.y.qq.com/fav/fcgi-bin/fcg_get_profile_order_asset.fcg',
         userFavoriteArtists: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_order_singer_getlist.fcg',
         userFavoriteCollections: 'https://c.y.qq.com/fav/fcgi-bin/fcg_get_profile_order_asset.fcg',
         userCreatedCollections: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_user_created_diss',
         userFollow: 'https://c.y.qq.com/rsc/fcgi-bin/friend_follow_or_listen_list.fcg',
+
+        myCreatedCollections: 'https://c.y.qq.com/splcloud/fcgi-bin/songlist_list.fcg',
         userLikeSong: 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_music_add2songdir.fcg',
         userLikeArtist: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_order_singer_add.fcg',
         userLikeAlbum: 'https://c.y.qq.com/folder/fcgi-bin/fcg_qm_order_diss.fcg',
         userLikeCollection: 'https://c.y.qq.com/folder/fcgi-bin/fcg_qm_order_diss.fcg',
+        userLikeUserProfile: 'https://c.y.qq.com/rsc/fcgi-bin/add_attention_status.fcg',
+
         userDislikeSong: 'https://c.y.qq.com/qzone/fcg-bin/fcg_music_delbatchsong.fcg',
         userDislikeArtist: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_order_singer_del.fcg',
         userDislikeAlbum: 'https://c.y.qq.com/folder/fcgi-bin/fcg_qm_order_diss.fcg',
         userDislikeCollection: 'https://c.y.qq.com/folder/fcgi-bin/fcg_qm_order_diss.fcg',
+        userDislikeUserProfile: 'https://c.y.qq.com/rsc/fcgi-bin/add_attention_status.fcg',
     };
 
     private account: IAccount;
@@ -733,6 +739,34 @@ export class QQMusicApi {
     }
 
 
+    public async myCreatedCollections(): Promise<Array<{ id: string; name: string }>> {
+        if (!this.logined()) {
+            throw new NoLoginError('[QQMusicApi] Saving one song to favorite songs list needs to login');
+        }
+        let account = this.getAccount();
+
+        let params = {
+            g_tk: this.getACSRFToken(),
+            utf8: '1',
+            uin: account.user.userOriginalId,
+            loginUin: account.user.userOriginalId,
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+        };
+
+        let url = QQMusicApi.NODE_MAP.myCreatedCollections;
+        let json = await this.request('GET', url, params);
+        return json.list.map(item => {
+            return { id: item['dirid'].toString(), name: item['dirname'].trim() };
+        });
+    }
+
+
     public async userLikeSong(songId: string, songMid: string): Promise<boolean> {
         if (!this.logined()) {
             throw new NoLoginError('[QQMusicApi] Saving one song to favorite songs list needs to login');
@@ -742,31 +776,31 @@ export class QQMusicApi {
         let params = {
             g_tk: this.getACSRFToken(),
         };
-        let data = {
+        let data = querystringify({
             loginUin: account.user.userOriginalId,
             hostUin: '0',
-            format: 'fs',
-            inCharset: 'GB2312',
-            outCharset: 'utf8',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
             notice: '0',
-            platform: 'yqq',
+            platform: 'yqq.post',
             needNewCode: '0',
-            g_tk: this.getACSRFToken(),
             uin: account.user.userOriginalId,
             midlist: songMid,
             typelist: '13',
             dirid: '201',
             addtype: '',
-            formsender: '1',
+            formsender: '4',
             source: '153',
             r2: '0',
             r3: '1',
             utf8: '1',
-        };
+            g_tk: this.getACSRFToken(),
+        });
         let referer = 'https://imgcache.qq.com/music/miniportal_v4/tool/html/fp_utf8.html';
         let url = QQMusicApi.NODE_MAP.userLikeSong;
-        let body = await this.request('POST', url, params, data, referer);
-        return body.includes('收藏成功');
+        let json = await this.request('POST', url, params, data, referer);
+        return json.code == 0;
     }
 
 
@@ -805,7 +839,7 @@ export class QQMusicApi {
         let params = {
             g_tk: this.getACSRFToken(),
         };
-        let data = {
+        let data = querystringify({
             loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
@@ -822,7 +856,7 @@ export class QQMusicApi {
             from: '1',
             optype: '1',
             utf8: '1',
-        };
+        });
         let referer = 'https://imgcache.qq.com/music/miniportal_v4/tool/html/fp_utf8.html';
         let url = QQMusicApi.NODE_MAP.userLikeAlbum;
         let body = await this.request('POST', url, params, data, referer);
@@ -839,7 +873,7 @@ export class QQMusicApi {
         let params = {
             g_tk: this.getACSRFToken(),
         };
-        let data = {
+        let data = querystringify({
             loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
@@ -854,9 +888,40 @@ export class QQMusicApi {
             from: '1',
             optype: '1',
             utf8: '1',
-        };
+        });
         let referer = 'https://imgcache.qq.com/music/miniportal_v4/tool/html/fp_utf8.html';
         let url = QQMusicApi.NODE_MAP.userLikeCollection;
+        let body = await this.request('POST', url, params, data, referer);
+        return body.includes('"code":0');
+    }
+
+
+    public async userLikeUserProfile(userId: string, userMid?: string, dislike: boolean = false): Promise<boolean> {
+        if (!this.logined()) {
+            throw new NoLoginError('[QQMusicApi] following/unfollowing one user needs to login');
+        }
+        let account = this.getAccount();
+
+        let params = {
+            g_tk: this.getACSRFToken(),
+        };
+        let data = querystringify({
+            loginUin: account.user.userOriginalId,
+            hostUin: '0',
+            format: 'fs',
+            inCharset: 'GB2312',
+            outCharset: 'utf8',
+            notice: '0',
+            platform: 'yqq',
+            needNewCode: '0',
+            g_tk: this.getACSRFToken(),
+            my_uin: account.user.userOriginalId,
+            friend_uin: userId,
+            status: dislike ? '0' : '1',
+            formsender: '1',
+        });
+        let referer = 'https://imgcache.qq.com/music/miniportal_v4/tool/html/fp_gbk.html';
+        let url = QQMusicApi.NODE_MAP.userLikeUserProfile;
         let body = await this.request('POST', url, params, data, referer);
         return body.includes('"code":0');
     }
@@ -871,7 +936,7 @@ export class QQMusicApi {
         let params = {
             g_tk: this.getACSRFToken(),
         };
-        let data = {
+        let data = querystringify({
             loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
@@ -890,7 +955,7 @@ export class QQMusicApi {
             flag: '2',
             from: '3',
             utf8: '1',
-        };
+        });
         let referer = 'https://imgcache.qq.com/music/miniportal_v4/tool/html/fp_utf8.html';
         let url = QQMusicApi.NODE_MAP.userDislikeSong;
         let body = await this.request('POST', url, params, data, referer);
@@ -933,7 +998,7 @@ export class QQMusicApi {
         let params = {
             g_tk: this.getACSRFToken(),
         };
-        let data = {
+        let data = querystringify({
             loginUin: account.user.userOriginalId,
             hostUin: '0',
             format: 'fs',
@@ -950,7 +1015,7 @@ export class QQMusicApi {
             from: '1',
             optype: '2',
             utf8: '1',
-        };
+        });
         let referer = 'https://imgcache.qq.com/music/miniportal_v4/tool/html/fp_utf8.html';
         let url = QQMusicApi.NODE_MAP.userDislikeAlbum;
         let body = await this.request('POST', url, params, data, referer);
@@ -967,7 +1032,7 @@ export class QQMusicApi {
         let params = {
             g_tk: this.getACSRFToken(),
         };
-        let data = {
+        let data = querystringify({
             loginUin: userId,
             hostUin: '0',
             format: 'fs',
@@ -982,11 +1047,21 @@ export class QQMusicApi {
             from: '1',
             optype: '2',
             utf8: '1',
-        };
+        });
         let referer = 'https://imgcache.qq.com/music/miniportal_v4/tool/html/fp_utf8.html';
         let url = QQMusicApi.NODE_MAP.userDislikeCollection;
         let body = await this.request('POST', url, params, data, referer);
         return body.includes('"code":0');
+    }
+
+
+    public async userDislikeUserProfile(userId: string, userMid?: string): Promise<boolean> {
+        return this.userLikeUserProfile(userId, userMid, true);
+    }
+
+
+    public async playLog(songId: string, songMid?: string): Promise<boolean> {
+
     }
 
 

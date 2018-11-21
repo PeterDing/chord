@@ -1,5 +1,7 @@
 'use strict';
 
+import 'chord/css!../../media/preference';
+
 import * as React from 'react';
 
 import { XiamiLogin, NeteaseLogin, QQLogin } from 'chord/workbench/parts/mainView/browser/component/preference/user/login';

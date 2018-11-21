@@ -16,10 +16,14 @@ import {
 
 import { defaultLibrary as library } from 'chord/library/core/library';
 
+// TODO: check synchronal result
+import { syncAdd } from 'chord/workbench/parts/mainView/browser/action/plugins/syncAddRemove';
+
 
 export function handleAddLibrarySong(song: ISong): IAddLibrarySongAct {
     song.like = true;
     let librarySong = library.addSong(song);
+    syncAdd(song);
     return {
         type: 'c:mainView:addLibrarySong',
         act: 'c:mainView:addLibrarySong',
@@ -30,6 +34,7 @@ export function handleAddLibrarySong(song: ISong): IAddLibrarySongAct {
 export function handleAddLibraryArtist(artist: IArtist): IAddLibraryArtistAct {
     artist.like = true;
     let libraryArtist = library.addArtist(artist);
+    syncAdd(artist);
     return {
         type: 'c:mainView:addLibraryArtist',
         act: 'c:mainView:addLibraryArtist',
@@ -40,6 +45,7 @@ export function handleAddLibraryArtist(artist: IArtist): IAddLibraryArtistAct {
 export function handleAddLibraryAlbum(album: IAlbum): IAddLibraryAlbumAct {
     album.like = true;
     let libraryAlbum = library.addAlbum(album);
+    syncAdd(album);
     return {
         type: 'c:mainView:addLibraryAlbum',
         act: 'c:mainView:addLibraryAlbum',
@@ -50,6 +56,7 @@ export function handleAddLibraryAlbum(album: IAlbum): IAddLibraryAlbumAct {
 export function handleAddLibraryCollection(collection: ICollection): IAddLibraryCollectionAct {
     collection.like = true;
     let libraryCollection = library.addCollection(collection);
+    syncAdd(collection);
     return {
         type: 'c:mainView:addLibraryCollection',
         act: 'c:mainView:addLibraryCollection',
@@ -60,6 +67,7 @@ export function handleAddLibraryCollection(collection: ICollection): IAddLibrary
 export function handleAddLibraryUserProfile(userProfile: IUserProfile): IAddLibraryUserProfileAct {
     userProfile.like = true;
     let libraryUserProfile = library.addUserProfile(userProfile);
+    syncAdd(userProfile);
     return {
         type: 'c:mainView:addLibraryUserProfile',
         act: 'c:mainView:addLibraryUserProfile',

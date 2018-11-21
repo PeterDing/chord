@@ -91,16 +91,23 @@ export class NeteaseMusicApi {
 
         login: 'weapi/login',
         loginRefresh: 'weapi/login/token/refresh',
+
         userProfile: 'weapi/share/userprofile/info',
+
         userFavoriteArtists: 'weapi/artist/sublist',
         userFavoriteCollections: 'weapi/user/playlist',
         userFollowings: 'weapi/user/getfollows/',
         userFollowers: 'weapi/user/getfolloweds',
+
         userLikeSong: 'weapi/playlist/manipulate/tracks',
+        createCollection: 'weapi/playlist/create',
         userLikeArtist: 'weapi/artist/sub',
         userLikeCollection: 'weapi/playlist/subscribe',
+        userLikeUserProfile: 'weapi/user/follow/',
+
         userDislikeArtist: 'weapi/artist/unsub',
         userDislikeCollection: 'weapi/playlist/unsubscribe',
+        userDislikeUserProfile: 'weapi/user/delfollow/',
     }
 
     private account: IAccount;
@@ -138,10 +145,10 @@ export class NeteaseMusicApi {
         // retry
         if (!result && retry < MAX_RETRY) return this.request(node, data, init, retry + 1);
 
-        ok(result, `[ERROR] [NeteaseMusicApi.request]: result is ${result}`);
+        ok(result, `[ERROR] [NeteaseMusicApi.request]: url: ${url}, result is ${result}`);
 
         let resultCode = init ? result.body['code'] : result['code'];
-        ok(resultCode == 200, `[ERROR] [NeteaseMusicApi.request]: result.code is ${resultCode}, result is ${JSON.stringify(result)}`);
+        ok(resultCode == 200, `[ERROR] [NeteaseMusicApi.request]: url: ${url}, result.code is ${resultCode}, result is ${JSON.stringify(result)}`);
         return result;
     }
 
@@ -437,6 +444,10 @@ export class NeteaseMusicApi {
             this.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
         });
 
+        // For createCollection
+        let cookie = makeCookie('os', 'pc', domain);
+        this.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
+
         this.account = account;
     }
 
@@ -598,20 +609,6 @@ export class NeteaseMusicApi {
     }
 
 
-    public async createCollection(collectionName: string): Promise<ICollection> {
-        if (!this.logined()) {
-            throw new NoLoginError('[NeteaseMusicApi] Creating one collection needs to login');
-        }
-
-        let node = NeteaseMusicApi.NODE_MAP.userLikeSong;
-        let data = {
-            name: collectionName,
-        };
-        let json = await this.request(node, data);
-        return makeCollection(json.playlist);
-    }
-
-
     public async userLikeArtist(artistId: string, _?, dislike: boolean = false): Promise<boolean> {
         if (!this.logined()) {
             throw new NoLoginError(
@@ -632,13 +629,37 @@ export class NeteaseMusicApi {
     }
 
 
+    /**
+     * Cookie 'os=pc' is needed
+     */
+    public async createCollection(collectionName: string): Promise<ICollection> {
+        if (!this.logined()) {
+            throw new NoLoginError('[NeteaseMusicApi] Creating one collection needs to login');
+        }
+
+        let account: IAccount = this.getAccount();
+        let csrf_token = account.cookies['__csrf'];
+
+        let node = NeteaseMusicApi.NODE_MAP.createCollection;
+        let data = {
+            name: collectionName,
+            csrf_token,
+        };
+        let json = await this.request(node, data);
+        return makeCollection(json.playlist);
+    }
+
+
     public async userLikeAlbum(albumId: string, _?): Promise<boolean> {
         if (!this.logined()) {
             throw new NoLoginError('[NeteaseMusicApi] Save one album needs to login');
         }
 
+        let account: IAccount = this.getAccount();
+        let csrf_token = account.cookies['__csrf'];
+
         let album = await this.album(albumId);
-        let songIds = album.songs.map(song => song.songOriginalId);
+        let songIds = album.songs.map(song => song.songOriginalId).reverse();
         let collection = await this.createCollection(album.albumName);
 
         let node = NeteaseMusicApi.NODE_MAP.userLikeSong;
@@ -646,6 +667,7 @@ export class NeteaseMusicApi {
             op: 'add', // 'del'
             pid: collection.collectionOriginalId,
             trackIds: JSON.stringify(songIds),
+            csrf_token,
         };
         let json = await this.request(node, data);
         return json.code == 200;
@@ -661,12 +683,38 @@ export class NeteaseMusicApi {
             );
         }
 
+        let account: IAccount = this.getAccount();
+        let csrf_token = account.cookies['__csrf'];
+
         let node = dislike ?
             NeteaseMusicApi.NODE_MAP.userDislikeCollection :
             NeteaseMusicApi.NODE_MAP.userLikeCollection;
-        let data = {
+        let data = dislike ? {
             id: collectionId,
+            pid: collectionId,
+            csrf_token,
+        } : {
+            id: collectionId,
+            csrf_token,
         };
+        let json = await this.request(node, data);
+        return json.code == 200;
+    }
+
+
+    public async userLikeUserProfile(userId: string, _?, dislike: boolean=false): Promise<boolean> {
+        if (!this.logined()) {
+            throw new NoLoginError(
+                dislike ?
+                    '[NeteaseMusicApi] deleting one collection needs to login' :
+                    '[NeteaseMusicApi] Saving one collection needs to login'
+            );
+        }
+
+        let node = (dislike ?
+            NeteaseMusicApi.NODE_MAP.userDislikeUserProfile :
+            NeteaseMusicApi.NODE_MAP.userLikeUserProfile) + userId;
+        let data = {};
         let json = await this.request(node, data);
         return json.code == 200;
     }
@@ -690,6 +738,11 @@ export class NeteaseMusicApi {
 
     public async userDislikeCollection(collectionId: string, _?): Promise<boolean> {
         return this.userLikeCollection(collectionId, null, true);
+    }
+
+
+    public async userDislikeUserProfile(userId: string, _?): Promise<boolean> {
+        return this.userLikeUserProfile(userId, null, true);
     }
 
 

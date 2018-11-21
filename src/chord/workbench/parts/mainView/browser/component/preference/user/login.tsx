@@ -7,8 +7,6 @@ import { ESize } from 'chord/music/common/size';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
-import { IAccount } from 'chord/music/api/user';
-
 import { handleShowUserProfileView } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
 import { handlePlayUserFavoriteSongs } from 'chord/workbench/parts/player/browser/action/playUser';
 
@@ -17,6 +15,7 @@ import { UserProfileIcon } from 'chord/workbench/parts/common/component/common';
 
 import { musicApi } from 'chord/music/core/api';
 
+import { IOriginConfiguration } from 'chord/preference/api/user';
 import { userConfiguration } from 'chord/preference/configuration/user';
 
 
@@ -34,6 +33,15 @@ class Login extends React.Component<any, any> {
         this.loginOut = this.loginOut.bind(this);
         this.showLogin = this.showLogin.bind(this);
         this.showLogined = this.showLogined.bind(this);
+
+        this.handleCheckbox = this.handleCheckbox.bind(this);
+    }
+
+    handleCheckbox(event) {
+        let check = event.nativeEvent.target.checked;
+        userConfiguration.setConfig(`${this.origin}.syncAddRemove`, check);
+        userConfiguration.saveConfig();
+        this.forceUpdate();
     }
 
     handleInputChange(event, key) {
@@ -52,7 +60,7 @@ class Login extends React.Component<any, any> {
     }
 
     /**
-     * Remove all siginup info
+     * Remove all user's info
      */
     loginOut() {
         userConfiguration.setConfig(this.origin, null);
@@ -96,11 +104,12 @@ class Login extends React.Component<any, any> {
         );
     }
 
-    showLogined(account: IAccount) {
-        let userProfile = account.user;
+    showLogined(config: IOriginConfiguration) {
+        let userProfile = config.account.user;
         let userName = userProfile.userName;
         let cover = userProfile.userAvatarPath || musicApi.resizeImageUrl(userProfile.origin, userProfile.userAvatarUrl.split('@')[0], ESize.Big);
         let originIcon = OriginIcon(userProfile.origin, 'user-icon xiami-icon');
+        let sync = config.syncAddRemove;
 
         return (
             <header className="user-header">
@@ -133,6 +142,14 @@ class Login extends React.Component<any, any> {
                         <button className='btn btn-green'
                             onClick={(event) => { event.preventDefault(); this.loginOut(); }}>
                             Login Out</button>
+
+                        <label className="checkbox-container">
+                            Sync To Origin
+                            <input type="checkbox" checked={sync}
+                                onClick={(e) => this.handleCheckbox(e)}></input>
+                            <span className="checkbox-checkmark"></span>
+                        </label>
+
                     </div>
                 </div>
             </header>
@@ -141,10 +158,10 @@ class Login extends React.Component<any, any> {
 
     render() {
         let config = userConfiguration.getConfig();
-        let info: { account: IAccount } = config[this.origin];
+        let info: IOriginConfiguration = config[this.origin];
 
         if (info) {
-            return this.showLogined(info.account);
+            return this.showLogined(info);
         } else {
             return this.showLogin();
         }
