@@ -23,7 +23,7 @@ export function makeCookies(rawCookies: Array<string>, jar?: CookieJar): Array<C
 }
 
 export function makeCookie(key: string, value: string, domain?: string): Cookie {
-    return Cookie.fromJSON({key, value, domain});
+    return Cookie.fromJSON({ key, value, domain });
 }
 
 export function makeCookieFrom(input: string): Cookie {
