@@ -158,6 +158,8 @@ export function makeCollection(info: any, privileges: any = []): ICollection {
     let tags: Array<ITag> = (info['tags'] || []).map(tag => ({ name: tag }));
     let songs: Array<ISong> = (info['tracks'] || []).map((songInfo, index) => makeSong(songInfo, privileges[index]));
     let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
+    let userOriginalId = info['creator'] ? info['creator']['userId'].toString() : info['userId'].toString();
+    let userName = info['creator'] ? info['creator']['nickname'] : null;
 
     let collection: ICollection = {
         collectionId: _getCollectionId(collectionOriginalId),
@@ -171,8 +173,8 @@ export function makeCollection(info: any, privileges: any = []): ICollection {
 
         collectionCoverUrl,
 
-        userId: _getUserId(info['creator']['userId'].toString()),
-        userName: info['creator']['nickname'],
+        userId: _getUserId(userOriginalId),
+        userName,
 
         releaseDate: info['createTime'],
 
