@@ -10,6 +10,9 @@ import { IRemoveFromLibraryAct } from 'chord/workbench/api/common/action/mainVie
 
 import { defaultLibrary } from 'chord/library/core/library';
 
+// TODO: check synchronal result
+import { syncRemove } from 'chord/workbench/parts/mainView/browser/action/plugins/syncAddRemove';
+
 
 export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): IRemoveFromLibraryAct {
     item.like = false;
@@ -33,6 +36,8 @@ export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollec
         default:
             console.warn('`handleRemoveFromLibrary` act: unknown item\'s type: ' + JSON.stringify(item));
     }
+
+    syncRemove(item);
 
     return {
         type: 'c:mainView:removeFromLibrary',
