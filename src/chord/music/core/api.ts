@@ -390,6 +390,24 @@ export class Music {
     }
 
 
+    /**
+     * Check whether logined
+     */
+    public logined(origin: string): boolean {
+        switch (origin) {
+            case ORIGIN.xiami:
+                return this.xiamiApi.logined();
+            case ORIGIN.netease:
+                return this.neteaseApi.logined();
+            case ORIGIN.qq:
+                return this.qqApi.logined();
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.logined] Here will never be occured. [args]: ${origin}`);
+        }
+    }
+
+
     public setAccount(account: IAccount): void {
         if (!account) { return; }
 
@@ -490,9 +508,8 @@ export class Music {
             case ORIGIN.xiami:
                 artists = await this.xiamiApi.userFavoriteArtists(originType.id, offset, limit);
                 break;
-            // netease only give favorite collections
             case ORIGIN.netease:
-                artists = [];
+                artists = await this.neteaseApi.userFavoriteArtists(originType.id, offset, limit);
                 break;
             case ORIGIN.qq:
                 artists = await this.qqApi.userFavoriteArtists(userMid, offset, limit);
@@ -635,6 +652,11 @@ export class Music {
     }
 
 
+    public async userLikeUserProfile(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userLikeUserProfile', itemId, itemMid);
+    }
+
+
     public async userDislikeSong(itemId: string, itemMid?: string): Promise<boolean> {
         return this.userLikeOrDislike('userDislikeSong', itemId, itemMid);
     }
@@ -652,6 +674,11 @@ export class Music {
 
     public async userDislikeCollection(itemId: string, itemMid?: string): Promise<boolean> {
         return this.userLikeOrDislike('userDislikeCollection', itemId, itemMid);
+    }
+
+
+    public async userDislikeUserProfile(itemId: string, itemMid?: string): Promise<boolean> {
+        return this.userLikeOrDislike('userDislikeUserProfile', itemId, itemMid);
     }
 
 
