@@ -296,11 +296,15 @@ export class AliMusicApi {
         userLikeAlbum: 'mtop.alimusic.fav.albumfavoriteservice.favoritealbum',
         userLikeArtist: 'mtop.alimusic.fav.artistfavoriteservice.favoriteartist',
         userLikeCollection: 'mtop.alimusic.fav.collectfavoriteservice.favoritecollect',
+        userLikeUserProfile: 'mtop.alimusic.social.friendservice.addfollow',
 
         userDislikeSong: 'mtop.alimusic.fav.songfavoriteservice.unfavoritesong',
         userDislikeAlbum: 'mtop.alimusic.fav.albumfavoriteservice.unfavoritealbum',
         userDislikeArtist: 'mtop.alimusic.fav.artistfavoriteservice.unfavoriteartist',
         userDislikeCollection: 'mtop.alimusic.fav.collectfavoriteservice.unfavoritecollect',
+        userDislikeUserProfile: 'mtop.alimusic.social.friendservice.unfollow',
+
+        playLog: 'mtop.alimusic.playlog.facade.playlogservice.addplaylog',
 
         // recommand songs for user logined
         recommandSongs: 'mtop.alimusic.recommend.songservice.getdailysongs',
@@ -948,7 +952,7 @@ export class AliMusicApi {
         let info = json.data.data;
         let account = makeAccount(info);
         let userProfile = await this.userProfile(account.user.userOriginalId);
-        account.user = userProfile;
+        account.user.userAvatarUrl = userProfile.userAvatarUrl;
         return account;
     }
 
@@ -1233,6 +1237,17 @@ export class AliMusicApi {
     }
 
 
+    public async userLikeUserProfile(userId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userLikeUserProfile,
+            {
+                toUserId: userId,
+            },
+        );
+        return json.data.data.toUserId == userId;
+    }
+
+
     public async userDislikeSong(songId: string): Promise<boolean> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.userDislikeSong,
@@ -1271,6 +1286,38 @@ export class AliMusicApi {
             AliMusicApi.NODE_MAP.userDislikeCollection,
             {
                 collectId: collectionId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    public async userDislikeUserProfile(userId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.userDislikeUserProfile,
+            {
+                toUserId: userId,
+            },
+        );
+        return json.data.data.status;
+    }
+
+
+    /**
+     * Record played song
+     */
+    public async playLog(songId: string): Promise<boolean> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.playLog,
+            {
+                collectId: 0,
+                latitude: 0,
+                longitude: 0,
+                songId: parseInt(songId),
+                startPoint: 120,
+                time: Date.now(),
+                type: 8,
+                userId: 0,
             },
         );
         return json.data.data.status;
