@@ -2,35 +2,35 @@
 
 import * as fs from 'fs';
 
-import { APP_CONFIGURATION_PATH } from 'chord/preference/common/app';
+import { deepCopy } from 'chord/base/common/objects';
+
+import { setDescendentProp } from 'chord/base/common/property';
+
 import { IAppConfiguration, initiateAppConfiguration } from 'chord/preference/api/app';
+import { APP_CONFIGURATION_PATH } from 'chord/preference/common/app';
 
 
 export class AppConfiguration {
 
-    static configuration: IAppConfiguration;
+    private configuration: IAppConfiguration;
 
-
-    public getConfig(): IAppConfiguration {
-        if (AppConfiguration.configuration) {
-            return AppConfiguration.configuration;
-        }
-
-        let config;
+    constructor() {
+        let config: IAppConfiguration;
         try {
             config = JSON.parse(fs.readFileSync(APP_CONFIGURATION_PATH).toString());
-            config = { ...config, ...initiateAppConfiguration() };
+            config = { ...initiateAppConfiguration(), ...config };
         } catch (e) {
             config = initiateAppConfiguration();
         }
-
-        AppConfiguration.configuration = config;
-        return config;
+        this.configuration = config;
     }
 
-    public setConfig(key: string, value: string): void {
-        let config = this.getConfig();
-        config[key] = value;
+    public getConfig(): IAppConfiguration {
+        return deepCopy(this.configuration);
+    }
+
+    public setConfig(path: string, value: any): void {
+        setDescendentProp(this.configuration, path, deepCopy(value));
     }
 
     public saveConfig(config?: IAppConfiguration): void {

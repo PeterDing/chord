@@ -2,19 +2,19 @@
 
 import * as fs from 'fs';
 
+import { deepCopy } from 'chord/base/common/objects';
+
+import { setDescendentProp } from 'chord/base/common/property';
+
 import { IUserConfiguration, initiateUserConfiguration } from 'chord/preference/api/user';
 import { USER_CONFIGURATION_PATH } from 'chord/preference/common/user';
 
 
 export class UserConfiguration {
 
-    static configuration: IUserConfiguration;
+    private configuration: IUserConfiguration;
 
-    public getConfig(): IUserConfiguration {
-        if (UserConfiguration.configuration) {
-            return UserConfiguration.configuration;
-        }
-
+    constructor() {
         let config: IUserConfiguration;
         try {
             config = JSON.parse(fs.readFileSync(USER_CONFIGURATION_PATH).toString());
@@ -22,18 +22,19 @@ export class UserConfiguration {
         } catch (e) {
             config = initiateUserConfiguration();
         }
-
-        UserConfiguration.configuration = config;
-        return config;
+        this.configuration = config;
     }
 
-    public setConfig(key: string, value: any): void {
-        let config = this.getConfig();
-        config[key] = value;
+    public getConfig(): IUserConfiguration {
+        return deepCopy(this.configuration);
+    }
+
+    public setConfig(path: string, value: any): void {
+        setDescendentProp(this.configuration, path, deepCopy(value));
     }
 
     public saveConfig(config?: IUserConfiguration): void {
-        config = config || this.getConfig();
+        config = config || this.configuration;
         fs.writeFileSync(USER_CONFIGURATION_PATH, JSON.stringify(config, null, 4), { encoding: 'utf-8' });
     }
 }
