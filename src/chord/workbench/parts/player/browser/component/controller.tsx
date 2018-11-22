@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import { IControllerProps } from 'chord/workbench/parts/player/browser/props/controller';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
+import { IPlayerState } from 'chord/workbench/api/common/state/player';
 
 import {
     handleRewind,
@@ -13,28 +14,75 @@ import {
 } from 'chord/workbench/parts/player/browser/action/control';
 
 
-export class Controller extends React.Component<IControllerProps, object> {
+export class Controller extends React.Component<IControllerProps, any> {
+
     constructor(props: IControllerProps) {
         super(props);
+        this.state = { shuffle: false, repeat: false };
+
+        this.handleShuffle = this.handleShuffle.bind(this);
+        this.handleRepeat = this.handleRepeat.bind(this);
+    }
+
+    handleShuffle() {
+        let player: IPlayerState = (window as any).store.getState().player;
+        this.setState((state) => {
+            let shuffle = !state.shuffle;
+            let repeat = shuffle ? false : state.repeat;
+
+            player.shuffle = shuffle;
+            player.repeat = repeat;
+
+            return { shuffle, repeat };
+        });
+    }
+
+    handleRepeat() {
+        let player: IPlayerState = (window as any).store.getState().player;
+        this.setState((state) => {
+            let repeat = !state.repeat;
+            let shuffle = repeat ? false : state.shuffle;
+
+            player.shuffle = shuffle;
+            player.repeat = repeat;
+
+            return { shuffle, repeat };
+        });
     }
 
     render() {
         let status = this.props.playing ? 'pause' : 'play';
+        let shuffle = this.state.shuffle;
+        let repeat = this.state.repeat;
+
         return (
             <div className='player-controls__buttons'>
+                {/* shuffle */}
+                <button className={`control-button spoticon-shuffle-16 control-button--${shuffle ? 'active' : 'disabled'}`}
+                    onClick={this.handleShuffle}>
+                </button>
+
+                {/* rewind */}
                 <button
                     className='control-button spoticon-rewind-16'
                     onClick={this.props.rewind}>
                 </button>
 
+                {/* play & pause */}
                 <button
                     className={`control-button spoticon-${status}-16 control-button--circled`}
                     onClick={this.props.playPause}>
                 </button>
 
+                {/* forward */}
                 <button
                     className='control-button spoticon-forward-16'
                     onClick={this.props.forward}>
+                </button>
+
+                {/* repeat */}
+                <button className={`control-button spoticon-repeat-16 control-button--${repeat ? 'active' : 'disabled'}`}
+                    onClick={this.handleRepeat}>
                 </button>
             </div>
         );

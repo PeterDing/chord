@@ -98,6 +98,51 @@
     font-size: 16px
 }
 
+.spoticon-shuffle-16:before {
+    content: "\F144";
+    font-size: 16px
+}
+
+.spoticon-shuffle-24:before {
+    content: "\F1D5";
+    font-size: 24px
+}
+
+.spoticon-shuffle-32:before {
+    content: "\F145";
+    font-size: 32px
+}
+
+.spoticon-repeat-16:before {
+    content: "\F13E";
+    font-size: 16px
+}
+
+.spoticon-repeat-24:before {
+    content: "\F1D4";
+    font-size: 24px
+}
+
+.spoticon-repeat-32:before {
+    content: "\F13F";
+    font-size: 32px
+}
+
+.spoticon-repeatonce-16:before {
+    content: "\F200";
+    font-size: 16px
+}
+
+.spoticon-repeatonce-24:before {
+    content: "\F201";
+    font-size: 24px
+}
+
+.spoticon-repeatonce-32:before {
+    content: "\F202";
+    font-size: 32px
+}
+
 .spoticon-volume-16:before {
     content: "\F15E";
     font-size: 16px

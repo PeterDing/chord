@@ -136,8 +136,35 @@
     color: hsla(0, 0%, 100%, .6)
 }
 
+.control-button--active {
+    color: #1db954
+}
 
+.control-button--active:not(.control-button--disabled):hover {
+    color: #1ed760
+}
 
+.control-button--active:not(.control-button--disabled):active {
+    color: #b3b3b3
+}
+
+.control-button--active:not(.control-button--disabled):active:hover {
+    color: #1db954
+}
+
+.control-button--active-dot:after {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    display: block;
+    width: 4px;
+    height: 4px;
+    content: "";
+    border-radius: 50%;
+    background-color: #1db954;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%)
+}
 
 .control-button--circled:after {
     content: "";
@@ -180,6 +207,8 @@
 .control-button--circled:hover:active:after {
     border-color: hsla(0, 0%, 100%, .6)
 }
+
+
 
 
 

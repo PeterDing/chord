@@ -12,6 +12,8 @@ export interface IPlayerState {
     playList: IPlayerList;
     volume: number;
     playing: boolean;
+    shuffle: boolean;
+    repeat: boolean;
 }
 
 
@@ -22,5 +24,7 @@ export function initiatePlayerState() {
         playList: [],
         volume: 0.5,
         playing: false,
+        shuffle: false,
+        repeat: false,
     };
 }

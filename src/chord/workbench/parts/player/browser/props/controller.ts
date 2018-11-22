@@ -1,11 +1,11 @@
 'use strict';
 
-import { IRewindAct, IPlayPauseAct, IForwardAct } from 'chord/workbench/api/common/action/player'
+import { IPlayPauseAct, IPlayAct } from 'chord/workbench/api/common/action/player'
 
 
 export interface IControllerProps {
     playing: boolean;
-    rewind: () => Promise<IRewindAct>;
+    rewind: () => Promise<IPlayAct>;
     playPause: () => Promise<IPlayPauseAct>;
-    forward: () => Promise<IForwardAct>;
+    forward: () => Promise<IPlayAct>;
 }
