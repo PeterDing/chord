@@ -12,16 +12,18 @@ export function playAudio(state: IPlayerState, act: IPlayAct): IPlayerState {
     let index = act.index;
     if (index != state.index) {
         let song = state.playList[index];
+        if (song) {
+            let audio = song.audios.filter(audio => audio.format == 'mp3')[0];
+            let audioUrl = audio.path || audio.url;
+            CAudio.makeAudio(audioUrl);
 
-        let audio = song.audios.filter(audio => audio.format == 'mp3')[0];
-        let audioUrl = audio.path || audio.url;
-        CAudio.makeAudio(audioUrl);
+            // play now
+            CAudio.play();
+            CAudio.volume(state.volume);
 
-        // play now
-        CAudio.play();
-        CAudio.volume(state.volume);
-
-        return { ...state, playing: true, index };
+            return { ...state, playing: true, index };
+        }
     }
-    return state;
+    let playing = CAudio.hasAudio() ? CAudio.playing() : false;
+    return { ...state, playing };
 }
