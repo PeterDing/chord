@@ -92,6 +92,8 @@ export class QQMusicApi {
         userDislikeAlbum: 'https://c.y.qq.com/folder/fcgi-bin/fcg_qm_order_diss.fcg',
         userDislikeCollection: 'https://c.y.qq.com/folder/fcgi-bin/fcg_qm_order_diss.fcg',
         userDislikeUserProfile: 'https://c.y.qq.com/rsc/fcgi-bin/add_attention_status.fcg',
+
+        playLog: 'https://c.y.qq.com/tplcloud/fcgi-bin/fcg_reportlsting_web.fcg',
     };
 
     private account: IAccount;
@@ -125,7 +127,7 @@ export class QQMusicApi {
             gzip: true,
         };
         let body: any = await request(options);
-        return body.trim().startsWith('<') ? body : JSON.parse(body);
+        return body.trim().startsWith('<') || body == '' ? body : JSON.parse(body);
     }
 
 
@@ -1060,8 +1062,26 @@ export class QQMusicApi {
     }
 
 
-    public async playLog(songId: string, songMid?: string): Promise<boolean> {
+    /**
+     * QQ seems has not the api
+     */
+    public async playLog(songId: string, seek: number, songMid?: string): Promise<boolean> {
+        if (!this.logined()) {
+            throw new NoLoginError('[QQMusicApi] recording one played song needs to login');
+        }
 
+        let params = {
+            musicid: songId,
+            isexit: 'false',
+            _r: Date.now(),
+            g_tk: this.getACSRFToken(),
+        };
+        let referer = 'https://y.qq.com/portal/player.html';
+        let url = QQMusicApi.NODE_MAP.playLog;
+
+        // return nothing;
+        await this.request('GET', url, params, null, referer);
+        return true;
     }
 
 

@@ -682,6 +682,27 @@ export class Music {
     }
 
 
+    public async playLog(songId: string, seek: number, songMid?: string): Promise<boolean> {
+        let result;
+        let originType = getOrigin(songId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                result = await this.xiamiApi.playLog(originType.id, seek);
+                break;
+            case ORIGIN.netease:
+                result = await this.neteaseApi.playLog(originType.id, seek);
+                break;
+            case ORIGIN.qq:
+                result = await this.qqApi.playLog(originType.id, seek, songMid);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.playLog] Here will never be occured. [args]: ${songId} ${seek}`);
+        }
+        return result;
+    }
+
+
     public resizeImageUrl(origin: string, url: string, size: ESize | number): string {
         if (!url) { return url; }
         switch (origin) {
