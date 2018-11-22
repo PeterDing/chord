@@ -1306,7 +1306,7 @@ export class AliMusicApi {
     /**
      * Record played song
      */
-    public async playLog(songId: string): Promise<boolean> {
+    public async playLog(songId: string, seek: number): Promise<boolean> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.playLog,
             {

@@ -108,6 +108,8 @@ export class NeteaseMusicApi {
         userDislikeArtist: 'weapi/artist/unsub',
         userDislikeCollection: 'weapi/playlist/unsubscribe',
         userDislikeUserProfile: 'weapi/user/delfollow/',
+
+        playLog: 'weapi/feedback/weblog',
     }
 
     private account: IAccount;
@@ -694,15 +696,15 @@ export class NeteaseMusicApi {
             pid: collectionId,
             csrf_token,
         } : {
-            id: collectionId,
-            csrf_token,
-        };
+                id: collectionId,
+                csrf_token,
+            };
         let json = await this.request(node, data);
         return json.code == 200;
     }
 
 
-    public async userLikeUserProfile(userId: string, _?, dislike: boolean=false): Promise<boolean> {
+    public async userLikeUserProfile(userId: string, _?, dislike: boolean = false): Promise<boolean> {
         if (!this.logined()) {
             throw new NoLoginError(
                 dislike ?
@@ -743,6 +745,35 @@ export class NeteaseMusicApi {
 
     public async userDislikeUserProfile(userId: string, _?): Promise<boolean> {
         return this.userLikeUserProfile(userId, null, true);
+    }
+
+
+    public async playLog(songId: string, seek: number): Promise<boolean> {
+        if (!this.logined()) {
+            throw new NoLoginError('[NeteaseMusicApi] recording one played song needs to login');
+        }
+
+        let account: IAccount = this.getAccount();
+        let csrf_token = account.cookies['__csrf'];
+
+        let node = NeteaseMusicApi.NODE_MAP.playLog;
+        let data = {
+            logs: JSON.stringify(
+                [{
+                    action: 'play',
+                    json: {
+                        end: 'ui',
+                        time: seek,
+                        wifi: 0,
+                        type: 'song',
+                        id: parseInt(songId),
+                    }
+                }]
+            ),
+            csrf_token,
+        };
+        let json = await this.request(node, data);
+        return json.code == 200;
     }
 
 
