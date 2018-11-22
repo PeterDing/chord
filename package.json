@@ -23,6 +23,12 @@
         "appId": "chord.music",
         "compression": "maximum",
         "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+        "linux": {
+            "target": ["deb"]
+        },
+        "deb": {
+            "compression": "gz"
+        },
         "win": {
             "target": "nsis"
         },
