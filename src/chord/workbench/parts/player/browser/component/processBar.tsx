@@ -7,6 +7,7 @@ import { CAudio } from 'chord/workbench/api/node/audio';
 import { Store } from 'redux';
 
 import { handleForward } from 'chord/workbench/parts/player/browser/action/control';
+import { handlePlayLog } from 'chord/workbench/parts/player/browser/action/plugins/playLog';
 
 
 type RefDiv = React.RefObject<HTMLDivElement>;
@@ -44,6 +45,8 @@ export function onEnd(soundId: number, store: Store) {
     clearInterval(ppoint);
     ppoint = null;
     step();
+
+    handlePlayLog();
 
     // play next song
     handleForward().then(act => store.dispatch(act));
