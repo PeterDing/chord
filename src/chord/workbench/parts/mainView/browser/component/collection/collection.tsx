@@ -67,7 +67,8 @@ function CollectionInfo({ collection, handlePlayCollection, handleShowUserProfil
                 <h2>{collection.collectionName}</h2>
                 <div>
                     <span>By </span>
-                    <span onClick={() => handleShowUserProfileViewById(collection.userId, collection.userMid)}>
+                    <span className='link-subtle'
+                        onClick={() => handleShowUserProfileViewById(collection.userId, collection.userMid)}>
                         {collection.userName}</span>
                 </div>
             </div>
