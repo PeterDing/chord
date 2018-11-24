@@ -25,6 +25,8 @@ export async function syncAdd(item: ISong | IArtist | IAlbum | ICollection | IUs
     if (account && syncAddRemove) {
         ok(musicApi.logined(originType.origin), '[ERROR] [syncAdd]: user configuration does not synchronize with `musicApi`');
 
+        console.log(`[syncAdd]: [${item.type}] - ${itemId}`);
+
         switch (item.type) {
             case 'song':
                 return musicApi.userLikeSong(itemId, itemMid);
@@ -53,6 +55,8 @@ export async function syncRemove(item: ISong | IArtist | IAlbum | ICollection | 
     let { account, syncAddRemove }: IOriginConfiguration = config[originType.origin] || {};
     if (account && syncAddRemove) {
         ok(musicApi.logined(originType.origin), '[ERROR] [syncRemove]: user configuration does not synchronize with `musicApi`');
+
+        console.log(`[syncRemove]: [${item.type}] - ${itemId}`);
 
         switch (item.type) {
             case 'song':
