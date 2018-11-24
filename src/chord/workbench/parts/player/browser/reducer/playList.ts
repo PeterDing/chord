@@ -10,7 +10,7 @@ export function playAudio(state: IPlayerState, act: IPlayAct): IPlayerState {
     equal(act.act, 'c:player:play');
 
     let index = act.index;
-    if (index != state.index) {
+    if (!(index == state.index && CAudio.hasAudio() && CAudio.playing())) {
         let song = state.playList[index];
         if (song) {
             let audio = song.audios.filter(audio => audio.format == 'mp3')[0];
