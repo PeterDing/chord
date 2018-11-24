@@ -4,6 +4,7 @@ import { audioSeek } from 'chord/workbench/parts/player/browser/reducer/audioSee
 import { rewind, playPause, forward } from 'chord/workbench/parts/player/browser/reducer/control';
 import { playAudio } from 'chord/workbench/parts/player/browser/reducer/playList';
 import { playOne } from 'chord/workbench/parts/player/browser/reducer/playOne';
+import { playMany } from 'chord/workbench/parts/player/browser/reducer/playMany';
 import { playArtist } from 'chord/workbench/parts/player/browser/reducer/playArtist';
 import { playAlbum } from 'chord/workbench/parts/player/browser/reducer/playAlbum';
 import { playCollection } from 'chord/workbench/parts/player/browser/reducer/playCollection';
@@ -23,6 +24,11 @@ export function map(act: string): IReducerMap {
         case 'c:player:playOne':
             return {
                 reducer: playOne,
+                node: '.',
+            };
+        case 'c:player:playMany':
+            return {
+                reducer: playMany,
                 node: '.',
             };
         case 'c:player:playArtist':
