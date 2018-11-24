@@ -19,6 +19,7 @@ import {
     getMoreCollections,
     getMoreUserProfiles,
 } from 'chord/workbench/parts/mainView/browser/action/libraryResult';
+import { handlePlayLibrarySongs } from 'chord/workbench/parts/player/browser/action/playLibrarySongs';
 
 import { ILibraryResultProps } from 'chord/workbench/parts/mainView/browser/component/library/props/libraryResult';
 
@@ -196,6 +197,10 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                         <div className='row'>
                             <h1 className="search-result-title" style={{ textAlign: 'center' }}>
                                 Songs</h1>
+                            <button className="btn btn-green btn-small"
+                                style={{ margin: '0px auto 15px', display: 'block' }}
+                                onClick={this.props.handlePlayLibrarySongs}>
+                                PlAY ALL</button>
                             <section className='tracklist-container'>
                                 <ol className='tracklist'>
                                     {songsView}
@@ -281,6 +286,10 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                         <div className='row'>
                             <h1 className="search-result-title" style={{ textAlign: 'center' }}>
                                 Songs</h1>
+                            <button className="btn btn-green btn-small"
+                                style={{ margin: '0px auto 15px', display: 'block' }}
+                                onClick={this.props.handlePlayLibrarySongs}>
+                                PlAY ALL</button>
                             <section className='tracklist-container'>
                                 <ol className='tracklist'>
                                     {songsView}
@@ -480,6 +489,8 @@ function mapDispatchToProps(dispatch) {
         getMoreArtists: (keyword, offset, size) => dispatch(getMoreArtists(keyword, offset, size)),
         getMoreCollections: (keyword, offset, size) => dispatch(getMoreCollections(keyword, offset, size)),
         getMoreUserProfiles: (keyword, offset, size) => dispatch(getMoreUserProfiles(keyword, offset, size)),
+
+        handlePlayLibrarySongs: () => handlePlayLibrarySongs().then(act => dispatch(act)),
     };
 }
 
