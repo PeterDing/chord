@@ -9,6 +9,7 @@ import { getDateYear } from 'chord/base/common/time';
 import { ICollectionItemViewProps } from 'chord/workbench/parts/common/props/collectionItem';
 import { handlePlayCollection } from 'chord/workbench/parts/player/browser/action/playCollection';
 import { handleShowCollectionView } from 'chord/workbench/parts/mainView/browser/action/showCollection';
+import { handleShowUserProfileViewById } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
 
 import { CollectionIcon } from 'chord/workbench/parts/common/component/common';
 
@@ -70,7 +71,11 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
                         </div>
 
                         {/* Collection User Name */}
-                        <div className="mo-meta ellipsis-one-line"><span>{collection.userName}</span></div>
+                        <div className="mo-meta ellipsis-one-line">
+                            <span className='link-subtle'
+                                onClick={() => this.props.handleShowUserProfileViewById(collection.userId, collection.userMid)}>
+                                {collection.userName}</span>
+                        </div>
 
                         <div className="mo-meta ellipsis-one-line">
                             <div className="react-contextmenu-wrapper">
@@ -92,6 +97,8 @@ function mapDispatchToProps(dispatch) {
         handlePlayCollection: collection => handlePlayCollection(collection).then(act => dispatch(act)),
         handleShowCollectionView: collection => handleShowCollectionView(collection).then(act => dispatch(act)),
         showCollectionMenu: (e, collection) => dispatch(showCollectionMenu(e, collection)),
+
+        handleShowUserProfileViewById: (userId, userMid) => handleShowUserProfileViewById(userId, userMid).then(act => dispatch(act)),
     };
 }
 
