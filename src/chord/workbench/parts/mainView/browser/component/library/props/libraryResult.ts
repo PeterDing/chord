@@ -14,6 +14,7 @@ import {
     IGetMoreLibraryCollectionsAct,
     IGetMoreLibraryUserProfilesAct,
 } from 'chord/workbench/api/common/action/mainView';
+import { IPlayManyAct } from 'chord/workbench/api/common/action/player';
 
 
 export interface ILibraryResultProps {
@@ -40,4 +41,6 @@ export interface ILibraryResultProps {
     getMoreArtists: (keyword, offset, size) => IGetMoreLibraryArtistsAct;
     getMoreCollections: (keyword, offset, size) => IGetMoreLibraryCollectionsAct;
     getMoreUserProfiles: (keyword, offset, size) => IGetMoreLibraryUserProfilesAct;
+
+    handlePlayLibrarySongs: () => Promise<IPlayManyAct>;
 }
