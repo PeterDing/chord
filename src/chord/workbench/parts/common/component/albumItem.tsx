@@ -9,6 +9,7 @@ import { getDateYear } from 'chord/base/common/time';
 import { IAlbumItemViewProps } from 'chord/workbench/parts/common/props/albumItem';
 import { handlePlayAlbum } from 'chord/workbench/parts/player/browser/action/playAlbum';
 import { handleShowAlbumView } from 'chord/workbench/parts/mainView/browser/action/showAlbum';
+import { handleShowArtistViewById } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 
 import { showAlbumMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
@@ -72,7 +73,9 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, object> {
                         {/* Artist Name */}
                         <div className="mo-meta ellipsis-one-line">
                             <div className="react-contextmenu-wrapper">
-                                <span>{album.artistName}</span>
+                                <span className='link-subtle'
+                                    onClick={() => this.props.handleShowArtistViewById(album.artistId)}>
+                                    {album.artistName}</span>
                             </div>
                         </div>
 
@@ -96,6 +99,8 @@ function mapDispatchToProps(dispatch) {
         handlePlayAlbum: album => handlePlayAlbum(album).then(act => dispatch(act)),
         handleShowAlbumView: album => handleShowAlbumView(album).then(act => dispatch(act)),
         showAlbumMenu: (e, album) => dispatch(showAlbumMenu(e, album)),
+
+        handleShowArtistViewById: artistId => handleShowArtistViewById(artistId).then(act => dispatch(act)),
     };
 }
 
