@@ -21,7 +21,7 @@ export function playAudio(state: IPlayerState, act: IPlayAct): IPlayerState {
             CAudio.play();
             CAudio.volume(state.volume);
 
-            return { ...state, playing: true, index };
+            return { ...state, playing: true, index, kbps: audio.kbps };
         }
     }
     let playing = CAudio.hasAudio() ? CAudio.playing() : false;
