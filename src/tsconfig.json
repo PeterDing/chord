@@ -9,6 +9,7 @@
         "target": "es5",
         "sourceMap": false,
         "experimentalDecorators": true,
+        "downlevelIteration": true,
         "declaration": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
