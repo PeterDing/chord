@@ -19,5 +19,5 @@ export function addToQueue(state: IPlayerState, act: IAddToQueueAct): IPlayerSta
             playList = [...act.songs, ...state.playList];
             break;
     }
-    return { ...state, playList, index };
+    return { ...state, playList, index, id: Date.now() };
 }
