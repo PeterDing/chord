@@ -1,6 +1,6 @@
 'use strict';
 
-import { getRandomInt } from 'chord/base/node/random';
+import { getRandomSample } from 'chord/base/node/random';
 
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import { IPlayerState } from 'chord/workbench/api/common/state/player';
@@ -10,13 +10,18 @@ import { IPlayPauseAct, IPlayAct } from 'chord/workbench/api/common/action/playe
 import { addSongAudios } from 'chord/workbench/api/utils/song';
 
 
+let SHUFFLE_SONG_ID_LIST: Array<number>;
+let PLAYLIST_ID: number;
+
+
 function getShuffleIndex(max: number, originalIndex: number): number {
-    while (true) {
-        let index = getRandomInt(0, max);
-        if (index != originalIndex) {
-            return index;
-        }
+    let { id: playListId, playList } = (<any>window).store.getState().player;
+    if (playListId != PLAYLIST_ID || SHUFFLE_SONG_ID_LIST.length == 0) {
+        SHUFFLE_SONG_ID_LIST = getRandomSample([...Array(playList.length).keys()], playList.length);
+        PLAYLIST_ID = playListId;
     }
+
+    return SHUFFLE_SONG_ID_LIST.pop();
 }
 
 
