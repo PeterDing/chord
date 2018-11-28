@@ -14,6 +14,10 @@ export interface IPlayerState {
     playing: boolean;
     shuffle: boolean;
     repeat: boolean;
+
+    // Play list id is an unique number, default the timestamp where changing is active
+    // When `playList` changes, the id changes
+    id: number;
 }
 
 
@@ -26,5 +30,6 @@ export function initiatePlayerState() {
         playing: false,
         shuffle: false,
         repeat: false,
+        id: 0,
     };
 }
