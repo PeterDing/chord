@@ -17,6 +17,8 @@ import { onPlay, onPause, onEnd } from 'chord/workbench/parts/player/browser/com
 
 import RootView from 'chord/workbench/electron-browser/rootView';
 
+import { handleQuit } from 'chord/workbench/electron-browser/action/quit';
+
 
 const store = createStore(mainReducer);
 
@@ -40,3 +42,6 @@ CAudio.registerStore(store);
 CAudio.registerOnPlay(onPlay);
 CAudio.registerOnPause(onPause);
 CAudio.registerOnEnd(onEnd);
+
+
+handleQuit();
