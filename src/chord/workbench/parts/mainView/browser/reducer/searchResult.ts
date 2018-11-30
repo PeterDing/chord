@@ -22,8 +22,7 @@ export function showSearchResult(state: ISearchViewState, act: ISearchInputAct):
         artists: act.artists,
         collections: act.collections,
     };
-    let keywords = act.keyword == state.history.keywords[0] ?
-        [...state.history.keywords] : [act.keyword, ...state.history.keywords.slice(0, 100)];
+    let keywords = act.keyword == state.history.keywords[0] ? [...state.history.keywords] : [act.keyword, ...state.history.keywords.filter(keyword => keyword != act.keyword).slice(0, 999)];
     let history = { keywords };
     return { ...state, view: 'searchResult', keyword: act.keyword, history, result };
 }
