@@ -57,6 +57,8 @@ function createWindow() {
     }
 
     win.on('close', () => {
+        console.log('=== win close ===');
+        win.webContents.send('chord-quit', null);
         win = null;
     });
 
