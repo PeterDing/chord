@@ -8,6 +8,10 @@
 
 ![search_detail](media/search_detail.png)
 
+- Player
+
+![player](media/player.png)
+
 - Search Albums
 
 ![search_album](media/search_album.png)
