@@ -10,11 +10,7 @@
 
 - Search Albums
 
-![search_detail](media/search_albums.png)
-
-- Search Albums
-
-![search_detail](media/search_albums.png)
+![search_album](media/search_album.png)
 
 - Album Detail
 
