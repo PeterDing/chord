@@ -325,12 +325,12 @@ export function makeAliSong(info: any): ISong {
 
     let audios = [];
     if (info['listenFiles'] && info['listenFiles'].length > 0) {
-        audios = info['listenFiles'].map(a => makeAudio(a)).sort((x, y) => x.size < y.size);
+        audios = info['listenFiles'].map(a => makeAudio(a)).sort((x, y) => y.kbps < x.kbps);
     } else {
         // block song audio may be at here
         let backupSong = info['bakSong'];
         if (backupSong && backupSong['listenFiles'] && backupSong['listenFiles'].length > 0) {
-            audios = backupSong['listenFiles'].map(a => makeAudio(a)).sort((x, y) => x.size < y.size);
+            audios = backupSong['listenFiles'].map(a => makeAudio(a)).sort((x, y) => y.kbps - x.kbps);
         }
     }
 
