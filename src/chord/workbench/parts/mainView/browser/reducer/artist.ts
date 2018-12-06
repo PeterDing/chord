@@ -4,7 +4,7 @@ import { equal } from 'chord/base/common/assert';
 
 import { IGetMoreArtistSongsAct, IGetMoreArtistAlbumsAct } from 'chord/workbench/api/common/action/mainView';
 
-import { IArtistViewState } from '/Users/peter/dev/chord/src/chord/workbench/api/common/state/mainView/artistView';
+import { IArtistViewState } from 'chord/workbench/api/common/state/mainView/artistView';
 
 
 export function getMoreArtistSongs(state: IArtistViewState, act: IGetMoreArtistSongsAct): IArtistViewState {
