@@ -13,12 +13,12 @@ Chord uses the framework of spotify UI.
 ## Features
 
 * Support Xiami 虾米, Netease music 网易云音乐, QQ music 腾讯音乐
-* Support functions:
-  Search
-  Play (shuffle, repeat)
+* Support functions:  
+  Search  
+  Play (shuffle, repeat)  
   Show Artist, album, collection, user profile at detail
-* High quality audio file (kbps >= 320)
-  **Login is needed to get high quality audio files for Netease music**
+* High quality audio file (kbps >= 320)  
+  **Login is needed to get high quality audio files for Netease music**  
   **and the logined user must be a vip user**
 * Login to music providers
 * Saving/removing and playing actions synchronize to matched music provider
