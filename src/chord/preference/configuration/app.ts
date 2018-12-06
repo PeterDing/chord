@@ -35,6 +35,6 @@ export class AppConfiguration {
 
     public saveConfig(config?: IAppConfiguration): void {
         config = config || this.getConfig();
-        fs.writeFileSync(APP_CONFIGURATION_PATH, JSON.stringify(config), { encoding: 'utf-8' });
+        fs.writeFileSync(APP_CONFIGURATION_PATH, JSON.stringify(config, null, 4), { encoding: 'utf-8' });
     }
 }

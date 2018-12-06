@@ -3,6 +3,7 @@
 import { ORIGIN } from 'chord/music/common/origin';
 
 import { ISong } from 'chord/music/api/song';
+import { IAudio } from 'chord/music/api/audio';
 
 import { musicApi } from 'chord/music/core/api';
 
@@ -36,4 +37,17 @@ export async function addSongAudios(song: ISong) {
             song.audios = await musicApi.audios(song.songId);
         }
     }
+}
+
+
+/**
+ * Select the audio file which is less than or equal to the given supper kbps from a list
+ *
+ * maximum of kbps
+ * https://en.wikipedia.org/wiki/Bit_rate
+ */
+export function selectAudio(audios: Array<IAudio>, supKbps: number = 6000): IAudio {
+    if (audios.length == 0) return null;
+
+    return audios.filter(audio => (audio.url || audio.path) && ((audio.kbps || 128) <= supKbps)).sort((x, y) => y.kbps - x.kbps)[0];
 }

@@ -42,8 +42,8 @@ const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 export const AUDIO_FORMAT_MAP = {
     '128mp3': 'M500',
     '320mp3': 'M800',
-    'ape': 'A000',
-    'flac': 'F000',
+    '1ape': 'A000',
+    '1000flac': 'F000',
 };
 
 export const KBPS_MAP = {
@@ -51,8 +51,9 @@ export const KBPS_MAP = {
     '320': 320,
     '128mp3': 128,
     '320mp3': 320,
-    'ape': null,
-    'flac': null,
+    // ape file is not accessable, so missing it
+    'ape': 1,
+    'flac': 1000,
 }
 
 export const FORMAT_MAP = {
@@ -75,9 +76,9 @@ function getQQArtistAvatarUrl(mid: string): string {
 
 function makeAudios(info: any): Array<IAudio> {
     return Object.keys(info)
-        .filter(key => FORMAT_MAP[key.replace(/size_?/, '')] && key.startsWith('size') && info[key])
+        .filter(key => FORMAT_MAP[key.replace(/size_?/, '').toLowerCase()] && key.startsWith('size') && info[key])
         .map(key => {
-            let chunk = key.replace(/size_?/, '');
+            let chunk = key.replace(/size_?/, '').toLowerCase();
             let format = FORMAT_MAP[chunk];
             let kbps = KBPS_MAP[chunk];
             let size: number = info[key];
@@ -89,7 +90,7 @@ function makeAudios(info: any): Array<IAudio> {
             };
             return audio;
         })
-        .sort((x, y) => y.size - x.size);
+        .sort((x, y) => y.kbps - x.kbps);
 }
 
 

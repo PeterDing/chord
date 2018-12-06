@@ -13,7 +13,7 @@ import { getMainBackground } from 'chord/workbench/electron-browser/media/mainBa
 
 import MenuView from 'chord/workbench/parts/menu/browser/menuView';
 
-import MainView from 'chord/workbench/parts/mainview/browser/mainView';
+import MainView from 'chord/workbench/parts/mainView/browser/mainView';
 
 
 function closeMenu() {

@@ -7,6 +7,8 @@ import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import { search } from 'chord/workbench/parts/mainView/browser/action/searchInput';
 import { ISearchHistoryProps } from 'chord/workbench/parts/mainView/browser/component/search/props/searchHistory';
 
+import { readLocalSearchHistoryState } from 'chord/preference/utils/app';
+
 
 class SearchHistory extends React.Component<ISearchHistoryProps, object> {
 
@@ -36,7 +38,14 @@ class SearchHistory extends React.Component<ISearchHistoryProps, object> {
 }
 
 
+let _readed = false;
+
 function mapStateToProps(state: IStateGlobal) {
+    let history = state.mainView.searchView.history;
+    if (!_readed && history.keywords.length == 0) {
+        history.keywords = [...readLocalSearchHistoryState().keywords];
+        _readed = true;
+    }
     return {
         history: state.mainView.searchView.history,
     }
