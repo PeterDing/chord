@@ -4,14 +4,14 @@ import { Act } from 'chord/workbench/api/common/action/proto';
 
 
 export interface INavigationSearchAct extends Act {
-    // 'c:mainview:searchView'
+    // 'c:mainView:searchView'
     type: string;
     act: string;
 }
 
 
 export interface INavigationComebackAct extends Act {
-    // 'c:mainview:comeback'
+    // 'c:mainView:comeback'
     type: string;
     act: string;
     view: string;
@@ -19,7 +19,7 @@ export interface INavigationComebackAct extends Act {
 
 
 export interface INavigationPreferenceAct extends Act {
-    // 'c:mainview:preferenceView'
+    // 'c:mainView:preferenceView'
     type: string;
     act: string;
 }
