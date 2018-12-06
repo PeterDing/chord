@@ -1,15 +1,18 @@
 'use strict';
 
-import { app } from 'electron';
+import { app, shell } from 'electron';
 
 
 export const menuTemplate = (win) => [
     {
         label: "Application",
         submenu: [
-            // { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
-            // { type: "separator" },
-            { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); } }
+            {
+                label: 'About Chord',
+                click() { shell.openExternal('https://github.com/PeterDing/chord') }
+            },
+            { type: "separator" },
+            { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); } },
         ]
     },
     {
@@ -36,5 +39,18 @@ export const menuTemplate = (win) => [
                 }
             },
         ]
-    }
+    },
+    {
+        role: 'help',
+        submenu: [
+            {
+                label: 'Fork at Github',
+                click() { shell.openExternal('https://github.com/PeterDing/chord') }
+            },
+            {
+                label: 'Report Bug',
+                click() { shell.openExternal('https://github.com/PeterDing/chord/issues') }
+            },
+        ]
+    },
 ];
