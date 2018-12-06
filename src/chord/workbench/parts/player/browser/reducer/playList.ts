@@ -5,6 +5,8 @@ import { IPlayerState } from 'chord/workbench/api/common/state/player';
 import { IPlayAct } from 'chord/workbench/api/common/action/player';
 import { CAudio } from 'chord/workbench/api/node/audio';
 
+import { selectAudio } from 'chord/workbench/api/utils/song';
+
 
 export function playAudio(state: IPlayerState, act: IPlayAct): IPlayerState {
     equal(act.act, 'c:player:play');
@@ -13,7 +15,8 @@ export function playAudio(state: IPlayerState, act: IPlayAct): IPlayerState {
     if (!(index == state.index && CAudio.hasAudio() && CAudio.playing())) {
         let song = state.playList[index];
         if (song) {
-            let audio = song.audios.filter(audio => audio.format == 'mp3')[0];
+            // TODO: read kbps configuration
+            let audio = selectAudio(song.audios);
             let audioUrl = audio.path || audio.url;
             CAudio.makeAudio(audioUrl);
 
