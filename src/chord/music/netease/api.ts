@@ -163,7 +163,7 @@ export class NeteaseMusicApi {
         let node = NeteaseMusicApi.NODE_MAP.audio;
         let data = {
             ids: [songId],
-            br: 320000,
+            br: 999000,
             csrf_token: '',
         };
         let json = await this.request(node, data);
