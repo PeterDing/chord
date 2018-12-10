@@ -488,7 +488,7 @@ export class QQMusicApi {
                 });
 
                 // get user profile
-                let userOriginalId = cookies['ptui_loginuin'];
+                let userOriginalId = cookies['ptui_loginuin'] || cookies['uin'].slice(2);
                 let tmpApi = new QQMusicApi();
 
                 let domain = 'qq.com';
