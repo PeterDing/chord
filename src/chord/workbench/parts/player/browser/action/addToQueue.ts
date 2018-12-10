@@ -1,5 +1,9 @@
 'use strict';
 
+import { Logger } from 'chord/platform/log/common/log';
+import { filenameToNodeName } from 'chord/platform/utils/common/paths';
+const logger = new Logger(filenameToNodeName(__filename));
+
 import { ISong } from 'chord/music/api/song';
 import { IArtist } from 'chord/music/api/artist';
 import { IAlbum } from 'chord/music/api/album';
@@ -39,7 +43,7 @@ export async function handleAddToQueue(item: ISong | IArtist | IAlbum | ICollect
             songs = act5.songs;
             break;
         default:
-            console.warn('`handleAddToQueue` act: unknown item\'s type: ' + JSON.stringify(item));
+            logger.warning('`handleAddToQueue` act: unknown item\'s type:', item);
     }
 
     songs = songs || [];

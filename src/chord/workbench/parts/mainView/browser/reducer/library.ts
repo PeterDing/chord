@@ -1,5 +1,9 @@
 'use strict';
 
+import { Logger } from 'chord/platform/log/common/log';
+import { filenameToNodeName } from 'chord/platform/utils/common/paths';
+const logger = new Logger(filenameToNodeName(__filename));
+
 import { equal } from 'chord/base/common/assert';
 
 import { ILibraryResultState } from 'chord/workbench/api/common/state/mainView/libraryView';
@@ -71,7 +75,7 @@ export function removeFromLibrary(state: ILibraryResultState, act: IRemoveFromLi
             let userProfiles = state.userProfiles.filter(userProfile => userProfile.userProfile.userId != (<any>item).userId);
             return { ...state, userProfiles };
         default:
-            console.warn('`removeFromLibrary` reducer: unknown item\'s type: ' + JSON.stringify(item));
+            logger.error('`removeFromLibrary` reducer: unknown item\'s type:', item.type, item);
     }
 
     return { ...state };

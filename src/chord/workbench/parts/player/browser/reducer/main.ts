@@ -9,15 +9,6 @@ import { IPlayerState } from 'chord/workbench/api/common/state/player';
 export function playerReducer(state: IPlayerState, act: Act): IPlayerState {
     let { reducer, node } = map(act.act);
     let reducerState = getDescendentProp(state, node);
-
-    console.log('----------');
-    console.log('player ori state: node: ' + node);
-    console.log(state);
-    console.log('player reducer state:');
-    console.log(reducerState);
-    console.log('player reducer:');
-    console.log(reducer);
-
     let result = reducer(reducerState, act);
     let newState = { ...state };
     newState = setDescendentProp(newState, node, result);
