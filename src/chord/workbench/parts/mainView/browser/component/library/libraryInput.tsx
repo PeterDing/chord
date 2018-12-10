@@ -38,7 +38,6 @@ class LibraryInput extends React.Component<ILibraryInputProps, any> {
         });
     }
 
-                    // <form onSubmit={(event) => { console.log('------------get', this.state.keyword); event.preventDefault(); }}>
     render() {
         return (
             <div className='inputBox'>

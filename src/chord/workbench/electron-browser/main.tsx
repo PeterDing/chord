@@ -1,6 +1,8 @@
 'use strict';
 
-console.log('=== electron rendering process ===');
+import { Logger } from 'chord/platform/log/common/log';
+import { filenameToNodeName } from 'chord/platform/utils/common/paths';
+const logger = new Logger(filenameToNodeName(__filename));
 
 import 'chord/css!./media/main';
 
@@ -18,6 +20,16 @@ import { onPlay, onPause, onEnd } from 'chord/workbench/parts/player/browser/com
 import RootView from 'chord/workbench/electron-browser/rootView';
 
 import { handleQuit } from 'chord/workbench/electron-browser/action/quit';
+
+import { webFrame } from 'electron';
+
+
+logger.info('electron rendering process activate')
+
+
+// Disable zoom
+// https://github.com/electron/electron/issues/3609#issuecomment-289537969
+webFrame.setVisualZoomLevelLimits(1, 1);
 
 
 const store = createStore(mainReducer);

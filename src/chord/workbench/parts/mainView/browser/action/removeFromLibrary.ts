@@ -1,5 +1,9 @@
 'use strict';
 
+import { Logger } from 'chord/platform/log/common/log';
+import { filenameToNodeName } from 'chord/platform/utils/common/paths';
+const logger = new Logger(filenameToNodeName(__filename));
+
 import { ISong } from 'chord/music/api/song';
 import { IArtist } from 'chord/music/api/artist';
 import { IAlbum } from 'chord/music/api/album';
@@ -34,7 +38,7 @@ export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollec
             defaultLibrary.deleteUserProfile(<IUserProfile>item);
             break;
         default:
-            console.warn('`handleRemoveFromLibrary` act: unknown item\'s type: ' + JSON.stringify(item));
+            logger.error('`handleRemoveFromLibrary` act: unknown item\'s type:', item.type, item);
     }
 
     syncRemove(item);

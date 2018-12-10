@@ -1,5 +1,9 @@
 'use strict';
 
+import { Logger, LogLevel } from 'chord/platform/log/common/log';
+import { filenameToNodeName } from 'chord/platform/utils/common/paths';
+const loggerWarning = new Logger(filenameToNodeName(__filename), LogLevel.Warning);
+
 import { ok } from 'chord/base/common/assert';
 import { assign } from 'chord/base/common/objects';
 import { md5 } from 'chord/base/node/crypto';
@@ -504,12 +508,12 @@ export class AliMusicApi {
 
         // TODO: Handle each errors
         if (json.ret[0].search('SUCCESS') == -1) {
-            console.warn('[AliMusicApi.request] [Error]: request params:', options);
-            console.warn(json);
+            loggerWarning.warning('[AliMusicApi.request] [Error]: (params, response):', options, json);
         }
 
         // FAIL_SYS_TOKEN_EXOIRED::令牌过期
         if (json.ret && json.ret[0].search('FAIL_SYS_TOKEN_EXOIRED') != -1) {
+            loggerWarning.warning('AliMusicApi: TOKEN_EXOIRED');
             this.reset();
             await this.getToken();
             return this.request(node, apiParams, referer, init);

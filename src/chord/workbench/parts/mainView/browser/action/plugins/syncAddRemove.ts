@@ -1,5 +1,9 @@
 'use strict';
 
+import { Logger } from 'chord/platform/log/common/log';
+import { filenameToNodeName } from 'chord/platform/utils/common/paths';
+const logger = new Logger(filenameToNodeName(__filename));
+
 import { ok } from 'chord/base/common/assert';
 
 import { getOrigin } from 'chord/music/common/origin';
@@ -25,7 +29,7 @@ export async function syncAdd(item: ISong | IArtist | IAlbum | ICollection | IUs
     if (account && syncAddRemove) {
         ok(musicApi.logined(originType.origin), '[ERROR] [syncAdd]: user configuration does not synchronize with `musicApi`');
 
-        console.log(`[syncAdd]: [${item.type}] - ${itemId}`);
+        logger.info('[syncAdd]:', item.type, itemId);
 
         switch (item.type) {
             case 'song':
@@ -56,7 +60,7 @@ export async function syncRemove(item: ISong | IArtist | IAlbum | ICollection | 
     if (account && syncAddRemove) {
         ok(musicApi.logined(originType.origin), '[ERROR] [syncRemove]: user configuration does not synchronize with `musicApi`');
 
-        console.log(`[syncRemove]: [${item.type}] - ${itemId}`);
+        logger.info('[syncRemove]:', item.type, itemId);
 
         switch (item.type) {
             case 'song':

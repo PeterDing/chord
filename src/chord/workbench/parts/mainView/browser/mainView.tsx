@@ -1,5 +1,9 @@
 'use strict';
 
+import { Logger } from 'chord/platform/log/common/log';
+import { filenameToNodeName } from 'chord/platform/utils/common/paths';
+const logger = new Logger(filenameToNodeName(__filename));
+
 import 'chord/css!./media/mainView';
 
 import * as React from 'react';
@@ -16,7 +20,7 @@ import UserProfileView from 'chord/workbench/parts/mainView/browser/component/us
 
 
 function MainView({ view }) {
-    console.log('+++ MainView view:', view);
+    logger.info('MainView view:', view);
 
     let View;
     switch (view) {
@@ -42,7 +46,7 @@ function MainView({ view }) {
             View = <PreferenceView />
             break;
         default:
-            console.warn(`[WARN] [MainView]: No get view: ${view}`);
+            logger.error('[MainView]: No get view', view);
             return null;
     }
 
