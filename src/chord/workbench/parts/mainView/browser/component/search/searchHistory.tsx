@@ -19,7 +19,7 @@ class SearchHistory extends React.Component<ISearchHistoryProps, object> {
     render() {
         let history = this.props.history.keywords.map((keyword, index) => (
             <li key={index} onClick={() => this.props.search(keyword)}>
-                <div className='link-subtle'>
+                <div className='link-subtle a-like cursor-pointer'>
                     <h1 className='ellipsis-one-line'>{keyword}</h1>
                 </div>
             </li>

@@ -82,12 +82,12 @@ class Login extends React.Component<any, any> {
                             type='password' placeholder='Password'
                             value={this.state.password}
                             onChange={(e) => this.handleInputChange(e, 'password')} />
-                        <button className='btn btn-green'>Login</button>
+                        <button className='btn btn-green cursor-pointer'>Login</button>
                     </form>
                 </div>
             </div>
         ) : (
-                <button className='btn btn-green'
+                <button className='btn btn-green cursor-pointer'
                     onClick={(event) => { event.preventDefault(); this.login(); }}>
                     Login</button>
             );
@@ -120,7 +120,7 @@ class Login extends React.Component<any, any> {
                             <div className="media-object-hoverable">
                                 <div className="react-contextmenu-wrapper"
                                     onContextMenu={(e) => this.props.showUserProfileMenu(e, userProfile)}>
-                                    <div className="cover-art shadow actionable rounded linking cover-art--with-auto-height"
+                                    <div className="cover-art shadow actionable rounded linking cursor-pointer cover-art--with-auto-height"
                                         aria-hidden="true" style={{ width: 'auto', height: 'auto' }}>
                                         <div onClick={() => this.props.handleShowUserProfileView(userProfile)}>
                                             {UserProfileIcon}
@@ -128,7 +128,7 @@ class Login extends React.Component<any, any> {
                                                 style={{ backgroundImage: `url("${cover}")` }}>
                                             </div>
                                         </div>
-                                        <button className="cover-art-playback"
+                                        <button className="cover-art-playback cursor-pointer"
                                             onClick={() => this.props.handlePlayUserFavoriteSongs(userProfile)}>
                                             <svg className="icon-play" viewBox="0 0 85 100"><path fill="currentColor" d="M81 44.6c5 3 5 7.8 0 10.8L9 98.7c-5 3-9 .7-9-5V6.3c0-5.7 4-8 9-5l72 43.3z"><title>PLAY</title></path></svg></button>
                                     </div>
@@ -139,11 +139,11 @@ class Login extends React.Component<any, any> {
                         {originIcon}
 
                         <h1 className="user-name">{userName}</h1>
-                        <button className='btn btn-green'
+                        <button className='btn btn-green cursor-pointer'
                             onClick={(event) => { event.preventDefault(); this.loginOut(); }}>
                             Login Out</button>
 
-                        <label className="checkbox-container">
+                        <label className="checkbox-container cursor-pointer">
                             Sync To Origin
                             <input type="checkbox" checked={sync}
                                 onClick={(e) => this.handleCheckbox(e)}></input>

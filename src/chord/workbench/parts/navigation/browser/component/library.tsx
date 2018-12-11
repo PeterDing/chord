@@ -20,7 +20,7 @@ class Library extends React.Component<INavigationLibraryProps, object> {
     render() {
         let active = this.props.view == 'libraryView';
         return (
-            <div className='navBar-item navBar-item--with-icon-left'
+            <div className='navBar-item navBar-item--with-icon-left cursor-pointer'
                 onClick={this.props.showLibrary}>
                 <div className={`navBar-link ellipsis-one-line ${active ? 'navBar-link--active' : 'link-subtle'}`}>
                     <span className='navbar-link__text'>Your Library</span>

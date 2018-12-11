@@ -31,7 +31,7 @@ class VolumeBar extends React.Component<IVolumeBarProps, object> {
         return (
             <div className='volume-bar'>
                 <button className="spoticon-volume-16 control-button" aria-label="Mute"></button>
-                <div className='progress-bar' ref={this.box}
+                <div className='progress-bar cursor-pointer' ref={this.box}
                     onClick={(e) => this.props.handleVolume(e, this.box.current)}>
                     <div className="middle-align progress-bar__bg">
                         <div ref={this.bar} className="progress-bar__fg" style={{width: percent}}></div>

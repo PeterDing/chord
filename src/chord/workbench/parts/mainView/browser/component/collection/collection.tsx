@@ -67,7 +67,7 @@ function CollectionInfo({ collection, handlePlayCollection, handleShowUserProfil
                 <h2>{collection.collectionName}</h2>
                 <div>
                     <span>By </span>
-                    <span className='link-subtle'
+                    <span className='link-subtle a-like cursor-pointer'
                         onClick={() => handleShowUserProfileViewById(collection.userId, collection.userMid)}>
                         {collection.userName}</span>
                 </div>
@@ -75,7 +75,7 @@ function CollectionInfo({ collection, handlePlayCollection, handleShowUserProfil
             <p className="text-silence entity-additional-info">
                 {getDateYear(collection.releaseDate)} • {collection.songCount} tracks
             </p>
-            <button className="btn btn-green"
+            <button className="btn btn-green cursor-pointer"
                 onClick={() => handlePlayCollection(collection)}>PLAY</button>
         </div>
     );

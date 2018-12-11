@@ -47,14 +47,14 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
                                 onContextMenu={(e) => this.props.showCollectionMenu(e, collection)}>
 
                                 {/* Cover */}
-                                <div className="cover-art shadow actionable linking cover-art--with-auto-height"
+                                <div className="cover-art shadow actionable linking cursor-pointer cover-art--with-auto-height"
                                     aria-hidden="true" style={{ width: 'auto', height: 'auto' }}>
                                     <div onClick={() => this.props.handleShowCollectionView(collection)}>
                                         {CollectionIcon}
                                         <div className="cover-art-image cover-art-image-loaded"
                                             style={{ backgroundImage: `url(${cover})` }}></div>
                                     </div>
-                                    <button className="cover-art-playback"
+                                    <button className="cover-art-playback cursor-pointer"
                                         onClick={() => this.props.handlePlayCollection(collection)}>
                                         <svg className="icon-play" viewBox="0 0 85 100"><path fill="currentColor" d="M81 44.6c5 3 5 7.8 0 10.8L9 98.7c-5 3-9 .7-9-5V6.3c0-5.7 4-8 9-5l72 43.3z"><title>PLAY</title></path></svg></button>
                                 </div>
@@ -72,7 +72,7 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
 
                         {/* Collection User Name */}
                         <div className="mo-meta ellipsis-one-line">
-                            <span className='link-subtle'
+                            <span className='link-subtle a-like cursor-pointer'
                                 onClick={() => this.props.handleShowUserProfileViewById(collection.userId, collection.userMid)}>
                                 {collection.userName}</span>
                         </div>

@@ -10,7 +10,7 @@ import { handlePreference } from 'chord/workbench/parts/navigation/browser/actio
 
 function Preference({ handlePreference }) {
     return (
-        <div className='navBar-item navBar-item--with-icon-left'
+        <div className='navBar-item navBar-item--with-icon-left cursor-pointer'
             onClick={handlePreference}>
             <div className='link-subtle navBar-link ellipsis-one-line'>
 

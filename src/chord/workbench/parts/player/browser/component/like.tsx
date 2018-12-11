@@ -39,7 +39,7 @@ class LikeButton extends React.Component<ILikeButtonProps, any> {
         let likeIconClass = like ? 'spoticon-heart-active-16' : 'spoticon-heart-16';
 
         return (
-            <button className={`control-button ${likeIconClass}`}
+            <button className={`control-button ${likeIconClass} cursor-pointer`}
                 onClick={() => this.handleLibraryActFunc(song)}></button>
         );
     }

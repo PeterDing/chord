@@ -58,30 +58,30 @@ export class Controller extends React.Component<IControllerProps, any> {
         return (
             <div className='player-controls__buttons'>
                 {/* shuffle */}
-                <button className={`control-button spoticon-shuffle-16 control-button--${shuffle ? 'active' : 'disabled'}`}
+                <button className={`control-button spoticon-shuffle-16 control-button--${shuffle ? 'active' : 'disabled'} cursor-pointer`}
                     onClick={this.handleShuffle}>
                 </button>
 
                 {/* rewind */}
                 <button
-                    className='control-button spoticon-rewind-16'
+                    className='control-button spoticon-rewind-16 cursor-pointer'
                     onClick={this.props.rewind}>
                 </button>
 
                 {/* play & pause */}
                 <button
-                    className={`control-button spoticon-${status}-16 control-button--circled`}
+                    className={`control-button spoticon-${status}-16 control-button--circled cursor-pointer`}
                     onClick={this.props.playPause}>
                 </button>
 
                 {/* forward */}
                 <button
-                    className='control-button spoticon-forward-16'
+                    className='control-button spoticon-forward-16 cursor-pointer'
                     onClick={this.props.forward}>
                 </button>
 
                 {/* repeat */}
-                <button className={`control-button spoticon-repeat-16 control-button--${repeat ? 'active' : 'disabled'}`}
+                <button className={`control-button spoticon-repeat-16 control-button--${repeat ? 'active' : 'disabled'} cursor-pointer`}
                     onClick={this.handleRepeat}>
                 </button>
             </div>

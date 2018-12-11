@@ -84,7 +84,7 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper"
                             onClick={() => this.props.handleShowAlbumViewById(song.albumId)}>
-                            <span className="link-subtle">{song.albumName}</span>
+                            <span className="link-subtle a-like cursor-pointer">{song.albumName}</span>
                         </div>
                     </div>
 
@@ -93,7 +93,7 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper"
                             onClick={() => this.props.handleShowArtistViewById(song.artistId)}>
-                            <span className="link-subtle">{song.artistName}</span>
+                            <span className="link-subtle a-like cursor-pointer">{song.artistName}</span>
                         </div>
                     </div>
 
@@ -107,7 +107,7 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     {/* Like */}
                     <div className="mo-info">
                         <div className="react-contextmenu-wrapper">
-                            <button className={`link-subtle control-button ${likeIconClass}`}
+                            <button className={`link-subtle control-button ${likeIconClass} cursor-pointer`}
                                 onClick={() => this.handleLibraryActFunc(song)}>
                             </button>
                         </div>
@@ -188,7 +188,7 @@ export class PlayListButtom extends React.Component<IPlayListButtomProps, any> {
     render() {
         return (
             <div className='player-list-container'>
-                <button className='spoticon-queue-16 control-button'
+                <button className='spoticon-queue-16 control-button cursor-pointer'
                     onClick={this.showPlayList} aria-label='Queue'>
                 </button>
             </div>

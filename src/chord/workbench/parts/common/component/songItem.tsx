@@ -47,7 +47,7 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
                 {/* Artist Name */}
                 <span className='react-contextmenu-wrapper'>
                     <span draggable={true}>
-                        <span className='link-subtle' tabIndex={-1}
+                        <span className='link-subtle a-like cursor-pointer' tabIndex={-1}
                             onClick={() => this.props.handleShowArtistViewById(song.artistId)}>
                             {song.artistName}</span>
                     </span>
@@ -58,7 +58,7 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
                 {/* Album Name */}
                 <span className="react-contextmenu-wrapper">
                     <span draggable={true}>
-                        <span className='link-subtle' tabIndex={-1}
+                        <span className='link-subtle a-like cursor-pointer' tabIndex={-1}
                             onClick={() => this.props.handleShowAlbumViewById(song.albumId)}>
                             {song.albumName}</span>
                     </span>
@@ -88,7 +88,7 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
                     <li className={liClassName} role='button' tabIndex={0}>
 
                         {/* music icon */}
-                        <div className='tracklist-col position-outer' onClick={() => handlePlay()}>
+                        <div className='tracklist-col position-outer cursor-pointer' onClick={() => handlePlay()}>
                             <div className={`tracklist-play-pause ${tracklistAlign}`}>{PlayIcon}</div>
                             <div className={`position ${tracklistAlign}`}><span className='spoticon-track-16'></span></div>
                         </div>

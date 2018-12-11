@@ -23,31 +23,31 @@ function SearchNavMenu({ view, changeSearchResultView }) {
         <nav className='search-nav-container'>
             <ul className='search-nav-ul'>
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'top' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'top' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeSearchResultView('top')}>
                         TOP RESULT</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'songs' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'songs' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeSearchResultView('songs')}>
                         SONGS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'artists' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'artists' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeSearchResultView('artists')}>
                         ARTISTS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'albums' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'albums' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeSearchResultView('albums')}>
                         ALBUMS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'collections' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'collections' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeSearchResultView('collections')}>
                         PLAYLISTS</div>
                 </li>

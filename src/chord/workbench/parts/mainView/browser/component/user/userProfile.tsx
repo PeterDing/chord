@@ -37,43 +37,43 @@ function UserProfileNavMenu({ view, changeUserNavMenuView }) {
         <nav className='search-nav-container'>
             <ul className='search-nav-ul'>
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'overview' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'overview' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeUserNavMenuView('overview')}>
                         OVERVIEW</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'songs' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'songs' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeUserNavMenuView('songs')}>
                         SONGS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'artists' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'artists' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeUserNavMenuView('artists')}>
                         ARTISTS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'albums' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'albums' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeUserNavMenuView('albums')}>
                         ALBUMS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'favoriteCollections' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'favoriteCollections' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeUserNavMenuView('favoriteCollections')}>
                         FAVORITE PLAYLISTS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'createdCollections' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'createdCollections' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeUserNavMenuView('createdCollections')}>
                         CREATED PLAYLISTS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'followings' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'followings' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeUserNavMenuView('followings')}>
                         FOLLOWINGS</div>
                 </li>
@@ -220,7 +220,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
                     style={{ backgroundImage: `url("${cover}")`, width: '200px', height: '200px', margin: '10px auto' }}></figure>
                 <h1 className='user-name'>{userProfile.userName}</h1>
                 <div className='header-buttons'>
-                    <button className='btn btn-green'
+                    <button className='btn btn-green cursor-pointer'
                         onClick={() => this.props.handlePlayUserFavoriteSongs(userProfile)}>
                         PLAY FAVORITE SONGS</button>
                     <MenuButton click={(e) => this.props.showUserProfileMenu(e, userProfile)} />

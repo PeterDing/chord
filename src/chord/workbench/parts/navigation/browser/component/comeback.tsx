@@ -63,7 +63,7 @@ class Comeback extends React.Component<INavigationComebackProps, any> {
 
     render() {
         return (
-            <div className='navBar-item navBar-item--with-icon-left'
+            <div className='navBar-item navBar-item--with-icon-left cursor-pointer'
                 onClick={this.handleComeback}>
                 <div className='link-subtle navBar-link ellipsis-one-line'>
 

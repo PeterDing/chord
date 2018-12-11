@@ -66,7 +66,7 @@ function AlbumInfo({ album, handlePlayAlbum, handleShowArtistViewById }) {
                 <h2>{album.albumName}</h2>
                 <div>
                     <span>By </span>
-                    <span className='link-subtle'
+                    <span className='link-subtle a-like cursor-pointer'
                         onClick={() => handleShowArtistViewById(album.artistId)}>
                         {album.artistName}</span>
                 </div>
@@ -74,7 +74,7 @@ function AlbumInfo({ album, handlePlayAlbum, handleShowArtistViewById }) {
             <p className="text-silence entity-additional-info">
                 {getDateYear(album.releaseDate)} • {album.songCount} tracks
             </p>
-            <button className="btn btn-green"
+            <button className="btn btn-green cursor-pointer"
                 onClick={() => handlePlayAlbum(album)}>PLAY</button>
         </div>
     );
