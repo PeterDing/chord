@@ -41,13 +41,13 @@ class CollectionMenu extends React.Component<ICollectionMenuProps, any> {
         collection.like = like;
 
         let addLibraryItem = collection && (!like ? (
-            <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
+            <div className="react-contextmenu-item cursor-pointer" role="menuitem" tabIndex={-1}
                 onClick={() => this.props.handleAddLibraryCollection(collection)}>
                 Save to your Favorite Collections</div>
         ) : null);
 
         let removeFromLibraryItem = collection && (like ? (
-            <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
+            <div className="react-contextmenu-item cursor-pointer" role="menuitem" tabIndex={-1}
                 onClick={() => this.props.handleRemoveFromLibrary(collection)}>
                 Remove from library</div>
         ) : null);
@@ -57,10 +57,10 @@ class CollectionMenu extends React.Component<ICollectionMenuProps, any> {
                 style={{ position: 'fixed', opacity: '1', pointerEvents: 'auto', top: `${top}px`, left: `${left}px` }}>
 
                 {addLibraryItem}
-                <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
+                <div className="react-contextmenu-item cursor-pointer" role="menuitem" tabIndex={-1}
                     onClick={() => this.props.handleAddToQueue(collection, 'tail')}>
                     Add to Queue (After)</div>
-                <div className="react-contextmenu-item" role="menuitem" tabIndex={-1}
+                <div className="react-contextmenu-item cursor-pointer" role="menuitem" tabIndex={-1}
                     onClick={() => this.props.handleAddToQueue(collection, 'head')}>
                     Add to Queue (Before)</div>
                 {/*<div className="react-contextmenu-item" role="menuitem" tabIndex={-1}>Add to Playlist</div>*/}

@@ -96,12 +96,9 @@ class ProcessBar extends React.Component<object, object> {
 
                 <div ref={this.processTime} className='playback-bar__progress-time'></div>
 
-                <div ref={this.box} className='progress-bar' onClick={(e) => handleSeek(e)}>
+                <div ref={this.box} className='progress-bar cursor-pointer' onClick={(e) => handleSeek(e)}>
                     <div className="middle-align progress-bar__bg">
                         <div ref={this.bar} className="progress-bar__fg"></div>
-
-                        {/* FIXME: slider need to display when bar is hovered */}
-                        {/* <div ref={this.slider} className="middle-align progress-bar__slider"></div> */}
                         <div ref={this.slider} className="progress-bar__slider"></div>
                     </div>
                 </div>

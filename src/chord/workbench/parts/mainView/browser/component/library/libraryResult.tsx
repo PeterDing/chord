@@ -29,37 +29,37 @@ function LibraryNavMenu({ view, changeLibraryResultView }) {
         <nav className='search-nav-container'>
             <ul className='search-nav-ul'>
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'top' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'top' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeLibraryResultView('top')}>
                         TOP RESULT</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'songs' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'songs' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeLibraryResultView('songs')}>
                         SONGS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'artists' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'artists' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeLibraryResultView('artists')}>
                         ARTISTS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'albums' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'albums' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeLibraryResultView('albums')}>
                         ALBUMS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'collections' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'collections' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeLibraryResultView('collections')}>
                         PLAYLISTS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'userProfiles' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'userProfiles' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeLibraryResultView('userProfiles')}>
                         FOLLOWINGS</div>
                 </li>
@@ -197,7 +197,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                         <div className='row'>
                             <h1 className="search-result-title" style={{ textAlign: 'center' }}>
                                 Songs</h1>
-                            <button className="btn btn-green btn-small"
+                            <button className="btn btn-green btn-small cursor-pointer"
                                 style={{ margin: '0px auto 15px', display: 'block' }}
                                 onClick={this.props.handlePlayLibrarySongs}>
                                 PlAY ALL</button>
@@ -286,7 +286,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                         <div className='row'>
                             <h1 className="search-result-title" style={{ textAlign: 'center' }}>
                                 Songs</h1>
-                            <button className="btn btn-green btn-small"
+                            <button className="btn btn-green btn-small cursor-pointer"
                                 style={{ margin: '0px auto 15px', display: 'block' }}
                                 onClick={this.props.handlePlayLibrarySongs}>
                                 PlAY ALL</button>

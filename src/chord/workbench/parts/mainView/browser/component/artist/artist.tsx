@@ -27,19 +27,19 @@ function ArtistNavMenu({ view, changeArtistNavMenuView }) {
         <nav className='search-nav-container'>
             <ul className='search-nav-ul'>
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'overview' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'overview' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeArtistNavMenuView('overview')}>
                         OVERVIEW</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'songs' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'songs' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeArtistNavMenuView('songs')}>
                         SONGS</div>
                 </li>
 
                 <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle ${view == 'albums' ? 'search-nav-item__active' : ''}`}
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'albums' ? 'search-nav-item__active' : ''}`}
                         onClick={() => changeArtistNavMenuView('albums')}>
                         ALBUMS</div>
                 </li>
@@ -126,7 +126,7 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
                 <span className='monthly-listeners'>{'\u00A0'}</span>
                 <h1 className='large'>{artist.artistName}</h1>
                 <div className='header-buttons'>
-                    <button className='btn btn-green'
+                    <button className='btn btn-green cursor-pointer'
                         onClick={() => this.props.handlePlayArtist(artist)}>
                         PLAY</button>
                     <MenuButton click={(e) => this.props.showArtistMenu(e, artist)} />

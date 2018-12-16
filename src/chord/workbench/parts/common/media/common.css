@@ -16,6 +16,20 @@
     white-space: nowrap
 }
 
+.a-like {
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,0)
+}
+
+.a-like:focus,.a-like:hover {
+    text-decoration: none;
+    border-bottom-color: currentcolor
+}
+
+.cursor-pointer {
+    cursor: pointer
+}
 
 .link-subtle {
     -webkit-transition-property: color;

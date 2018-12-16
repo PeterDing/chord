@@ -37,7 +37,7 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
                             <div className="react-contextmenu-wrapper"
                                 onContextMenu={(e) => this.props.showUserProfileMenu(e, userProfile)}>
 
-                                <div className="cover-art shadow actionable rounded linking cover-art--with-auto-height"
+                                <div className="cover-art shadow actionable rounded linking cursor-pointer cover-art--with-auto-height"
                                     aria-hidden="true" style={{ width: 'auto', height: 'auto' }}>
                                     <div onClick={() => this.props.handleShowUserProfileView(userProfile)}>
                                         {UserProfileIcon}
@@ -45,7 +45,7 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
                                             style={{ backgroundImage: `url("${cover}")` }}>
                                         </div>
                                     </div>
-                                    <button className="cover-art-playback"
+                                    <button className="cover-art-playback cursor-pointer"
                                         onClick={() => this.props.handlePlayUserFavoriteSongs(userProfile)}>
                                         <svg className="icon-play" viewBox="0 0 85 100"><path fill="currentColor" d="M81 44.6c5 3 5 7.8 0 10.8L9 98.7c-5 3-9 .7-9-5V6.3c0-5.7 4-8 9-5l72 43.3z"><title>PLAY</title></path></svg></button>
                                 </div>
@@ -57,7 +57,6 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
                                     {/* Origin Icon */}
                                     {originIcon}
 
-                                    {/* TODO: Add show userProfile handler */}
                                     <span className="mo-info-name">{userProfile.userName}</span>
                                 </div>
                             </div>
