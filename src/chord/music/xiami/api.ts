@@ -1326,7 +1326,7 @@ export class AliMusicApi {
     /**
      * Recommend collections related through user's favorite collections
      */
-    public async recommendCollections(): Promise<Array<ICollection>> {
+    public async recommendCollections(page: number = 1, size: number = 10): Promise<Array<ICollection>> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.recommendCollections,
             {
