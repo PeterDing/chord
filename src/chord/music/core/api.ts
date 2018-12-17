@@ -703,6 +703,46 @@ export class Music {
     }
 
 
+    public async recommendSongs(origin: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let result;
+        switch (origin) {
+            case ORIGIN.xiami:
+                result = await this.xiamiApi.recommendSongs(offset, limit);
+                break;
+            case ORIGIN.netease:
+                result = await this.neteaseApi.recommendSongs(offset, limit);
+                break;
+            case ORIGIN.qq:
+                result = await this.qqApi.recommendSongs(offset, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.recommendSongs] Here will never be occured. [args]: ${origin}`);
+        }
+        return result;
+    }
+
+
+    public async recommendCollections(origin: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let result;
+        switch (origin) {
+            case ORIGIN.xiami:
+                result = await this.xiamiApi.recommendCollections(offset, limit);
+                break;
+            case ORIGIN.netease:
+                result = await this.neteaseApi.recommendCollections(offset, limit);
+                break;
+            case ORIGIN.qq:
+                result = await this.qqApi.recommendCollections(offset, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.recommendCollections] Here will never be occured. [args]: ${origin}`);
+        }
+        return result;
+    }
+
+
     public resizeImageUrl(origin: string, url: string, size: ESize | number): string {
         if (!url) { return url; }
         switch (origin) {
