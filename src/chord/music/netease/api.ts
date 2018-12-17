@@ -109,8 +109,8 @@ export class NeteaseMusicApi {
         userDislikeCollection: 'weapi/playlist/unsubscribe',
         userDislikeUserProfile: 'weapi/user/delfollow/',
 
-        recommandSongs: 'weapi/v1/discovery/recommend/songs',
-        recommandCollections: 'weapi/v1/discovery/recommend/resource',
+        recommendSongs: 'weapi/v1/discovery/recommend/songs',
+        recommendCollections: 'weapi/v1/discovery/recommend/resource',
 
         playLog: 'weapi/feedback/weblog',
     }
@@ -751,8 +751,8 @@ export class NeteaseMusicApi {
     }
 
 
-    public async recommandSongs(offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
-        let node = NeteaseMusicApi.NODE_MAP.recommandSongs;
+    public async recommendSongs(offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let node = NeteaseMusicApi.NODE_MAP.recommendSongs;
         let data = {
             limit,
             offset,
@@ -763,8 +763,8 @@ export class NeteaseMusicApi {
     }
 
 
-    public async recommandCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
-        let node = NeteaseMusicApi.NODE_MAP.recommandCollections;
+    public async recommendCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let node = NeteaseMusicApi.NODE_MAP.recommendCollections;
         let data = {};
         let json = await this.request(node, data);
         return json;

@@ -270,7 +270,7 @@ export class AliMusicApi {
 
         // genre: 'mtop.alimusic.music.genreservice.getgenredetail',  // no privilege
 
-        recommandTags: 'mtop.alimusic.music.list.collectservice.getrecommendtags',
+        recommendTags: 'mtop.alimusic.music.list.collectservice.getrecommendtags',
         hotTags: 'mtop.alimusic.music.list.collectservice.gethottags',
 
         // searchSongs: XXX Cookies must include 'uidXM=${userId}'
@@ -281,7 +281,7 @@ export class AliMusicApi {
         searchArtists: 'mtop.alimusic.search.searchservice.searchartists',
         searchCollections: 'mtop.alimusic.search.searchservice.searchcollects',
 
-        // AI recommands songs
+        // AI recommends songs
         radioSongs: 'mtop.alimusic.music.radio.getradiosongs',
 
         login: 'mtop.alimusic.xuser.facade.xiamiuserservice.login',
@@ -308,12 +308,12 @@ export class AliMusicApi {
         userDislikeCollection: 'mtop.alimusic.fav.collectfavoriteservice.unfavoritecollect',
         userDislikeUserProfile: 'mtop.alimusic.social.friendservice.unfollow',
 
-        // recommand songs for user logined
-        recommandSongs: 'mtop.alimusic.recommend.songservice.getdailysongs',
+        // recommend songs for user logined
+        recommendSongs: 'mtop.alimusic.recommend.songservice.getdailysongs',
 
         recommendAlbums: 'mtop.alimusic.music.recommendservice.getrecommendalbums',
 
-        // Recommand collections by user's favorite collections
+        // Recommend collections by user's favorite collections
         recommendCollections: 'mtop.alimusic.music.recommendservice.getrecommendcollects',
 
         playLog: 'mtop.alimusic.playlog.facade.playlogservice.addplaylog',
@@ -937,9 +937,9 @@ export class AliMusicApi {
     /**
      * TODO, parser is need
      */
-    public async recommandTags(): Promise<any> {
+    public async recommendTags(): Promise<any> {
         let json = await this.request(
-            AliMusicApi.NODE_MAP.recommandTags,
+            AliMusicApi.NODE_MAP.recommendTags,
             { from: 'homeattic' },
         );
         return json;
@@ -1310,9 +1310,9 @@ export class AliMusicApi {
     }
 
 
-    public async recommandSongs(page: number = 1, size: number = 10): Promise<Array<ISong>> {
+    public async recommendSongs(page: number = 1, size: number = 10): Promise<Array<ISong>> {
         let json = await this.request(
-            AliMusicApi.NODE_MAP.recommandSongs,
+            AliMusicApi.NODE_MAP.recommendSongs,
             {
                 // no params needed
             },
@@ -1324,7 +1324,7 @@ export class AliMusicApi {
 
 
     /**
-     * Recommand collections related through user's favorite collections
+     * Recommend collections related through user's favorite collections
      */
     public async recommendCollections(): Promise<Array<ICollection>> {
         let json = await this.request(

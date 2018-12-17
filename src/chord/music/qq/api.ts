@@ -93,7 +93,7 @@ export class QQMusicApi {
         userDislikeCollection: 'https://c.y.qq.com/folder/fcgi-bin/fcg_qm_order_diss.fcg',
         userDislikeUserProfile: 'https://c.y.qq.com/rsc/fcgi-bin/add_attention_status.fcg',
 
-        recommandCollections: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        recommendCollections: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
 
         playLog: 'https://c.y.qq.com/tplcloud/fcgi-bin/fcg_reportlsting_web.fcg',
     };
@@ -1065,14 +1065,14 @@ export class QQMusicApi {
 
 
     /**
-     * QQ has not recommanded songs
+     * QQ has not recommended songs
      */
-    public async recommandSongs(offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+    public async recommendSongs(offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
         return [];
     }
 
 
-    public async recommandCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+    public async recommendCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
         let data = escape(JSON.stringify({
             recomPlaylist: {
                 module: "playlist.HotRecommendServer",
@@ -1095,7 +1095,7 @@ export class QQMusicApi {
             needNewCode: '0',
             data,
         };
-        let url = QQMusicApi.NODE_MAP.recommandCollections;
+        let url = QQMusicApi.NODE_MAP.recommendCollections;
         let json = await this.request('GET', url, params);
         return makeCollections(json['recomPlaylist']['data']['v_hot'] || []);
     }
