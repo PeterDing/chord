@@ -1,5 +1,6 @@
 'use strict';
 
+import { isObject } from 'chord/base/common/objects';
 import { decodeHtml } from 'chord/base/browser/htmlContent';
 
 import { IAudio } from 'chord/music/api/audio';
@@ -298,22 +299,31 @@ export function makeArtists(info: any): Array<IArtist> {
 
 
 export function makeCollection(info: any): ICollection {
-    let collectionOriginalId = (info['disstid'] || info['dissid'] || info['tid']).toString();
-    let collectionCoverUrl = info['logo'] || info['imgurl'] || info['diss_cover'];
+    let collectionOriginalId = (info['disstid'] || info['dissid'] || info['tid'] || info['content_id']).toString();
+    let collectionCoverUrl = info['logo'] || info['imgurl'] || info['diss_cover'] || info['cover'];
     if (!collectionCoverUrl || !collectionCoverUrl.startsWith('http')) {
         collectionCoverUrl = 'http://y.gtimg.cn/mediastyle/global/img/cover_like.png?max_age=2592000';
     }
-    let collectionName = info['dissname'] || info['diss_name'];
+    let collectionName = info['dissname'] || info['diss_name'] || info['title'];
     collectionName = decodeHtml(collectionName);
 
     let tags: Array<ITag> = (info['tags'] || []).map(tag => ({ id: tag['id'].toString(), name: tag['name'] }));
     let songs: Array<ISong> = (info['songlist'] || []).map(songInfo => makeSong(songInfo));
     let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
 
-    let userOriginalId = info['creator'] ? info['creator']['creator_uin'].toString() : info['uin'];
+    let userOriginalId;
+    let userMid;
+    let userName;
+    if (info['creator'] && !isObject(info['creator'])) {
+        userOriginalId = info['creator'];
+        userMid = info['creator'];
+        userName = info['username'];
+    } else {
+        userOriginalId = info['creator'] ? info['creator']['creator_uin'].toString() : info['uin'];
+        userMid = info['creator'] ? info['creator']['encrypt_uin'].toString() : info['encrypt_uin'] || info['uin'];
+        userName = info['creator'] ? info['creator']['name'] : info['nickname'];
+    }
     let userId = _getUserId(userOriginalId);
-    let userMid = info['creator'] ? info['creator']['encrypt_uin'].toString() : info['encrypt_uin'] || info['uin'];
-    let userName = info['creator'] ? info['creator']['name'] : info['nickname'];
     userName = decodeHtml(userName);
 
     let playCount = info['visitnum'] || info['listennum'] || info['listen_num'];
