@@ -86,13 +86,13 @@ export function makeSong(info: any, privilege?: any): ISong {
         artistName: artistInfo['name'],
 
         track: info['no'],
-        cdSerial: info['cd'] ? parseInt(info['cd']) : 1,
+        cdSerial: info['cd'] ? parseInt(info['cd']) : (info['disc'] ? parseInt(info['disc']) : 1),
 
         // millisecond
-        duration: info['dt'],
+        duration: info['dt'] || info['duration'],
 
         // millisecond
-        releaseDate: info['publishTime'],
+        releaseDate: info['publishTime'] || albumInfo['publishTime'],
 
         playCountWeb: info['cp'],
         playCount: 0,
@@ -154,7 +154,7 @@ export function makeAlbums(info: any): Array<IAlbum> {
 
 export function makeCollection(info: any, privileges: any = []): ICollection {
     let collectionOriginalId = info['id'].toString();
-    let collectionCoverUrl = info['coverImgUrl'];
+    let collectionCoverUrl = info['coverImgUrl'] || info['picUrl'];
     let tags: Array<ITag> = (info['tags'] || []).map(tag => ({ name: tag }));
     let songs: Array<ISong> = (info['tracks'] || []).map((songInfo, index) => makeSong(songInfo, privileges[index]));
     let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
@@ -178,7 +178,7 @@ export function makeCollection(info: any, privileges: any = []): ICollection {
 
         releaseDate: info['createTime'],
 
-        description: info['description'],
+        description: info['description'] || info['copywriter'],
 
         tags,
 
@@ -187,7 +187,7 @@ export function makeCollection(info: any, privileges: any = []): ICollection {
         songs,
         songCount: info['trackCount'],
 
-        playCount: info['playCount'],
+        playCount: info['playCount'] || info['playcount'],
         likeCount: info['subscribedCount'],
     };
     return collection;
