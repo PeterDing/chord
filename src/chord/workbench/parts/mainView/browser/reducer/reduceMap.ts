@@ -46,6 +46,9 @@ import {
     getMoreUserFollowings,
 } from 'chord/workbench/parts/mainView/browser/reducer/userProfile';
 
+import { changeHomeView } from 'chord/workbench/parts/mainView/browser/reducer/home/nagivation';
+import { showRecommendView } from 'chord/workbench/parts/mainView/browser/reducer/home/recommend';
+
 
 export function map(act: string): IReducerMap {
     switch (act) {
@@ -225,6 +228,18 @@ export function map(act: string): IReducerMap {
             return {
                 reducer: getMoreUserFollowings,
                 node: 'userProfileView',
+            };
+
+        // home view
+        case 'c:mainView:home:navigation:changeView':
+            return {
+                reducer: changeHomeView,
+                node: 'homeView',
+            };
+        case 'c:mainView:home:showRecommendView':
+            return {
+                reducer: showRecommendView,
+                node: 'homeView',
             };
 
         default:
