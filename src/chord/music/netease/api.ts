@@ -767,7 +767,6 @@ export class NeteaseMusicApi {
         let node = NeteaseMusicApi.NODE_MAP.recommendCollections;
         let data = {};
         let json = await this.request(node, data);
-        return json;
         return makeCollections(json['recommend'] || []);
     }
 
