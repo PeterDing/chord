@@ -14,6 +14,7 @@ import SearchView from 'chord/workbench/parts/mainView/browser/component/search/
 import AlbumView from 'chord/workbench/parts/mainView/browser/component/album/album';
 import ArtistView from 'chord/workbench/parts/mainView/browser/component/artist/artist';
 import CollectionView from 'chord/workbench/parts/mainView/browser/component/collection/collection';
+import HomeView from 'chord/workbench/parts/mainView/browser/component/home/home';
 import LibraryView from 'chord/workbench/parts/mainView/browser/component/library/library';
 import PreferenceView from 'chord/workbench/parts/mainView/browser/component/preference/preference';
 import UserProfileView from 'chord/workbench/parts/mainView/browser/component/user/userProfile';
@@ -38,6 +39,9 @@ function MainView({ view }) {
             break;
         case 'userProfileView':
             View = <UserProfileView />
+            break;
+        case 'homeView':
+            View = <HomeView />
             break;
         case 'libraryView':
             View = <LibraryView />

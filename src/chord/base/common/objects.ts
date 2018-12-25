@@ -1,6 +1,10 @@
 'use strict';
 
 
+export function isObject(obj: any): boolean {
+    return (typeof obj == 'object' && obj != null) ? true : false;
+}
+
 export function assign(destination: any, ...sources: any[]): any {
     sources.forEach(source => Object.keys(source).forEach(key => destination[key] = source[key]));
     return destination;

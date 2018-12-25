@@ -10,6 +10,7 @@ import Search from 'chord/workbench/parts/navigation/browser/component/search';
 import Comeback from 'chord/workbench/parts/navigation/browser/component/comeback';
 import Library from 'chord/workbench/parts/navigation/browser/component/library';
 import Preference from 'chord/workbench/parts/navigation/browser/component/preference';
+import Home from 'chord/workbench/parts/navigation/browser/component/home';
 
 
 export function NavigationView() {
@@ -22,6 +23,10 @@ export function NavigationView() {
 
                         <li className='navBar-group'>
                             <Comeback />
+                        </li>
+
+                        <li className='navBar-group'>
+                            <Home />
                         </li>
 
                         <li className='navBar-group'>

@@ -51,6 +51,10 @@ function handleView(act: string): string {
         case 'c:mainView:getMoreUserFollowings':
             return 'userProfileView';
 
+        case 'c:mainView:home:navigation:changeView':
+        case 'c:mainView:home:showRecommendView':
+            return 'homeView';
+
         case 'c:mainView:comeback':
         case 'c:mainView:addLibrarySong':
         case 'c:mainView:addLibraryArtist':

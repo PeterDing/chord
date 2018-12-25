@@ -270,7 +270,7 @@ export class AliMusicApi {
 
         // genre: 'mtop.alimusic.music.genreservice.getgenredetail',  // no privilege
 
-        recommandTags: 'mtop.alimusic.music.list.collectservice.getrecommendtags',
+        recommendTags: 'mtop.alimusic.music.list.collectservice.getrecommendtags',
         hotTags: 'mtop.alimusic.music.list.collectservice.gethottags',
 
         // searchSongs: XXX Cookies must include 'uidXM=${userId}'
@@ -281,7 +281,7 @@ export class AliMusicApi {
         searchArtists: 'mtop.alimusic.search.searchservice.searchartists',
         searchCollections: 'mtop.alimusic.search.searchservice.searchcollects',
 
-        // AI recommands songs
+        // AI recommends songs
         radioSongs: 'mtop.alimusic.music.radio.getradiosongs',
 
         login: 'mtop.alimusic.xuser.facade.xiamiuserservice.login',
@@ -308,10 +308,15 @@ export class AliMusicApi {
         userDislikeCollection: 'mtop.alimusic.fav.collectfavoriteservice.unfavoritecollect',
         userDislikeUserProfile: 'mtop.alimusic.social.friendservice.unfollow',
 
-        playLog: 'mtop.alimusic.playlog.facade.playlogservice.addplaylog',
+        // recommend songs for user logined
+        recommendSongs: 'mtop.alimusic.recommend.songservice.getdailysongs',
 
-        // recommand songs for user logined
-        recommandSongs: 'mtop.alimusic.recommend.songservice.getdailysongs',
+        recommendAlbums: 'mtop.alimusic.music.recommendservice.getrecommendalbums',
+
+        // Recommend collections by user's favorite collections
+        recommendCollections: 'mtop.alimusic.music.recommendservice.getrecommendcollects',
+
+        playLog: 'mtop.alimusic.playlog.facade.playlogservice.addplaylog',
     }
 
     // account
@@ -788,17 +793,22 @@ export class AliMusicApi {
 
 
     /**
-     * TODO, parser is need
+     * Get collection by type
+     *
+     * types:
+     *     'system' - 推荐
+     *     'recommend' - 精选
+     *     'hot' - 最热
+     *     'new' - 最新
      */
     public async collections(keyword: string, type: string = 'new', page: number = 1, size: number = 10): Promise<Array<ICollection>> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.collections,
             {
                 custom: 0,
-                // dataType: 'new', ''
                 dataType: type,
                 info: 1,
-                key: keyword.replace(/\s+/g, '+'),
+                key: keyword ? keyword.replace(/\s+/g, '+') : undefined,
                 pagingVO: {
                     page: page,
                     pageSize: size,
@@ -891,6 +901,12 @@ export class AliMusicApi {
     }
 
 
+    /**
+     * radioId:
+     *     1 - 猜你喜欢
+     *     0 - 听见不同
+     *     7 - 私人电台
+     */
     public async radioSongs(radioId: string, size: number = 10): Promise<Array<ISong>> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.radioSongs,
@@ -921,9 +937,9 @@ export class AliMusicApi {
     /**
      * TODO, parser is need
      */
-    public async recommandTags(): Promise<any> {
+    public async recommendTags(): Promise<any> {
         let json = await this.request(
-            AliMusicApi.NODE_MAP.recommandTags,
+            AliMusicApi.NODE_MAP.recommendTags,
             { from: 'homeattic' },
         );
         return json;
@@ -1181,19 +1197,6 @@ export class AliMusicApi {
     }
 
 
-    public async recommandSongs(userId: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.recommandSongs,
-            {
-                // no params needed
-            },
-        );
-        let info = json.data.data.songs;
-        let songs = makeAliSongs(info);
-        return songs;
-    }
-
-
     /**
      * songId is ISong.songOriginalId, as following
      */
@@ -1304,6 +1307,33 @@ export class AliMusicApi {
             },
         );
         return json.data.data.status;
+    }
+
+
+    public async recommendSongs(page: number = 1, size: number = 10): Promise<Array<ISong>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.recommendSongs,
+            {
+                // no params needed
+            },
+        );
+        let info = json.data.data.songs;
+        let songs = makeAliSongs(info);
+        return songs;
+    }
+
+
+    /**
+     * Recommend collections related through user's favorite collections
+     */
+    public async recommendCollections(page: number = 1, size: number = 10): Promise<Array<ICollection>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.recommendCollections,
+            {
+                recommendType: 'favorite',
+            },
+        );
+        return makeAliCollections(json.data.data.list);
     }
 
 
