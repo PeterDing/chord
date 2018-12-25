@@ -6,6 +6,7 @@ import { IArtistViewState, initiateArtistViewState } from 'chord/workbench/api/c
 import { ICollectionViewState, initiateCollectionViewState } from 'chord/workbench/api/common/state/mainView/collectionView';
 import { IUserProfileViewState, initiateUserProfileViewState } from 'chord/workbench/api/common/state/mainView/userProfileView';
 import { ILibraryViewState, initiateLibraryViewState } from 'chord/workbench/api/common/state/mainView/libraryView';
+import { IHomeViewState, initiateHomeViewState } from 'chord/workbench/api/common/state/mainView/home/homeView';
 
 
 export interface IMainViewState {
@@ -20,6 +21,8 @@ export interface IMainViewState {
     userProfileView: IUserProfileViewState;
 
     libraryView: ILibraryViewState;
+
+    homeView: IHomeViewState;
 }
 
 
@@ -35,5 +38,7 @@ export function initiateMainViewState(): IMainViewState {
         userProfileView: initiateUserProfileViewState(),
 
         libraryView: initiateLibraryViewState(),
+
+        homeView: initiateHomeViewState(),
     }
 }
