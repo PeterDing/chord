@@ -21,6 +21,7 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+import { IListOption } from 'chord/music/api/listOption';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -283,6 +284,13 @@ export class AliMusicApi {
 
         // AI recommends songs
         radioSongs: 'mtop.alimusic.music.radio.getradiosongs',
+
+        newSongs: '',
+        newAlbums: 'mtop.alimusic.recommend.albumservice.getmusiclist',
+        newCollections: '',
+
+        songList: 'mtop.alimusic.recommend.songservice.gethotsongs',
+        albumList: 'mtop.alimusic.recommend.albumservice.getmusiclist',
 
         login: 'mtop.alimusic.xuser.facade.xiamiuserservice.login',
         userProfile: 'mtop.alimusic.xuser.facade.xiamiuserservice.getuserinfobyuserid',
@@ -793,35 +801,6 @@ export class AliMusicApi {
 
 
     /**
-     * Get collection by type
-     *
-     * types:
-     *     'system' - 推荐
-     *     'recommend' - 精选
-     *     'hot' - 最热
-     *     'new' - 最新
-     */
-    public async collections(keyword: string, type: string = 'new', page: number = 1, size: number = 10): Promise<Array<ICollection>> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.collections,
-            {
-                custom: 0,
-                dataType: type,
-                info: 1,
-                key: keyword ? keyword.replace(/\s+/g, '+') : undefined,
-                pagingVO: {
-                    page: page,
-                    pageSize: size,
-                }
-            },
-        );
-        let info = json.data.data.collects;
-        let collections = makeAliCollections(info);
-        return collections;
-    }
-
-
-    /**
      * Search Songs
      *
      * XXX Cookies must include 'uidXM=${userId}'
@@ -942,7 +921,156 @@ export class AliMusicApi {
             AliMusicApi.NODE_MAP.recommendTags,
             { from: 'homeattic' },
         );
-        return json;
+        return json.data.data.recommendTags;
+    }
+
+
+    /**
+     * Get new songs
+     *
+     * languageId:
+     *     5:  推荐
+     *     10: 华语
+     *     12: 欧美
+     *     13: 韩国
+     *     14: 日本
+     */
+    public async songList(languageId: number = 5, page: number = 1, size: number = 10): Promise<Array<ISong>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.songList,
+            {
+                language: languageId.toString(),
+                pagingVO: {
+                    page,
+                    pageSize: size,
+                },
+            },
+        );
+        let info = json.data.data.songs;
+        return makeAliSongs(info);
+    }
+
+
+    public async albumListOptions(): Promise<Array<IListOption>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.newAlbums,
+            {
+                bizCode: 'album',
+                filter: '{}',
+                pagingVO: {
+                    page: 1,
+                    pageSize: 1,
+                },
+            },
+        );
+        let orders: IListOption = {
+            name: '排序',
+            type: 'order',
+            items: [
+                { id: 0, name: '推荐' },
+                { id: 1, name: '最新' },
+                { id: 2, name: '最热' },
+            ],
+        }
+        return [...json.data.data.label, orders];
+    }
+
+
+    /**
+     * Select Albums
+     *
+     * order:
+     *     0 or undefined: 推荐
+     *     1: 最新
+     *     2: 最热
+     *
+     * language: 语种
+     * tag: 曲风
+     * century: 年代
+     * category: 分类
+     */
+    public async albumList(
+        order: number = 0,
+        languageId: number = 0,
+        tagId: number = 0,
+        centuryId: number = 0,
+        categoryId: number = 0,
+        page: number = 1,
+        size: number = 10): Promise<Array<IAlbum>> {
+
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.albumList,
+            {
+                bizCode: 'album',
+                filter: JSON.stringify({
+                    order: order || undefined,
+                    language: languageId || undefined,
+                    tag: tagId || undefined,
+                    century: centuryId || undefined,
+                    category: categoryId || undefined,
+                }),
+                pagingVO: {
+                    page,
+                    pageSize: size,
+                },
+            },
+        );
+        let info = json.data.data.albums;
+        return makeAliAlbums(info);
+    }
+
+
+    /**
+     * Get collections by type
+     *
+     * types:
+     *     'system' - 推荐
+     *     'recommend' - 精选
+     *     'hot' - 最热
+     *     'new' - 最新
+     */
+    public async collectionList(
+        keyword: string,
+        type: string = 'new',
+        page: number = 1,
+        size: number = 10): Promise<Array<ICollection>> {
+
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.collections,
+            {
+                custom: 0,
+                dataType: type,
+                info: 1,
+                key: keyword ? keyword.replace(/\s+/g, '+') : undefined,
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                }
+            },
+        );
+        let info = json.data.data.collects;
+        let collections = makeAliCollections(info);
+        return collections;
+    }
+
+
+    public async newSongs(page: number = 1, size: number = 10): Promise<Array<ISong>> {
+        return this.songList(5, page, size);
+    }
+
+
+    /**
+     * Get new albums
+     *
+     * The minimum return albums size are 5
+     */
+    public async newAlbums(page: number = 1, size: number = 10): Promise<Array<IAlbum>> {
+        return this.albumList(0, 0, 0, 0, 0, page, size);
+    }
+
+
+    public async newCollections(page: number = 1, size: number = 10): Promise<Array<ICollection>> {
+        return this.collectionList(undefined, 'new', page, size);
     }
 
 
