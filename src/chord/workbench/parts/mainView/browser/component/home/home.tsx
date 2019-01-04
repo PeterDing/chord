@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import NagivationMenuView from 'chord/workbench/parts/mainView/browser/component/home/component/navigation/navigation';
 import RecommendView from 'chord/workbench/parts/mainView/browser/component/home/component/recommend/recommendView';
+import NewReleaseView from 'chord/workbench/parts/mainView/browser/component/home/component/newRelease/newReleaseView';
 
 
 function HomeView({ view }) {
@@ -13,6 +14,9 @@ function HomeView({ view }) {
     switch (view) {
         case 'recommendView':
             View = RecommendView;
+            break;
+        case 'newReleaseView':
+            View = NewReleaseView;
             break;
         default:
             throw new Error(`[HomeView]: unknown view: ${view}`);
