@@ -18,6 +18,7 @@ import { handlePlayAlbum } from 'chord/workbench/parts/player/browser/action/pla
 import { handlePlayCollection } from 'chord/workbench/parts/player/browser/action/playCollection';
 import { handlePlayUserFavoriteSongs } from 'chord/workbench/parts/player/browser/action/playUser';
 
+import { hasSongAudio } from 'chord/workbench/api/utils/song';
 
 export async function handleAddToQueue(item: ISong | IArtist | IAlbum | ICollection | IUserProfile, direction: string): Promise<IAddToQueueAct> {
     let songs: Array<ISong>;
@@ -46,7 +47,7 @@ export async function handleAddToQueue(item: ISong | IArtist | IAlbum | ICollect
             logger.warning('`handleAddToQueue` act: unknown item\'s type:', item);
     }
 
-    songs = songs || [];
+    songs = (songs || []).filter(song => hasSongAudio(song));
 
     return {
         type: 'c:player:addToQueue',

@@ -367,6 +367,72 @@ export class Music {
     }
 
 
+    public async newSongs(origin: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = await this.xiamiApi.newSongs(offset, limit);
+                break;
+            case ORIGIN.netease:
+                items = await this.neteaseApi.newSongs(offset, limit);
+                break;
+            case ORIGIN.qq:
+                items = await this.qqApi.newSongs(offset, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.newSongs] Here will never be occured. [args]: ${origin}`);
+        }
+
+        items = makeItems(items);
+        return items;
+    }
+
+
+    public async newAlbums(origin: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = await this.xiamiApi.newAlbums(offset, limit);
+                break;
+            case ORIGIN.netease:
+                items = await this.neteaseApi.newAlbums(offset, limit);
+                break;
+            case ORIGIN.qq:
+                items = await this.qqApi.newAlbums(offset, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.newAlbums] Here will never be occured. [args]: ${origin}`);
+        }
+
+        items = makeItems(items);
+        return items;
+    }
+
+
+    public async newCollections(origin: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = await this.xiamiApi.newCollections(offset, limit);
+                break;
+            case ORIGIN.netease:
+                items = await this.neteaseApi.newCollections(offset, limit);
+                break;
+            case ORIGIN.qq:
+                items = await this.qqApi.newCollections(offset, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.newCollections] Here will never be occured. [args]: ${origin}`);
+        }
+
+        items = makeItems(items);
+        return items;
+    }
+
+
     public async login(origin: string, accountName: string, password: string): Promise<IAccount> {
         let account: IAccount;
         switch (origin) {

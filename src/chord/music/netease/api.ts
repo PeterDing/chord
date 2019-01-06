@@ -14,6 +14,7 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+import { IListOption } from 'chord/music/api/listOption';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -88,6 +89,13 @@ export class NeteaseMusicApi {
         similarSongs: 'weapi/v1/discovery/simiSong',
         similarArtists: 'weapi/discovery/simiArtist',
         similarCollections: 'weapi/discovery/simiPlaylist',
+
+        collectionListOptions: 'weapi/playlist/catalogue',
+        collectionList: 'weapi/playlist/list',
+
+        newSongs: 'weapi/v1/discovery/new/songs',
+        newAlbums: 'weapi/album/new',
+        newCollections: 'weapi/playlist/list',
 
         login: 'weapi/login',
         loginRefresh: 'weapi/login/token/refresh',
@@ -405,6 +413,108 @@ export class NeteaseMusicApi {
         };
         let json = await this.request(node, data);
         return makeCollections(json['playlists']);
+    }
+
+
+    public async collectionListOptions(): Promise<Array<IListOption>> {
+        let node = NeteaseMusicApi.NODE_MAP.collectionListOptions;
+        let data = {};
+        let json = await this.request(node, data);
+        let categories = json['categories'];
+        let options = [];
+        let _all = {
+            type: 'cat',
+            name: '全部歌单',
+            items: [{ id: '全部', name: '全部' }],
+        };
+        options.push(_all);
+        Object.keys(categories).forEach(id => {
+            let option = {
+                type: 'cat',
+                name: categories[id],
+                items: json['sub']
+                    .filter(info => info['category'].toString() == id)
+                    .map(info => ({
+                        id: info['name'],
+                        name: info['name'],
+                    })),
+            };
+            options.push(option);
+        });
+        let orders = {
+            type: 'order',
+            name: '全部歌单',
+            items: [
+                { id: 'hot', name: '最热' },
+                { id: 'new', name: '最新' },
+            ],
+        };
+        options.push(orders);
+        return options;
+    }
+
+
+    /**
+     * order:
+     *     hot
+     *     new
+     */
+    public async collectionList(cat: string, order: string = 'hot', offset: number = 1, limit: number = 10): Promise<Array<ICollection>> {
+        let node = NeteaseMusicApi.NODE_MAP.collectionList;
+        let data = {
+            cat,
+            order,
+            offset,
+            limit,
+            total: true,
+        };
+        let json = await this.request(node, data);
+        return makeCollections(json['playlists']);
+    }
+
+
+    /**
+     * Get new songs
+     *
+     * Here, offset, limit are not functional
+     */
+    public async newSongs(offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let node = NeteaseMusicApi.NODE_MAP.newSongs;
+        let data = {
+            areaId: 0,   // 全部: 0, 华语: 7, 欧美: 96, 日本: 8, 韩国: 16
+            // limit: limit, 
+            // offset: offset,
+            total: true,
+        };
+        let json = await this.request(node, data);
+        return makeSongs(json['data'] || []);
+    }
+
+
+    public async newAlbums(offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let node = NeteaseMusicApi.NODE_MAP.newAlbums;
+        let data = {
+            area: 'ALL',    // ALL, ZH, EA, KR, JP
+            limit: limit,
+            offset: offset,
+            total: true,
+        };
+        let json = await this.request(node, data);
+        return makeAlbums(json['albums'] || []);
+    }
+
+
+    public async newCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let node = NeteaseMusicApi.NODE_MAP.newCollections;
+        let data = {
+            cat: '全部',  // see `this.collections`
+            order: 'new', // hot,new
+            limit: limit,
+            offset: offset,
+            total: true,
+        };
+        let json = await this.request(node, data);
+        return makeCollections(json['playlists'] || []);
     }
 
 

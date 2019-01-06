@@ -4,6 +4,7 @@ import { remote } from 'electron';
 
 import { ok } from 'chord/base/common/assert';
 import { sleep } from 'chord/base/common/time';
+import { getRandom } from 'chord/base/node/random';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
@@ -14,6 +15,7 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+import { IListOption } from 'chord/music/api/listOption';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -41,6 +43,15 @@ import {
 import { getACSRFToken } from 'chord/music/qq/util';
 
 import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
+
+
+const ALBUM_OPTION_NAME_MAP = {
+    area: '地区',
+    genre: '流派',
+    type: '类别',
+    year: '年代',
+    company: '唱片公司',
+};
 
 
 export class QQMusicApi {
@@ -71,6 +82,12 @@ export class QQMusicApi {
         searchAlbums: 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp',
         searchCollections: 'https://c.y.qq.com/soso/fcgi-bin/client_music_search_songlist',
 
+        songList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        albumList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        collectionList: 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg',
+
+        collectionListOptions: 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_tag_conf.fcg',
+
         userProfile: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_get_profile_homepage.fcg',
 
         userFavoriteSongs: 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
@@ -94,6 +111,10 @@ export class QQMusicApi {
         userDislikeUserProfile: 'https://c.y.qq.com/rsc/fcgi-bin/add_attention_status.fcg',
 
         recommendCollections: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+
+        newSongs: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        newAlbums: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        newCollections: 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg',
 
         playLog: 'https://c.y.qq.com/tplcloud/fcgi-bin/fcg_reportlsting_web.fcg',
     };
@@ -453,6 +474,267 @@ export class QQMusicApi {
 
 
     /**
+     * Get new songs
+     *
+     * languageId:
+     *     1: 内地
+     *     2: 港台
+     *     3: 欧美
+     *     4: 日本
+     *     5: 韩国
+     */
+    public async songList(languageId: number = 1, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let params = {
+            g_tk: 0,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq.json',
+            needNewCode: 0,
+            data: JSON.stringify({
+                comm: { ct: 24 },
+                new_song: {
+                    method: "GetNewSong",
+                    module: "QQMusic.MusichallServer",
+                    param: {
+                        type: languageId,
+                    }
+                },
+            }),
+        };
+        let url = QQMusicApi.NODE_MAP.songList;
+        let json = await this.request('GET', url, params);
+        return makeSongs(json['new_song']['data']['song_list']);
+    }
+
+
+    public async albumListOptions(): Promise<Array<IListOption>> {
+        let params = {
+            g_tk: 0,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq.json',
+            needNewCode: 0,
+            data: JSON.stringify({
+                comm: { ct: 24 },
+                albumlib: {
+                    param: {
+                        get_tags: 1,
+                        click_albumid: 0,
+                        year: -1,
+                        genre: -1,
+                        area: 1,
+                        sort: 2,
+                        type: -1,
+                        sin: 0,
+                        num: 1,
+                        company: -1
+                    },
+                    method: 'get_album_by_tags',
+                    module: 'music.web_album_library',
+                },
+            }),
+        };
+        let url = QQMusicApi.NODE_MAP.songList;
+        let json = await this.request('GET', url, params);
+        let tags = json['albumlib']['data']['tags'];
+        let options = Object.keys(tags).map(key => ({
+            name: ALBUM_OPTION_NAME_MAP[key],
+            type: key,
+            items: tags[key].map(info => ({
+                id: info['id'],
+                name: info['name'],
+            })),
+        }));
+        let sortOption = {
+            name: '排序',
+            type: 'sort',
+            items: [
+                { id: 2, name: '最新' },
+                { id: 5, name: '最热' },
+            ],
+        };
+        options.push(sortOption);
+        return options;
+    }
+
+
+    /**
+     * sort:
+     *     2: 最新
+     *     5: 最热
+     *
+     * area: 地区  // 同 xiami 的语种
+     * genre: 流派  // 同 xiami 的曲风
+     * type: 类别  // album 类别
+     * year: 年代
+     * company: 唱片公司
+     */
+    public async albumList(
+        sort: number = 5,
+        areaId: number = 0,
+        genreId: number = -1,
+        typeId: number = -1,
+        yearId: number = -1,
+        companyId: number = -1,
+        offset: number = 0,
+        limit: number = 10): Promise<Array<IAlbum>> {
+
+        let params = {
+            g_tk: 0,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq.json',
+            needNewCode: 0,
+            data: JSON.stringify({
+                comm: { ct: 24 },
+                albumlib: {
+                    param: {
+                        get_tags: 0,
+                        click_albumid: 0,
+                        sort: sort,
+                        area: areaId,
+                        genre: genreId,
+                        type: typeId,
+                        year: yearId,
+                        company: companyId,
+                        sin: offset,
+                        num: limit,
+                    },
+                    method: 'get_album_by_tags',
+                    module: 'music.web_album_library',
+                },
+            }),
+        };
+        let url = QQMusicApi.NODE_MAP.albumList;
+        let json = await this.request('GET', url, params);
+        return makeAlbums(json['albumlib']['data']['list']);
+    }
+
+
+    public async collectionListOptions(): Promise<Array<IListOption>> {
+        let params = {
+            g_tk: 0,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq.json',
+            needNewCode: 0,
+        };
+        let url = QQMusicApi.NODE_MAP.collectionListOptions;
+        let json = await this.request('GET', url, params);
+        let options = json['data']['categories'].map(info => ({
+            name: info['categoryGroupName'],
+            type: 'category',
+            items: info['items'].map(item => ({
+                id: item['categoryId'],
+                name: item['categoryName'],
+            })),
+        }));
+        let sortOption = {
+            name: '排序',
+            type: 'sort',
+            items: [
+                { id: 2, name: '最新' },
+                { id: 3, name: '最热' },
+                { id: 4, name: '评分' },
+            ],
+        };
+        options.push(sortOption);
+        return options;
+    }
+
+
+    /**
+     * sort:
+     *     2: 最新
+     *     3: 最热
+     *     4: 评分
+     *
+     *  categoryId sees this.collectionListOptions
+     */
+    public async collectionList(sort: number = 3, categoryId: number = 10000000, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let params = {
+            picmid: 1,
+            rnd: getRandom(),
+            g_tk: 0,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq.json',
+            needNewCode: 0,
+            categoryId: categoryId,
+            sortId: sort,
+            sin: offset,
+            ein: limit,
+        };
+        let url = QQMusicApi.NODE_MAP.collectionList;
+        let json = await this.request('GET', url, params);
+        return makeCollections(json['data']['list']);
+    }
+
+
+    public async newSongs(offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let songLists = await Promise.all([
+            this.songList(1),
+            this.songList(2),
+            this.songList(3),
+            this.songList(4),
+            this.songList(5),
+        ]);
+        let songs = [];
+        for (let i of Array(10).keys()) {
+            for (let j of Array(5).keys()) {
+                let song = songLists[j][i];
+                if (song) songs.push(song);
+            }
+        }
+        return songs;
+    }
+
+
+    public async newAlbums(offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let albumLists = await Promise.all([
+            this.albumList(2, 1, -1, -1, -1, -1, 0, 5),
+            this.albumList(2, 0, -1, -1, -1, -1, 0, 5),
+            this.albumList(2, 3, -1, -1, -1, -1, 0, 5),
+            this.albumList(2, 15, -1, -1, -1, -1, 0, 5),
+            this.albumList(2, 14, -1, -1, -1, -1, 0, 5),
+        ]);
+        let albums = [];
+        for (let i of Array(5).keys()) {
+            for (let j of Array(5).keys()) {
+                let album = albumLists[j][i];
+                if (album) albums.push(album);
+            }
+        }
+        return albums;
+    }
+
+
+    public async newCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        return this.collectionList(2, 10000000, offset, limit);
+    }
+
+
+    /**
      * TODO: use qr code login
      */
     public async login(): Promise<IAccount> {
@@ -688,7 +970,10 @@ export class QQMusicApi {
         let userId = 'qq|user|' + json.data['hostuin'].toString();
         userMid = json.data['encrypt_uin'];
         let userName = json.data['hostname'];
-        let collections = makeCollections(offset == 0 ? json.data.disslist.slice(1) : json.data.disslist)
+        let collections = makeCollections(
+            (offset == 0 ? json.data.disslist.slice(1) : json.data.disslist)
+                .filter(info => info.tid != 0)
+        );
         collections.filter(collection => {
             collection.userId = userId;
             collection.userMid = userMid;
@@ -1138,6 +1423,3 @@ export class QQMusicApi {
         });
     }
 }
-
-
-export const qqMusicApi = new QQMusicApi();

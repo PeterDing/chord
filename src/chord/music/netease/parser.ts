@@ -117,7 +117,12 @@ export function makeAlbum(info: any): IAlbum {
 
     let albumCoverUrl: string = albumInfo['picUrl'];
 
-    let songs: Array<ISong> = (songsInfo || []).map(song => makeSong(song));
+    let songs: Array<ISong> = (songsInfo || []).map(info => {
+        let song = makeSong(info);
+        // song info does not provide its album cover url
+        song.albumCoverUrl = albumCoverUrl;
+        return song;
+    });
 
     let album: IAlbum = {
         albumId: _getAlbumId(albumOriginalId),

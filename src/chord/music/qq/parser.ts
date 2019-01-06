@@ -207,20 +207,34 @@ export function makeSongs(info: any): Array<ISong> {
 
 
 export function makeAlbum(info: any): IAlbum {
-    let albumOriginalId = (info['id'] || info['albumid'] || info['albumID']).toString();
+    let albumOriginalId = (info['id'] || info['albumid'] || info['albumID'] || info['album_id']).toString();
     let albumMid = info['mid'] || info['album_mid'] || info['albumMID'] || info['albummid'];
     let albumName = info['name'] || info['album_name'] || info['albumName'];
     albumName = decodeHtml(albumName);
     let albumCoverUrl = getQQAlbumCoverUrl(albumMid);
 
-    let artistOriginalId = (info['singerid'] || info['singer_id'] || info['singerID']).toString();
-    let artistMid = info['singermid'] || info['singer_mid'] || info['singerMID'];
-    let artistName = info['singername'] || info['singer_name'] || info['singerName'];
+    let artistOriginalId = info['singerid'] || info['singer_id'] || info['singerID'];
+    let artistMid;
+    let artistName;
+    if (artistOriginalId) {
+        artistOriginalId = artistOriginalId.toString();
+        artistMid = info['singermid'] || info['singer_mid'] || info['singerMID'];
+        artistName = info['singername'] || info['singer_name'] || info['singerName'];
+    } else {
+        if (isObject(info['singers'])) {
+            let singerInfo = info['singers'][0];
+            artistOriginalId = singerInfo['singer_id'].toString();
+            artistMid = singerInfo['singer_mid'];
+            artistName = singerInfo['singer_name'];
+        } else {
+            throw new Error(`[Error] [qq.parser.makeAlbum]: can not parse info: ${JSON.stringify(info)}`);
+        }
+    }
     artistName = decodeHtml(artistName);
 
     let tags: Array<ITag> = info['genre'] ? [{ id: null, name: info['genre'] }] : [];
 
-    let releaseDate = Date.parse(info['aDate'] || info['pub_time'] || info['publicTime']);
+    let releaseDate = Date.parse(info['aDate'] || info['pub_time'] || info['publicTime'] || info['public_time']);
 
     let songs: Array<ISong> = (info['list'] || []).map(song => makeSong(song));
 
@@ -319,8 +333,8 @@ export function makeCollection(info: any): ICollection {
         userMid = info['creator'];
         userName = info['username'];
     } else {
-        userOriginalId = info['creator'] ? info['creator']['creator_uin'].toString() : info['uin'];
-        userMid = info['creator'] ? info['creator']['encrypt_uin'].toString() : info['encrypt_uin'] || info['uin'];
+        userOriginalId = info['creator'] ? (info['creator']['creator_uin'] || info['creator']['qq']).toString() : info['uin'];
+        userMid = info['creator'] ? info['creator']['encrypt_uin'].toString() : (info['encrypt_uin'] || info['uin']);
         userName = info['creator'] ? info['creator']['name'] : info['nickname'];
     }
     let userId = _getUserId(userOriginalId);
@@ -410,14 +424,14 @@ export function makeUserProfile(info: any): IUserProfile {
 
         userAvatarUrl: userInfo['headpic'] || info['logo'],
 
-        followerCount: info['listen_num'] || userInfo['nums']['fansnum'],
-        followingCount: info['follow_num'] || userInfo['nums']['followusernum'],
+        followerCount: info['listen_num'] != undefined ? info['listen_num'] : userInfo['nums']['fansnum'],
+        followingCount: info['follow_num'] != undefined ? info['follow_num'] : userInfo['nums']['followusernum'],
 
         songCount: musicInfo[1] ? musicInfo[1]['num0'] : null,
         artistCount: userInfo['nums'] ? userInfo['nums']['followsingernum'] : null,
         albumCount: musicInfo[1] ? musicInfo[1]['num1'] : null,
         favoriteCollectionCount: musicInfo[1] ? musicInfo[1]['num2'] : null,
-        createdCollectionCount: info['songlist_num'] || createdCollectionsInfo['num'],
+        createdCollectionCount: info['songlist_num'] != undefined ? info['songlist_num'] : createdCollectionsInfo['num'],
 
         description: info['desc'],
     };
