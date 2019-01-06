@@ -30,6 +30,7 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
     constructor(props: IPlayListSongDetailProps) {
         super(props);
         this.handleLibraryActFunc = this.handleLibraryActFunc.bind(this);
+        this.scrollToCurrentPlaying = this.scrollToCurrentPlaying.bind(this);
     }
 
     handleLibraryActFunc(song: ISong) {
@@ -37,6 +38,11 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
         song.like = !song.like;
         handleLibraryActFunc(song);
         this.forceUpdate();
+    }
+
+    scrollToCurrentPlaying() {
+        document.getElementById('playing-this').scrollIntoView(
+            { behavior: 'smooth', block: 'start', inline: 'nearest' });
     }
 
     render() {
@@ -56,7 +62,8 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
         return (
             <div className='playlist-content-song-detail'>
                 <div className="cover-art shadow cover-art--with-auto-height" aria-hidden="true"
-                    style={{ width: '200px', height: '200px', padding: 0 }}>
+                    style={{ width: '200px', height: '200px', padding: 0 }}
+                    onClick={this.scrollToCurrentPlaying}>
                     <div>
                         {AlbumIcon}
                         <div className="cover-art-image cover-art-image-loaded"
