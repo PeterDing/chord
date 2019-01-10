@@ -53,6 +53,12 @@ export function onEnd(soundId: number, store: Store) {
 }
 
 
+// configure control functions for CAudio
+CAudio.registerOnPlay('control-onplay', onPlay);
+CAudio.registerOnPause('control-onpause', onPause);
+CAudio.registerOnEnd('control-onend', onEnd);
+
+
 function handleSeek(e: React.MouseEvent<HTMLDivElement>) {
     if (CAudio.hasAudio()) {
         let percent: number = e.nativeEvent.offsetX / _box.offsetWidth;
