@@ -3,6 +3,7 @@
 import * as cheerio from 'cheerio';
 
 import { ISong } from "chord/music/api/song";
+import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from "chord/music/api/album";
 import { IArtist } from "chord/music/api/artist";
 import { ITag } from "chord/music/api/tag";
@@ -23,6 +24,8 @@ import {
     getCollectionId,
     getUserId,
 } from "chord/music/common/origin";
+
+import { makeLyric as _makeLyric } from 'chord/music/utils/lyric';
 
 
 const _origin = 'netease';
@@ -106,6 +109,25 @@ export function makeSong(info: any, privilege?: any): ISong {
 
 export function makeSongs(info: any): Array<ISong> {
     return (info || []).map(songInfo => makeSong(songInfo));
+}
+
+export function makeLyric(songId: string, lyricInfo: string, transInfo: string): ILyric {
+    if (!lyricInfo) return null;
+
+    let lyric = _makeLyric(lyricInfo);
+    let chunksMap = {};
+    lyric.chunks.forEach(chunk => chunksMap[chunk.point] = chunk);
+
+    if (transInfo) {
+        let trans = _makeLyric(transInfo);
+        trans.chunks.forEach((chunk, index) => {
+            let lyricChunk = chunksMap[chunk.point];
+            if (lyricChunk) lyricChunk.translation = chunk.text;
+        });
+    }
+
+    lyric.songId = _getSongId(songId);
+    return lyric;
 }
 
 export function makeAlbum(info: any): IAlbum {
