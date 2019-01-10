@@ -1,0 +1,38 @@
+.lyric-content {
+    padding: 10px 10px 91px 10px;
+    left: 0;
+    width: 60%;
+    position: absolute
+}
+
+.lyric {
+    margin: 5px 0;
+    line-height: 24px;
+    font-size: 18px;
+    font-weight: 300;
+    text-align: center
+}
+
+.lyric-content p.lyric-active {
+    color: #1db954;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center
+}
+
+.no-lyric-content {
+    height: 370px;
+    width: 60%;
+    display: flex;
+    position: absolute
+}
+
+.no-lyric {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    font-size: 60px;
+    font-weight: bold;
+    text-shadow: 0 0 12px #1db954;
+    text-align: center
+}

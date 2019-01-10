@@ -5,6 +5,13 @@ import { ok } from 'chord/base/common/assert';
 import { Store } from 'redux';
 
 
+type IHookFn = (soundId?: number, store?: Store) => void;
+
+interface IHook {
+    name: string;
+    fn: IHookFn;
+}
+
 /**
  * Global Audio Controller
  * 
@@ -16,9 +23,41 @@ class Audio {
     private static audio: Howl | null;
     private static store: Store;
 
-    private static onplay: (soundId: number, store: Store) => void;
-    private static onpause: (soundId: number, store: Store) => void;
-    private static onend: (soundId: number, store: Store) => void;
+    private static onplayFns: Array<IHook> = [];
+    private static onpauseFns: Array<IHook> = [];
+    private static onendFns: Array<IHook> = [];
+    private static onseekFns: Array<IHook> = [];
+    private static onloaderrorFns: Array<IHook> = [];
+
+    private static onplay(soundId?: number, store?: Store): void {
+        this.onplayFns.forEach(item => {
+            item.fn(soundId, store);
+        });
+    }
+
+    private static onpause(soundId?: number, store?: Store): void {
+        this.onpauseFns.forEach(item => {
+            item.fn(soundId, store);
+        });
+    }
+
+    private static onend(soundId?: number, store?: Store): void {
+        this.onendFns.forEach(item => {
+            item.fn(soundId, store);
+        });
+    }
+
+    private static onseek(soundId?: number, store?: Store): void {
+        this.onseekFns.forEach(item => {
+            item.fn(soundId, store);
+        });
+    }
+
+    private static onloaderror(soundId?: number, store?: Store): void {
+        this.onloaderrorFns.forEach(item => {
+            item.fn(soundId, store);
+        });
+    }
 
     /**
      * Get Global Howl instance
@@ -45,6 +84,8 @@ class Audio {
             onplay: (soundId: number) => Audio.onplay(soundId, Audio.store),
             onpause: (soundId: number) => Audio.onpause(soundId, Audio.store),
             onend: (soundId: number) => Audio.onend(soundId, Audio.store),
+            onseek: (soundId: number) => Audio.onseek(soundId, Audio.store),
+            onloaderror: (soundId: number) => Audio.onloaderror(soundId, Audio.store),
         };
         return new Howl(audioOptions);
     }
@@ -60,9 +101,14 @@ class Audio {
         Audio.audio = Audio.doMakeAudio(url);
     }
 
-    static seek(position?: number) {
+    static seek(position?: number): number {
         ok(Audio.audio, '[Audio.seek] no audio instance');
-        return Audio.audio.seek(position);
+        if (position) {
+            Audio.audio.seek(position);
+            return position;
+        } else {
+            return <number>Audio.audio.seek(position);
+        }
     }
 
     // Get/set the global volume for all sounds, relative to their own volume.
@@ -120,16 +166,29 @@ class Audio {
         Audio.store = store;
     }
 
-    static registerOnPlay(onplay: (soundId: number, store: Store) => void) {
-        Audio.onplay = onplay;
+    static registerOnPlay(name: string, onplay: IHookFn) {
+        Audio.onplayFns = Audio.onplayFns.filter(hook => hook.name != name);
+        Audio.onplayFns.push({ name, fn: onplay });
     }
 
-    static registerOnPause(onpause: (soundId: number, store: Store) => void) {
-        Audio.onpause = onpause;
+    static registerOnPause(name: string, onpause: IHookFn) {
+        Audio.onpauseFns = Audio.onpauseFns.filter(hook => hook.name != name);
+        Audio.onpauseFns.push({ name, fn: onpause });
     }
 
-    static registerOnEnd(onend: (soundId: number, store: Store) => void) {
-        Audio.onend = onend;
+    static registerOnEnd(name: string, onend: IHookFn) {
+        Audio.onendFns = Audio.onendFns.filter(hook => hook.name != name);
+        Audio.onendFns.push({ name, fn: onend });
+    }
+
+    static registerOnSeek(name: string, onseek: IHookFn) {
+        Audio.onseekFns = Audio.onseekFns.filter(hook => hook.name != name);
+        Audio.onseekFns.push({ name, fn: onseek });
+    }
+
+    static registerOnLoadError(name: string, onloaderror: IHookFn) {
+        Audio.onloaderrorFns = Audio.onloaderrorFns.filter(hook => hook.name != name);
+        Audio.onloaderrorFns.push({ name, fn: onloaderror });
     }
 }
 

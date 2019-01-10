@@ -11,6 +11,7 @@ import { NoLoginError, ServerError } from 'chord/music/common/errors';
 
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
+import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
@@ -30,6 +31,7 @@ import {
     makeAudio,
     makeSong,
     makeSongs,
+    makeLyric,
     makeAlbum,
     makeAlbums,
     makeCollection,
@@ -43,8 +45,6 @@ import {
     makeUserProfiles,
     // makeAccount,
 } from 'chord/music/netease/parser';
-
-import { userConfiguration } from 'chord/preference/configuration/user';
 
 
 const MAX_RETRY = 3;
@@ -77,6 +77,7 @@ export class NeteaseMusicApi {
     static readonly NODE_MAP = {
         audio: 'weapi/song/enhance/player/url',
         song: 'weapi/v3/song/detail',
+        lyric: 'weapi/song/lyric',
         album: 'weapi/v1/album',
         collection: 'weapi/v3/playlist/detail',
 
@@ -204,6 +205,21 @@ export class NeteaseMusicApi {
         };
         let json = await this.request(node, data);
         return makeSong(json['songs'][0], json['privileges'][0]);
+    }
+
+
+    public async lyric(songId: string): Promise<ILyric> {
+        let node = NeteaseMusicApi.NODE_MAP.lyric;
+        let data = {
+            csrf_token: "",
+            id: songId,
+            lv: -1,
+            tv: -1,
+        };
+        let json = await this.request(node, data);
+        let lyricInfo = json['lrc'] ? json['lrc']['lyric']: null;
+        let transInfo = json['tlyric'] ? json['tlyric']['lyric']: null;
+        return makeLyric(songId, lyricInfo, transInfo);
     }
 
 
