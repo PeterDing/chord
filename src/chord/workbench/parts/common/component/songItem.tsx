@@ -33,7 +33,8 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
         let handlePlay = this.props.handlePlay ?
             this.props.handlePlay : () => this.props.handlePlayOne(song);
 
-        let liClassName = this.props.active ?
+        let active = this.props.active;
+        let liClassName = active ?
             (this.props.short ?
                 'tracklist-row tracklist-row--oneline tracklist-row--active'
                 : 'tracklist-row tracklist-row--active')
@@ -83,7 +84,7 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
 
         return (
             <div className='react-contextmenu-wrapper'>
-                <div draggable={true}
+                <div draggable={true} id={active ? 'playing-this' : undefined}
                     onContextMenu={(e) => this.props.showSongMenu(e, song)}>
                     <li className={liClassName} role='button' tabIndex={0}>
 
