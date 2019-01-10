@@ -12,6 +12,8 @@ import { IPlayListButtomProps, IPlayListContentProps, IPlayListSongDetailProps }
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import { handlePlay } from 'chord/workbench/parts/player/browser/action/playList';
 import SongItemView from 'chord/workbench/parts/common/component/songItem';
+import LyricView from 'chord/workbench/parts/player/browser/component/lyric';
+import { SmallButton } from 'chord/workbench/parts/common/component/buttons';
 
 import { AlbumIcon } from 'chord/workbench/parts/common/component/common';
 import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
@@ -41,7 +43,8 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
     }
 
     scrollToCurrentPlaying() {
-        document.getElementById('playing-this').scrollIntoView(
+        let elem = document.getElementById('playing-this');
+        if (elem) elem.scrollIntoView(
             { behavior: 'smooth', block: 'start', inline: 'nearest' });
     }
 
@@ -61,14 +64,23 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
 
         return (
             <div className='playlist-content-song-detail'>
-                <div className="cover-art shadow cover-art--with-auto-height" aria-hidden="true"
-                    style={{ width: '200px', height: '200px', padding: 0 }}
-                    onClick={this.scrollToCurrentPlaying}>
-                    <div>
-                        {AlbumIcon}
-                        <div className="cover-art-image cover-art-image-loaded"
-                            style={{ backgroundImage: `url("${cover}")` }}>
+                <div>
+                    <div className="cover-art shadow cover-art--with-auto-height" aria-hidden="true"
+                        style={{ width: '200px', height: '200px', padding: 0 }}
+                        onClick={this.scrollToCurrentPlaying}>
+                        <div>
+                            {AlbumIcon}
+                            <div className="cover-art-image cover-art-image-loaded"
+                                style={{ backgroundImage: `url("${cover}")` }}>
+                            </div>
                         </div>
+
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'center', margin: '3px 0px' }}>
+                        <SmallButton
+                            title={this.props.lyricOn ? 'list' : 'lyric'}
+                            click={this.props.toggleLyric} />
                     </div>
                 </div>
 
@@ -143,11 +155,23 @@ class PlayListContent extends React.Component<IPlayListContentProps, any> {
 
     constructor(props: IPlayListContentProps) {
         super(props);
+        this.state = { toggleLyric: false };
+
+        this.toggleLyric = this.toggleLyric.bind(this);
+        this.playListContent = this.playListContent.bind(this);
+        this.lyric = this.lyric.bind(this);
     }
 
-    render() {
+    toggleLyric() {
+        this.setState((preState) => ({
+            toggleLyric: !preState.toggleLyric,
+        }));
+    }
+
+    playListContent() {
         let playList = this.props.playList;
         let index = this.props.index;
+        let kbps = this.props.kbps;
         let songItems = playList.map((song, i) => (
             <SongItemView
                 key={i.toString()}
@@ -159,16 +183,50 @@ class PlayListContent extends React.Component<IPlayListContentProps, any> {
         ));
 
         let song = playList[index];
+        let playListInfo = `⦿ ${index + 1} / ${playList.length} ⫸ ${kbps}kbps`;
 
         return (
             <div>
                 <div className='playlist-content-songs'>
-                    {songItems}
+                    <div style={{ height: '340px', overflow: 'auto' }}>
+                        {songItems}
+                    </div>
+
+                    <div style={{ textAlign: 'center' }}>
+                        {playListInfo}
+                    </div>
                 </div>
 
-                <_PlayListSongDetail song={song} />
+                <_PlayListSongDetail
+                    song={song}
+                    lyricOn={this.state.toggleLyric}
+                    toggleLyric={this.toggleLyric} />
             </div>
         );
+    }
+
+    lyric() {
+        let playList = this.props.playList;
+        let index = this.props.index;
+        let song = playList[index];
+
+        return (
+            <div>
+                <LyricView song={song} />
+
+                <_PlayListSongDetail
+                    song={song}
+                    lyricOn={this.state.toggleLyric}
+                    toggleLyric={this.toggleLyric} />
+            </div>
+        );
+    }
+
+    render() {
+        if (this.state.toggleLyric) {
+            return this.lyric();
+        }
+        return this.playListContent();
     }
 }
 

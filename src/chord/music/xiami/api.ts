@@ -11,13 +11,14 @@ import { getRandomInt } from 'chord/base/node/random';
 
 import { makeCookieJar, makeCookies } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
-import { request, IRequestOptions } from 'chord/base/node/_request';
+import { request, IRequestOptions, htmlGet } from 'chord/base/node/_request';
 import { Cookie } from 'tough-cookie';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
+import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
@@ -34,6 +35,7 @@ import {
     makeCollection,
 
     makeAliSong,
+    makeAliLyric,
     makeAliSongs,
     makeAliAlbum,
     makeAliAlbums,
@@ -582,6 +584,19 @@ export class AliMusicApi {
         let info = json.data.data.songs;
         let songs = makeAliSongs(info);
         return songs;
+    }
+
+
+    public async lyric(songId: string, song?: ISong): Promise<ILyric> {
+        let lyricUrl;
+        if (!song || !song.lyricUrl) {
+            song = await this.song(songId);
+        }
+        lyricUrl = song.lyricUrl;
+        if (!lyricUrl) return null;
+
+        let cn: any = await htmlGet(lyricUrl);
+        return makeAliLyric(songId, cn);
     }
 
 

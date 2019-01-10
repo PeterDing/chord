@@ -5,6 +5,8 @@ import { remote } from 'electron';
 import { ok } from 'chord/base/common/assert';
 import { sleep } from 'chord/base/common/time';
 import { getRandom } from 'chord/base/node/random';
+import { decodeHtml } from 'chord/base/browser/htmlContent';
+import { decodeBase64 } from 'chord/base/node/crypto';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
@@ -12,6 +14,7 @@ import { NoLoginError, LoginTimeoutError } from 'chord/music/common/errors';
 
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
+import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
@@ -28,6 +31,7 @@ import { request, IRequestOptions } from 'chord/base/node/_request';
 import {
     makeSong,
     makeSongs,
+    makeLyric,
     makeAlbum,
     makeAlbums,
     makeCollection,
@@ -68,6 +72,8 @@ export class QQMusicApi {
     static readonly NODE_MAP = {
         qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_musicexpress.fcg',
         song: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        // lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_yqq.fcg',
+        lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg',
         album: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg',
 
         artist: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg',
@@ -229,6 +235,30 @@ export class QQMusicApi {
         let url = QQMusicApi.NODE_MAP.song;
         let json = await this.request('POST', url, null, JSON.stringify(data));
         return makeSong(json['detail']['data']);
+    }
+
+
+    public async lyric(songId: string, songMid: string): Promise<ILyric> {
+        let params = {
+            '-': 'MusicJsonCallback_lrc',
+            pcachetime: Date.now(),
+            songmid: songMid,
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq.json',
+            needNewCode: 0,
+        };
+        let url = QQMusicApi.NODE_MAP.lyric;
+        let referer = 'https://y.qq.com/portal/player.html';
+        let json = await this.request('GET', url, params, null, referer);
+        let lyricInfo = decodeHtml(decodeBase64(json['lyric']));
+        let transInfo = decodeHtml(decodeBase64(json['trans']));
+        return makeLyric(songId, lyricInfo, transInfo);
     }
 
 

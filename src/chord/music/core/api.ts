@@ -4,6 +4,7 @@ import { getOrigin, ORIGIN } from 'chord/music/common/origin';
 
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
+import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
@@ -145,6 +146,27 @@ export class Music {
         }
         song = makeItem(song);
         return song;
+    }
+
+
+    public async lyric(songId: string, song?: ISong): Promise<ILyric> {
+        let lyric;
+        let originType = getOrigin(songId);
+        switch (originType.origin) {
+            case ORIGIN.xiami:
+                lyric = await this.xiamiApi.lyric(originType.id, song);
+                break;
+            case ORIGIN.netease:
+                lyric = await this.neteaseApi.lyric(originType.id);
+                break;
+            case ORIGIN.qq:
+                lyric = await this.qqApi.lyric(originType.id, song.songMid);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.lyric] Here will never be occured. [args]: ${songId}`);
+        }
+        return lyric;
     }
 
 

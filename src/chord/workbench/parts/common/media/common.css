@@ -383,6 +383,12 @@ button:hover {
     padding: 7px 22px
 }
 
+.btn.btn-tiny {
+    padding: 0px 8px;
+    font-size: 8px;
+    min-width: 0px
+}
+
 .btn.btn-large {
     height: 56px;
     font-size: 18px;

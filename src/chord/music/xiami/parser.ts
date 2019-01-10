@@ -5,6 +5,7 @@ import { decodeHtml } from 'chord/base/browser/htmlContent';
 import { getAbsolutUrl } from "chord/base/node/url";
 
 import { ISong } from "chord/music/api/song";
+import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from "chord/music/api/album";
 import { IArtist } from "chord/music/api/artist";
 import { IGenre } from "chord/music/api/genre";
@@ -28,6 +29,8 @@ import {
 } from "chord/music/common/origin";
 import { decrypt } from "chord/music/xiami/crypto";
 import { xpathSelect } from 'chord/workbench/api/browser/xpath';
+
+import { makeLyric } from 'chord/music/utils/lyric';
 
 
 const _staticResourceBasicUrl = 'http://img.xiami.net';
@@ -109,6 +112,13 @@ export function makeSong(info: any): ISong {
         audios: audios,
     };
     return song;
+}
+
+
+export function makeAliLyric(songId: string, info: any): ILyric {
+    let lyric = makeLyric(info);
+    lyric.songId = _getSongId(songId);
+    return lyric;
 }
 
 
