@@ -23,6 +23,9 @@ Chord uses the framework of spotify UI.
 * Login to music providers
 * Saving/removing and playing actions synchronize to matched music provider
 * Store your favoriate music to local library
+* Recommanded music (After user logined, recommanded music is based on the user)
+* New released music
+* Toggle lyric
 * Common functions for player
 
 ## Todos
@@ -31,13 +34,11 @@ Chord uses the framework of spotify UI.
 - Selectable quality of audio file
 - Show more information for songs, artists, albums, collections and user profiles
 - Create customized playlist
-- Recommanded music view
 - Music style/genre navigation
-- New released music view
 - Add/Remove local music files
 - Downloader
-- Lyric view
 - i18n
+- More test
 
 ## For Developer
 
