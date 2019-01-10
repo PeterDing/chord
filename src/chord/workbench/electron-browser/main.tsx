@@ -51,9 +51,6 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 // configure CAudio
 CAudio.registerStore(store);
-CAudio.registerOnPlay(onPlay);
-CAudio.registerOnPause(onPause);
-CAudio.registerOnEnd(onEnd);
 
 
 handleQuit();
