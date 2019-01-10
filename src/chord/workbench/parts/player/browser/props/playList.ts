@@ -28,4 +28,7 @@ export interface IPlayListSongDetailProps {
     handleShowAlbumViewById: (albumId: string) => Promise<IShowAlbumAct>;
     handleAddLibrarySong: (song: ISong) => IAddLibrarySongAct;
     handleRemoveFromLibrary: (item: ISong) => IRemoveFromLibraryAct;
+
+    lyricOn: boolean;
+    toggleLyric: () => void;
 }
