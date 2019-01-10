@@ -13,3 +13,13 @@ export function MenuButton({ click }) {
         </div>
     );
 }
+
+
+export function SmallButton(props: { title: string, click: (event) => void }) {
+    return (
+        <button className="btn btn-green btn-tiny btn--no-margin cursor-pointer"
+            onClick={(e) => props.click(e)}>
+            {props.title}
+        </button>
+    );
+}
