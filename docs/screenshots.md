@@ -12,6 +12,14 @@
 
 ![player](media/player.png)
 
+- Lyric
+
+![lyric](media/lyric.png)
+
+- Recommanded and New released music
+
+![recommand](media/recommand.png)
+
 - Search Albums
 
 ![search_album](media/search_album.png)
