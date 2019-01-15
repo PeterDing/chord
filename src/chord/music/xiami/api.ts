@@ -9,10 +9,9 @@ import { assign } from 'chord/base/common/objects';
 import { md5 } from 'chord/base/node/crypto';
 import { getRandomInt } from 'chord/base/node/random';
 
-import { makeCookieJar, makeCookies } from 'chord/base/node/cookies';
+import { Cookie, makeCookieJar, makeCookie, makeCookies } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
 import { request, IRequestOptions, htmlGet } from 'chord/base/node/_request';
-import { Cookie } from 'tough-cookie';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
@@ -358,7 +357,7 @@ export class AliMusicApi {
 
     public static makeCookie(key: string, value: string): Cookie {
         let domain = DOMAIN;
-        return Cookie.fromJSON({ key, value, domain });
+        return makeCookie(key, value, domain);
     }
 
 
