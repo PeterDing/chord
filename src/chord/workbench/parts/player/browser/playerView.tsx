@@ -59,8 +59,8 @@ export class PlayerView extends React.Component<any, any> {
 
                             <div className='player-bar__left'>
                                 <div className='now-player'>
-                                    <Cover onclick={() => this.toggleController()} />
-                                    <SongInfo />
+                                    <Cover onclick={() => this.toggleController()} song={null} />
+                                    <SongInfo song={null} />
                                     <LikeButton />
                                 </div>
                             </div>
