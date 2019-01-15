@@ -1,34 +1,34 @@
 'use strict';
 
-import { app, shell } from 'electron';
+import { app, shell, MenuItemConstructorOptions } from 'electron';
 
 
-export const menuTemplate = (win) => [
+export const menuTemplate = (win): MenuItemConstructorOptions[] => [
     {
-        label: "Application",
+        label: 'Application',
         submenu: [
             {
                 label: 'About Chord',
                 click() { shell.openExternal('https://github.com/PeterDing/chord') }
             },
-            { type: "separator" },
-            { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); } },
+            { type: 'separator' },
+            { label: 'Quit', accelerator: 'Command+Q', click: function() { app.quit(); } },
         ]
     },
     {
-        label: "Edit",
+        label: 'Edit',
         submenu: [
-            { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-            { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-            { type: "separator" },
-            { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-            { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-            { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-            { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+            { label: 'Undo', accelerator: 'CmdOrCtrl+Z', role: 'undo' },
+            { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
+            { type: 'separator' },
+            { label: 'Cut', accelerator: 'CmdOrCtrl+X', role: 'cut' },
+            { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
+            { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
+            { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectAll' }
         ]
     },
     {
-        label: "View",
+        label: 'View',
         submenu: [
             {
                 label: 'Toggle DevTools',
