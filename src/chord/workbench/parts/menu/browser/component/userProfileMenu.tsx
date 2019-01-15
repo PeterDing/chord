@@ -54,7 +54,7 @@ class UserProfileMenu extends React.Component<IUserProfileMenuProps, any> {
 
         return this.props.view == 'userProfileMenuView' ? (
             <nav ref={this.menu} role="menu" tabIndex={-1} className="react-contextmenu"
-                style={{ position: 'fixed', opacity: '1', pointerEvents: 'auto', top: `${top}px`, left: `${left}px` }}>
+                style={{ position: 'fixed', opacity: 1, pointerEvents: 'auto', top: `${top}px`, left: `${left}px` }}>
 
                 {addLibraryItem}
                 <div className="react-contextmenu-item cursor-pointer" role="menuitem" tabIndex={-1}
