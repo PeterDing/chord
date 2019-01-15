@@ -1,6 +1,7 @@
 {
     "$schema": "https://schemastore.azurewebsites.net/schemas/json/tsconfig.json",
     "compilerOptions": {
+        "noEmit": false,
         "module": "amd",
         "moduleResolution": "classic",
         "noImplicitAny": false,
@@ -16,12 +17,18 @@
         "noImplicitThis": true,
         "alwaysStrict": true,
         "jsx": "react",
-        "baseUrl": ".",
         "lib": [
             "es2015",
             "dom",
             "es2017.string"
-        ]
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "*",
+                "./typings/*"
+            ]
+        }
     },
     "exclude": [
         "../out"
