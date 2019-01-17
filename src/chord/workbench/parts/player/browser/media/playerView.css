@@ -409,13 +409,13 @@
 }
 
 .playlist-content-song-detail {
-    position: fixed;
+    position: absolute;
     align-items: center;
     display: flex;
     justify-content: space-evenly;
     flex-direction: row;
-    -webkit-box-align: center;
-    bottom: 180px;
+    box-align: center;
+    bottom: 38%;
     width: 40%;
     right: 0;
 }
