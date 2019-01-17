@@ -14,7 +14,8 @@
         "dist:mac": "electron-builder --mac",
         "dist:win": "electron-builder --win",
         "dist:linux": "electron-builder --linux deb pacman",
-        "pack": "electron-builder --dir"
+        "pack": "electron-builder --dir",
+        "postinstall": "electron-rebuild -f -w better-sqlite3 && electron-rebuild -f -w big-integer"
     },
     "build": {
         "productName": "chord",
