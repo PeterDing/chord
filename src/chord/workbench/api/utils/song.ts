@@ -49,5 +49,9 @@ export async function addSongAudios(song: ISong) {
 export function selectAudio(audios: Array<IAudio>, supKbps: number = 6000): IAudio {
     if (audios.length == 0) return null;
 
-    return audios.filter(audio => (audio.url || audio.path) && ((audio.kbps || 128) <= supKbps)).sort((x, y) => y.kbps - x.kbps)[0];
+    return audios.filter(audio =>
+        (audio.url || audio.path)
+        && (audio.format != 'ape')  // howler does not support `ape` audio format
+        && ((audio.kbps || 128) <= supKbps)
+    ).sort((x, y) => y.kbps - x.kbps)[0];
 }
