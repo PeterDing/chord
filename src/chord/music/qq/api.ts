@@ -67,10 +67,13 @@ export class QQMusicApi {
         'accept': '*/*',
     };
 
-    static readonly AUDIO_URI = 'http://dl.stream.qqmusic.qq.com/';
+    static readonly AUDIO_URI = 'http://streamoc.music.tc.qq.com/';
+    // static readonly AUDIO_URI = 'http://dl.stream.qqmusic.qq.com/';
+    // static readonly AUDIO_URI = 'http://isure.stream.qqmusic.qq.com/';
 
     static readonly NODE_MAP = {
-        qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_musicexpress.fcg',
+        // qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_musicexpress.fcg',
+        qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg',
         song: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         // lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_yqq.fcg',
         lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg',
@@ -160,39 +163,48 @@ export class QQMusicApi {
     }
 
 
-    public async qqKey(guid: string): Promise<string> {
+    public makeguid(): string {
+        return '0';
+        // return Math.floor(Math.random() * 1000000000).toString();
+    }
+
+
+    public async qqKey(guid: string, songMid: string): Promise<string> {
         let params = {
-            'json': 3,
-            'guid': guid,
-            'format': 'json',
+            cid: '205361747',
+            guid: guid,
+            songmid: songMid,
+            filename: '0.m4a',
+            format: 'json',
+            '_': Date.now(),
         };
         let url = QQMusicApi.NODE_MAP.qqKey;
         let json = await this.request('GET', url, params);
-        return json.key;
+        return json['data']['items'][0]['vkey'];
     }
 
 
     public makeAudios(song: ISong, qqKey: string, guid: string): Array<IAudio> {
         return song.audios.filter(audio => !!AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`])
             .map(audio => {
-                audio.url = QQMusicApi.AUDIO_URI + AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`] + song.songMediaMid + '.' + audio.format + '?vkey=' + qqKey + '&guid=' + guid + '&uin=0&fromtag=53';
+                audio.url = QQMusicApi.AUDIO_URI
+                    + AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`]
+                    + song.songMediaMid + '.' + audio.format
+                    + '?guid=' + guid
+                    + '&uin=0'
+                    + '&fromtag=53'
+                    + '&vkey=' + qqKey;
                 return audio;
             });
     }
 
 
     public async audios(songId: string): Promise<Array<IAudio>> {
-        let guid = Math.floor(Math.random() * 1000000000).toString();
-        let qqKey = await this.qqKey(guid);
+        let guid = this.makeguid();
         let song = await this.song(songId);
+        let songMid = song.songMid;
+        let qqKey = await this.qqKey(guid, songMid);
         return this.makeAudios(song, qqKey, guid);
-    }
-
-
-    public async songsAudios(songs: Array<ISong>): Promise<Array<Array<IAudio>>> {
-        let guid = Math.floor(Math.random() * 1000000000).toString();
-        let qqKey = await this.qqKey(guid);
-        return songs.map(song => this.makeAudios(song, qqKey, guid));
     }
 
 

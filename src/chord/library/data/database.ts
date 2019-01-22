@@ -4,7 +4,8 @@ import { removeEmtryAttributes } from 'chord/base/common/objects';
 
 import { jsonDumpValue } from 'chord/base/common/json';
 
-import Database = require('better-sqlite3');
+import { Database } from 'better-sqlite3';
+import * as Sqlite from 'better-sqlite3';
 
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
@@ -38,7 +39,7 @@ export class LibraryDatabase {
     private db: Database;
 
     constructor(databasePath: string) {
-        this.db = new Database(databasePath);
+        this.db = new Sqlite(databasePath);
     }
 
     public getDatabase(): Database {
@@ -235,7 +236,7 @@ export class LibraryDatabase {
         let sql = 'INSERT OR IGNORE INTO library_song (songId, addAt) VALUES (@songId, @addAt)';
         let result = this.db.prepare(sql).run(param);
 
-        return { id: <number>result.lastInsertROWID, song, addAt };
+        return { id: <number>result.lastInsertRowid, song, addAt };
     }
 
     public addAlbum(album: IAlbum, addAt: number): ILibraryAlbum {
@@ -258,7 +259,7 @@ export class LibraryDatabase {
         let sql = `INSERT OR IGNORE INTO library_album (${columnsStr}) VALUES (${param})`;
         let result = this.db.prepare(sql).run(_album);
 
-        return { id: <number>result.lastInsertROWID, album, addAt };
+        return { id: <number>result.lastInsertRowid, album, addAt };
     }
 
     public addArtist(artist: IArtist, addAt: number): ILibraryArtist {
@@ -279,7 +280,7 @@ export class LibraryDatabase {
         let sql = `INSERT OR IGNORE INTO library_artist (${columnsStr}) VALUES (${param})`;
         let result = this.db.prepare(sql).run(_artist);
 
-        return { id: <number>result.lastInsertROWID, artist, addAt };
+        return { id: <number>result.lastInsertRowid, artist, addAt };
     }
 
     public addCollection(collection: ICollection, addAt: number): ILibraryCollection {
@@ -302,7 +303,7 @@ export class LibraryDatabase {
         let sql = `INSERT OR IGNORE INTO library_collection (${columnsStr}) VALUES (${param})`;
         let result = this.db.prepare(sql).run(_collection);
 
-        return { id: <number>result.lastInsertROWID, collection, addAt };
+        return { id: <number>result.lastInsertRowid, collection, addAt };
     }
 
     public addUserProfile(userProfile: IUserProfile, addAt: number): ILibraryUserProfile {
@@ -328,7 +329,7 @@ export class LibraryDatabase {
         let sql = `INSERT OR IGNORE INTO library_user_profile (${columnsStr}) VALUES (${param})`;
         let result = this.db.prepare(sql).run(_userProfile);
 
-        return { id: <number>result.lastInsertROWID, userProfile, addAt };
+        return { id: <number>result.lastInsertRowid, userProfile, addAt };
     }
 
 

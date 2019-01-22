@@ -54,7 +54,7 @@ class ArtistMenu extends React.Component<IArtistMenuProps, any> {
 
         return this.props.view == 'artistMenuView' ? (
             <nav ref={this.menu} role="menu" tabIndex={-1} className="react-contextmenu"
-                style={{ position: 'fixed', opacity: '1', pointerEvents: 'auto', top: `${top}px`, left: `${left}px` }}>
+                style={{ position: 'fixed', opacity: 1, pointerEvents: 'auto', top: `${top}px`, left: `${left}px` }}>
 
                 {addLibraryItem}
                 <div className="react-contextmenu-item cursor-pointer" role="menuitem" tabIndex={-1}

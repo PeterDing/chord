@@ -15,7 +15,6 @@ import { createStore } from 'redux';
 import { mainReducer } from 'chord/workbench/parts/reducer';
 
 import { CAudio } from 'chord/workbench/api/node/audio';
-import { onPlay, onPause, onEnd } from 'chord/workbench/parts/player/browser/component/processBar';
 
 import RootView from 'chord/workbench/electron-browser/rootView';
 

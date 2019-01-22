@@ -12,20 +12,20 @@ You must have `git`, `node 10.x`, `xcode` and `npm` or `yarn`
 git clone https://github.com/PeterDing/chord chord
 ```
 
-2. Installing dependences, I use `yarn` here
+2. Install dependences, I use `yarn` here
 
 ```shell
 cd chord
 yarn install
 ```
 
-3. Compiling typescript files
+3. Compile typescript files
 
 ```shell
 yarn run compile
 ```
 
-4. Building dmg
+4. Build dmg
 
 ```shell
 yarn run dist:mac
@@ -46,14 +46,14 @@ is needed.
 git clone https://github.com/PeterDing/chord chord
 ```
 
-2. Installing dependences, I use `yarn` here
+2. Install dependences, I use `yarn` here
 
 ```shell
 cd chord
 yarn install
 ```
 
-3. Compiling typescript files
+3. Compile typescript files
 
 ```shell
 yarn run compile
@@ -67,7 +67,7 @@ python clean-windows-fail-links.py
 cd ..
 ```
 
-5. Building exe
+5. Build exe
 
 ```shell
 yarn run dist:win
@@ -79,6 +79,23 @@ You must have `git`, `node 10.x` and `npm` or `yarn`
 
 `build-essential` is also needed
 
+0. Install tools
+
+```shell
+sudo apt update
+sudo apt install -y build-essential gcc g++ make bsdtar
+
+# Install nodejs
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get update && sudo apt-get install -y nodejs
+
+# Install yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install -y yarn
+
+sudo apt install -y python-dev
+```
 
 1. Clone `https://github.com/PeterDing/chord`
 
@@ -86,20 +103,20 @@ You must have `git`, `node 10.x` and `npm` or `yarn`
 git clone https://github.com/PeterDing/chord chord
 ```
 
-2. Installing dependences, I use `yarn` here
+2. Install dependences, I use `yarn` here
 
 ```shell
 cd chord
 yarn install
 ```
 
-3. Compiling typescript files
+3. Compile typescript files
 
 ```shell
 yarn run compile
 ```
 
-4. Building dmg
+4. Build dmg
 
 ```shell
 yarn run dist:linux

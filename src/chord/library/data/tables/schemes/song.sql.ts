@@ -1,6 +1,6 @@
 'use strict';
 
-import Database = require('better-sqlite3');
+import { Database } from 'better-sqlite3';
 
 import { makeTableSql, addMissColumns } from 'chord/library/data/tables/schemes/util';
 

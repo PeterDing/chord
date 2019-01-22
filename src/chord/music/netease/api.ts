@@ -118,8 +118,10 @@ export class NeteaseMusicApi {
         userDislikeCollection: 'weapi/playlist/unsubscribe',
         userDislikeUserProfile: 'weapi/user/delfollow/',
 
+        recommendNewSongs: 'weapi/personalized/newsong',
         recommendSongs: 'weapi/v1/discovery/recommend/songs',
-        recommendCollections: 'weapi/v1/discovery/recommend/resource',
+        recommendDailyCollections: 'weapi/v1/discovery/recommend/resource',
+        recommendCollections: 'weapi/personalized/playlist',
 
         playLog: 'weapi/feedback/weblog',
     }
@@ -217,8 +219,8 @@ export class NeteaseMusicApi {
             tv: -1,
         };
         let json = await this.request(node, data);
-        let lyricInfo = json['lrc'] ? json['lrc']['lyric']: null;
-        let transInfo = json['tlyric'] ? json['tlyric']['lyric']: null;
+        let lyricInfo = json['lrc'] ? json['lrc']['lyric'] : null;
+        let transInfo = json['tlyric'] ? json['tlyric']['lyric'] : null;
         return makeLyric(songId, lyricInfo, transInfo);
     }
 
@@ -877,7 +879,24 @@ export class NeteaseMusicApi {
     }
 
 
+    public async recommendNewSongs(offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let node = NeteaseMusicApi.NODE_MAP.recommendNewSongs;
+        let data = {
+            type: "recommend",
+        };
+        let json = await this.request(node, data);
+        return makeSongs((json['result'] || []).map(i => i['song']));
+    }
+
+
+    /**
+     * Login is needed
+     */
     public async recommendSongs(offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        if (!this.logined()) {
+            return this.recommendNewSongs(offset, limit);
+        }
+
         let node = NeteaseMusicApi.NODE_MAP.recommendSongs;
         let data = {
             limit,
@@ -890,7 +909,28 @@ export class NeteaseMusicApi {
 
 
     public async recommendCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        if (this.logined()) {
+            return this.recommendDailyCollections(offset, limit);
+        }
+
         let node = NeteaseMusicApi.NODE_MAP.recommendCollections;
+        let data = {
+            limit: limit,
+            offset: offset,
+            n: limit,
+            total: true,
+        };
+        let json = await this.request(node, data);
+        return makeCollections(json['result'] || []);
+    }
+
+
+    public async recommendDailyCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        if (!this.logined()) {
+            throw new NoLoginError('[NeteaseMusicApi] `recommendDailyCollections` needs to login');
+        }
+
+        let node = NeteaseMusicApi.NODE_MAP.recommendDailyCollections;
         let data = {};
         let json = await this.request(node, data);
         return makeCollections(json['recommend'] || []);

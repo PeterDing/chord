@@ -59,7 +59,7 @@ export const KBPS_MAP = {
     // ape file is not accessable, so missing it
     'ape': 1,
     'flac': 1000,
-}
+};
 
 export const FORMAT_MAP = {
     '128': 'mp3',
@@ -68,7 +68,7 @@ export const FORMAT_MAP = {
     '320mp3': 'mp3',
     'ape': 'ape',
     'flac': 'flac',
-}
+};
 
 
 function getQQAlbumCoverUrl(mid: string): string {

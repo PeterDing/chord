@@ -2,7 +2,7 @@
 
 import { ok } from 'chord/base/common/assert';
 
-import Database = require('better-sqlite3');
+import { Database } from 'better-sqlite3';
 
 
 const TABLE_SCHEME_SQL = (tableName: string, columns: string, addons: string) => `
