@@ -3,7 +3,9 @@
 import * as assert from 'assert';
 import { suite, test } from 'mocha';
 
-import { xiamiApi } from 'chord/music/xiami/api';
+import { XiamiApi } from 'chord/music/xiami/api';
+
+const xiamiApi = new XiamiApi();
 
 
 suite('music/xiami/XiamiApi', () => {

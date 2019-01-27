@@ -10,17 +10,16 @@ const aliApi = new AliMusicApi();
 
 suite('music/xiami/AliMusicApi', () => {
 
+    test('audios', async function() {
+        let audios = await aliApi.audios('1');
+        assert.equal(audios.length > 0, true);
+    });
+
     test('song', async function() {
         let song = await aliApi.song('1');
 
-        let songId = song.songId;
-        assert.equal(songId, 'xiami|song|1');
-
         let songOriginalId = song.songOriginalId;
         assert.equal(songOriginalId, '1');
-
-        let albumId = song.albumId;
-        assert.equal(albumId, 'xiami|album|1');
     });
 
     test('songs', async function() {
@@ -29,11 +28,14 @@ suite('music/xiami/AliMusicApi', () => {
         let size = songs.length;
         assert.equal(size, 2);
 
-        let songId = songs[0].songId;
-        assert.equal(songId, 'xiami|song|1');
+        let songOriginalId = songs[0].songOriginalId;
+        assert.equal(songOriginalId, '1');
+    });
 
-        let albumId = songs[1].albumId;
-        assert.equal(albumId, 'xiami|album|1');
+    test('lyric', async function() {
+        let lyric = await aliApi.lyric('1');
+
+        assert.equal(lyric.songId, 'xiami|song|1');
     });
 
     test('similarSongs', async function() {
@@ -77,10 +79,10 @@ suite('music/xiami/AliMusicApi', () => {
     });
 
     test('artistSongs', async function() {
-        let songs = await aliApi.artistSongs('1');
+        let songs = await aliApi.artistSongs('1', 1, 1);
 
         let size = songs.length;
-        assert.equal(size, 10);
+        assert.equal(size, 1);
 
         let name = songs[0].artistName;
         assert.equal(name, 'Alex');
@@ -93,10 +95,10 @@ suite('music/xiami/AliMusicApi', () => {
     });
 
     test('artistAlbums', async function() {
-        let albums = await aliApi.artistAlbums('1');
+        let albums = await aliApi.artistAlbums('1', 1, 1);
 
         let size = albums.length;
-        assert.equal(size, 3);
+        assert.equal(size, 1);
 
         let name = albums[0].artistName;
         assert.equal(name, 'Alex');
@@ -131,39 +133,139 @@ suite('music/xiami/AliMusicApi', () => {
         assert.equal(collectionId, 'xiami|collection|398783788');
     });
 
-
-    test('collections', async function() {
-        let collections = await aliApi.collections('BGM');
-
-        let size = collections.length;
-        assert.equal(size, 10);
-    });
-
     test('searchSongs', async function() {
-        let songs = await aliApi.searchSongs('linkin', 2, 10);
+        let songs = await aliApi.searchSongs('linkin', 2, 1);
 
         let size = songs.length;
-        assert.equal(size, 10);
+        assert.equal(size, 1);
     });
 
     test('searchAlbums', async function() {
-        let albums = await aliApi.searchAlbums('linkin');
+        let albums = await aliApi.searchAlbums('linkin', 1, 1);
 
         let size = albums.length;
-        assert.equal(size, 10);
+        assert.equal(size, 1);
     });
 
     test('searchArtists', async function() {
-        let artists = await aliApi.searchArtists('linkin');
+        let artists = await aliApi.searchArtists('linkin', 1, 1);
 
         let size = artists.length;
-        assert.equal(size, 10);
+        assert.equal(size, 1);
     });
 
     test('searchCollections', async function() {
-        let collections = await aliApi.searchCollections('linkin');
+        let collections = await aliApi.searchCollections('linkin', 1, 1);
 
         let size = collections.length;
-        assert.equal(size, 10);
+        assert.equal(size, 1);
+    });
+
+    test('songList', async function() {
+        let songs = await aliApi.songList(5, 1, 1);
+
+        let size = songs.length;
+        assert.equal(size, 1);
+    });
+
+    test('albumListOptions', async function() {
+        let options = await aliApi.albumListOptions();
+
+        assert.equal(options.slice(-1)[0].type, 'order');
+    });
+
+    test('albumList', async function() {
+        let albums = await aliApi.albumList(0, 0, 0, 0, 0, 1, 1);
+
+        assert.equal(albums.length, 1);
+    });
+
+    test('collectionList', async function() {
+        let collections = await aliApi.collectionList('古典', 'new', 1, 1);
+
+        assert.equal(collections.length, 1);
+    });
+
+    test('newSongs', async function() {
+        let songs = await aliApi.newSongs(1, 1);
+
+        assert.equal(songs.length, 1);
+    });
+
+    test('newAlbums', async function() {
+        let albums = await aliApi.newAlbums(1, 1);
+
+        assert.equal(albums.length, 1);
+    });
+
+    test('newCollections', async function() {
+        let collections = await aliApi.newCollections(1, 1);
+
+        assert.equal(collections.length, 1);
+    });
+
+    test('logined', function() {
+        let ok = aliApi.logined();
+
+        assert.equal(ok, false);
+    });
+
+    test('userProfile', async function() {
+        let id = '8539366';
+        let userProfile = await aliApi.userProfile(id);
+
+        assert.equal(userProfile.userOriginalId, id);
+    });
+
+    test('userFavoriteSongs', async function () {
+        let id = '8539366';
+        let songs = await aliApi.userFavoriteSongs(id, 1, 1);
+        assert.equal(songs.length, 1);
+    });
+
+    test('userFavoriteArtists', async function () {
+        let id = '8539366';
+        let artists = await aliApi.userFavoriteArtists(id, 1, 1);
+        assert.equal(artists.length, 1);
+    });
+
+    test('userFavoriteCollections', async function () {
+        let id = '8539366';
+        let collections = await aliApi.userFavoriteCollections(id, 1, 1);
+        assert.equal(collections.length, 1);
+    });
+
+    test('userCreatedCollections', async function () {
+        let id = '8539366';
+        let collections = await aliApi.userCreatedCollections(id, 1, 1);
+        assert.equal(collections.length, 1);
+    });
+
+    test('userRecentPlay', async function () {
+        let id = '8539366';
+        let songs = await aliApi.userCreatedCollections(id, 1, 1);
+        assert.equal(songs.length, 1);
+    });
+
+    test('userFollowers', async function () {
+        let id = '8539366';
+        let followers = await aliApi.userFollowers(id, 1, 1);
+        assert.equal(followers.length, 1);
+    });
+
+    test('userFollowings', async function () {
+        let id = '8539366';
+        let followings = await aliApi.userFollowings(id, 1, 1);
+        assert.equal(followings.length, 1);
+    });
+
+    test('recommendSongs', async function () {
+        let songs = await aliApi.recommendSongs(1, 1);
+        assert.equal(songs.length, 1);
+    });
+
+    test('recommendCollections', async function () {
+        let collections = await aliApi.recommendCollections(1, 1);
+        assert.equal(collections.length, 1);
     });
 });
