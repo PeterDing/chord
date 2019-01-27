@@ -116,7 +116,7 @@ yarn install
 yarn run compile
 ```
 
-4. Build dmg
+4. Build package
 
 ```shell
 yarn run dist:linux

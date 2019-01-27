@@ -8,11 +8,11 @@ import { IPlayUserFavoriteSongsAct } from 'chord/workbench/api/common/action/pla
 
 import { musicApi } from 'chord/music/core/api';
 
-import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workbench/api/utils/song';
+import { hasSongAudio, addSongAudios } from 'chord/workbench/api/utils/song';
 
 
 export async function handlePlayUserFavoriteSongs(userProfile: IUserProfile): Promise<IPlayUserFavoriteSongsAct> {
-    let songs = filterSongWithAudios(userProfile.songs || []);
+    let songs = userProfile.songs || [];
 
     if (songs.length < 100) {
         let _songs = await musicApi.userFavoriteSongs(userProfile.userId, 0, 100, userProfile.userMid);

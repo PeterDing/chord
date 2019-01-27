@@ -116,8 +116,8 @@ class AlbumView extends React.Component<IAlbumViewProps, any> {
                                 <div className='col-xs-12 col-lg-3 col-xl-4 col-sticky'>
                                     <AlbumEntity album={album}
                                         handlePlayAlbum={this.props.handlePlayAlbum}
-                                        handleShowArtistViewById={this.props.handleShowArtistViewById} 
-                                        showAlbumMenu={this.props.showAlbumMenu}/>
+                                        handleShowArtistViewById={this.props.handleShowArtistViewById}
+                                        showAlbumMenu={this.props.showAlbumMenu} />
                                 </div>
 
                                 <div className='col-xs-12 col-lg-9 col-xl-8'>

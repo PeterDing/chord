@@ -6,13 +6,13 @@ import { IAlbum } from 'chord/music/api/album';
 
 import { IPlayAlbumAct } from 'chord/workbench/api/common/action/player';
 
-import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workbench/api/utils/song';
+import { hasSongAudio, addSongAudios } from 'chord/workbench/api/utils/song';
 
 import { musicApi } from 'chord/music/core/api';
 
 
 export async function handlePlayAlbum(album: IAlbum): Promise<IPlayAlbumAct> {
-    let songs = filterSongWithAudios(album.songs || []);
+    let songs = album.songs || [];
 
     if (!songs.length) {
         let _album = await musicApi.album(album.albumId);
