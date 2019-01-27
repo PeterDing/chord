@@ -27,15 +27,9 @@ export function filterSongWithAudios(songs: Array<ISong>): Array<ISong> {
 }
 
 export async function addSongAudios(song: ISong) {
-    // netease's audio needs to be got by realtime
-    if (song.origin == ORIGIN.netease) {
-        if (!hasSongAudioPath(song)) {
-            song.audios = await musicApi.audios(song.songId);
-        }
-    } else {
-        if (!hasSongAudio(song)) {
-            song.audios = await musicApi.audios(song.songId);
-        }
+    // netease and qq's audio url needs to be got by realtime
+    if (!hasSongAudio(song)) {
+        song.audios = await musicApi.audios(song.songId);
     }
 }
 
