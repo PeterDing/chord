@@ -477,7 +477,7 @@ export class NeteaseMusicApi {
      *     hot
      *     new
      */
-    public async collectionList(cat: string, order: string = 'hot', offset: number = 1, limit: number = 10): Promise<Array<ICollection>> {
+    public async collectionList(cat: string, order: string = 'hot', offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
         let node = NeteaseMusicApi.NODE_MAP.collectionList;
         let data = {
             cat,
@@ -636,12 +636,12 @@ export class NeteaseMusicApi {
     /**
      * user's favorite songs is at a collection
      */
-    public async userFavoriteSongs(userId: string): Promise<Array<ISong>> {
+    public async userFavoriteSongs(userId: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
         let collections = await this.userFavoriteCollections(userId, 0, 1);
         if (collections.length < 1) { return []; }
         let collectionId = collections[0].collectionOriginalId;
         let collection = await this.collection(collectionId);
-        return collection.songs;
+        return collection.songs.slice(offset, offset + limit);
     }
 
 
@@ -661,7 +661,7 @@ export class NeteaseMusicApi {
         let data = {
             offset,
             limit,
-            order,
+            order, // order is false, ordering by addition time desc
         };
         let json = await this.request(node, data);
         return makeArtists(json.data);
@@ -678,22 +678,19 @@ export class NeteaseMusicApi {
             uid: userId,
             offset,
             limit,
-            order,
+            order, // order is false, ordering by addition time desc
         };
         let json = await this.request(node, data);
         return makeCollections(json.playlist);
     }
 
 
-    /**
-     * order is false, ordering by addition time desc
-     */
     public async userFollowings(userId: string, offset: number = 0, limit: number = 10, order: boolean = false): Promise<Array<IUserProfile>> {
         let node = NeteaseMusicApi.NODE_MAP.userFollowings + userId;
         let data = {
             offset,
             limit,
-            order,
+            order, // order is false, ordering by addition time desc
         };
         let json = await this.request(node, data);
         return makeUserProfiles(json.follow);
@@ -706,7 +703,7 @@ export class NeteaseMusicApi {
             userId,
             offset,
             limit,
-            order,
+            order, // order is false, ordering by addition time desc
         };
         let json = await this.request(node, data);
         return makeUserProfiles(json.followeds);
@@ -885,7 +882,7 @@ export class NeteaseMusicApi {
             type: "recommend",
         };
         let json = await this.request(node, data);
-        return makeSongs((json['result'] || []).map(i => i['song']));
+        return makeSongs((json['result'] || []).map(i => i['song'])).slice(offset, offset + limit);
     }
 
 
@@ -904,7 +901,7 @@ export class NeteaseMusicApi {
             total: true,
         };
         let json = await this.request(node, data);
-        return makeSongs(json['recommend'] || []);
+        return makeSongs(json['recommend'] || []).slice(offset, offset + limit);
     }
 
 

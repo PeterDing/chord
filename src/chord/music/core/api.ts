@@ -554,7 +554,7 @@ export class Music {
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
-                songs = await this.neteaseApi.userFavoriteSongs(originType.id);
+                songs = await this.neteaseApi.userFavoriteSongs(originType.id, offset, limit);
                 break;
             case ORIGIN.qq:
                 songs = await this.qqApi.userFavoriteSongs(userMid, offset, limit);
