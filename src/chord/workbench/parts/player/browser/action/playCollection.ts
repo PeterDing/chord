@@ -8,11 +8,11 @@ import { IPlayCollectionAct } from 'chord/workbench/api/common/action/player';
 
 import { musicApi } from 'chord/music/core/api';
 
-import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workbench/api/utils/song';
+import { hasSongAudio, addSongAudios } from 'chord/workbench/api/utils/song';
 
 
 export async function handlePlayCollection(collection: ICollection): Promise<IPlayCollectionAct> {
-    let songs = filterSongWithAudios(collection.songs || []);
+    let songs = collection.songs || [];
 
     if (!songs.length) {
         let _collection = await musicApi.collection(collection.collectionId);

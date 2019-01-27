@@ -8,11 +8,11 @@ import { IPlayArtistAct } from 'chord/workbench/api/common/action/player';
 
 import { musicApi } from 'chord/music/core/api';
 
-import { hasSongAudio, addSongAudios, filterSongWithAudios } from 'chord/workbench/api/utils/song';
+import { hasSongAudio, addSongAudios } from 'chord/workbench/api/utils/song';
 
 
 export async function handlePlayArtist(artist: IArtist): Promise<IPlayArtistAct> {
-    let songs = filterSongWithAudios(artist.songs || []);
+    let songs = artist.songs || [];
 
     if (songs.length < 50) {
         let _songs = await musicApi.artistSongs(artist.artistId, 0, 50);
