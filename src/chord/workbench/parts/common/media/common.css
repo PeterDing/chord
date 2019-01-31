@@ -454,7 +454,7 @@ button:hover {
 }
 
 .entity-name {
-    display: none;
+    display: block;
     padding-bottom: 10px;
     color: hsla(0,0%,100%,.6)
 }
