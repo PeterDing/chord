@@ -21,6 +21,9 @@ before_install:
 env:
   global:
     - PROJECT_NAME=chord
+    # for ci env
+    # some test case always fail in these area which is not in China
+    - IN_CI=1
 
 before_script:
   - npm install -g gulp
