@@ -10,7 +10,7 @@ import { md5 } from 'chord/base/node/crypto';
 import { getRandomInt } from 'chord/base/node/random';
 
 import { Cookie, makeCookieJar, makeCookie, makeCookies } from 'chord/base/node/cookies';
-import { querystringify } from 'chord/base/node/url';
+import { querystringify, getHost } from 'chord/base/node/url';
 import { request, IRequestOptions, htmlGet } from 'chord/base/node/_request';
 
 import { ORIGIN } from 'chord/music/common/origin';
@@ -29,9 +29,10 @@ import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
 import {
     makeSong,
+    makeSongs,
     makeAlbum,
-    makeArtist,
     makeCollection,
+    makeArtist,
 
     makeAliSong,
     makeAliLyric,
@@ -62,170 +63,297 @@ const CNA = 'cna';
 export class XiamiApi {
 
     /**
-     * For XMLHttpRequest
+     * For json
      */
-    static HEADERS1 = {
-        'pragma': 'no-cache',
+    static readonly HEADERS1 = {
         'accept-encoding': 'gzip, deflate, br',
-        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7',
-        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
-        'accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
-        'cache-control': 'no-cache',
-        'authority': 'www.xiami.com',
-        'x-requested-with': 'XMLHttpRequest',
-        'referer': 'https://www.xiami.com/play?ids=/song/playlist/id/',
+        'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh-TW;q=0.7,zh;q=0.6,ja;q=0.5',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
+        'accept': 'application/json, text/plain, */*',
+        'referer': 'https://www.xiami.com/',
     };
 
     /**
      * For web page
      */
-    static HEADERS2 = {
-        'pragma': 'no-cache',
-        'cache-control': 'no-cache',
-        'upgrade-insecure-requests': '1',
-        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
+    static readonly HEADERS2 = {
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         'accept-encoding': 'gzip, deflate, br',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7',
     };
 
-    static BASICURL = 'https://www.xiami.com/song/playlist/';
+    static readonly BASICURL = 'https://www.xiami.com/';
+
+    static readonly NODE_MAP = {
+        audios: 'song/getSongDetails',
+        song: 'api/song/initialize',
+        album: 'api/album/getAlbumDetail',
+        collection: 'api/collect/getCollectDetail',
+        collectionSongs: 'api/collect/getCollectSongs',
+
+        artist: 'api/artist/initialize',
+        // artist: 'api/artist/getArtistDetail',
+    };
+
+    static readonly REQUEST_METHOD_MAP = {
+        audios: 'GET',
+        song: 'GET',
+        album: 'GET',
+        collection: 'GET',
+        collectionSongs: 'GET',
+        artist: 'GET',
+    };
+
+    // account
+    private account: IAccount;
+    private token: string;
+    private cookies: { [key: string]: Cookie; } = {};
+
+    // For user authority
+    private userId: string;
 
 
-    public async request(url: string, headers: any, json: boolean, errorMessage: string = 'Error at XiamiApi.request'): Promise<any> {
+    constructor() {
+    }
+
+
+    public reset() {
+        this.cookies = {};
+        this.token = null;
+    }
+
+
+    public makeSign(node: string, params: string) {
+        let token = this.token || '';
+        let s = token + '_xmMain_' + '/' + node + '_' + params;
+        return md5(s);
+    }
+
+
+    public async getCookies(): Promise<void> {
+        if (this.token) {
+            return null;
+        }
+
+        let url = XiamiApi.BASICURL;
         let options: IRequestOptions = {
             method: 'GET',
             url: url,
-            headers: headers,
+            headers: XiamiApi.HEADERS2,
             gzip: true,
-            json: json,
+            resolveWithFullResponse: true,
         };
         let result: any = await request(options);
-        if (json) {
-            // if (!json.data || !json.data.trackList) {
-            // throw new Error(json.message || 'no song data');
-            // }
-            ok(result.data && result.data.trackList, result.message || errorMessage);
+        if (result.headers.hasOwnProperty('set-cookie')) {
+            makeCookies(result.headers['set-cookie']).forEach(cookie => {
+                this.cookies[cookie.key] = cookie;
+                if (cookie.key == 'xm_sg_tk') {
+                    this.token = cookie.value.split('_')[0];
+                }
+            });
+        } else {
+            loggerWarning.warning('[XiamiApi.getCookies] [Error]: (params, response):', options, result);
         }
-        return result;
+    }
+
+
+    public async request_with_sign(
+        method: string,
+        node: string,
+        apiParams: object,
+        referer?: string,
+        basicUrl?: string,
+        excludedCookies: Array<string> = []
+    ): Promise<any | null> {
+
+        // init cookies
+        await this.getCookies();
+
+        let queryStr = JSON.stringify(apiParams);
+        let sign = this.makeSign(node, queryStr);
+
+        basicUrl = basicUrl || XiamiApi.BASICURL;
+
+        let headers = !!referer ? { ...XiamiApi.HEADERS1, referer: referer } : { ...XiamiApi.HEADERS1 };
+        headers['authority'] = getHost(basicUrl);
+
+        // Make cookie jar
+        let cookieJar = makeCookieJar();
+        let cookies = { ...this.cookies };
+        excludedCookies.forEach(key => { delete cookies[key]; });
+        for (let key in cookies) {
+            cookieJar.setCookie(cookies[key], 'http://' + DOMAIN);
+        }
+
+        let url = basicUrl + node + '?' + querystringify({ _q: queryStr, _s: sign });
+        let options: IRequestOptions = {
+            method,
+            url: url,
+            jar: cookieJar,
+            headers: headers,
+            gzip: true,
+            resolveWithFullResponse: false,
+        };
+        let result: any = await request(options);
+        let json = JSON.parse(result.trim());
+
+        // msg: "令牌过期"
+        if (json.code == 'SG_TOKEN_EXPIRED') {
+            this.reset();
+            return this.request_with_sign(method, node, apiParams, referer, basicUrl, excludedCookies);
+        }
+
+        // TODO: Handle each errors
+        if (json.code != 'SUCCESS') {
+            loggerWarning.warning('[XiamiApi.request] [Error]: (params, response):', options, json);
+        }
+
+        return json;
+    }
+
+
+    public async request_without_sign(
+        method: string,
+        node: string,
+        params?: object,
+        data?: any,
+        referer?: string,
+        basicUrl?: string,
+        excludedCookies: Array<string> = []
+    ): Promise<any | null> {
+
+        // init cookies
+        await this.getCookies();
+
+        basicUrl = basicUrl || XiamiApi.BASICURL;
+
+        let headers = !!referer ? { ...XiamiApi.HEADERS1, referer: referer } : { ...XiamiApi.HEADERS1 };
+        headers['authority'] = getHost(basicUrl);
+
+        if (data) headers['content-type'] = 'application/json';
+
+        // Make cookie jar
+        let cookieJar = makeCookieJar();
+        let cookies = { ...this.cookies };
+        excludedCookies.forEach(key => { delete cookies[key]; });
+        for (let key in cookies) {
+            cookieJar.setCookie(cookies[key], 'http://' + DOMAIN);
+        }
+
+        let url = basicUrl + node + (params ? '?' + querystringify(params) : '');
+        let options: IRequestOptions = {
+            method,
+            url,
+            jar: cookieJar,
+            headers: headers,
+            body: data,
+            gzip: true,
+            resolveWithFullResponse: false,
+        };
+        let result: any = await request(options);
+        let json = JSON.parse(result.trim());
+
+        // TODO: Handle each errors
+
+        return json;
     }
 
 
     /**
-     * Web api
-     *
-     * Get single song.
-     * songId is the original song id
+     * @param songId is the original song id
      */
+    public async audios(songId: string): Promise<Array<IAudio>> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.audios,
+            XiamiApi.NODE_MAP.audios,
+            { songIds: [songId] },
+            `https://m.xiami.com/song/${songId}`,
+            'https://node.xiami.com/',
+        );
+        let song = makeSong(json.result.data.songDetails[0]);
+        return song.audios || [];
+    }
+
+
     public async song(songId: string): Promise<ISong> {
-        let url = XiamiApi.BASICURL + `id/${songId}/cat/json`;
-        let json = await this.request(url, XiamiApi.HEADERS1, true, 'no song data');
-        let info = json.data.trackList[0];
-        let song = makeSong(info);
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.song,
+            XiamiApi.NODE_MAP.song,
+            { songId },
+            `https://www.xiami.com/song/${songId}`,
+        );
+        let song = makeSong(json.result.data);
         return song;
     }
 
-
     /**
-     * Web api
+     * Get an album
      *
-     * Get more than one song.
-     * songIds need to be iterable
-     */
-    public async songs(songIds: Array<string>): Promise<Array<ISong>> {
-        let url = XiamiApi.BASICURL + `id/${songIds.join('%2C')}/cat/json`;
-        let json = await this.request(url, XiamiApi.HEADERS1, true, 'no song data');
-        let songs = json.data.trackList.map(info => makeSong(info));
-        return songs;
-    }
-
-
-    /**
-     * Web api
-     *
-     * Get an album.
+     * @param albumId is the original id
      */
     public async album(albumId: string): Promise<IAlbum> {
-        let url = XiamiApi.BASICURL + `id/${albumId}/type/1/cat/json`;
-        let json = await this.request(url, XiamiApi.HEADERS1, true, 'no album data');
-        let album = makeAlbum(json);
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.album,
+            XiamiApi.NODE_MAP.album,
+            { albumId },
+            `https://www.xiami.com/album/${albumId}`,
+        );
+        let album = makeAlbum(json.result.data.albumDetail);
         return album;
     }
 
 
     /**
-     * Get an artist from web page 
-     * Xiami has not supply an artist api
-     */
-    public async artist(artistId: string): Promise<IArtist> {
-        let url = `https://www.xiami.com/artist/${artistId}`;
-        let html = await this.request(url, XiamiApi.HEADERS2, false);
-        let artist: IArtist = makeArtist(html);
-        return artist;
-    }
-
-
-    /**
-     * Get artist albums by offset page from web page
-     * Using AliMusicApi.artistAlbums
-     */
-    // public async artistAlbum(artistId: string, page: number = 1): Promise<Array<IAlbum>> {
-    // let _url = `https://www.xiami.com/artist/album-${artistId}?page=${page}`;
-    // let options: IRequestOptions = {
-    // method: 'GET',
-    // url: _url,
-    // headers: XiamiApi.HEADERS2,
-    // gzip: true,
-    // };
-    // let html: any = await request(options);
-    // let albums: Array<IAlbum> = makeArtistAlbums(html);
-    // return albums;
-    // }
-
-
-    /**
-     * Web api
-     *
      * Get an collection
+     *
+     * @param albumId is the original id
      */
     public async collection(collectionId: string): Promise<ICollection> {
-        let url = XiamiApi.BASICURL + `id/${collectionId}/type/3/cat/json`;
-        let json = await this.request(url, XiamiApi.HEADERS1, true, 'no collection data');
-        let collection = makeCollection(json, collectionId);
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.collection,
+            XiamiApi.NODE_MAP.collection,
+            { listId: collectionId },
+            `https://www.xiami.com/collect/${collectionId}`,
+        );
+        let collection = makeCollection(json.result.data.collectDetail);
+        let songs = await this.collectionSongs(collectionId, 1, collection.songCount);
+        collection.songs = songs;
         return collection;
     }
 
 
-    /**
-     * Search Album, using web page
-     *
-     * Album ids from web page are all string ids (not number ids),
-     * so we must use XiamiApi.album to get number ids and albums info
-     */
-    public async searchAlbums(keyword: string): Promise<Array<IAlbum>> {
-        let _keyword = escape(keyword);
-        let url = `https://www.xiami.com/search?key=${_keyword}&pos=1`
-        let html = await this.request(url, XiamiApi.HEADERS2, false);
+    public async collectionSongs(collectionId: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.collectionSongs,
+            XiamiApi.NODE_MAP.collectionSongs,
+            {
+                listId: collectionId,
+                pagingVO: {
+                    page,
+                    pageSize: size,
+                },
+            },
+            `https://www.xiami.com/collect/${collectionId}`,
+        );
+        let songs = makeSongs(json.result.data.songs);
+        return songs;
+    }
 
-        let albumIds = [];
-        let chunks = html.split('<h5>专辑</h5>');
-        let chunk = chunks[chunks.length - 1];
-        let re = new RegExp('/album/(\\w+)"', 'g');
-        let r;
-        while (r = re.exec(chunk)) {
-            if (albumIds.length && r[1] == albumIds[albumIds.length - 1]) {
-                continue;
-            }
-            albumIds.push(r[1]);
-        }
-        let albums: Array<IAlbum> = [];
-        let tasks = [];
-        for (let albumId of albumIds) {
-            let task = this.album(albumId).then(album => albums.push(album));
-            tasks.push(task);
-        }
-        await Promise.all(tasks);
-        return albums;
+
+    /**
+     * Login is needed
+     */
+    public async artist(artistId: string): Promise<IArtist> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.artist,
+            XiamiApi.NODE_MAP.artist,
+            { artistId },
+            `https://www.xiami.com/artist/${artistId}`,
+        );
+        console.log(JSON.stringify(json, null, 4));
+        let artist = makeArtist(json.result.data.artistDetail);
+        return artist;
     }
 }
 
@@ -337,6 +465,7 @@ export class AliMusicApi {
     private userId: string;
     private accessToken: string;
     private refreshToken: string;
+    private xiamiWebApi: XiamiApi;
 
 
     constructor() {
@@ -346,6 +475,8 @@ export class AliMusicApi {
         this.getEtag().then((etag) => {
             this.setEtagCookie(etag);
         });
+
+        this.xiamiWebApi = new XiamiApi();
     }
 
 
@@ -538,10 +669,18 @@ export class AliMusicApi {
 
     /**
      * Get audio urls, the songId must be number string
+     *
+     * WARN: AliMusicApi.song could be easily blocked by server,
+     * We try XiamiApi.audios to get the audio urls
      */
     public async audios(songId: string): Promise<Array<IAudio>> {
-        let song = await this.song(songId);
-        return song.audios;
+        try {
+            let audios = await this.xiamiWebApi.audios(songId);
+            return audios;
+        } catch {
+            let song = await this.song(songId);
+            return song.audios;
+        }
     }
 
 
