@@ -8,7 +8,6 @@ import { ISong } from "chord/music/api/song";
 import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from "chord/music/api/album";
 import { IArtist } from "chord/music/api/artist";
-import { IGenre } from "chord/music/api/genre";
 import { ITag } from "chord/music/api/tag";
 import { ICollection } from "chord/music/api/collection";
 import { IAudio } from "chord/music/api/audio";
@@ -27,8 +26,6 @@ import {
     getCollectionId,
     getUserId,
 } from "chord/music/common/origin";
-import { decrypt } from "chord/music/xiami/crypto";
-import { xpathSelect } from 'chord/workbench/api/browser/xpath';
 
 import { makeLyric } from 'chord/music/utils/lyric';
 
@@ -56,62 +53,80 @@ const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 
 
 export function makeSong(info: any): ISong {
-    let lyricUrl: string;
-    if (!!info['lyric_url']) {
-        lyricUrl = getAbsolutUrl(info['lyric_url'], _staticResourceBasicUrl);
+    let songInfo = info['songDetail'] || info;
+    let songExtInfo = info['songExt'] || info;
+
+    let lyricUrl = songInfo['lyricInfo'] ? songInfo['lyricInfo']['lyricFile'] : songInfo['lyric'];
+
+    let audios = [];
+    if (songInfo['listenFiles'] && songInfo['listenFiles'].length > 0) {
+        audios = songInfo['listenFiles'].map(a => makeAudio(a)).sort((x, y) => y.kbps < x.kbps);
+    } else {
+        // block song audio may be at here
+        let backupSong = songInfo['bakSong'];
+        if (backupSong && backupSong['listenFiles'] && backupSong['listenFiles'].length > 0) {
+            audios = backupSong['listenFiles'].map(a => makeAudio(a)).sort((x, y) => y.kbps - x.kbps);
+        }
     }
 
-    let albumCoverUrl: string = getAbsolutUrl(info['album_pic'], _staticResourceBasicUrl);
+    let styles = songExtInfo['songStyle'] ? (songExtInfo['songStyle']['styles'] || []).map(i => ({ id: i['id'].toString(), name: i['title'] })) : [];
+    let tags = songExtInfo['songTag'] ? (songExtInfo['songTag']['tags'] || []).map(i => ({ id: i['id'].toString(), name: i['name'] })) : [];
 
-    let artistAvatarUrl: string = getAbsolutUrl(info['singersSource'][0]['artistLogo'], _staticResourceBasicUrl);
-
-    let audios: Array<IAudio> = [{ url: decrypt(info['location']), format: 'mp3' }];
+    let songOriginalId = songInfo['songId'];
 
     let song: ISong = {
-        songId: _getSongId(info['song_id']),
+        songId: _getSongId(songOriginalId),
 
         type: 'song',
         origin: _origin,
 
-        songOriginalId: info['song_id'],
+        songOriginalId,
 
-        url: _getSongUrl(info['song_id']),
+        url: _getSongUrl(songOriginalId),
 
-        songName: info['name'],
-        subTitle: info['song_sub_title'],
+        songName: songInfo['songName'],
+        subTitle: songInfo['subName'],
 
-        songWriters: info['songwriters'],
-        singers: info['singers'],
+        songWriters: songInfo['songwriters'],
+        singers: songInfo['singers'],
 
-        albumId: _getAlbumId(info['album_id']),
-        albumOriginalId: info['album_id'].toString(),
-        albumName: info['album_name'],
-        albumCoverUrl: albumCoverUrl,
+        albumId: _getAlbumId(songInfo['albumId']),
+        albumOriginalId: (songInfo['albumId'] || '').toString(),
+        albumName: songInfo['albumName'],
+        albumCoverUrl: songInfo['albumLogo'],
 
-        artistId: _getArtistId(info['artist_id']),
-        artistOriginalId: info['artist_id'].toString(),
-        artistName: info['artist_name'],
-        artistAvatarUrl: artistAvatarUrl,
+        artistId: _getArtistId(songInfo['artistId']),
+        artistOriginalId: (songInfo['artistId'] || '').toString(),
+        artistName: songInfo['artistName'],
+        artistAvatarUrl: songInfo['artistLogo'],
 
         composer: info['composer'],
 
-        lyricUrl: lyricUrl,
+        styles,
+        tags,
 
-        track: info['track'],
-        cdSerial: info['cd_serial'],
+        lyricUrl,
+
+        track: songInfo['track'],
+        cdSerial: songInfo['cdSerial'],
 
         // millisecond
-        duration: info['length'],
+        duration: songInfo['length'],
 
         // millisecond
-        releaseDate: info['demoCreateTime'],
+        releaseDate: songInfo['gmtPublish'] || songInfo['gmtCreate'] || (songExtInfo['album'] ? songExtInfo['album']['gmtPublish'] : null),
 
         playCountWeb: info['playCount'] || null,
         playCount: 0,
 
-        audios: audios,
+        audios,
     };
     return song;
+}
+
+
+export function makeSongs(info: any): Array<ISong> {
+    return info.map(songInfo => makeSong(songInfo));
 }
 
 
@@ -123,34 +138,51 @@ export function makeAliLyric(songId: string, info: any): ILyric {
 
 
 export function makeAlbum(info: any): IAlbum {
-    let songInfo: any = info.data.trackList[0];
-    let songs: Array<ISong> = info.data.trackList.map(info => makeSong(info));
+    let albumOriginalId = info['albumId'].toString();
+    let albumId = _getAlbumId(albumOriginalId);
+    let albumCoverUrl = getAbsolutUrl(info['albumLogo'], _staticResourceBasicUrl);
+    let albumName = info['albumName'];
 
-    let albumOriginalId: string = songInfo['album_id'].toString();
+    let artistOriginalId = info['artistId'].toString();
+    let artistId = _getArtistId(artistOriginalId);
+    let artistName = info['artistName'];
 
-    let albumCoverUrl: string = getAbsolutUrl(songInfo['album_pic'], _staticResourceBasicUrl);
+    let releaseDate = info['gmtPublish'] || info['gmtCreate'];
 
     let duration: number = 0;
-    songs.forEach(song => { duration += song.duration; });
+    let songs = info['songs'].map(i => makeSong(i));
+    songs.forEach(song => {
+        duration += song.duration;
+        if (!song.albumOriginalId) {
+            song.albumOriginalId = albumOriginalId;
+            song.albumId = albumId;
+            song.albumCoverUrl = albumCoverUrl;
+        }
+        if (!song.artistOriginalId) {
+            song.artistOriginalId = artistOriginalId;
+            song.artistId = artistId;
+        }
+    });
 
     let album: IAlbum = {
         albumId: _getAlbumId(albumOriginalId),
 
         type: 'album',
         origin: _origin,
+
         albumOriginalId: albumOriginalId,
         url: _getAlbumUrl(albumOriginalId),
 
-        albumName: songInfo['album_name'],
-        albumCoverUrl: albumCoverUrl,
+        albumName,
+        albumCoverUrl,
 
-        artistId: _getArtistId(songInfo['artist_id']),
-        artistOriginalId: songInfo['artist_id'].toString(),
-        artistName: songInfo['artist_name'],
+        artistId,
+        artistOriginalId,
+        artistName,
 
         duration: duration,
 
-        releaseDate: songInfo['demoCreateTime'],
+        releaseDate,
 
         songs: songs,
         songCount: songs.length,
@@ -160,142 +192,79 @@ export function makeAlbum(info: any): IAlbum {
 }
 
 
-export function makeArtist(html: string): IArtist {
-    /**
-     * At browser, using browser dom api
-     */
-    if (window) {
-        let doc: HTMLElement = new (<any>window).DOMParser().parseFromString(html, 'text/html');
+export function makeCollection(info: any): ICollection {
+    let collectionOriginalId = info['listId'];
+    let collectionId = _getCollectionId(collectionOriginalId);
+    let collectionName = info['collectName'];
+    let collectionCoverUrl = getAbsolutUrl(info['collectLogo'], _staticResourceBasicUrl);
+    let tags: Array<ITag> = (info['tags'] || []).map(tag => ({ name: tag }));
 
-        // name and alias
-        let _chunk = xpathSelect('//h1', doc)[0].innerText.trim().split('\n');
-        let artistName: string = _chunk[0];
-        let artistAlias: Array<string>;
-        if (_chunk.length > 1) {
-            artistAlias = _chunk[1].split('/').filter(n => n.trim() != '').map(n => { return n.trim(); });
-        }
-
-        // artist id
-        let artistOriginalId: string = xpathSelect('//link[@rel="canonical"]', doc)[0].href.split('/').pop();
-        let artistId: string = _getArtistId(artistOriginalId);
-        let _url: string = _getArtistUrl(artistOriginalId);
-
-        let description: string = xpathSelect('//div[@class="record"]', doc)[0].innerHTML.trim();
-
-        // TODO, need to convert to unity country code
-        let area: string = xpathSelect('//td[@valign="top"]', doc)[1].innerText.trim();
-
-        let artistAvatarUrl: string = xpathSelect('//a[@id="cover_lightbox"]', doc)[0].href.replace('https', 'http');
-
-        // genres
-        let genres: Array<IGenre>;
-        xpathSelect('//td[@valign="top"]//a[contains(@href,"/genre/")]', doc).forEach(el => {
-            let genre: IGenre = {
-                id: el.href.split('/').pop(),
-                name: el.textContent().trim(),
-            };
-            genres.push(genre);
-        });
-
-        // songs
-        let songs: Array<ISong> = xpathSelect('//td[@class="chkbox"]/input/@value', doc).map(r => {
-            let songOriginalId: string = r.value;
-            let song: ISong = {
-                songId: _getSongId(songOriginalId),
-                type: 'song',
-                songOriginalId: songOriginalId,
-
-                url: _getSongUrl(songOriginalId),
-                origin: _origin,
-
-                artistId: artistId,
-                artistOriginalId: artistOriginalId,
-                artistName: artistName,
-                artistAvatarUrl: artistAvatarUrl,
-            };
-            return song;
-        });
-
-        // get song name
-        xpathSelect('//td[@class="song_name"]//a[contains(@href,"/song/")][1]', doc).forEach((a, index) => {
-            songs[index].songName = a.innerText.trim();
-        });
-
-        // get playCountWeb
-        xpathSelect('//td[@class="song_hot"]', doc).forEach((t, index) => {
-            songs[index].playCountWeb = parseInt(t.innerText);
-        });
-
-        // albums
-        let albums: Array<IAlbum> = xpathSelect('//p[@class="cover"]', doc).filter(el => {
-            return /试听/.test(el.textContent.trim());
-        }).map(el => {
-            let albumCoverUrl: string = 'http:' + /src="(\/\/pic.xiami.net\/.+?\.jpg)/.exec(el.innerHTML)[1];
-            let albumOriginalId: string = /'(\d+)',\sthis/.exec(el.innerHTML)[1];
-            let album: IAlbum = {
-                albumId: _getAlbumId(albumOriginalId),
-                type: 'album',
-                albumOriginalId: albumOriginalId,
-                origin: _origin,
-                url: _getAlbumUrl(albumOriginalId),
-
-                albumCoverUrl: albumCoverUrl,
-
-                artistId: artistId,
-                artistOriginalId: artistOriginalId,
-                artistName: artistName,
-            };
-            return album;
-        });
-
-        let artist: IArtist = {
-            artistId: artistId,
-            type: 'artist',
-            origin: _origin,
-            artistOriginalId: artistOriginalId,
-            url: _url,
-
-            artistName: artistName,
-            artistAlias: artistAlias,
-
-            artistAvatarUrl: artistAvatarUrl,
-            area: area,
-            genres: genres,
-
-            description: description,
-
-            songs: songs,
-            albums: albums,
-        };
-        return artist;
-
-    } else {
-        // TODO, parser html, using cheerio
-        throw new Error('no html parser using nodejs api or cheerio');
-    }
-}
-
-
-export function makeCollection(info: any, collectionOriginalId: string): ICollection {
-    let songs: Array<ISong> = info.data.trackList.map(info => makeSong(info));
-
-    let duration: number = 0;
-    songs.forEach(song => { duration += song.duration; });
+    let songs: Array<ISong> = (info['songs'] || []).map(songInfo => makeAliSong(songInfo));
+    let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
 
     let collection: ICollection = {
-        collectionId: _getCollectionId(collectionOriginalId),
+        collectionId,
 
         type: 'collection',
         origin: _origin,
-        collectionOriginalId: collectionOriginalId,
+        collectionOriginalId,
         url: _getCollectionUrl(collectionOriginalId),
 
-        duration: duration,
+        collectionName,
 
-        songs: songs,
-        songCount: songs.length,
+        collectionCoverUrl,
+
+        userId: _getUserId((info['userId'] || '').toString()),
+        userName: info['userName'],
+
+        // TODO: updateDate
+        // updateDate: info['gmtModify'],
+
+        releaseDate: info['gmtCreate'],
+
+        description: decodeHtml(info['description']),
+
+        tags,
+
+        duration,
+
+        songs,
+        songCount: info['songCount'],
+
+        playCount: info['playCount'],
+        likeCount: info['collects'],
     };
     return collection;
+}
+
+
+export function makeArtist(info: any): IArtist {
+    let artistOriginalId = info['artistId'];
+    let artistId = _getArtistId(artistOriginalId);
+    let artistAvatarUrl = getAbsolutUrl(info['artistLogo'], _staticResourceBasicUrl);
+    let artistAlias = info['alias'].split('/').filter(a => a.trim() != '').map(a => a.trim());
+    let artist: IArtist = {
+        artistId,
+        type: 'artist',
+        origin: _origin,
+        artistOriginalId: artistOriginalId,
+        url: _getArtistUrl(artistOriginalId),
+
+        artistName: info['artistName'],
+        artistAlias: artistAlias,
+
+        artistAvatarUrl: artistAvatarUrl,
+        area: info['area'],
+
+        description: decodeHtml(info['description']),
+
+        songs: [],
+        albums: [],
+
+        playCount: info['playCount'],
+        likeCount: info['countLikes'],
+    };
+    return artist;
 }
 
 
@@ -310,7 +279,7 @@ function getKbps(str: string): number {
 
 
 function makeAudio(info: any): IAudio {
-    let url = info['listenFile'];
+    let url = info['listenFile'] || info['url'];
     let audio: IAudio = {
         format: info['format'],
         size: info['fileSize'],
