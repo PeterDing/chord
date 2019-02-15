@@ -1,5 +1,7 @@
 # Chord 弦 - A Modern Music Player
 
+[![Build Status](https://travis-ci.org/PeterDing/chord.svg?branch=master)](https://travis-ci.org/PeterDing/chord)
+
 Chord supports many remote music providers' services and local music files service (developping).
 
 Chord uses the framework of spotify UI.
