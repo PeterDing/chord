@@ -1,16 +1,21 @@
 'use strict';
 
 import * as assert from 'assert';
+import * as process from 'process';
+
 import { suite, test } from 'mocha';
 
 import { AliMusicApi } from 'chord/music/xiami/api';
 
 const aliApi = new AliMusicApi();
 
+const IN_CI = process.env.IN_CI;
+
 
 suite('music/xiami/AliMusicApi', () => {
 
     test('audios', async function() {
+        if (IN_CI) return;
         let audios = await aliApi.audios('1');
         assert.equal(audios.length > 0, true);
     });
@@ -47,6 +52,7 @@ suite('music/xiami/AliMusicApi', () => {
     });
 
     test('album', async function() {
+        if (IN_CI) return;
         let album = await aliApi.album('1');
 
         let albumId = album.albumId;
@@ -218,37 +224,38 @@ suite('music/xiami/AliMusicApi', () => {
         assert.equal(userProfile.userOriginalId, id);
     });
 
-    test('userFavoriteSongs', async function () {
+    test('userFavoriteSongs', async function() {
         let id = '8539366';
         let songs = await aliApi.userFavoriteSongs(id, 1, 1);
         assert.equal(songs.length, 1);
     });
 
-    test('userFavoriteArtists', async function () {
+    test('userFavoriteArtists', async function() {
         let id = '8539366';
         let artists = await aliApi.userFavoriteArtists(id, 1, 1);
         assert.equal(artists.length, 1);
     });
 
-    test('userFavoriteCollections', async function () {
+    test('userFavoriteCollections', async function() {
         let id = '8539366';
         let collections = await aliApi.userFavoriteCollections(id, 1, 1);
         assert.equal(collections.length, 1);
     });
 
-    test('userCreatedCollections', async function () {
+    test('userCreatedCollections', async function() {
         let id = '8539366';
         let collections = await aliApi.userCreatedCollections(id, 1, 1);
         assert.equal(collections.length, 1);
     });
 
-    test('userRecentPlay', async function () {
+    test('userRecentPlay', async function() {
         let id = '8539366';
         let songs = await aliApi.userCreatedCollections(id, 1, 1);
         assert.equal(songs.length, 1);
     });
 
-    test('userFollowers', async function () {
+    test('userFollowers', async function() {
+        if (IN_CI) return;
         let id = '8539366';
         let followers = await aliApi.userFollowers(id, 1, 1);
         assert.equal(followers.length, 1);
@@ -261,12 +268,12 @@ suite('music/xiami/AliMusicApi', () => {
     //     assert.equal(followings.length, 1);
     // });
 
-    test('recommendSongs', async function () {
+    test('recommendSongs', async function() {
         let songs = await aliApi.recommendSongs(1, 1);
         assert.equal(songs.length > 0, true);
     });
 
-    test('recommendCollections', async function () {
+    test('recommendCollections', async function() {
         let collections = await aliApi.recommendCollections(1, 1);
         assert.equal(collections.length > 0, true);
     });
