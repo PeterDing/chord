@@ -10,43 +10,50 @@ const xiamiApi = new XiamiApi();
 
 suite('music/xiami/XiamiApi', () => {
 
+    test('makeSign', function() {
+        let md5 = xiamiApi.makeSign('node', JSON.stringify({ a: 1 }));
+        assert.equal(md5, 'ef729cf52ae6e9b1f88d747efe67eb26');
+    });
+
+    test('audios', async function() {
+       let id = '1';
+       let audios = await xiamiApi.audios(id);
+       assert.equal(audios.length > 0, true);
+    });
+
     test('song', async function() {
-        let song = await xiamiApi.song('1');
-
-        let songId = song.songId;
-        assert.equal(songId, 'xm|s|1');
-
+        let id = '1';
+        let song = await xiamiApi.song(id);
         let songOriginalId = song.songOriginalId;
-        assert.equal(songOriginalId, '1');
-
-        let albumId = song.albumId;
-        assert.equal(albumId, 'xm|a|1');
+        assert.equal(songOriginalId, id);
     });
 
-    test('album', async function() {
-        let album = await xiamiApi.album('1');
-
-        let albumId = album.albumId;
-        assert.equal(albumId, 'xm|a|1');
-
-        let songsSize = album.songs.length;
-        assert.equal(songsSize, 11);
-    });
+    // Login is needed
+    // test('album', async function() {
+    //     let id = '1';
+    //     let album = await xiamiApi.album(id);
+    //     let originalId = album.albumOriginalId;
+    //     assert.equal(originalId, id);
+    // });
 
     test('collection', async function() {
-        let collection = await xiamiApi.collection('398783788');
-
-        let songsSize = collection.songs.length;
-        assert.equal(songsSize > 0, true);
-
-        let collectionId = collection.collectionId;
-        assert.equal(collectionId, 'xm|c|398783788');
+        let id = '254834530';
+        let collection = await xiamiApi.collection(id);
+        let originalId = collection.collectionOriginalId;
+        assert.equal(originalId, id);
     });
 
-    test('searchAlbums', async function() {
-        let albums = await xiamiApi.searchAlbums('linkin');
-
-        let albumsSize = albums.length;
-        assert.equal(albumsSize, 20);
+    test('collectionSongs', async function() {
+        let id = '254834530';
+        let songs = await xiamiApi.collectionSongs(id, 1, 5);
+        assert.equal(songs.length, 5);
     });
+
+    // Login is needed
+    // test('artist', async function() {
+    //     let id = '1';
+    //     let artist = await xiamiApi.artist(id);
+    //     assert.equal(artist.artistOriginalId, id);
+    // });
+
 });
