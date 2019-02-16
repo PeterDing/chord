@@ -3,16 +3,33 @@ cache: yarn
 sudo: required
 matrix:
   include:
+    - os: windows
+      node_js: "node"
+      env:
+        - TARGET=win
+        # Container stays up because of the yarn installation running gpg.
+        # https://travis-ci.community/t/timeout-after-build-finished-and-succeeded/1336/2
+        - YARN_GPG=no
+      before_install:
+        - choco install yarn
+      install:
+        - choco install python2
+      before_deploy:
+        - cd build
+        - python2 clean-windows-fail-links.py
+        - cd ..
+        - yarn run compile
+        - yarn run dist:win
+    - os: osx
+      osx_image: xcode10.1
+      node_js: "node"
+      env: TARGET=mac
     - os: linux
       node_js: "node"
       env: TARGET=linux
       install:
         - sudo apt-get update
         - sudo apt-get install -y build-essential gcc g++ make bsdtar python-dev
-    - os: osx
-      osx_image: xcode10.1
-      node_js: "node"
-      env: TARGET=mac
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
@@ -26,7 +43,7 @@ env:
     - IN_CI=1
 
 before_script:
-  - npm install -g gulp
+  - npm install -g gulp mocha
   - yarn
 
 script:
@@ -55,6 +72,7 @@ deploy:
     - dist/$PROJECT_NAME-*.pacman
     - dist/$PROJECT_NAME-*-mac.zip
     - dist/$PROJECT_NAME-*-mac.dmg
+    - dist/$PROJECT_NAME-*-win.exe
   on:
     # deploy only if we push a tag
     tags: true
