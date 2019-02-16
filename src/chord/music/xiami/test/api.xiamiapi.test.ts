@@ -14,13 +14,18 @@ const IN_CI = process.env.IN_CI;
 
 suite('music/xiami/XiamiApi', () => {
 
+    /**
+     * Net requests have some probability to be fail,
+     * so we test these requests at local, missing at CI
+    */
+    if (IN_CI) return;
+
     test('makeSign', function() {
         let md5 = xiamiApi.makeSign('node', JSON.stringify({ a: 1 }));
         assert.equal(md5, 'ef729cf52ae6e9b1f88d747efe67eb26');
     });
 
     test('audios', async function() {
-        if (IN_CI) return;
         let id = '1';
         let audios = await xiamiApi.audios(id);
         assert.equal(audios.length > 0, true);
