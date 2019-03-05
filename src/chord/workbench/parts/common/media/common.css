@@ -534,3 +534,19 @@ button:hover {
         left: 8%
     }
 }
+
+.description {
+    max-height: 300px;
+    overflow: auto;
+    margin-bottom: 30px;
+    padding: 0 35px 0 35px;
+    text-align: justify
+}
+
+.artist-description {
+    max-height: 300px;
+    overflow: auto;
+    padding: 38px 15% 30px 15%;
+    background-color: #181818;
+    text-align: justify
+}

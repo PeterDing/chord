@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { getLikeAndPlayCount } from 'chord/workbench/api/utils/likeAndPlayCount';
+
 import { ESize } from 'chord/music/common/size';
 
 import { getDateYear } from 'chord/base/common/time';
@@ -37,6 +39,8 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
         let collection = this.props.collection;
         let cover = collection.collectionCoverPath || musicApi.resizeImageUrl(collection.origin, collection.collectionCoverUrl, ESize.Large);
         let originIcon = OriginIcon(collection.origin, 'cover-icon xiami-icon');
+
+        let likeAndPlayCount = getLikeAndPlayCount(collection);
 
         return (
             <div>
@@ -75,6 +79,13 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
                             <span className='link-subtle a-like cursor-pointer'
                                 onClick={() => this.props.handleShowUserProfileViewById(collection.userId, collection.userMid)}>
                                 {collection.userName}</span>
+                        </div>
+
+                        {/* like count and play count */}
+                        <div className="mo-meta ellipsis-one-line">
+                            <div className="react-contextmenu-wrapper">
+                                <span> {likeAndPlayCount} </span>
+                            </div>
                         </div>
 
                         <div className="mo-meta ellipsis-one-line">

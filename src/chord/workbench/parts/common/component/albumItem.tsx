@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { getLikeAndPlayCount } from 'chord/workbench/api/utils/likeAndPlayCount';
+
 import { ESize } from 'chord/music/common/size';
 
 import { getDateYear } from 'chord/base/common/time';
@@ -37,6 +39,8 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, object> {
         let album = this.props.album;
         let cover = album.albumCoverPath || musicApi.resizeImageUrl(album.origin, album.albumCoverUrl, ESize.Large);
         let originIcon = OriginIcon(album.origin, 'cover-icon xiami-icon');
+
+        let likeAndPlayCount = getLikeAndPlayCount(album);
 
         return (
             <div>
@@ -76,6 +80,13 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, object> {
                                 <span className='link-subtle a-like cursor-pointer'
                                     onClick={() => this.props.handleShowArtistViewById(album.artistId)}>
                                     {album.artistName}</span>
+                            </div>
+                        </div>
+
+                        {/* like count and play count */}
+                        <div className="mo-meta ellipsis-one-line">
+                            <div className="react-contextmenu-wrapper">
+                                <span> {likeAndPlayCount} </span>
                             </div>
                         </div>
 

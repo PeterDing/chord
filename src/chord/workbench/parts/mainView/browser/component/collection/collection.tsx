@@ -5,6 +5,8 @@ import 'chord/css!../../media/collection';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { getLikeAndPlayCount } from 'chord/workbench/api/utils/likeAndPlayCount';
+
 import { ESize } from 'chord/music/common/size';
 
 import { getDateYear } from 'chord/base/common/time';
@@ -61,6 +63,7 @@ function CollectionEntity({ collection, handlePlayCollection, showCollectionMenu
 
 
 function CollectionInfo({ collection, handlePlayCollection, handleShowUserProfileViewById }) {
+    let likeAndPlayCount = getLikeAndPlayCount(collection);
     return (
         <div className='media-bd'>
             <div className='entity-name'>
@@ -72,6 +75,12 @@ function CollectionInfo({ collection, handlePlayCollection, handleShowUserProfil
                         {collection.userName}</span>
                 </div>
             </div>
+
+            {/* like count and play count */}
+            <p className="text-silence entity-additional-info">
+                {likeAndPlayCount}
+            </p>
+
             <p className="text-silence entity-additional-info">
                 {getDateYear(collection.releaseDate)} • {collection.songCount} tracks
             </p>
@@ -119,6 +128,10 @@ class CollectionView extends React.Component<ICollectionViewProps, any> {
                                         handlePlayCollection={this.props.handlePlayCollection}
                                         showCollectionMenu={this.props.showCollectionMenu}
                                         handleShowUserProfileViewById={this.props.handleShowUserProfileViewById} />
+                                </div>
+
+                                <div className='col-xs-12 col-lg-9 col-xl-8 description'
+                                    dangerouslySetInnerHTML={{ __html: collection.description }}>
                                 </div>
 
                                 <div className='col-xs-12 col-lg-9 col-xl-8'>
