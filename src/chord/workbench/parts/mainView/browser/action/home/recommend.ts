@@ -9,13 +9,13 @@ import { musicApi } from 'chord/music/core/api';
 
 export async function handleShowRecommendView(): Promise<IShowRecommendViewAct> {
     let lists = await Promise.all([
-        musicApi.recommendSongs(ORIGIN.xiami),
-        musicApi.recommendSongs(ORIGIN.netease),
-        musicApi.recommendSongs(ORIGIN.qq),
+        musicApi.recommendSongs(ORIGIN.xiami, 0, 20),
+        musicApi.recommendSongs(ORIGIN.netease, 0, 20),
+        musicApi.recommendSongs(ORIGIN.qq, 0, 20),
 
-        musicApi.recommendCollections(ORIGIN.xiami),
-        musicApi.recommendCollections(ORIGIN.netease),
-        musicApi.recommendCollections(ORIGIN.qq),
+        musicApi.recommendCollections(ORIGIN.xiami, 0, 20),
+        musicApi.recommendCollections(ORIGIN.netease, 0, 20),
+        musicApi.recommendCollections(ORIGIN.qq, 0, 20),
     ]);
 
     let songsList = lists.slice(0, 3);
