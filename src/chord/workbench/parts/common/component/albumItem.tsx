@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { getLikeAndPlayCount } from 'chord/workbench/api/utils/likeAndPlayCount';
+import { getLikeAndPlayCount } from 'chord/workbench/api/utils/statistic';
 
 import { ESize } from 'chord/music/common/size';
 
