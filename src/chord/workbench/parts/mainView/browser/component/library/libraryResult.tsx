@@ -437,7 +437,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                         {/* Artists View */}
                         <div className='row'>
                             <h1 className="search-result-title" style={{ textAlign: 'center' }}>
-                                Artists</h1>
+                                Following</h1>
                             <section>
                                 <div className='container-fluid container-fluid--noSpaceAround'>
                                     <div className='align-row-wrap row'>

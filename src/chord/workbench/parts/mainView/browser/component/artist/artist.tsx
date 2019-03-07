@@ -5,6 +5,8 @@ import 'chord/css!../../media/artist';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { getLikeAndPlayCount } from 'chord/workbench/api/utils/statistic';
+
 import { ESize } from 'chord/music/common/size';
 
 import { IArtistViewProps } from 'chord/workbench/parts/mainView/browser/component/artist/props/artist';
@@ -117,6 +119,7 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
         // Maybe need to set background image
         let artist = this.props.artist;
         let cover = artist.artistAvatarPath || musicApi.resizeImageUrl(artist.origin, artist.artistAvatarUrl, ESize.Large);
+        let likeAndPlayCount = getLikeAndPlayCount(artist);
         return (
             <header className='artist-header'
                 style={{
@@ -125,6 +128,10 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
                 }}>
                 <span className='monthly-listeners'>{'\u00A0'}</span>
                 <h1 className='large'>{artist.artistName}</h1>
+
+                {/* like count and play count */}
+                <h1 className='small' style={{ opacity: 0.4 }}>{likeAndPlayCount}</h1>
+
                 <div className='header-buttons'>
                     <button className='btn btn-green cursor-pointer'
                         onClick={() => this.props.handlePlayArtist(artist)}>
@@ -142,9 +149,14 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
         let defaultSize = 10;
         let songsView = this._getSongsView(defaultSize);
         let albumsView = this._getAlbumsView(defaultSize);
+        let artist = this.props.artist;
 
         return (
             <div>
+                <div className='artist-description'
+                    dangerouslySetInnerHTML={{ __html: artist.description }}>
+                </div>
+
                 {/* Top Songs */}
                 <section className='artist-music container-fluid'>
                     <div className='row'>

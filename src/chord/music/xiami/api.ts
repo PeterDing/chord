@@ -351,7 +351,6 @@ export class XiamiApi {
             { artistId },
             `https://www.xiami.com/artist/${artistId}`,
         );
-        console.log(JSON.stringify(json, null, 4));
         let artist = makeArtist(json.result.data.artistDetail);
         return artist;
     }

@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { getUserProfileCount } from 'chord/workbench/api/utils/statistic';
+
 import { ESize } from 'chord/music/common/size';
 
 import { IUserProfileItemViewProps } from 'chord/workbench/parts/common/props/userProfileItem';
@@ -28,6 +30,7 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
         let userProfile = this.props.userProfile;
         let cover = userProfile.userAvatarPath || musicApi.resizeImageUrl(userProfile.origin, userProfile.userAvatarUrl, ESize.Large);
         let originIcon = OriginIcon(userProfile.origin, 'cover-icon xiami-icon');
+        let userProfileCount = getUserProfileCount(userProfile);
 
         return (
             <div>
@@ -60,6 +63,14 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
                                     <span className="mo-info-name">{userProfile.userName}</span>
                                 </div>
                             </div>
+
+                            {/* following, follower and song count */}
+                            <div className="mo-meta ellipsis-one-line">
+                                <div className="react-contextmenu-wrapper">
+                                    <span> {userProfileCount} </span>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

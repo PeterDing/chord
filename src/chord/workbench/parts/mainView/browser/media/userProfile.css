@@ -61,6 +61,25 @@
   text-align: center;
 }
 
+.user-header.user-info h1 {
+    margin: 0 auto;
+    max-width: 70%;
+    display: block;
+    text-align: center
+}
+
+.user-header.user-info h1.small {
+    font-size: 36px;
+    line-height: 44px
+}
+
+.user-header.user-info h1.small {
+    letter-spacing: -.005em;
+    font-weight: 600;
+    color: #fff;
+    text-transform: none
+}
+
 .user-header .user-info .avatar {
   margin: 10px auto;
   background-color: #282828;

@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { getLikeAndPlayCount } from 'chord/workbench/api/utils/statistic';
+
 import { ESize } from 'chord/music/common/size';
 
 import { IArtistItemViewProps } from 'chord/workbench/parts/common/props/artistItem';
@@ -29,6 +31,8 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
         let cover = artist.artistAvatarPath || musicApi.resizeImageUrl(artist.origin, artist.artistAvatarUrl, ESize.Large);
         let originIcon = OriginIcon(artist.origin, 'cover-icon xiami-icon');
 
+        let likeAndPlayCount = getLikeAndPlayCount(artist);
+
         return (
             <div>
                 <div draggable={true}>
@@ -50,6 +54,13 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
                                         <svg className="icon-play" viewBox="0 0 85 100"><path fill="currentColor" d="M81 44.6c5 3 5 7.8 0 10.8L9 98.7c-5 3-9 .7-9-5V6.3c0-5.7 4-8 9-5l72 43.3z"><title>PLAY</title></path></svg></button>
                                 </div>
 
+                            </div>
+
+                            {/* like count and play count */}
+                            <div className="mo-meta ellipsis-one-line">
+                                <div className="react-contextmenu-wrapper">
+                                    <span> {likeAndPlayCount} </span>
+                                </div>
                             </div>
 
                             <div className="mo-info ellipsis-one-line">

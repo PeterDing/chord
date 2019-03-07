@@ -5,6 +5,8 @@ import 'chord/css!../../media/album';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { getLikeAndPlayCount } from 'chord/workbench/api/utils/statistic';
+
 import { ESize } from 'chord/music/common/size';
 
 import { getDateYear } from 'chord/base/common/time';
@@ -60,6 +62,7 @@ function AlbumEntity({ album, handlePlayAlbum, handleShowArtistViewById, showAlb
 
 
 function AlbumInfo({ album, handlePlayAlbum, handleShowArtistViewById }) {
+    let likeAndPlayCount = getLikeAndPlayCount(album);
     return (
         <div className='media-bd'>
             <div className='entity-name'>
@@ -71,6 +74,12 @@ function AlbumInfo({ album, handlePlayAlbum, handleShowArtistViewById }) {
                         {album.artistName}</span>
                 </div>
             </div>
+
+            {/* like count and play count */}
+            <p className="text-silence entity-additional-info">
+                {likeAndPlayCount}
+            </p>
+
             <p className="text-silence entity-additional-info">
                 {getDateYear(album.releaseDate)} • {album.songCount} tracks
             </p>
@@ -118,6 +127,10 @@ class AlbumView extends React.Component<IAlbumViewProps, any> {
                                         handlePlayAlbum={this.props.handlePlayAlbum}
                                         handleShowArtistViewById={this.props.handleShowArtistViewById}
                                         showAlbumMenu={this.props.showAlbumMenu} />
+                                </div>
+
+                                <div className='col-xs-12 col-lg-9 col-xl-8 description'
+                                    dangerouslySetInnerHTML={{ __html: album.description }}>
                                 </div>
 
                                 <div className='col-xs-12 col-lg-9 col-xl-8'>

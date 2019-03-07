@@ -5,6 +5,8 @@ import 'chord/css!../../media/userProfile';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { getUserProfileCount } from 'chord/workbench/api/utils/statistic';
+
 import { ESize } from 'chord/music/common/size';
 
 import { IUserProfileViewProps } from 'chord/workbench/parts/mainView/browser/component/user/props/userProfile';
@@ -214,11 +216,17 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         // Maybe need to set background image
         let userProfile = this.props.userProfile;
         let cover = userProfile.userAvatarPath || musicApi.resizeImageUrl(userProfile.origin, userProfile.userAvatarUrl.split('@')[0], ESize.Big);
+        let userProfileCount = getUserProfileCount(this.props.userProfile);
+
         return (
             <header className='user-header user-info'>
                 <figure className="avatar user-avatar"
                     style={{ backgroundImage: `url("${cover}")`, width: '200px', height: '200px', margin: '10px auto' }}></figure>
                 <h1 className='user-name'>{userProfile.userName}</h1>
+
+                {/* following, follower and song count */}
+                <h1 className='small' style={{ opacity: 0.4 }}>{userProfileCount}</h1>
+
                 <div className='header-buttons'>
                     <button className='btn btn-green cursor-pointer'
                         onClick={() => this.props.handlePlayUserFavoriteSongs(userProfile)}>
@@ -240,6 +248,7 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         let favoriteCollectionsView = this._getFavoriteCollectionsView(defaultSize);
         let createdCollectionsView = this._getCreatedCollectionsView(defaultSize);
         // let followingsView = this._getFollowingsView(defaultSize);
+        let userProfile = this.props.userProfile;
 
         let makeItemsView = (view, title) => (
             <section className='artist-albums'>
@@ -256,6 +265,10 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
 
         return (
             <div>
+                <div className='artist-description'
+                    dangerouslySetInnerHTML={{ __html: userProfile.description }}>
+                </div>
+
                 {/* Songs */}
                 <section className='artist-music container-fluid'>
                     <div className='row'>

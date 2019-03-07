@@ -1,7 +1,5 @@
 'use strict';
 
-import { decodeHtml } from 'chord/base/browser/htmlContent';
-
 import { getAbsolutUrl } from "chord/base/node/url";
 
 import { ISong } from "chord/music/api/song";
@@ -222,7 +220,7 @@ export function makeCollection(info: any): ICollection {
 
         releaseDate: info['gmtCreate'],
 
-        description: decodeHtml(info['description']),
+        description: info['description'],
 
         tags,
 
@@ -256,7 +254,7 @@ export function makeArtist(info: any): IArtist {
         artistAvatarUrl: artistAvatarUrl,
         area: info['area'],
 
-        description: decodeHtml(info['description']),
+        description: info['description'],
 
         songs: [],
         albums: [],
@@ -353,7 +351,7 @@ export function makeAliSong(info: any): ISong {
         playCountWeb: info['playCount'],
         playCount: info['playCount'],
 
-        description: decodeHtml(info['description']),
+        description: info['description'],
 
         audios: audios,
     };
@@ -394,7 +392,7 @@ export function makeAliAlbum(info: any): IAlbum {
 
         tags: tags,
 
-        description: decodeHtml(info['description']),
+        description: info['description'],
 
         releaseDate: info['gmtPublish'],
 
@@ -433,7 +431,7 @@ export function makeAliArtist(info: any): IArtist {
         artistAvatarUrl: artistAvatarUrl,
         area: info['area'],
 
-        description: decodeHtml(info['description']),
+        description: info['description'],
 
         songs: [],
         albums: [],
@@ -475,7 +473,7 @@ export function makeAliCollection(info: any): ICollection {
 
         releaseDate: info['gmtCreate'],
 
-        description: decodeHtml(info['description']),
+        description: info['description'],
 
         tags,
 
@@ -520,7 +518,7 @@ export function makeUserProfile(info: any): IUserProfile {
 
         listenCount: info['listens'] || null,
 
-        description: decodeHtml(info['description']),
+        description: info['description'],
     };
     return user;
 }
