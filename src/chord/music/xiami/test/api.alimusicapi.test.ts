@@ -191,6 +191,13 @@ suite('music/xiami/AliMusicApi', () => {
         assert.equal(albums.length > 1, true);
     });
 
+    test('collectionListOptions', async function() {
+        let collections = await aliApi.collectionListOptions();
+        console.log(collections);
+
+        assert.equal(collections.length > 1, true);
+    });
+
     test('collectionList', async function() {
         let collections = await aliApi.collectionList('古典', 'new', 1, 1);
 
