@@ -1,13 +1,13 @@
 'use strict';
 
 
+export interface IOption {
+    id: string;
+    name: string;
+}
+
 export interface IListOption {
     name: string;
     type: string;
-    items: {
-        [index: number]: {
-            id: number | string;
-            name: string;
-        }
-    };
+    items: Array<IOption>;
 }
