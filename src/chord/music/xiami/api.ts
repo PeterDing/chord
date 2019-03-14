@@ -21,7 +21,7 @@ import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
-import { IListOption } from 'chord/music/api/listOption';
+import { IListOption, IOption } from 'chord/music/api/listOption';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -1066,18 +1066,6 @@ export class AliMusicApi {
 
 
     /**
-     * TODO, parser is need
-     */
-    public async recommendTags(): Promise<any> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.recommendTags,
-            { from: 'homeattic' },
-        );
-        return json.data.data.recommendTags;
-    }
-
-
-    /**
      * Get new songs
      *
      * languageId:
@@ -1169,6 +1157,37 @@ export class AliMusicApi {
         );
         let info = json.data.data.albums;
         return makeAliAlbums(info);
+    }
+
+
+    public collectionListOrders(): Array<IOption> {
+        return [
+            { id: 'system', name: '推荐' },
+            { id: 'recommend', name: '精选' },
+            { id: 'hot', name: '最热' },
+            { id: 'new', name: '最新' },
+        ];
+    }
+
+
+    /**
+     * Collection List Options
+     */
+    public async collectionListOptions(): Promise<Array<IListOption>> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.recommendTags,
+            { from: 'web' },
+        );
+        let options = json.data.data.recommendTags
+            .map(tag => ({
+                type: null,
+                name: tag['title'],
+                items: tag['items'].map(item => ({
+                    name: item['name'],
+                    id: item['name'],
+                })),
+            }));
+        return options;
     }
 
 

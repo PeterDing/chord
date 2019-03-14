@@ -665,6 +665,15 @@ export class QQMusicApi {
     }
 
 
+    public collectionListOrders(): Array<{ name: string, id: string }> {
+        return [
+            { id: '3', name: '最热' },
+            { id: '2', name: '最新' },
+            { id: '4', name: '评分' },
+        ];
+    }
+
+
     public async collectionListOptions(): Promise<Array<IListOption>> {
         let params = {
             g_tk: 0,
@@ -687,16 +696,6 @@ export class QQMusicApi {
                 name: item['categoryName'],
             })),
         }));
-        let sortOption = {
-            name: '排序',
-            type: 'sort',
-            items: [
-                { id: 2, name: '最新' },
-                { id: 3, name: '最热' },
-                { id: 4, name: '评分' },
-            ],
-        };
-        options.push(sortOption);
         return options;
     }
 
@@ -709,7 +708,7 @@ export class QQMusicApi {
      *
      *  categoryId sees this.collectionListOptions
      */
-    public async collectionList(sort: number = 3, categoryId: number = 10000000, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+    public async collectionList(sort: number | string = 3, categoryId: number | string = 10000000, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
         let params = {
             picmid: 1,
             rnd: getRandom(),

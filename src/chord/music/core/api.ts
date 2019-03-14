@@ -8,6 +8,7 @@ import { ILyric } from 'chord/music/api/lyric';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+import { IListOption } from 'chord/music/api/listOption';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -385,6 +386,74 @@ export class Music {
         }
 
         items = makeItems(items);
+        return items;
+    }
+
+
+    public collectionListOrders(origin: string): Array<{ name: string, id: string }> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = this.xiamiApi.collectionListOrders();
+                break;
+            case ORIGIN.netease:
+                items = this.neteaseApi.collectionListOrders();
+                break;
+            case ORIGIN.qq:
+                items = this.qqApi.collectionListOrders();
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.collectionListOrders] Here will never be occured. [args]: ${origin}`);
+        }
+
+        return items;
+    }
+
+
+    public async collectionListOptions(origin: string): Promise<Array<IListOption>> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = await this.xiamiApi.collectionListOptions();
+                break;
+            case ORIGIN.netease:
+                items = await this.neteaseApi.collectionListOptions();
+                break;
+            case ORIGIN.qq:
+                items = await this.qqApi.collectionListOptions();
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.collectionListOptions] Here will never be occured. [args]: ${origin}`);
+        }
+
+        return items;
+    }
+
+
+    public async collectionList(
+        origin: string,
+        keyword: string,
+        order: string,
+        offset: number = 0,
+        limit: number = 10): Promise<Array<ICollection>> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = await this.xiamiApi.collectionList(keyword, order, offset, limit);
+                break;
+            case ORIGIN.netease:
+                items = await this.neteaseApi.collectionList(keyword, order, offset, limit);
+                break;
+            case ORIGIN.qq:
+                items = await this.qqApi.collectionList(order, keyword, offset, limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.collectionList] Here will never be occured. [args]: ${origin}, ${keyword}, ${order}, ${offset}, ${limit}`);
+        }
+
         return items;
     }
 

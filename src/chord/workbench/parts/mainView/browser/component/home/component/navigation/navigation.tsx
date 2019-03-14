@@ -6,15 +6,18 @@ import { connect } from 'react-redux';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import { IShowRecommendViewAct } from 'chord/workbench/api/common/action/home/recommend';
 import { IChangeHomeViewAct } from 'chord/workbench/api/common/action/home/nagivation';
+import { IShowCollectionListOptionsViewAct } from 'src/chord/workbench/api/common/action/home/collections';
 
 import { changeView } from 'chord/workbench/parts/mainView/browser/action/home/nagivation';
 import { handleShowRecommendView } from 'chord/workbench/parts/mainView/browser/action/home/recommend';
+import { handleShowCollectionListOptionsView } from 'chord/workbench/parts/mainView/browser/action/home/collections';
 
 
 interface INagivationMenuViewProps {
     view: string;
     changeView: (view) => IChangeHomeViewAct;
     handleShowRecommendView: () => Promise<IShowRecommendViewAct>;
+    handleShowCollectionListOptionsView: () => Promise<IShowCollectionListOptionsViewAct>;
 }
 
 
@@ -35,6 +38,12 @@ function NagivationMenuView(props: INagivationMenuViewProps) {
                         onClick={() => props.changeView('newReleaseView')}>
                         NEW RELEASES</div>
                 </li>
+
+                <li className='search-nav-li'>
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'collectionsView' ? 'search-nav-item__active' : ''}`}
+                        onClick={() => props.handleShowCollectionListOptionsView()}>
+                        COLLECTIONS</div>
+                </li>
             </ul>
         </nav>
     );
@@ -51,6 +60,7 @@ function mapDispatchToProps(dispatch) {
     return {
         changeView: (view) => dispatch(changeView(view)),
         handleShowRecommendView: () => handleShowRecommendView().then(act => dispatch(act)),
+        handleShowCollectionListOptionsView: () => handleShowCollectionListOptionsView().then(act => dispatch(act)),
     };
 }
 
