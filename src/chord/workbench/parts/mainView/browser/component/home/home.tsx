@@ -7,27 +7,32 @@ import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import NagivationMenuView from 'chord/workbench/parts/mainView/browser/component/home/component/navigation/navigation';
 import RecommendView from 'chord/workbench/parts/mainView/browser/component/home/component/recommend/recommendView';
 import NewReleaseView from 'chord/workbench/parts/mainView/browser/component/home/component/newRelease/newReleaseView';
+import CollectionsView from 'chord/workbench/parts/mainView/browser/component/home/component/collections/collections';
 
 
 function HomeView({ view }) {
     let View;
     switch (view) {
         case 'recommendView':
-            View = RecommendView;
+            View = <RecommendView />;
             break;
         case 'newReleaseView':
-            View = NewReleaseView;
+            View = <NewReleaseView />;
             break;
+        case 'collectionsView':
+            View = <CollectionsView />;
+            break;
+
         default:
             throw new Error(`[HomeView]: unknown view: ${view}`);
     }
 
     return (
         <div className='hw-accelerate'>
-            <section>
+            <section className='content'>
 
                 <NagivationMenuView />
-                <View />
+                {View}
 
             </section>
         </div>

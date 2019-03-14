@@ -1,0 +1,46 @@
+.options-container {
+  padding: 10px 35px 0px 35px;
+}
+
+.options-container-title {
+  text-align: center;
+  font-size: 30px;
+  display: block;
+  padding-bottom: 30px;
+  font-weight: bold;
+}
+
+.options-item {
+  padding: 20px 0 20px 0;
+}
+
+.options-item-title {
+  font-size: 25px;
+  text-align: center;
+}
+
+.options-item-container {
+  padding: 10px 0 10px;
+}
+
+.options-item-container .chunk {
+  display: flex;
+  padding: 10px;
+  flex-flow: column wrap;
+}
+
+.options-item-container .chunk-title {
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
+.options-item-container .chunk-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-around;
+}
+
+.options-item-container .chunk-item {
+  margin: 0 10px;
+}
