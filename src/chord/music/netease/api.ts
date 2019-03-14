@@ -434,6 +434,14 @@ export class NeteaseMusicApi {
     }
 
 
+    public collectionListOrders(): Array<{ name: string, id: string }> {
+        return [
+            { id: 'hot', name: '最热' },
+            { id: 'new', name: '最新' },
+        ];
+    }
+
+
     public async collectionListOptions(): Promise<Array<IListOption>> {
         let node = NeteaseMusicApi.NODE_MAP.collectionListOptions;
         let data = {};
@@ -459,15 +467,6 @@ export class NeteaseMusicApi {
             };
             options.push(option);
         });
-        let orders = {
-            type: 'order',
-            name: '全部歌单',
-            items: [
-                { id: 'hot', name: '最热' },
-                { id: 'new', name: '最新' },
-            ],
-        };
-        options.push(orders);
         return options;
     }
 
