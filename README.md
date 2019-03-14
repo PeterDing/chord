@@ -27,6 +27,7 @@ Chord uses the framework of spotify UI.
 * Store your favoriate music to local library
 * Recommanded music (After user logined, recommanded music is based on the user)
 * New released music
+* Select collections by options
 * Toggle lyric
 * Common functions for player
 
@@ -34,9 +35,8 @@ Chord uses the framework of spotify UI.
 
 - App configuration
 - Selectable quality of audio file
-- Show more information for songs, artists, albums, collections and user profiles
 - Create customized playlist
-- Music style/genre navigation
+- ~~Music style/genre navigation~~ (xiami does not open apis for genres)
 - Add/Remove local music files
 - Downloader
 - i18n
