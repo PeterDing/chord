@@ -5,7 +5,7 @@ import { ok } from 'chord/base/common/assert';
 import { Store } from 'redux';
 
 
-type IHookFn = (soundId?: number, store?: Store) => void;
+type IHookFn = (soundId?: number, store?: Store, url?: string, songId?: string) => void;
 
 interface IHook {
     name: string;
@@ -29,33 +29,33 @@ class Audio {
     private static onseekFns: Array<IHook> = [];
     private static onloaderrorFns: Array<IHook> = [];
 
-    private static onplay(soundId?: number, store?: Store): void {
+    private static onplay(soundId?: number, store?: Store, url?: string, songId?: string): void {
         this.onplayFns.forEach(item => {
-            item.fn(soundId, store);
+            item.fn(soundId, store, url, songId);
         });
     }
 
-    private static onpause(soundId?: number, store?: Store): void {
+    private static onpause(soundId?: number, store?: Store, url?: string, songId?: string): void {
         this.onpauseFns.forEach(item => {
-            item.fn(soundId, store);
+            item.fn(soundId, store, url, songId);
         });
     }
 
-    private static onend(soundId?: number, store?: Store): void {
+    private static onend(soundId?: number, store?: Store, url?: string, songId?: string): void {
         this.onendFns.forEach(item => {
-            item.fn(soundId, store);
+            item.fn(soundId, store, url, songId);
         });
     }
 
-    private static onseek(soundId?: number, store?: Store): void {
+    private static onseek(soundId?: number, store?: Store, url?: string, songId?: string): void {
         this.onseekFns.forEach(item => {
-            item.fn(soundId, store);
+            item.fn(soundId, store, url, songId);
         });
     }
 
-    private static onloaderror(soundId?: number, store?: Store): void {
+    private static onloaderror(soundId?: number, store?: Store, url?: string, songId?: string): void {
         this.onloaderrorFns.forEach(item => {
-            item.fn(soundId, store);
+            item.fn(soundId, store, url, songId);
         });
     }
 
@@ -73,7 +73,7 @@ class Audio {
     /**
      * Make a Howl instance
      */
-    protected static doMakeAudio(url: string): Howl {
+    protected static doMakeAudio(url: string, songId?: string): Howl {
         let audioOptions = {
             src: url,
 
@@ -81,11 +81,11 @@ class Audio {
             html5: true,
             autoplay: false,
 
-            onplay: (soundId: number) => Audio.onplay(soundId, Audio.store),
-            onpause: (soundId: number) => Audio.onpause(soundId, Audio.store),
-            onend: (soundId: number) => Audio.onend(soundId, Audio.store),
-            onseek: (soundId: number) => Audio.onseek(soundId, Audio.store),
-            onloaderror: (soundId: number) => Audio.onloaderror(soundId, Audio.store),
+            onplay: (soundId: number) => Audio.onplay(soundId, Audio.store, url, songId),
+            onpause: (soundId: number) => Audio.onpause(soundId, Audio.store, url, songId),
+            onend: (soundId: number) => Audio.onend(soundId, Audio.store, url, songId),
+            onseek: (soundId: number) => Audio.onseek(soundId, Audio.store, url, songId),
+            onloaderror: (soundId: number) => Audio.onloaderror(soundId, Audio.store, url, songId),
         };
         return new Howl(audioOptions);
     }
@@ -93,12 +93,12 @@ class Audio {
     /**
      * Make(or change) the Global Howl instance
      */
-    static makeAudio(url: string) {
+    static makeAudio(url: string, songId?: string) {
         if (Audio.audio) {
             Audio.stop();
             Audio.destroy();
         }
-        Audio.audio = Audio.doMakeAudio(url);
+        Audio.audio = Audio.doMakeAudio(url, songId);
     }
 
     static seek(position?: number): number {

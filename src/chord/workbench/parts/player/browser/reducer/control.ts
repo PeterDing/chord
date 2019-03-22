@@ -24,7 +24,7 @@ export function rewind(state: IPlayerState, act: IRewindAct): IPlayerState {
         // TODO: read kbps configuration
         let audio = selectAudio(song.audios);
         let audioUrl = audio.path || audio.url;
-        CAudio.makeAudio(audioUrl);
+        CAudio.makeAudio(audioUrl, song.songId);
         // play now
         CAudio.play();
         CAudio.volume(state.volume);
@@ -57,7 +57,7 @@ export function playPause(state: IPlayerState, act: IPlayPauseAct): IPlayerState
             // TODO: read kbps configuration
             let audio = selectAudio(song.audios);
             let audioUrl = audio.path || audio.url;
-            CAudio.makeAudio(audioUrl);
+            CAudio.makeAudio(audioUrl, song.songId);
             // play now
             CAudio.play();
             CAudio.volume(state.volume);
@@ -83,7 +83,7 @@ export function forward(state: IPlayerState, act: IForwardAct): IPlayerState {
         // TODO: read kbps configuration
         let audio = selectAudio(song.audios);
         let audioUrl = audio.path || audio.url;
-        CAudio.makeAudio(audioUrl);
+        CAudio.makeAudio(audioUrl, song.songId);
         // play now
         CAudio.play();
         CAudio.volume(state.volume);
