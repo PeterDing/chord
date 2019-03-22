@@ -55,6 +55,7 @@ export async function handleShowCollectionListView(origin: string, option: IOpti
 
     let collections = await musicApi.collectionList(origin, option.id, order.id, offset.offset, offset.limit);
 
+    offset = setCurrectOffset(origin, offset, collections.length);
     if (collections.length == 0) {
         offset.more = false;
     }
@@ -79,7 +80,7 @@ export async function handleGetMoreCollections(origin: string, option: IOption, 
     let collections = [];
     if (offset.more) {
         let offsets = makeOffsets(origin, offset, size);
-        let futs = offsets.map(_offset => musicApi.collectionList(origin, option.id, order.id, offset.offset, offset.limit));
+        let futs = offsets.map(_offset => musicApi.collectionList(origin, option.id, order.id, _offset.offset, _offset.limit));
         let collectionsList = await Promise.all(futs);
         collections = collections.concat(...collectionsList).slice(0, size);
         offset = setCurrectOffset(origin, offset, collections.length);
