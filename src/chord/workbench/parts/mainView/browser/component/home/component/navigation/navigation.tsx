@@ -7,10 +7,12 @@ import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import { IShowRecommendViewAct } from 'chord/workbench/api/common/action/home/recommend';
 import { IChangeHomeViewAct } from 'chord/workbench/api/common/action/home/nagivation';
 import { IShowCollectionListOptionsViewAct } from 'src/chord/workbench/api/common/action/home/collections';
+import { IShowAlbumListOptionsViewAct } from 'src/chord/workbench/api/common/action/home/albums';
 
 import { changeView } from 'chord/workbench/parts/mainView/browser/action/home/nagivation';
 import { handleShowRecommendView } from 'chord/workbench/parts/mainView/browser/action/home/recommend';
 import { handleShowCollectionListOptionsView } from 'chord/workbench/parts/mainView/browser/action/home/collections';
+import { handleShowAlbumListOptionsView } from 'chord/workbench/parts/mainView/browser/action/home/albums';
 
 
 interface INagivationMenuViewProps {
@@ -18,6 +20,7 @@ interface INagivationMenuViewProps {
     changeView: (view) => IChangeHomeViewAct;
     handleShowRecommendView: () => Promise<IShowRecommendViewAct>;
     handleShowCollectionListOptionsView: () => Promise<IShowCollectionListOptionsViewAct>;
+    handleShowAlbumListOptionsView: () => Promise<IShowAlbumListOptionsViewAct>;
 }
 
 
@@ -44,6 +47,12 @@ function NagivationMenuView(props: INagivationMenuViewProps) {
                         onClick={() => props.handleShowCollectionListOptionsView()}>
                         COLLECTIONS</div>
                 </li>
+
+                <li className='search-nav-li'>
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'albumsView' ? 'search-nav-item__active' : ''}`}
+                        onClick={() => props.handleShowAlbumListOptionsView()}>
+                        ALBUMS</div>
+                </li>
             </ul>
         </nav>
     );
@@ -61,6 +70,7 @@ function mapDispatchToProps(dispatch) {
         changeView: (view) => dispatch(changeView(view)),
         handleShowRecommendView: () => handleShowRecommendView().then(act => dispatch(act)),
         handleShowCollectionListOptionsView: () => handleShowCollectionListOptionsView().then(act => dispatch(act)),
+        handleShowAlbumListOptionsView: () => handleShowAlbumListOptionsView().then(act => dispatch(act)),
     };
 }
 
