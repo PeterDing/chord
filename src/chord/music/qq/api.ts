@@ -69,8 +69,8 @@ export class QQMusicApi {
         'accept': '*/*',
     };
 
-    static readonly AUDIO_URI = 'http://223.111.154.151/amobile.music.tc.qq.com/';
-    // static readonly AUDIO_URI = 'http://streamoc.music.tc.qq.com/';
+    static readonly AUDIO_URI = 'http://streamoc.music.tc.qq.com/';
+    // static readonly AUDIO_URI = 'http://223.111.154.151/amobile.music.tc.qq.com/';
     // static readonly AUDIO_URI = 'http://dl.stream.qqmusic.qq.com/';
     // static readonly AUDIO_URI = 'http://isure.stream.qqmusic.qq.com/';
 
@@ -205,9 +205,10 @@ export class QQMusicApi {
 
 
     public makeAudios(song: ISong, qqKey: string, guid: string): Array<IAudio> {
+        let uri = this.ip_index == -1 ? QQMusicApi.AUDIO_URI : this.getAudioURI();
         return song.audios.filter(audio => !!AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`])
             .map(audio => {
-                audio.url = this.getAudioURI()
+                audio.url = uri
                     + AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`]
                     + song.songMediaMid + '.' + audio.format
                     + '?guid=' + guid
@@ -1486,8 +1487,14 @@ export class QQMusicApi {
 
 
     public changeIP(audioUrl: string): string {
-        let re = /[\d.]{7,}/;
-        let ip = re.exec(audioUrl)[0];
+        let re = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+        let mod = re.exec(audioUrl);
+        if (!!!mod) {
+            let newURI = this.getAudioURI();
+            return audioUrl.replace(QQMusicApi.AUDIO_URI, newURI);
+        }
+
+        let ip = mod[0];
         // remove invalid ip
         this.ips = [
             ...this.ips.slice(0, this.ip_index),
