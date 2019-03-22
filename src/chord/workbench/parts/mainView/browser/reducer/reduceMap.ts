@@ -49,6 +49,7 @@ import {
 import { changeHomeView } from 'chord/workbench/parts/mainView/browser/reducer/home/nagivation';
 import { showRecommendView } from 'chord/workbench/parts/mainView/browser/reducer/home/recommend';
 import { showCollectionListOptions, showCollectionListView, getMoreCollections } from 'chord/workbench/parts/mainView/browser/reducer/home/collections';
+import { showAlbumListOptions, showAlbumList, getMoreAlbums } from 'chord/workbench/parts/mainView/browser/reducer/home/albums';
 
 
 export function map(act: string): IReducerMap {
@@ -256,6 +257,21 @@ export function map(act: string): IReducerMap {
             return {
                 reducer: getMoreCollections,
                 node: 'homeView.collectionsView',
+            };
+        case 'c:mainView:home:showAlbumListOptionsView':
+            return {
+                reducer: showAlbumListOptions,
+                node: 'homeView',
+            };
+        case 'c:mainView:home:showAlbumListView':
+            return {
+                reducer: showAlbumList,
+                node: 'homeView',
+            };
+        case 'c:mainView:home:albums:getMoreAlbums':
+            return {
+                reducer: getMoreAlbums,
+                node: 'homeView.albumsView',
             };
 
         default:

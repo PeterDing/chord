@@ -56,6 +56,9 @@ function handleView(act: string): string {
         case 'c:mainView:home:showCollectionListOptionsView':
         case 'c:mainView:home:showCollectionListView':
         case 'c:mainView:home:collections:getMoreCollections':
+        case 'c:mainView:home:showAlbumListOptionsView':
+        case 'c:mainView:home:showAlbumListView':
+        case 'c:mainView:home:albums:getMoreAlbums':
             return 'homeView';
 
         case 'c:mainView:comeback':

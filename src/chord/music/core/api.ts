@@ -390,6 +390,73 @@ export class Music {
     }
 
 
+    public async albumListOptions(origin: string): Promise<Array<IListOption>> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = await this.xiamiApi.albumListOptions();
+                break;
+            case ORIGIN.netease:
+                items = [];
+                break;
+            case ORIGIN.qq:
+                items = await this.qqApi.albumListOptions();
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.albumListOptions] Here will never be occured. [args]: ${origin}`);
+        }
+
+        return items;
+    }
+
+
+    public async albumList(
+        origin: string,
+        order: string,
+        area: string,
+        genre: string,
+        type: string,
+        year: string,
+        company: string,
+        offset: number = 1,
+        limit: number = 10): Promise<Array<IAlbum>> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = await this.xiamiApi.albumList(
+                    Number.parseInt(order),
+                    Number.parseInt(area),
+                    Number.parseInt(genre),
+                    Number.parseInt(year),
+                    Number.parseInt(type),
+                    offset,
+                    limit);
+                break;
+            case ORIGIN.netease:
+                items = [];
+                break;
+            case ORIGIN.qq:
+                items = await this.qqApi.albumList(
+                    Number.parseInt(order),
+                    Number.parseInt(area),
+                    Number.parseInt(genre),
+                    Number.parseInt(type),
+                    Number.parseInt(year),
+                    Number.parseInt(company),
+                    offset,
+                    limit);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.albumList] Here will never be occured. [args]: ${origin}, ${order}, ${area}, ${genre}, ${type}, ${year}, ${company}, ${offset}, ${limit}`);
+        }
+
+        items = makeItems(items);
+        return items;
+    }
+
+
     public collectionListOrders(origin: string): Array<{ name: string, id: string }> {
         let items;
         switch (origin) {
@@ -454,6 +521,7 @@ export class Music {
                 throw new Error(`[ERROR] [Music.collectionList] Here will never be occured. [args]: ${origin}, ${keyword}, ${order}, ${offset}, ${limit}`);
         }
 
+        items = makeItems(items);
         return items;
     }
 
