@@ -1107,12 +1107,18 @@ export class AliMusicApi {
             name: '排序',
             type: 'order',
             items: [
-                { id: 0, name: '推荐' },
-                { id: 1, name: '最新' },
-                { id: 2, name: '最热' },
+                { id: '0', name: '推荐' },
+                { id: '1', name: '最新' },
+                { id: '2', name: '最热' },
             ],
         }
-        return [...json.data.data.label, orders];
+        let options = json.data.data.label.map(
+            option => {
+                option.items.forEach(
+                    item => item.id = item.id.toString());
+                return option;
+            });
+        return [...options, orders];
     }
 
 
