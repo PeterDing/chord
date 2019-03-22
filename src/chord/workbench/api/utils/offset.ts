@@ -39,6 +39,7 @@ export function makeOffsets(origin: string, offset: IOffset, size: number): Arra
     let total;
     switch (origin) {
         case ORIGIN.xiami:
+            if (offset.offset == 0) offset.offset = 1;
             total = offset.offset * offset.limit + size;
             findPages(offset.offset, offset.limit, total, offsets);
             break;
@@ -60,6 +61,7 @@ export function setCurrectOffset(origin: string, offset: IOffset, size: number):
     let _offset;
     switch (origin) {
         case ORIGIN.xiami:
+            if (offset.offset == 0) offset.offset = 1;
             total = offset.offset * offset.limit + size;
             _offset = initiateOffset();
             _offset.offset = total % 10 == 0 ? total / 10 : Math.floor(total / 10) + 1;
