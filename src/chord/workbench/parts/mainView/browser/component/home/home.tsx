@@ -8,6 +8,7 @@ import NagivationMenuView from 'chord/workbench/parts/mainView/browser/component
 import RecommendView from 'chord/workbench/parts/mainView/browser/component/home/component/recommend/recommendView';
 import NewReleaseView from 'chord/workbench/parts/mainView/browser/component/home/component/newRelease/newReleaseView';
 import CollectionsView from 'chord/workbench/parts/mainView/browser/component/home/component/collections/collections';
+import AlbumsView from 'chord/workbench/parts/mainView/browser/component/home/component/albums/albums';
 
 
 function HomeView({ view }) {
@@ -21,6 +22,9 @@ function HomeView({ view }) {
             break;
         case 'collectionsView':
             View = <CollectionsView />;
+            break;
+        case 'albumsView':
+            View = <AlbumsView />;
             break;
 
         default:
@@ -45,6 +49,5 @@ function mapStateToProps(state: IStateGlobal) {
         view: state.mainView.homeView.view,
     }
 }
-
 
 export default connect(mapStateToProps)(HomeView);

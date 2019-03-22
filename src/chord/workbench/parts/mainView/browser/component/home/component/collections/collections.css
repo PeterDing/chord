@@ -41,6 +41,16 @@
   align-content: space-around;
 }
 
-.options-item-container .chunk-item {
+.chunk-container .chunk-item {
   margin: 0 10px;
+  padding: 1px 4px;
+}
+
+.chunk-container .chunk-item-selected {
+  background: #1db954;
+  border: 1px solid;
+  border-color: #1db954;
+  border-radius: 3px;
+  margin: 0 10px;
+  padding: 1px 4px;
 }

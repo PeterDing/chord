@@ -23,3 +23,13 @@ export function SmallButton(props: { title: string, click: (event) => void }) {
         </button>
     );
 }
+
+
+export function MiddleButton(props: { title: string, click: (event) => void }) {
+    return (
+        <button className="btn btn-green btn-small btn--no-margin cursor-pointer"
+            onClick={(e) => props.click(e)}>
+            {props.title}
+        </button>
+    );
+}
