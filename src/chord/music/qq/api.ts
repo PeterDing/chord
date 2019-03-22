@@ -48,6 +48,8 @@ import { getACSRFToken } from 'chord/music/qq/util';
 
 import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
 
+import { QQ_AUDIO_SERVER_IPS } from 'chord/music/qq/ips';
+
 
 const ALBUM_OPTION_NAME_MAP = {
     area: '地区',
@@ -67,7 +69,8 @@ export class QQMusicApi {
         'accept': '*/*',
     };
 
-    static readonly AUDIO_URI = 'http://streamoc.music.tc.qq.com/';
+    static readonly AUDIO_URI = 'http://223.111.154.151/amobile.music.tc.qq.com/';
+    // static readonly AUDIO_URI = 'http://streamoc.music.tc.qq.com/';
     // static readonly AUDIO_URI = 'http://dl.stream.qqmusic.qq.com/';
     // static readonly AUDIO_URI = 'http://isure.stream.qqmusic.qq.com/';
 
@@ -131,9 +134,14 @@ export class QQMusicApi {
     private account: IAccount;
     private cookieJar: CookieJar;
 
+    private ip_index: number;
+    private ips: Array<string>;
+
 
     constructor() {
         this.cookieJar = makeCookieJar();
+        this.ip_index = -1;
+        this.ips = [...QQ_AUDIO_SERVER_IPS];
     }
 
 
@@ -184,10 +192,22 @@ export class QQMusicApi {
     }
 
 
+    private getAudioServerIP(): string {
+        this.ip_index = (this.ip_index + 1) % this.ips.length;
+        return this.ips[this.ip_index];
+    }
+
+
+    private getAudioURI(): string {
+        let ip = this.getAudioServerIP();
+        return 'http://' + ip + '/amobile.music.tc.qq.com/';
+    }
+
+
     public makeAudios(song: ISong, qqKey: string, guid: string): Array<IAudio> {
         return song.audios.filter(audio => !!AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`])
             .map(audio => {
-                audio.url = QQMusicApi.AUDIO_URI
+                audio.url = this.getAudioURI()
                     + AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`]
                     + song.songMediaMid + '.' + audio.format
                     + '?guid=' + guid
@@ -1462,5 +1482,19 @@ export class QQMusicApi {
                 return url.replace('300x300', '800x800');
             }
         });
+    }
+
+
+    public changeIP(audioUrl: string): string {
+        let re = /[\d.]{7,}/;
+        let ip = re.exec(audioUrl)[0];
+        // remove invalid ip
+        this.ips = [
+            ...this.ips.slice(0, this.ip_index),
+            ...this.ips.slice(this.ip_index + 1)
+        ];
+        this.ip_index -= 1;
+        let newIP = this.getAudioServerIP();
+        return audioUrl.replace(ip, newIP);
     }
 }
