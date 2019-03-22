@@ -22,11 +22,7 @@ function CollectionsView({ view }: { view: string }) {
             throw new Error(`[CollectionsView]: unknown view: ${view}`);
     }
 
-    return (
-        <div>
-            {View}
-        </div>
-    );
+    return View;
 }
 
 
