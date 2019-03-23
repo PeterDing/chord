@@ -14,15 +14,28 @@ import AlbumListOptionsView from 'chord/workbench/parts/mainView/browser/compone
 
 function AlbumsView({ view, origin }: { view: string, origin: ORIGIN }) {
     let View;
+
+    // Reuse following views
+    let xiamiAlbumListOptionsView =
+        <AlbumListOptionsView key={makeListKey(0, 'album', 'options')} origin={ORIGIN.xiami} />;
+    let qqAlbumListOptionsView =
+        <AlbumListOptionsView key={makeListKey(1, 'album', 'options')} origin={ORIGIN.qq} />;
+
     switch (view) {
         case 'options':
-            View = [
-                <AlbumListOptionsView key={makeListKey(0, 'album', 'options')} origin={ORIGIN.xiami} />,
-                <AlbumListOptionsView key={makeListKey(1, 'album', 'options')} origin={ORIGIN.qq} />
-            ];
+            View = [xiamiAlbumListOptionsView, qqAlbumListOptionsView];
             break;
         case 'albums':
-            View = <AlbumListOptionsView origin={origin} />
+            switch (origin) {
+                case ORIGIN.xiami:
+                    View = xiamiAlbumListOptionsView;
+                    break;
+                case ORIGIN.qq:
+                    View = qqAlbumListOptionsView;
+                    break;
+                default:
+                    throw new Error(`[AlbumsView]: unknown origin: ${origin}`);
+            }
             break;
         default:
             throw new Error(`[AlbumsView]: unknown view: ${view}`);
