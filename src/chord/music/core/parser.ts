@@ -14,5 +14,5 @@ export function makeItem<T>(item: T): T {
 }
 
 export function makeItems<T>(items: Array<T>): Array<T> {
-    return items.map(item => makeItem(item));
+    return items.map(item => item ? makeItem(item) : item);
 }
