@@ -10,9 +10,23 @@ import { addSongAudios } from 'chord/workbench/api/utils/song';
 export async function handlePlay(index: number): Promise<IPlayAct> {
     let state: IStateGlobal = (<any>window).store.getState();
 
-    // directly change song which is in state
-    let song = state.player.playList[index];
-    await addSongAudios(song);
+    let playList = state.player.playList;
+    let song;
+
+    while (index < playList.length) {
+        // directly change song which is in state
+        song = playList[index];
+        if (song) {
+            await addSongAudios(song);
+            if (song.audios.length > 0) {
+                break;
+            }
+            // TODO: Warning and logging
+            index += 1;
+            continue;
+        }
+        break;
+    }
 
     return {
         type: 'c:player:play',
