@@ -438,7 +438,7 @@ export class Music {
         type: string,
         year: string,
         company: string,
-        offset: number = 1,
+        offset: number = 0,
         limit: number = 10): Promise<Array<IAlbum>> {
         let items;
         switch (origin) {
@@ -541,6 +541,37 @@ export class Music {
         }
 
         items = makeItems(items);
+        return items;
+    }
+
+
+    public async artistList(
+        origin: string,
+        area: string,
+        genre: string,
+        gender: string,
+        index: string,
+        offset: number = 0,
+        limit: number = 40): Promise<any> {
+        let items;
+        switch (origin) {
+            case ORIGIN.xiami:
+                items = await this.xiamiApi.artistList(area, genre, gender, offset, limit);
+                items[0] = makeItems(items[0]);
+                break;
+            case ORIGIN.netease:
+                items = await this.neteaseApi.artistList(genre, index, offset, limit);
+                items = makeItems(items);
+                break;
+            case ORIGIN.qq:
+                items = await this.qqApi.artistList(area, genre, gender, index, offset, limit);
+                items = makeItems(items);
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Music.artistList] Here will never be occured. [args]: ${origin}, ${area}, ${genre}, ${gender}, ${index}, ${offset}, ${limit}`);
+        }
+
         return items;
     }
 
@@ -1020,7 +1051,7 @@ export class Music {
             CAudio.destroy();
             return;
         }
-        if (audioUrl.indexOf('qq.com')) {
+        if (audioUrl.indexOf('qq.com') != -1) {
 
             // this song needs to pay
             if (audioUrl.endsWith('&vkey=')) {

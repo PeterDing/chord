@@ -46,6 +46,8 @@ import {
     // makeAccount,
 } from 'chord/music/netease/parser';
 
+import { ARTIST_LIST_OPTIONS } from 'chord/music/qq/common';
+
 
 const MAX_RETRY = 3;
 
@@ -93,6 +95,7 @@ export class NeteaseMusicApi {
 
         collectionListOptions: 'weapi/playlist/catalogue',
         collectionList: 'weapi/playlist/list',
+        artistList: 'weapi/artist/list',
 
         newSongs: 'weapi/v1/discovery/new/songs',
         newAlbums: 'weapi/album/new',
@@ -487,6 +490,29 @@ export class NeteaseMusicApi {
         };
         let json = await this.request(node, data);
         return makeCollections(json['playlists']);
+    }
+
+
+    public async artistListOptions(): Promise<Array<IListOption>> {
+        return ARTIST_LIST_OPTIONS;
+    }
+
+
+    public async artistList(
+        category: string = null,
+        initial: string = null,
+        offset: number = 0,
+        limit: number = 10): Promise<Array<IArtist>> {
+        let node = NeteaseMusicApi.NODE_MAP.artistList;
+        let data = {
+            categoryCode: category || undefined,
+            initial: initial || undefined,
+            offset: offset,
+            limit: limit,
+            total: true,
+        };
+        let json = await this.request(node, data);
+        return makeArtists(json['artists']);
     }
 
 
