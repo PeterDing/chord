@@ -8,11 +8,13 @@ import { IShowRecommendViewAct } from 'chord/workbench/api/common/action/home/re
 import { IChangeHomeViewAct } from 'chord/workbench/api/common/action/home/nagivation';
 import { IShowCollectionListOptionsViewAct } from 'src/chord/workbench/api/common/action/home/collections';
 import { IShowAlbumListOptionsViewAct } from 'src/chord/workbench/api/common/action/home/albums';
+import { IShowArtistListOptionsViewAct } from 'src/chord/workbench/api/common/action/home/artists';
 
 import { changeView } from 'chord/workbench/parts/mainView/browser/action/home/nagivation';
 import { handleShowRecommendView } from 'chord/workbench/parts/mainView/browser/action/home/recommend';
 import { handleShowCollectionListOptionsView } from 'chord/workbench/parts/mainView/browser/action/home/collections';
 import { handleShowAlbumListOptionsView } from 'chord/workbench/parts/mainView/browser/action/home/albums';
+import { handleShowArtistListOptionsView } from 'chord/workbench/parts/mainView/browser/action/home/artists';
 
 
 interface INagivationMenuViewProps {
@@ -21,6 +23,7 @@ interface INagivationMenuViewProps {
     handleShowRecommendView: () => Promise<IShowRecommendViewAct>;
     handleShowCollectionListOptionsView: () => Promise<IShowCollectionListOptionsViewAct>;
     handleShowAlbumListOptionsView: () => Promise<IShowAlbumListOptionsViewAct>;
+    handleShowArtistListOptionsView: () => IShowArtistListOptionsViewAct;
 }
 
 
@@ -53,6 +56,12 @@ function NagivationMenuView(props: INagivationMenuViewProps) {
                         onClick={() => props.handleShowAlbumListOptionsView()}>
                         ALBUMS</div>
                 </li>
+
+                <li className='search-nav-li'>
+                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'artistsView' ? 'search-nav-item__active' : ''}`}
+                        onClick={() => props.handleShowArtistListOptionsView()}>
+                        ARTISTS</div>
+                </li>
             </ul>
         </nav>
     );
@@ -71,6 +80,7 @@ function mapDispatchToProps(dispatch) {
         handleShowRecommendView: () => handleShowRecommendView().then(act => dispatch(act)),
         handleShowCollectionListOptionsView: () => handleShowCollectionListOptionsView().then(act => dispatch(act)),
         handleShowAlbumListOptionsView: () => handleShowAlbumListOptionsView().then(act => dispatch(act)),
+        handleShowArtistListOptionsView: () => dispatch(handleShowArtistListOptionsView()),
     };
 }
 
