@@ -49,13 +49,14 @@ export async function handleShowCollectionListOptionsView(): Promise<IShowCollec
 
 export async function handleShowCollectionListView(origin: string, option: IOption, order: IOption, size: number = 50): Promise<IShowCollectionListViewAct> {
     let offset = initiateOffset();
+    offset.offset = (origin == ORIGIN.xiami) ? 1 : 0;
     offset.limit = size;
+
     let orders = musicApi.collectionListOrders(origin);
     order = order || orders[0];
 
     let collections = await musicApi.collectionList(origin, option.id, order.id, offset.offset, offset.limit);
 
-    offset = setCurrectOffset(origin, offset, collections.length);
     if (collections.length == 0) {
         offset.more = false;
     }

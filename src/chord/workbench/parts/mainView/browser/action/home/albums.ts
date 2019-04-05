@@ -54,12 +54,12 @@ export async function handleShowAlbumListView(
     company: string,
     size: number = 50): Promise<IShowAlbumListViewAct> {
     let offset = initiateOffset();
+    offset.offset = (origin == ORIGIN.xiami) ? 1 : 0;
     offset.limit = size;
 
     let albums = await musicApi.albumList(
         origin, order, area, genre, type, year, company, offset.offset, offset.limit);
 
-    offset = setCurrectOffset(origin, offset, albums.length);
     if (albums.length == 0) {
         offset.more = false;
     }
