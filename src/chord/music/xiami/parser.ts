@@ -267,7 +267,7 @@ export function makeArtist(info: any): IArtist {
 
 
 function getKbps(str: string): number {
-    let r = /m(\d{2,3})\./.exec(str.slice(0, 20));
+    let r = /\/\/\w(\d{2,3})\./.exec(str.slice(0, 20));
     if (r) {
         return parseInt(r[1]);
     } else {
@@ -280,7 +280,7 @@ function makeAudio(info: any): IAudio {
     let url = info['listenFile'] || info['url'];
     let audio: IAudio = {
         format: info['format'],
-        size: info['fileSize'],
+        size: info['fileSize'] || info['filesize'],
         kbps: getKbps(url),
         url,
     }
