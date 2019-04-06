@@ -1,10 +1,14 @@
-# Chord 弦 - 一个现代的音乐播放器
+![Chord Player](https://i.ibb.co/TwQRgCL/Screen-Shot-2019-04-06-at-10-55-10-AM.png)
+
+<h1 align="center">Chord 弦 - A Modern Music Player</h1>
+
+[![Build Status](https://travis-ci.org/PeterDing/chord.svg?branch=master)](https://travis-ci.org/PeterDing/chord)
 
 弦提供很多音乐服务商的服务，也支持本地音乐文件的播放（开发中）。
 
 弦使用 spotify UI 的框架。
 
-[下载最新版本](https://github.com/PeterDing/chord/releases)
+**[下载最新版本](https://github.com/PeterDing/chord/releases)**
 
 [界面截屏](docs/screenshots.md)
 
@@ -22,7 +26,9 @@
 * 保存喜欢的音乐到本地音乐库
 * 推荐的歌曲
 * 新发行的音乐
-* 歌单选择
+* 歌单筛选
+* 专辑筛选
+* 艺人筛选
 * 支持歌词
 * 播放器的基本功能
 

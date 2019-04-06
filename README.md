@@ -1,4 +1,6 @@
-# Chord 弦 - A Modern Music Player
+![Chord Player](https://i.ibb.co/TwQRgCL/Screen-Shot-2019-04-06-at-10-55-10-AM.png)
+
+<h1 align="center">Chord 弦 - A Modern Music Player</h1>
 
 [![Build Status](https://travis-ci.org/PeterDing/chord.svg?branch=master)](https://travis-ci.org/PeterDing/chord)
 
@@ -6,7 +8,7 @@ Chord supports many remote music providers' services and local music files servi
 
 Chord uses the framework of spotify UI.
 
-[Download the last version](https://github.com/PeterDing/chord/releases)
+**[Download the last version](https://github.com/PeterDing/chord/releases)**
 
 [screenshots](docs/screenshots.md)
 
@@ -28,6 +30,8 @@ Chord uses the framework of spotify UI.
 * Recommanded music (After user logined, recommanded music is based on the user)
 * New released music
 * Select collections by options
+* Select albums by options
+* Select artists by options
 * Toggle lyric
 * Common functions for player
 

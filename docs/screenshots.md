@@ -1,41 +1,20 @@
 # Screenshots
 
-- Search
-
-![search](media/search.png)
-
-- Search Detail
-
-![search_detail](media/search_detail.png)
-
-- Player
-
-![player](media/player.png)
-
-- Lyric
-
-![lyric](media/lyric.png)
-
-- Recommanded and New released music
-
-![recommand](media/recommand.png)
-
-- Search Albums
-
-![search_album](media/search_album.png)
-
-- Album Detail
-
-![album_detail](media/album.png)
-
-- Artist
-
-![artist](media/artist.png)
-
-- Library
-
-![library](media/library.png)
-
-- Login
-
-![login](media/login.png)
+![](https://i.ibb.co/TwQRgCL/Screen-Shot-2019-04-06-at-10-55-10-AM.png)
+![](https://i.ibb.co/q9n176X/Screen-Shot-2019-04-06-at-10-40-17-AM.png)
+![](https://i.ibb.co/xL9nMXz/Screen-Shot-2019-04-06-at-10-40-07-AM.png)
+![](https://i.ibb.co/2F21xcQ/Screen-Shot-2019-04-06-at-10-39-53-AM.png)
+![](https://i.ibb.co/y5WLJmm/Screen-Shot-2019-04-06-at-10-38-43-AM.png)
+![](https://i.ibb.co/ckzvRxK/Screen-Shot-2019-04-06-at-10-37-59-AM.png)
+![](https://i.ibb.co/MDFwDjn/Screen-Shot-2019-04-06-at-10-37-03-AM.png)
+![](https://i.ibb.co/9vZ3YVj/Screen-Shot-2019-04-06-at-10-36-48-AM.png)
+![](https://i.ibb.co/h1zTK8v/Screen-Shot-2019-04-06-at-10-36-10-AM.png)
+![](https://i.ibb.co/nbN7MrD/Screen-Shot-2019-04-06-at-10-35-40-AM.png)
+![](https://i.ibb.co/JKMN9Sj/Screen-Shot-2019-04-06-at-10-35-35-AM.png)
+![](https://i.ibb.co/bQyLDn8/Screen-Shot-2019-04-06-at-10-35-08-AM.png)
+![](https://i.ibb.co/RhrNnnN/Screen-Shot-2019-04-06-at-10-34-43-AM.png)
+![](https://i.ibb.co/9YPXVXq/Screen-Shot-2019-04-06-at-10-34-20-AM.png)
+![](https://i.ibb.co/hmQ5ddh/Screen-Shot-2019-04-06-at-10-33-51-AM.png)
+![](https://i.ibb.co/frttWxt/Screen-Shot-2019-04-06-at-10-33-43-AM.png)
+![](https://i.ibb.co/4V6jxwR/Screen-Shot-2019-04-06-at-10-33-38-AM.png)
+![](https://i.ibb.co/YkRLyzP/Screen-Shot-2019-04-06-at-10-22-07-AM.png)
