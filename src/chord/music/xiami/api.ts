@@ -50,6 +50,8 @@ import {
     makeAccount,
 } from "chord/music/xiami/parser";
 
+import { ARTIST_LIST_OPTIONS } from 'chord/music/xiami/common';
+
 
 const DOMAIN = 'xiami.com';
 
@@ -419,6 +421,7 @@ export class AliMusicApi {
 
         songList: 'mtop.alimusic.recommend.songservice.gethotsongs',
         albumList: 'mtop.alimusic.recommend.albumservice.getmusiclist',
+        artistList: 'mtop.alimusic.music.artistservice.gethotartists',
 
         login: 'mtop.alimusic.xuser.facade.xiamiuserservice.login',
         userProfile: 'mtop.alimusic.xuser.facade.xiamiuserservice.getuserinfobyuserid',
@@ -1228,6 +1231,36 @@ export class AliMusicApi {
         let info = json.data.data.collects;
         let collections = makeAliCollections(info);
         return collections;
+    }
+
+
+    public async artistListOptions(): Promise<Array<IListOption>> {
+        return ARTIST_LIST_OPTIONS;
+    }
+
+
+    public async artistList(
+        language: string,
+        tag: string,
+        gender: string,
+        page: number = 1,
+        size: number = 10): Promise<any> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.artistList,
+            {
+                language: Number.parseInt(language),
+                tag: Number.parseInt(tag),
+                gender: Number.parseInt(gender),
+            },
+        );
+        let info = json.data.data.artists;
+        let artists = makeAliArtists(info);
+        let pinyins = info.map(i => i.pinyin);
+        info = json.data.data.hotArtists;
+        let hotArtists = makeAliArtists(info);
+        let hotPinyins = info.map(i => i.pinyin);
+
+        return [[...hotArtists, null, ...artists], [...hotPinyins, null, ...pinyins]];
     }
 
 

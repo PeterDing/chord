@@ -59,6 +59,8 @@ function handleView(act: string): string {
         case 'c:mainView:home:showAlbumListOptionsView':
         case 'c:mainView:home:showAlbumListView':
         case 'c:mainView:home:albums:getMoreAlbums':
+        case 'c:mainView:home:showArtistListOptionsView':
+        case 'c:mainView:home:showArtistListView':
             return 'homeView';
 
         case 'c:mainView:comeback':

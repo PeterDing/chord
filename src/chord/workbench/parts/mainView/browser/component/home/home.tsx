@@ -9,6 +9,7 @@ import RecommendView from 'chord/workbench/parts/mainView/browser/component/home
 import NewReleaseView from 'chord/workbench/parts/mainView/browser/component/home/component/newRelease/newReleaseView';
 import CollectionsView from 'chord/workbench/parts/mainView/browser/component/home/component/collections/collections';
 import AlbumsView from 'chord/workbench/parts/mainView/browser/component/home/component/albums/albums';
+import ArtistsView from 'chord/workbench/parts/mainView/browser/component/home/component/artists/artists';
 
 
 function HomeView({ view }) {
@@ -25,6 +26,9 @@ function HomeView({ view }) {
             break;
         case 'albumsView':
             View = <AlbumsView />;
+            break;
+        case 'artistsView':
+            View = <ArtistsView />;
             break;
 
         default:

@@ -50,6 +50,8 @@ import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
 
 import { QQ_AUDIO_SERVER_IPS } from 'chord/music/qq/ips';
 
+import { ARTIST_LIST_OPTIONS } from 'chord/music/qq/common';
+
 
 const ALBUM_OPTION_NAME_MAP = {
     area: '地区',
@@ -97,6 +99,7 @@ export class QQMusicApi {
         songList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         albumList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         collectionList: 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg',
+        artistList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
 
         collectionListOptions: 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_tag_conf.fcg',
 
@@ -750,6 +753,62 @@ export class QQMusicApi {
         let url = QQMusicApi.NODE_MAP.collectionList;
         let json = await this.request('GET', url, params);
         return makeCollections(json['data']['list']);
+    }
+
+
+    public async artistListOptions(): Promise<Array<IListOption>> {
+        return ARTIST_LIST_OPTIONS;
+    }
+
+
+    /**
+     * Get artists by options
+     *
+     * return 80 artists, default
+     *
+     * @param offset is just offset
+     * @param limit is page number
+     */
+    public async artistList(
+        area: string = '-100',
+        genre: string = '-100',
+        sex: string = '-100',
+        index: string = '-100',
+        offset: number = 0,
+        limit: number = 1): Promise<Array<IArtist>> {
+        let data = JSON.stringify({
+            comm: {
+                ct: 24,
+                cv: 0,
+            },
+            singerList: {
+                module: "Music.SingerListServer",
+                method: "get_singer_list",
+                param: {
+                    area: Number.parseInt(area),
+                    genre: Number.parseInt(genre),
+                    sex: Number.parseInt(sex),
+                    index: Number.parseInt(index),
+                    sin: offset,
+                    cur_page: 1,
+                }
+            }
+        });
+        let params = {
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: 0,
+            platform: 'yqq.json',
+            needNewCode: 0,
+            data,
+        };
+        let url = QQMusicApi.NODE_MAP.artistList;
+        let json = await this.request('GET', url, params);
+        return makeArtists(json['singerList']['data']['singerlist']);
     }
 
 
