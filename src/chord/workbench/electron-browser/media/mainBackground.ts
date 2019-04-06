@@ -8,7 +8,7 @@ const MAIN_BACKGROUND_MAP = {
     // 'albumView': 'linear-gradient(rgb(30, 50, 100), rgb(4, 6, 12) 85%)',
     'artistView': 'linear-gradient(rgb(18, 18, 18), rgb(8, 8, 8) 85%)',
     // 'collectionView': 'linear-gradient(rgb(102, 56, 51), rgb(10, 6, 5) 85%)',
-    'libraryView': 'linear-gradient(rgb(132, 25, 54), rgb(6, 8, 10) 85%)',
+    'libraryView': 'linear-gradient(rgb(41, 50, 60), rgb(5, 7, 11) 85%)',
     'preferenceView': '-webkit-gradient(linear, left top, left bottom, from(#A0C3D2), to(#509BF5))',
     'userProfileView': 'linear-gradient(rgb(133, 156, 179), rgb(1, 1, 11) 85%)',
     'homeView': 'linear-gradient(rgb(55, 93, 113), rgb(5, 9, 11) 85%)',
