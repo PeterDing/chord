@@ -1,4 +1,4 @@
-![Chord Player](https://i.ibb.co/TwQRgCL/Screen-Shot-2019-04-06-at-10-55-10-AM.png)
+![Chord Player](https://i.ibb.co/ypJyckb/Screen-Shot-2019-04-10-at-2-58-56-PM.png)
 
 <h1 align="center">Chord 弦 - A Modern Music Player</h1>
 
@@ -30,6 +30,7 @@
 * 专辑筛选
 * 艺人筛选
 * 支持歌词
+* 通知
 * 播放器的基本功能
 
 ## 待做

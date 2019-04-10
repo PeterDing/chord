@@ -1,4 +1,4 @@
-![Chord Player](https://i.ibb.co/TwQRgCL/Screen-Shot-2019-04-06-at-10-55-10-AM.png)
+![Chord Player](https://i.ibb.co/ypJyckb/Screen-Shot-2019-04-10-at-2-58-56-PM.png)
 
 <h1 align="center">Chord 弦 - A Modern Music Player</h1>
 
@@ -33,6 +33,7 @@ Chord uses the framework of spotify UI.
 * Select albums by options
 * Select artists by options
 * Toggle lyric
+* Notification
 * Common functions for player
 
 ## Todos
