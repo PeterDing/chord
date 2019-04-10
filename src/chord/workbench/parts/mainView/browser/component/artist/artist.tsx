@@ -125,6 +125,7 @@ class ArtistView extends React.Component<IArtistViewProps, any> {
                 style={{
                     backgroundImage: `url("${cover}")`,
                     backgroundPosition: '100% 12%',
+                    height: '500px',
                 }}>
                 <span className='monthly-listeners'>{'\u00A0'}</span>
                 <h1 className='large'>{artist.artistName}</h1>
