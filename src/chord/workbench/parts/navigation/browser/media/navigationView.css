@@ -63,6 +63,16 @@
     width: 24px
 }
 
+.navBar-item--small {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: .015em;
+    font-weight: var(--glue-font-weight-normal);
+    color: #b3b3b3;
+    text-transform: none;
+    color: #fff
+}
+
 .navBar-item--with-icon-left {
     padding-left: 36px;
     position: relative
@@ -83,4 +93,31 @@
 .navBar-link--active:focus,
 .navBar-link--active:hover {
     color: #1db954
+}
+
+.navBar-link-text-with-icon-wrapper {
+    display: flex;
+    box-align: center;
+    flex-align: center;
+    align-items: center
+}
+
+.navbar-link__text {
+    box-flex: 1;
+    flex: 1;
+    min-width: 0
+}
+
+.navBar-item__type {
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: .015em;
+    font-weight: var(--glue-font-weight-normal);
+    color: #b3b3b3;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    color: #fff;
+    opacity: .6;
+    padding-top: 1px;
+    display: block
 }
