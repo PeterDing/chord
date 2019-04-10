@@ -71,7 +71,8 @@ export class QQMusicApi {
         'accept': '*/*',
     };
 
-    static readonly AUDIO_URI = 'http://streamoc.music.tc.qq.com/';
+    static readonly AUDIO_URI = 'http://mobileoc.music.tc.qq.com/';
+    // static readonly AUDIO_URI = 'http://streamoc.music.tc.qq.com/';
     // static readonly AUDIO_URI = 'http://223.111.154.151/amobile.music.tc.qq.com/';
     // static readonly AUDIO_URI = 'http://dl.stream.qqmusic.qq.com/';
     // static readonly AUDIO_URI = 'http://isure.stream.qqmusic.qq.com/';
