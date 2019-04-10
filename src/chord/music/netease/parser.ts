@@ -43,6 +43,7 @@ const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 
 
 export function makeAudio(info: any): IAudio {
+    if (!info['url']) return null;
     return {
         format: info['type'],
         size: info['size'],

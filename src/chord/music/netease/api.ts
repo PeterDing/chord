@@ -184,7 +184,8 @@ export class NeteaseMusicApi {
             csrf_token: '',
         };
         let json = await this.request(node, data);
-        return [makeAudio(json['data'][0])];
+        let audio = makeAudio(json['data'][0]);
+        return audio ? [audio] : [];
     }
 
 
