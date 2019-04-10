@@ -11,6 +11,7 @@ import Comeback from 'chord/workbench/parts/navigation/browser/component/comebac
 import Library from 'chord/workbench/parts/navigation/browser/component/library';
 import Preference from 'chord/workbench/parts/navigation/browser/component/preference';
 import Home from 'chord/workbench/parts/navigation/browser/component/home';
+import Notification from 'chord/workbench/parts/navigation/browser/component/notification';
 
 
 export function NavigationView() {
@@ -39,6 +40,10 @@ export function NavigationView() {
 
                         <li className='navBar-group'>
                             <Preference />
+                        </li>
+
+                        <li className='navBar-group'>
+                            <Notification />
                         </li>
 
                     </ul>
