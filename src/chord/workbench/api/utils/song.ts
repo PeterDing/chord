@@ -1,7 +1,5 @@
 'use strict';
 
-import { ORIGIN } from 'chord/music/common/origin';
-
 import { ISong } from 'chord/music/api/song';
 import { IAudio } from 'chord/music/api/audio';
 
@@ -31,6 +29,17 @@ export async function addSongAudios(song: ISong) {
     if (!hasSongAudio(song)) {
         song.audios = await musicApi.audios(song.songId);
     }
+}
+
+export async function addSongAudiosIter(songs: Array<ISong>): Promise<Array<ISong>> {
+    for (let index = 0; index < songs.length; index += 1) {
+        let song = songs[index];
+        await addSongAudios(song);
+        if (hasSongAudio(song)) {
+            return songs.slice(index);
+        }
+    }
+    return [];
 }
 
 
