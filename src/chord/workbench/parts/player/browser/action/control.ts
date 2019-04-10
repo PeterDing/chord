@@ -9,6 +9,8 @@ import { IPlayPauseAct, IPlayAct } from 'chord/workbench/api/common/action/playe
 
 import { addSongAudios } from 'chord/workbench/api/utils/song';
 
+import { handlePlay } from 'chord/workbench/parts/player/browser/action/playList';
+
 
 let SHUFFLE_SONG_ID_LIST: Array<number>;
 let PLAYLIST_ID: number;
@@ -29,17 +31,8 @@ export async function handleShuffle(): Promise<IPlayAct> {
     let state: IStateGlobal = (<any>window).store.getState();
 
     let index = getShuffleIndex(Math.max(state.player.playList.length - 1, 0), state.player.index);
-    let song = state.player.playList[index];
-    if (song) {
-        // directly change song which is in state
-        await addSongAudios(song);
-    }
 
-    return {
-        type: 'c:player:play',
-        act: 'c:player:play',
-        index,
-    };
+    return handlePlay(index);
 }
 
 
@@ -52,17 +45,7 @@ export async function handleRewind(): Promise<IPlayAct> {
     let state: IStateGlobal = (<any>window).store.getState();
 
     let index = Math.max(state.player.index - 1, 0);
-    let song = state.player.playList[index];
-    if (song) {
-        // directly change song which is in state
-        await addSongAudios(song);
-    }
-
-    return {
-        type: 'c:player:play',
-        act: 'c:player:play',
-        index,
-    };
+    return handlePlay(index);
 }
 
 export async function handlePlayPause(): Promise<IPlayPauseAct> {
@@ -93,15 +76,6 @@ export async function handleForward(): Promise<IPlayAct> {
     if (player.repeat) {
         index = index % state.player.playList.length;
     }
-    let song = state.player.playList[index];
-    if (song) {
-        // directly change song which is in state
-        await addSongAudios(song);
-    }
 
-    return {
-        type: 'c:player:play',
-        act: 'c:player:play',
-        index,
-    };
+    return handlePlay(index);
 }

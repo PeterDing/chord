@@ -4,7 +4,9 @@ import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 
 import { IPlayAct } from 'chord/workbench/api/common/action/player';
 
-import { addSongAudios } from 'chord/workbench/api/utils/song';
+import { addSongAudios, hasSongAudio } from 'chord/workbench/api/utils/song';
+
+import { noticePlayItem } from 'chord/workbench/parts/notification/action/notice';
 
 
 export async function handlePlay(index: number): Promise<IPlayAct> {
@@ -18,9 +20,10 @@ export async function handlePlay(index: number): Promise<IPlayAct> {
         song = playList[index];
         if (song) {
             await addSongAudios(song);
-            if (song.audios.length > 0) {
+            if (hasSongAudio(song)) {
                 break;
             }
+            noticePlayItem(song);
             // TODO: Warning and logging
             index += 1;
             continue;
