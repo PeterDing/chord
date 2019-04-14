@@ -16,6 +16,7 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IListOption } from 'chord/music/api/listOption';
+import { TMusicItems } from 'chord/music/api/items';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -991,5 +992,71 @@ export class NeteaseMusicApi {
 
     public resizeImageUrl(url: string, size: ESize | number): string {
         return resizeImageUrl(url, size, (url, size) => `${url}?param=${size}y${size}`);
+    }
+
+
+    public async fromURL(input: string): Promise<Array<TMusicItems>> {
+        let chunks = input.split(' ');
+        let items = [];
+        for (let chunk of chunks) {
+            let m;
+            let originId;
+            let type;
+
+            let matchList = [
+                // song
+                [/song\?id=(\d+)/, 'song'],
+
+                // artist
+                [/artist\?id=(\d+)/, 'artist'],
+
+                // album
+                [/album\?id=(\d+)/, 'album'],
+
+                // playlist
+                [/playlist\?id=(\d+)/, 'collection'],
+
+                // user
+                [/home\?id=(\d+)/, 'user'],
+            ];
+            for (let [re, tp] of matchList) {
+                m = (re as RegExp).exec(chunk);
+                if (m) {
+                    originId = m[1];
+                    type = tp;
+                    break;
+                }
+            }
+
+            if (originId) {
+                let item;
+                switch (type) {
+                    case 'song':
+                        item = await this.song(originId);
+                        items.push(item);
+                        break;
+                    case 'artist':
+                        item = await this.artist(originId);
+                        items.push(item);
+                        break;
+                    case 'album':
+                        item = await this.album(originId);
+                        items.push(item);
+                        break;
+                    case 'collection':
+                        item = await this.collection(originId);
+                        items.push(item);
+                        break;
+                    case 'user':
+                        item = await this.userProfile(originId);
+                        items.push(item);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return items;
     }
 }

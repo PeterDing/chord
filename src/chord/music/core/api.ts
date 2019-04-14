@@ -9,6 +9,7 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IListOption } from 'chord/music/api/listOption';
+import { TMusicItems } from 'chord/music/api/items';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -1031,6 +1032,27 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.resizeImageUrl] Here will never be occured. [args]: ${url}`);
         }
+    }
+
+
+    /**
+     * Get music items directly from urls
+     */
+    public async fromURL(input: string): Promise<Array<TMusicItems>> {
+        let futs = [];
+        let chunks = input.split(' ');
+        for (let chunk of chunks) {
+            if (chunk.includes('xiami')) {
+                futs.push(this.xiamiApi.fromURL(chunk));
+            } else if (input.includes('163.com')) {
+                futs.push(this.neteaseApi.fromURL(chunk));
+            } else if (input.includes('qq.com')) {
+                futs.push(this.qqApi.fromURL(chunk));
+            }
+        }
+        if (futs.length == 0) return [];
+        let list = await Promise.all(futs);
+        return makeItems([].concat(...list));
     }
 
 
