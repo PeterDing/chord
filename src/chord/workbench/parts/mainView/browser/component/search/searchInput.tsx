@@ -41,7 +41,7 @@ class SearchInput extends React.Component<ISearchInputProps, any> {
         return (
             <div className='inputBox'>
                 <div className='contentSpacing'>
-                    <h4 className='inputBox-label'>Search for an Artist, Song, Album or Playlist</h4>
+                    <h4 className='inputBox-label'>Search for an Artist, Song, Album, Playlist or Put some direct urls (e.g. xiami.com/song/1)</h4>
                     <form onSubmit={(event) => { this.props.search(this.state.keyword); event.preventDefault(); }}>
                         <input className='inputBox-input'
                             type="text" placeholder='Start typing...'
