@@ -1,6 +1,6 @@
 {
     "name": "chord",
-    "version": "0.2.8",
+    "version": "0.2.9",
     "description": "Chord - A Modern Music Player",
     "homepage": "https://github.com/PeterDing/chord",
     "main": "./out/main.js",
