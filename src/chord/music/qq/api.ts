@@ -19,6 +19,7 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IListOption } from 'chord/music/api/listOption';
+import { TMusicItems } from 'chord/music/api/items';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -26,7 +27,7 @@ import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
 import { CookieJar, makeCookie, makeCookieJar } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
-import { request, IRequestOptions } from 'chord/base/node/_request';
+import { request, htmlGet, IRequestOptions } from 'chord/base/node/_request';
 
 import {
     makeSong,
@@ -229,11 +230,12 @@ export class QQMusicApi {
         let song = await this.song(songId);
         let songMid = song.songMid;
         let qqKey = await this.qqKey(guid, songMid);
+        if (!qqKey) return [];
         return this.makeAudios(song, qqKey, guid);
     }
 
 
-    public async song(songId: string): Promise<ISong> {
+    public async song(songId: string, songMid?: string): Promise<ISong> {
         let data = {
             "comm": {
                 "uin": 0,
@@ -248,7 +250,8 @@ export class QQMusicApi {
                 "module": "music.pf_song_detail_svr",
                 "method": "get_song_detail",
                 "param": {
-                    "song_id": parseInt(songId),
+                    "song_id": songId ? parseInt(songId) : undefined,
+                    "song_mid": songMid || undefined,
                 }
             },
             // "simsongs": {
@@ -299,9 +302,10 @@ export class QQMusicApi {
     }
 
 
-    public async album(albumId: string): Promise<IAlbum> {
+    public async album(albumId: string, albumMid?: string): Promise<IAlbum> {
         let params = {
-            albumid: albumId,
+            albumid: albumId || undefined,
+            albummid: albumMid || undefined,
             uin: '0',
             format: 'json',
             inCharset: 'utf-8',
@@ -336,9 +340,10 @@ export class QQMusicApi {
     }
 
 
-    public async artist(artistId: string): Promise<IArtist> {
+    public async artist(artistId: string, artistMid?: string): Promise<IArtist> {
         let params = {
-            singerid: artistId,
+            singerid: artistId || undefined,
+            singermid: artistMid || undefined,
             uin: '0',
             format: 'json',
             inCharset: 'utf-8',
@@ -1563,5 +1568,88 @@ export class QQMusicApi {
         this.ip_index -= 1;
         let newIP = this.getAudioServerIP();
         return audioUrl.replace(ip, newIP);
+    }
+
+
+    public async fromURL(input: string): Promise<Array<TMusicItems>> {
+        let chunks = input.split(' ');
+        let items = [];
+        for (let chunk of chunks) {
+            let m;
+            let mid;
+            let originId;
+            let type;
+
+            let matchList = [
+                // song
+                [/songmid=([^/#&.]+)/, 'song', 'mid'],
+                [/songid=(\d+)/, 'song', 'originId'],
+                [/song\/(\d+)_num/, 'song', 'originId'],
+                [/song\/([^/#&.]+)/, 'song', 'mid'],
+
+                // singer
+                [/singerid=(\d+)/, 'artist', 'originId'],
+                [/singermid=([^/#&.]+)/, 'artist', 'mid'],
+                [/singer\/([^/#&.]+)/, 'artist', 'mid'],
+
+                // album
+                [/album\/(\d+)_num/, 'album', 'originId'],
+                [/albumId=(\d+)/, 'album', 'originId'],
+                [/album\/([^/#&.]+)/, 'album', 'mid'],
+
+                // collection
+                [/taoge\/.+?&id=(\d+)/, 'collection', 'originId'],
+                [/playlist\/(\d+)/, 'collection', 'originId'],
+                [/playsquare\/([^/#&.]+)/, 'collection', 'originId'],
+
+                // user
+                [/profile\.html\?uin=([^/#&.]+)/, 'user', 'originId'],
+            ];
+            for (let [re, tp, idType] of matchList) {
+                m = (re as RegExp).exec(chunk);
+                if (m) {
+                    if (idType == 'mid') {
+                        mid = m[1];
+                        originId = null;
+                        type = tp;
+                    } else {
+                        mid = null;
+                        originId = m[1];
+                        type = tp;
+                    }
+                    break;
+                }
+            }
+
+            if (mid || originId) {
+                let item;
+                switch (type) {
+                    case 'song':
+                        item = await this.song(originId, mid);
+                        items.push(item);
+                        break;
+                    case 'artist':
+                        item = await this.artist(originId, mid);
+                        items.push(item);
+                        break;
+                    case 'album':
+                        item = await this.album(originId, mid);
+                        items.push(item);
+                        break;
+                    case 'collection':
+                        item = await this.collection(originId);
+                        items.push(item);
+                        break;
+                    case 'user':
+                        item = await this.userProfile(originId);
+                        items.push(item);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return items;
     }
 }

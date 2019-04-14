@@ -22,6 +22,7 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IListOption, IOption } from 'chord/music/api/listOption';
+import { TMusicItems } from 'chord/music/api/items';
 
 import { IUserProfile, IAccount } from 'chord/music/api/user';
 
@@ -157,6 +158,31 @@ export class XiamiApi {
         } else {
             loggerWarning.warning('[XiamiApi.getCookies] [Error]: (params, response):', options, result);
         }
+    }
+
+
+    public async request(method: string, url: string, data?: string): Promise<any> {
+        // init cookies
+        await this.getCookies();
+
+        let headers = { ...XiamiApi.HEADERS1 };
+        let cookieJar = makeCookieJar();
+        let cookies = { ...this.cookies };
+        for (let key in cookies) {
+            cookieJar.setCookie(cookies[key], 'http://' + DOMAIN);
+        }
+
+        let options: IRequestOptions = {
+            method,
+            url: url,
+            jar: cookieJar,
+            headers: headers,
+            body: data,
+            gzip: true,
+            resolveWithFullResponse: false,
+        };
+        let result: any = await request(options);
+        return result;
     }
 
 
@@ -1698,5 +1724,80 @@ export class AliMusicApi {
 
     public resizeImageUrl(url: string, size: ESize | number): string {
         return resizeImageUrl(url, size, (url, size) => `${url}?x-oss-process=image/resize,m_fill,w_${size},h_${size}/format,webp`);
+    }
+
+
+    public async fromURL(input: string): Promise<Array<TMusicItems>> {
+        let chunks = input.split(' ');
+        let items = [];
+        for (let chunk of chunks) {
+            let m;
+            let url;
+            let type;
+
+            let matchList = [
+                // song
+                [/song\/(\w+)/, 'song'],
+
+                // artist
+                [/artist\/(\w+)/, 'artist'],
+
+                // album
+                [/album\/(\w+)/, 'album'],
+
+                // collection
+                [/collect\/(\w+)/, 'collect'],
+
+                // user
+                [/user\/(\w+)/, 'user'],
+            ];
+            for (let [re, tp] of matchList) {
+                m = (re as RegExp).exec(chunk);
+                if (m) {
+                    type = tp;
+                    url = XiamiApi.BASICURL + type + '/' + m[1];
+                    break;
+                }
+            }
+
+            if (url) {
+                let originId;
+                if (type == 'user' || type == 'collect') {
+                    originId = m[1];
+                } else {
+                    let cn = await this.xiamiWebApi.request('GET', url);
+                    m = (new RegExp(`xiami\\.com/${type}/(\\d+)`)).exec(cn);
+                    if (!m) break;
+                    originId = m[1];
+                }
+                let item;
+                switch (type) {
+                    case 'song':
+                        item = await this.song(originId);
+                        items.push(item);
+                        break;
+                    case 'artist':
+                        item = await this.artist(originId);
+                        items.push(item);
+                        break;
+                    case 'album':
+                        item = await this.album(originId);
+                        items.push(item);
+                        break;
+                    case 'collect':
+                        item = await this.collection(originId);
+                        items.push(item);
+                        break;
+                    case 'user':
+                        item = await this.userProfile(originId);
+                        items.push(item);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return items;
     }
 }
