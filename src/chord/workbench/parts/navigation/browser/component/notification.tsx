@@ -39,13 +39,13 @@ function NoticeView(
     { type, name, message = null, className = null, click }:
         { type: string, name: string, message: string, className: string, click: TVoidFn }) {
 
-    let messageView = message ? <div dir='auto' className={`ellipsis-one-line ${className}`}>{message}</div> : null;
+    let messageView = message ? <div dir='auto' className={`ellipsis-one-line ${className}`} title={message}>{message}</div> : null;
     return (
         <li className='navBar-item navBar-item--small'>
             <div className='react-contextmenu-wrapper'>
                 <div className='navBar-link-text-with-icon-wrapper'>
                     <div className='navbar-link__text'>
-                        <div dir='auto' className='ellipsis-one-line cursor-pointer'
+                        <div dir='auto' className='ellipsis-one-line cursor-pointer' title={name}
                             onClick={() => click()}>
                             {name}</div>
 
@@ -61,18 +61,18 @@ function NoticeView(
 }
 
 
-function PlayItemNoticeView({ item, handleShowItem }: { item: Titems, handleShowItem: () => void }) {
+function PlayItemNoticeView({ item, handleShowItem }: { item: Titems, handleShowItem: TVoidFn }) {
     let name = getItemName(item);
     let type = getItemType(item);
     return <NoticeView type={type} name={name} message={null} className={null} click={handleShowItem} />;
 }
 
 
-function FilterSongView({ item, message, }: { item: Titems, message: string }) {
+function FilterSongView({ item, message, handleShowItem }: { item: Titems, message: string, handleShowItem: TVoidFn }) {
     let name = getItemName(item);
     let type = getItemType(item);
     let msg = `${message} songs aren't available`;
-    return <NoticeView type={type} name={name} message={msg} className='warning-warn' click={voidFn} />;
+    return <NoticeView type={type} name={name} message={msg} className='warning-warn' click={handleShowItem} />;
 }
 
 
@@ -84,11 +84,22 @@ function NoAudioView({ item }: { item: ISong }) {
 }
 
 
-function NoSongView({ item }: { item: Titems }) {
+function NoSongView({ item, handleShowItem }: { item: Titems, handleShowItem: TVoidFn }) {
     let name = getItemName(item);
     let type = getItemType(item);
     let msg = 'No song is available';
-    return <NoticeView type={type} name={name} message={msg} className='warning-error' click={voidFn} />;
+    return <NoticeView type={type} name={name} message={msg} className='warning-error' click={handleShowItem} />;
+}
+
+
+function LoginSeccess({ item, handleShowItem }: { item: IUserProfile, handleShowItem: TVoidFn }) {
+    let name = getItemName(item);
+    return <NoticeView type={item.origin} name={name} message={'Login Seccess'} className='warning-ok' click={handleShowItem} />
+}
+
+
+function LoginFail({ origin, message }: { origin: string, message: string }) {
+    return <NoticeView type={origin} name={'Login Fail'} message={message} className='warning-error' click={voidFn} />
 }
 
 
@@ -149,12 +160,18 @@ class Notification extends React.Component<INavigationNotificationProps, INaviga
                 case NOTICES.PLAY_USERPROFILE:
                 case NOTICES.PLAY_LIST:
                     return <PlayItemNoticeView item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
+
                 case NOTICES.FILTER_SONGS:
-                    return <FilterSongView item={notice.item} message={notice.message} key={key} />;
+                    return <FilterSongView item={notice.item} message={notice.message} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
                 case NOTICES.NO_AUDIO:
                     return <NoAudioView item={notice.item} key={key} />;
                 case NOTICES.NO_SONG:
-                    return <NoSongView item={notice.item} key={key} />;
+                    return <NoSongView item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
+
+                case NOTICES.LOGIN_SECCESS:
+                    return <LoginSeccess item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
+                case NOTICES.LOGIN_FAIL:
+                    return <LoginFail origin={notice.item} message={notice.message} key={key} />;
                 default:
                     throw new Error(`[_makeNoticeViews]: unknown notice type: ${notice.type}`);
             }
