@@ -103,7 +103,13 @@ export function makeSong(info: any): ISong {
     let songInfo = info['track_info'] || info;
     let otherInfo = info['info'] || [];
 
-    let songOriginalId = (songInfo['id'] || songInfo['songid']).toString();
+    let songOriginalId = songInfo['id'] || songInfo['songid'];
+
+    // filter songs which have not original id
+    // e.g. https://y.qq.com/n/yqq/song2/112/0045hAmL0VbG1A.html at #19
+    if (!songOriginalId) return null;
+
+    songOriginalId = songOriginalId.toString();
     let songMid = songInfo['mid'] || songInfo['songmid'];
     let songMediaMid = songInfo['strMediaMid'] || (songInfo['file'] ? songInfo['file']['media_mid'] : songMid);
     let songName = songInfo['name'] || songInfo['songname'];
@@ -206,7 +212,7 @@ export function makeSong(info: any): ISong {
 
 
 export function makeSongs(info: any): Array<ISong> {
-    return (info || []).map(songInfo => makeSong(songInfo));
+    return (info || []).map(songInfo => makeSong(songInfo)).filter(song => !!song);
 }
 
 
@@ -260,7 +266,7 @@ export function makeAlbum(info: any): IAlbum {
 
     let releaseDate = Date.parse(info['aDate'] || info['pub_time'] || info['publicTime'] || info['public_time']);
 
-    let songs: Array<ISong> = (info['list'] || []).map(song => makeSong(song));
+    let songs: Array<ISong> = (info['list'] || []).map(song => makeSong(song)).filter(song => !!song);
 
     let album: IAlbum = {
         albumId: _getAlbumId(albumOriginalId),
@@ -346,7 +352,7 @@ export function makeCollection(info: any): ICollection {
     collectionName = decodeHtml(collectionName);
 
     let tags: Array<ITag> = (info['tags'] || []).map(tag => ({ id: tag['id'].toString(), name: tag['name'] }));
-    let songs: Array<ISong> = (info['songlist'] || []).map(songInfo => makeSong(songInfo));
+    let songs: Array<ISong> = (info['songlist'] || []).map(songInfo => makeSong(songInfo)).filter(song => !!song);
     let duration = songs.length != 0 ? songs.map(s => s.duration).reduce((x, y) => x + y) : null;
 
     let userOriginalId;
