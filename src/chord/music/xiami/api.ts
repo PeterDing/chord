@@ -1333,6 +1333,11 @@ export class AliMusicApi {
          * userId: number
          */
 
+        if (json.ret[0].search('SUCCESS') == -1) {
+            let message = json.ret[0].split('::')[1];
+            throw new Error(message);
+        }
+
         let info = json.data.data;
         let account = makeAccount(info);
         let userProfile = await this.userProfile(account.user.userOriginalId);

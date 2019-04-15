@@ -1,5 +1,9 @@
 'use strict';
 
+import { Logger, LogLevel } from 'chord/platform/log/common/log';
+import { filenameToNodeName } from 'chord/platform/utils/common/paths';
+const loggerWarning = new Logger(filenameToNodeName(__filename), LogLevel.Warning);
+
 import { ok } from 'chord/base/common/assert';
 import { md5 } from 'chord/base/node/crypto';
 
@@ -168,7 +172,12 @@ export class NeteaseMusicApi {
         ok(result, `[ERROR] [NeteaseMusicApi.request]: url: ${url}, result is ${result}`);
 
         let resultCode = init ? result.body['code'] : result['code'];
-        ok(resultCode == 200, `[ERROR] [NeteaseMusicApi.request]: url: ${url}, result.code is ${resultCode}, result is ${JSON.stringify(result)}`);
+        if (resultCode != 200) {
+            loggerWarning.warning(`[ERROR] [NeteaseMusicApi.request]: url: ${url}, result.code is ${resultCode}, result is ${JSON.stringify(result)}`);
+
+            let message = init ? result.body['msg'] : result['msg'];
+            throw new Error(message);
+        }
         return result;
     }
 
