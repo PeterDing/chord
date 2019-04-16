@@ -4,6 +4,8 @@ import { Store } from 'redux';
 
 import { hasSongAudio } from 'chord/workbench/api/utils/song';
 
+import { IUserProfile } from 'chord/music/api/user';
+
 import { INotice, NOTICES } from 'chord/workbench/api/common/state/notification';
 
 
@@ -46,4 +48,14 @@ export function noticePlayItem<T>(item: T, count?: number, missing?: number) {
             notice(NOTICES['PLAY_' + item['type'].toUpperCase()], item);
         }
     }
+}
+
+
+export function loginSeccess(userProfile: IUserProfile) {
+    notice(NOTICES.LOGIN_SECCESS, userProfile);
+}
+
+
+export function loginFail(origin: string, message: string) {
+    notice(NOTICES.LOGIN_FAIL, origin, message);
 }

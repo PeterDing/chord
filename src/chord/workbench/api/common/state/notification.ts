@@ -18,6 +18,9 @@ export enum NOTICES {
     FILTER_SONGS,
     // Song which has no audio.
     NO_AUDIO,
+
+    LOGIN_SECCESS,
+    LOGIN_FAIL,
 }
 
 
