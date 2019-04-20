@@ -121,3 +121,8 @@
     padding-top: 1px;
     display: block
 }
+
+.notification-container {
+    height: 210px;
+    overflow: auto;
+}

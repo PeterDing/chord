@@ -188,7 +188,7 @@ class PlayListContent extends React.Component<IPlayListContentProps, any> {
         return (
             <div>
                 <div className='playlist-content-songs'>
-                    <div style={{ height: '340px', overflow: 'auto' }}>
+                    <div className='playlist-content-songs-container'>
                         {songItems}
                     </div>
 

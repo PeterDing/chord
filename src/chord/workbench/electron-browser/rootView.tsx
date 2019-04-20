@@ -27,12 +27,31 @@ function closeMenu() {
     });
 }
 
+
 /**
  * window scroll event
  */
 window.addEventListener('scroll', function() {
     closeMenu();
 });
+
+
+// Set
+// :root {
+//    --mainview-scrollbar-background: xxx
+// }
+function setScrollbarBackground(background: string) {
+    let css = '--mainview-scrollbar-background: ' + background;
+    let rules = (document.styleSheets[0] as any).rules;
+    for (let index = 0; index < rules.length; index += 1) {
+        let rule = rules[index];
+        if (rule.selectorText == ':root') {
+            rule.style.cssText = css;
+            return;
+        }
+    }
+    (document.styleSheets[0] as any).addRule(':root', css);
+}
 
 
 class RootView extends React.Component<IRootViewProps, any> {
@@ -51,6 +70,10 @@ class RootView extends React.Component<IRootViewProps, any> {
         let viewKey = this.props.viewKey;
         let background = getMainBackground(viewKey);
         let windowsControlBar = isWindows ? <WindowsControlBar /> : null;
+
+        if (isWindows) {
+            setScrollbarBackground(background);
+        }
 
         return (
             <div onClick={() => this.handleGlobalClickAndSCroll()}
