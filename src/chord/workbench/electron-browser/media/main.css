@@ -1,4 +1,5 @@
 @import '../../parts/common/media/common.css';
+@import './windows.css';
 
 * {
     margin: 0;
