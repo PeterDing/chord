@@ -49,8 +49,6 @@ import { getACSRFToken } from 'chord/music/qq/util';
 
 import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
 
-import { QQ_AUDIO_SERVER_IPS } from 'chord/music/qq/ips';
-
 import { ARTIST_LIST_OPTIONS } from 'chord/music/qq/common';
 
 
@@ -146,7 +144,7 @@ export class QQMusicApi {
     constructor() {
         this.cookieJar = makeCookieJar();
         this.ip_index = -1;
-        this.ips = [...QQ_AUDIO_SERVER_IPS];
+        this.ips = [];
     }
 
 
@@ -225,7 +223,23 @@ export class QQMusicApi {
     }
 
 
+    /**
+     * Get available qq music server ips
+     */
+    public async getIPs(): Promise<Array<string>> {
+        let url = 'https://raw.githubusercontent.com/PeterDing/chord-data/master/qq-ip-checker/qq-ips.txt';
+        let cn = await htmlGet(url);
+        let ips = (cn as any).split('\n').map(ip => ip.trim() || null).filter(ip => ip);
+        return ips;
+    }
+
+
     public async audios(songId: string): Promise<Array<IAudio>> {
+        if (this.ips.length == 0) {
+            this.ips = await this.getIPs();
+            this.ip_index = -1;
+        }
+
         let guid = this.makeguid();
         let song = await this.song(songId);
         let songMid = song.songMid;
