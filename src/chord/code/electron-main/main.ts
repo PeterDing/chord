@@ -10,6 +10,8 @@ import * as path from 'path';
 import { app, BrowserWindow, Menu } from 'electron';
 import { menuTemplate } from 'chord/code/electron-main/menu/template';
 
+import { isWindows, isMacintosh } from 'chord/base/common/platform';
+
 
 logger.info('electron main active');
 
@@ -27,7 +29,7 @@ app.on('window-all-closed', () => {
 
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
+    if (!isMacintosh) {
         app.quit();
     }
 });
@@ -53,8 +55,12 @@ function createWindow() {
     win = new BrowserWindow({
         height: 800,
         width: 1150,
-        // For mac, linux
+
+        // For mac, linux, frameless
         titleBarStyle: 'hiddenInset',
+
+        // For windows, frameless
+        frame: isWindows ? false : true,
     });
 
 
