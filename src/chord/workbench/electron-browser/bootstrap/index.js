@@ -2,6 +2,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const ps = require('process');
 
 // path: chord/loader.js
 const loaderFilename = path.join(__dirname + '../../../../loader.js');
@@ -44,3 +45,9 @@ let bootstrap = function(entrypoint, onLoad, onError) {
 // load css-loader
 bootstrap('chord/css');
 bootstrap('chord/workbench/electron-browser/main');
+
+
+let isWindows = (ps.platform === 'win32');
+if (isWindows) {
+    bootstrap('chord/workbench/electron-browser/scrollbar');
+}
