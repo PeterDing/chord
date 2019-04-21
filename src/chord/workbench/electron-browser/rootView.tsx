@@ -17,7 +17,7 @@ import MainView from 'chord/workbench/parts/mainView/browser/mainView';
 
 import WindowsControlBar from 'chord/workbench/electron-browser/windows';
 
-import { isWindows } from 'chord/base/common/platform';
+import { isMacintosh } from 'chord/base/common/platform';
 
 
 function closeMenu() {
@@ -69,9 +69,9 @@ class RootView extends React.Component<IRootViewProps, any> {
     render() {
         let viewKey = this.props.viewKey;
         let background = getMainBackground(viewKey);
-        let windowsControlBar = isWindows ? <WindowsControlBar /> : null;
+        let windowsControlBar = !isMacintosh ? <WindowsControlBar /> : null;
 
-        if (isWindows) {
+        if (!isMacintosh) {
             setScrollbarBackground(background);
         }
 

@@ -47,7 +47,7 @@ bootstrap('chord/css');
 bootstrap('chord/workbench/electron-browser/main');
 
 
-let isWindows = (ps.platform === 'win32');
-if (isWindows) {
+let isMacintosh  = (ps.platform === 'darwin');
+if (!isMacintosh) {
     bootstrap('chord/workbench/electron-browser/scrollbar');
 }
