@@ -1,3 +1,59 @@
+/* mainview scrollbar */
 ::-webkit-scrollbar {
-    width: 0px;
+    width: 8px;
+    opacity: 0;
+    background-image: var(--mainview-scrollbar-background);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #383838;
+}
+
+::-webkit-scrollbar-track {
+    opacity: 0;
+}
+
+
+/* playlist scrollbar */
+.playlist-content-songs-container::-webkit-scrollbar {
+    width: 6px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+}
+
+.playlist-content-songs-container::-webkit-scrollbar-thumb {
+    background-color: #383838;
+}
+
+.playlist-content-songs-container::-webkit-scrollbar-track {
+    opacity: 0;
+}
+
+
+/* lyric scrollbar */
+.lyric-content-container::-webkit-scrollbar {
+    width: 6px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+}
+
+.lyric-content-container::-webkit-scrollbar-thumb {
+    background-color: #383838;
+}
+
+.lyric-content-container::-webkit-scrollbar-track {
+    opacity: 0;
+}
+
+
+/* notification scrollbar */
+.notification-container::-webkit-scrollbar {
+    width: 4px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+}
+
+.notification-container::-webkit-scrollbar-thumb {
+    background-color: #303030;
+}
+
+.notification-container::-webkit-scrollbar-track {
+    opacity: 0;
 }

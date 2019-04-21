@@ -27,6 +27,11 @@
     position: absolute
 }
 
+.lyric-content-container {
+    height: 346px;
+    overflow: auto;
+}
+
 .no-lyric {
     margin: auto;
     width: 50%;

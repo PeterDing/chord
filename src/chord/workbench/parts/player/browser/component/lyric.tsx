@@ -245,7 +245,7 @@ export default class LyricView extends React.Component<ILyricProps, ILyricState>
 
         return (
             <div className='lyric-content'>
-                <div style={{ height: '346px', overflow: 'auto' }}>
+                <div className='lyric-content-container'>
                     {chunksView}
                 </div>
 

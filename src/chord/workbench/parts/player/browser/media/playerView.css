@@ -397,7 +397,6 @@
     height: 60vh;
     bottom: 0;
     z-index: 100;
-    overflow: scroll;
     background-image: linear-gradient(60deg, #29323c 0%, #020304 100%);
 }
 
@@ -406,6 +405,11 @@
     padding: 10px 10px 91px 10px;
     width: 60%;
     left: 0;
+}
+
+.playlist-content-songs-container {
+    height: 340px;
+    overflow: auto;
 }
 
 .playlist-content-song-detail {

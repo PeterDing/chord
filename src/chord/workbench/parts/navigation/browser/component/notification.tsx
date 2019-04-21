@@ -185,10 +185,8 @@ class Notification extends React.Component<INavigationNotificationProps, INaviga
                 <h2 className='navBar-group-header cursor-pointer'
                     onClick={() => this._toggle()}>
                     NOTIFICATION</h2>
-                <ul style={{
-                    height: '210px', overflow: 'auto',
-                    display: this.state.toggle ? 'block' : 'none'
-                }}>
+                <ul className='notification-container'
+                    style={{ display: this.state.toggle ? 'block' : 'none' }}>
                     {entries}
                 </ul>
             </div>
