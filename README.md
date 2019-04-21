@@ -16,7 +16,7 @@ Chord uses the framework of spotify UI.
 
 ## Features
 
-* Support Xiami 虾米, Netease music 网易云音乐, QQ music 腾讯音乐
+* Support Xiami 虾米音乐, Netease music 网易云音乐, QQ music 腾讯音乐
 * Support functions:  
   Search  
   Play (shuffle, repeat)  
@@ -34,6 +34,7 @@ Chord uses the framework of spotify UI.
 * Select artists by options
 * Toggle lyric
 * Notification
+* Frameless window
 * Common functions for player
 
 ## Todos
