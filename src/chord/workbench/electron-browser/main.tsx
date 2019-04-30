@@ -22,6 +22,8 @@ import { handleQuit } from 'chord/workbench/electron-browser/action/quit';
 
 import { webFrame } from 'electron';
 
+import 'chord/workbench/events/player';
+
 
 logger.info('electron rendering process activate')
 
