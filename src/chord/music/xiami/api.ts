@@ -402,6 +402,7 @@ export class AliMusicApi {
         'Cache-Control': 'no-cache',
     };
 
+    // static readonly BASICURL = 'https://acs.m.xiami.com/h5/';
     static readonly BASICURL = 'http://h5api.m.xiami.com/h5/';
     static readonly PLATFORM_ID = 'h5';
     static readonly VERSION = '1.0';
@@ -965,12 +966,16 @@ export class AliMusicApi {
     /**
      * Get a collection, the collectionId must be number string
      */
-    public async collection(collectionId: string): Promise<ICollection> {
+    public async collection(collectionId: string, page: number = 1, size: number = 100): Promise<ICollection> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.collection,
             {
                 listId: collectionId,
                 isFullTags: false,
+                pagingVO: {
+                    page,
+                    pageSize: size,
+                }
             },
             `http://h.xiami.com/collect_detail.html?id=${collectionId}&f=&from=&ch=`,
         );

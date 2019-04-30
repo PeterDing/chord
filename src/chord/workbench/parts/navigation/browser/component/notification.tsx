@@ -103,6 +103,24 @@ function LoginFail({ origin, message }: { origin: string, message: string }) {
 }
 
 
+function SwitchKbps({ item, message }: { item: ISong, message: string }) {
+    return <NoticeView type='SONG' name={item.songName} message={'Switch to ' + message + 'kbps'} className='warning-warn' click={voidFn} />
+}
+
+
+function BlockedKbps({ item, message }: { item: ISong, message: string }) {
+    return <NoticeView type='SONG' name={item.songName} message={message + 'kbps' + ' is blocked'} className='warning-warn' click={voidFn} />
+}
+
+
+function ServerFail({ item, handleShowItem }: { item: Titems, handleShowItem: TVoidFn }) {
+    let name = getItemName(item);
+    let type = getItemType(item);
+    let msg = 'Remote Server Fail';
+    return <NoticeView type={type} name={name} message={msg} className='warning-error' click={handleShowItem} />;
+}
+
+
 interface INavigationNotificationProps {
     entries: Array<INotice<any>>;
 
@@ -172,6 +190,15 @@ class Notification extends React.Component<INavigationNotificationProps, INaviga
                     return <LoginSeccess item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
                 case NOTICES.LOGIN_FAIL:
                     return <LoginFail origin={notice.item} message={notice.message} key={key} />;
+
+                case NOTICES.SWITCH_KBPS:
+                    return <SwitchKbps item={notice.item} message={notice.message} key={key} />;
+                case NOTICES.BLOCKED_KBPS:
+                    return <BlockedKbps item={notice.item} message={notice.message} key={key} />;
+
+                case NOTICES.SERVER_FAIL:
+                    return <ServerFail item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
+
                 default:
                     throw new Error(`[_makeNoticeViews]: unknown notice type: ${notice.type}`);
             }

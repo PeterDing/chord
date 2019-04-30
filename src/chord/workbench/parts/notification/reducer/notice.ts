@@ -5,7 +5,7 @@ import { INotificationState } from 'chord/workbench/api/common/state/notificatio
 import { INoticeAct } from 'chord/workbench/api/common/action/notification';
 
 
-const MAX_SIZE = 10;
+const MAX_SIZE = 100;
 
 export function addNotice(state: INotificationState, act: INoticeAct): INotificationState {
     equal(act.act, 'c:notification:notice');

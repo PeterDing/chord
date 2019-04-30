@@ -208,7 +208,9 @@ export class QQMusicApi {
 
 
     public makeAudios(song: ISong, qqKey: string, guid: string): Array<IAudio> {
-        let uri = this.ip_index == -1 ? QQMusicApi.AUDIO_URI : this.getAudioURI();
+        if (!qqKey) return [];
+
+        let uri = QQMusicApi.AUDIO_URI;
         return song.audios.filter(audio => !!AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`])
             .map(audio => {
                 audio.url = uri
@@ -235,10 +237,10 @@ export class QQMusicApi {
 
 
     public async audios(songId: string): Promise<Array<IAudio>> {
-        if (this.ips.length == 0) {
-            this.ips = await this.getIPs();
-            this.ip_index = -1;
-        }
+        // if (this.ips.length == 0) {
+        // this.ips = await this.getIPs();
+        // this.ip_index = -1;
+        // }
 
         let guid = this.makeguid();
         let song = await this.song(songId);

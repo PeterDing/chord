@@ -18,9 +18,16 @@ export enum NOTICES {
     FILTER_SONGS,
     // Song which has no audio.
     NO_AUDIO,
+    // switch to some kbps
+    SWITCH_KBPS,
+    // the audio which has this kbps is blocked by server
+    BLOCKED_KBPS,
 
     LOGIN_SECCESS,
     LOGIN_FAIL,
+
+    // Can't connect server
+    SERVER_FAIL,
 }
 
 

@@ -23,16 +23,6 @@ import { userConfiguration } from 'chord/preference/configuration/user';
 
 import { makeItem, makeItems } from 'chord/music/core/parser';
 
-import { CAudio } from 'chord/workbench/api/node/audio';
-
-import { Logger } from 'chord/platform/log/common/log';
-import { filenameToNodeName } from 'chord/platform/utils/common/paths';
-
-
-const logger = new Logger(filenameToNodeName(__filename));
-
-const MAX_RELOAD_COUNT = 50;
-
 
 export class Music {
 
@@ -40,11 +30,8 @@ export class Music {
     neteaseApi: NeteaseMusicApi;
     qqApi: QQMusicApi;
 
-    private audioReloadCount: { [songId: string]: number };
 
     constructor() {
-        this.audioReloadCount = {};
-
         // initiate xiami api
         let xiamiApi = new AliMusicApi();
         xiamiApi.setUserId('1');
@@ -61,12 +48,6 @@ export class Music {
         this.setAccount(userConfig.xiami && userConfig.xiami.account);
         this.setAccount(userConfig.netease && userConfig.netease.account);
         this.setAccount(userConfig.qq && userConfig.qq.account);
-
-        this.onPlay = this.onPlay.bind(this);
-        this.onLoadError = this.onLoadError.bind(this);
-
-        CAudio.registerOnPlay('musicApi.onPlay', this.onPlay);
-        CAudio.registerOnLoadError('musicApi.onLoadError', this.onLoadError);
     }
 
 
@@ -295,18 +276,18 @@ export class Music {
     /**
      * collectionId is Chord's collection id, not collection original id
      */
-    public async collection(collectionId: string): Promise<ICollection> {
+    public async collection(collectionId: string, offset: number = 0, limit: number = 1000): Promise<ICollection> {
         let collection;
         let originType = getOrigin(collectionId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                collection = await this.xiamiApi.collection(originType.id);
+                collection = await this.xiamiApi.collection(originType.id, offset, limit);
                 break;
             case ORIGIN.netease:
                 collection = await this.neteaseApi.collection(originType.id);
                 break;
             case ORIGIN.qq:
-                collection = await this.qqApi.collection(originType.id);
+                collection = await this.qqApi.collection(originType.id, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -1053,41 +1034,6 @@ export class Music {
         if (futs.length == 0) return [];
         let list = await Promise.all(futs);
         return makeItems([].concat(...list));
-    }
-
-
-    /**
-     * Handle playing song;
-     */
-    public onPlay(soundId?: number, store?, audioUrl?: string, songId?: string) {
-        delete this.audioReloadCount[songId];
-    }
-
-
-    /**
-     * Handle loading audio errors
-     */
-    public onLoadError(soundId?: number, store?, audioUrl?: string, songId?: string) {
-        let count = this.audioReloadCount[songId] || 0;
-        if (count >= MAX_RELOAD_COUNT) {
-            CAudio.destroy();
-            return;
-        }
-        if (audioUrl.indexOf('qq.com') != -1) {
-
-            // this song needs to pay
-            if (audioUrl.endsWith('&vkey=')) {
-                delete this.audioReloadCount[songId];
-                CAudio.destroy();
-                return;
-            }
-
-            let newAudioUrl = this.qqApi.changeIP(audioUrl);
-            logger.info('change qq audio ip:', songId, audioUrl, 'to', newAudioUrl, 'reload count: ' + count);
-            CAudio.makeAudio(newAudioUrl, songId);
-            CAudio.play();
-            this.audioReloadCount[songId] = count + 1;
-        }
     }
 }
 
