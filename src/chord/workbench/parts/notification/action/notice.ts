@@ -4,6 +4,7 @@ import { Store } from 'redux';
 
 import { hasSongAudio } from 'chord/workbench/api/utils/song';
 
+import { ISong } from 'chord/music/api/song';
 import { IUserProfile } from 'chord/music/api/user';
 
 import { INotice, NOTICES } from 'chord/workbench/api/common/state/notification';
@@ -58,4 +59,19 @@ export function loginSeccess(userProfile: IUserProfile) {
 
 export function loginFail(origin: string, message: string) {
     notice(NOTICES.LOGIN_FAIL, origin, message);
+}
+
+
+export function noticeBlockedKbps(item: ISong, kbps: number) {
+    notice(NOTICES.BLOCKED_KBPS, item, kbps.toString());
+}
+
+
+export function noticeSwitchKbps(item: ISong, kbps: number) {
+    notice(NOTICES.SWITCH_KBPS, item, kbps.toString());
+}
+
+
+export function noticeServerFail<T>(item: T) {
+    notice(NOTICES.SERVER_FAIL, item);
 }
