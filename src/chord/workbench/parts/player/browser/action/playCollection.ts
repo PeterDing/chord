@@ -18,7 +18,8 @@ export async function handlePlayCollection(collection: ICollection): Promise<IPl
     let count = collection.songCount || songs.length;
 
     if (!songs.length) {
-        let _collection = await musicApi.collection(collection.collectionId);
+        let _collection = await musicApi.collection(
+            collection.collectionId, 0, collection.songCount || 1000);
         count = _collection.songCount || _collection.songs.length;
         songs = _collection.songs
             .filter(song => !song.disable)

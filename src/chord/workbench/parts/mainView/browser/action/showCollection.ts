@@ -8,7 +8,10 @@ import { musicApi } from 'chord/music/core/api';
 
 
 export async function handleShowCollectionView(collection: ICollection): Promise<IShowCollectionAct> {
-    if (!collection.songs || !collection.songs.length) {
+    if (!collection.songs
+        || !collection.songs.length
+        || !collection.songCount
+        || collection.songCount != collection.songs.length) {
         collection = await musicApi.collection(collection.collectionId);
     }
     return {
