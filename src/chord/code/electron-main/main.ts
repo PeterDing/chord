@@ -36,9 +36,6 @@ app.on('window-all-closed', () => {
 
 app.on('before-quit', (event) => {
     logger.info('[event]: before-quit');
-
-    // Send quit signal to chord
-    win.webContents.send('chord-quit', null);
 });
 
 app.on('activate', () => {
