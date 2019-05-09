@@ -77,7 +77,8 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
                         {/* Collection User Name */}
                         <div className="mo-meta ellipsis-one-line">
                             <span className='link-subtle a-like cursor-pointer'
-                                onClick={() => this.props.handleShowUserProfileViewById(collection.userId, collection.userMid)}>
+                                onClick={() => this.props.handleShowUserProfileViewById(
+                                    collection.userId, collection.userMid, collection.userName)}>
                                 {collection.userName}</span>
                         </div>
 
@@ -109,7 +110,7 @@ function mapDispatchToProps(dispatch) {
         handleShowCollectionView: collection => handleShowCollectionView(collection).then(act => dispatch(act)),
         showCollectionMenu: (e, collection) => dispatch(showCollectionMenu(e, collection)),
 
-        handleShowUserProfileViewById: (userId, userMid) => handleShowUserProfileViewById(userId, userMid).then(act => dispatch(act)),
+        handleShowUserProfileViewById: (userId, userMid, userName) => handleShowUserProfileViewById(userId, userMid, userName).then(act => dispatch(act)),
     };
 }
 

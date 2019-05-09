@@ -9,6 +9,6 @@ import { IShowUserProfileAct } from 'chord/workbench/api/common/action/mainView'
 export interface ICollectionViewProps {
     collection: ICollection;
     handlePlayCollection: (collection: ICollection) => Promise<IPlayCollectionAct>;
-    handleShowUserProfileViewById: (userId: string, userMid: string) => Promise<IShowUserProfileAct>;
+    handleShowUserProfileViewById: (userId: string, userMid: string, userName: string) => Promise<IShowUserProfileAct>;
     showCollectionMenu: (e: React.MouseEvent<HTMLDivElement>, collection: ICollection) => IShowCollectionMenuAct;
 }
