@@ -725,6 +725,22 @@ export class AliMusicApi {
     /**
      * Get a song, the songId must be number string
      */
+    public async song2(songId: string): Promise<ISong> {
+        let json = await this.request(
+            AliMusicApi.NODE_MAP.song,
+            { songId },
+            `http://h.xiami.com/song.html?id=${songId}&f=&from=&ch=`,
+        );
+
+        let info = json.data.data.songDetail;
+        let song = makeAliSong(info);
+        return song;
+    }
+
+
+    /**
+     * Get a song, the songId must be number string
+     */
     public async song(songId: string): Promise<ISong> {
         let json = await this.request(
             AliMusicApi.NODE_MAP.songs,
@@ -1227,7 +1243,16 @@ export class AliMusicApi {
                     id: item['name'],
                 })),
             }));
-        return options;
+
+        let option = {
+                type: null,
+                name: '全部歌单',
+                items: [{
+                    name: '全部',
+                    id: null,
+                }],
+        };
+        return [option, ...options];
     }
 
 
