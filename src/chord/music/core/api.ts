@@ -18,10 +18,24 @@ import { ESize } from 'chord/music/common/size';
 import { AliMusicApi } from 'chord/music/xiami/api';
 import { NeteaseMusicApi } from 'chord/music/netease/api';
 import { QQMusicApi } from 'chord/music/qq/api';
+import { QianQianApi } from 'chord/music/qianqian/api';
 
 import { userConfiguration } from 'chord/preference/configuration/user';
 
 import { makeItem, makeItems } from 'chord/music/core/parser';
+
+
+function insertMerge<T>(list: Array<Array<T>>): Array<T> {
+    let items = [];
+    let maxLength = Math.max(...list.map(i => i.length));
+    for (let index = 0; index < maxLength; index++) {
+        for (let array of list) {
+            let item = array[index];
+            if (item) items.push(item);
+        }
+    }
+    return items;
+}
 
 
 export class Music {
@@ -29,6 +43,7 @@ export class Music {
     xiamiApi: AliMusicApi;
     neteaseApi: NeteaseMusicApi;
     qqApi: QQMusicApi;
+    qianqianApi: QianQianApi;
 
 
     constructor() {
@@ -42,6 +57,9 @@ export class Music {
 
         // initiate qq api
         this.qqApi = new QQMusicApi();
+
+        // initiate qianqian api
+        this.qianqianApi = new QianQianApi();
 
         // set user configuration
         let userConfig = userConfiguration.getConfig();
@@ -66,6 +84,9 @@ export class Music {
             case ORIGIN.qq:
                 this.qqApi = new QQMusicApi();
                 break;
+            case ORIGIN.qianqian:
+                this.qianqianApi = new QianQianApi();
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.clean] Here will never be occured. [args]: ${origin}`);
@@ -85,6 +106,8 @@ export class Music {
                 return await this.neteaseApi.audios(originType.id);
             case ORIGIN.qq:
                 return await this.qqApi.audios(originType.id);
+            case ORIGIN.qianqian:
+                return await this.qianqianApi.audios(originType.id);
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.audio] Here will never be occured. [args]: ${songId}`);
@@ -142,6 +165,9 @@ export class Music {
             case ORIGIN.qq:
                 song = await this.qqApi.song(originType.id);
                 break;
+            case ORIGIN.qianqian:
+                song = await this.qianqianApi.song(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.song] Here will never be occured. [args]: ${songId}`);
@@ -163,6 +189,9 @@ export class Music {
                 break;
             case ORIGIN.qq:
                 lyric = await this.qqApi.lyric(originType.id, song.songMid);
+                break;
+            case ORIGIN.qianqian:
+                lyric = await this.qianqianApi.lyric(originType.id, song);
                 break;
             default:
                 // Here will never be occured.
@@ -188,6 +217,9 @@ export class Music {
             case ORIGIN.qq:
                 artist = await this.qqApi.artist(originType.id);
                 break;
+            case ORIGIN.qianqian:
+                artist = await this.qianqianApi.artist(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artist] Here will never be occured. [args]: ${artistId}`);
@@ -212,6 +244,9 @@ export class Music {
                 break;
             case ORIGIN.qq:
                 songs = await this.qqApi.artistSongs(originType.id, offset, limit);
+                break;
+            case ORIGIN.qianqian:
+                songs = await this.qianqianApi.artistSongs(originType.id, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -239,6 +274,9 @@ export class Music {
             case ORIGIN.qq:
                 albums = await this.qqApi.artistAlbums(artistMid, offset, limit);
                 break;
+            case ORIGIN.qianqian:
+                albums = await this.qianqianApi.artistAlbums(originType.id, offset, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artistAlbums] Here will never be occured. [args]: ${artistId}`);
@@ -263,6 +301,9 @@ export class Music {
                 break;
             case ORIGIN.qq:
                 album = await this.qqApi.album(originType.id);
+                break;
+            case ORIGIN.qianqian:
+                album = await this.qianqianApi.album(originType.id);
                 break;
             default:
                 // Here will never be occured.
@@ -289,6 +330,9 @@ export class Music {
             case ORIGIN.qq:
                 collection = await this.qqApi.collection(originType.id, offset, limit);
                 break;
+            case ORIGIN.qianqian:
+                collection = await this.qianqianApi.collection(originType.id, offset, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.collection] Here will never be occured. [args]: ${collectionId}`);
@@ -302,22 +346,14 @@ export class Music {
      * xiami searching based on page
      */
     public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
-        let items = [];
-        let [xiamiSongs, neteaseSongs, qqSongs] = await Promise.all([
+        let list = await Promise.all([
             this.xiamiApi.searchSongs(keyword, offset + 1, limit),
             this.neteaseApi.searchSongs(keyword, offset * limit, limit),
             this.qqApi.searchSongs(keyword, offset * limit, limit),
+            this.qianqianApi.searchSongs(keyword, offset * limit, limit),
         ]);
 
-        let maxLength = Math.max(xiamiSongs.length, neteaseSongs.length);
-        for (let index = 0; index < maxLength; index++) {
-            let s1 = xiamiSongs[index];
-            s1 ? items.push(s1) : null;
-            let s2 = neteaseSongs[index];
-            s2 ? items.push(s2) : null;
-            let s3 = qqSongs[index];
-            s3 ? items.push(s3) : null;
-        }
+        let items = insertMerge(list);
 
         items = makeItems(items);
         return items;
@@ -325,20 +361,14 @@ export class Music {
 
 
     public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
-        let items = [];
-        let [xiamiArtists, neteaseArtists] = await Promise.all([
+        let list = await Promise.all([
             this.xiamiApi.searchArtists(keyword, offset + 1, limit),
             this.neteaseApi.searchArtists(keyword, offset * limit, limit),
+            this.qianqianApi.searchArtists(keyword, offset * limit, limit),
+            // qq doesn't support to search artist
         ]);
-        // qq doesn't support to search artist
 
-        let maxLength = Math.max(xiamiArtists.length, neteaseArtists.length);
-        for (let index = 0; index < maxLength; index++) {
-            let s1 = xiamiArtists[index];
-            s1 ? items.push(s1) : null;
-            let s2 = neteaseArtists[index];
-            s2 ? items.push(s2) : null;
-        }
+        let items = insertMerge(list);
 
         items = makeItems(items);
         return items;
@@ -346,22 +376,14 @@ export class Music {
 
 
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
-        let items = [];
-        let [xiamiAlbums, neteaseAlbums, qqAlbums] = await Promise.all([
+        let list = await Promise.all([
             this.xiamiApi.searchAlbums(keyword, offset + 1, limit),
             this.neteaseApi.searchAlbums(keyword, offset * limit, limit),
             this.qqApi.searchAlbums(keyword, offset * limit, limit),
+            this.qianqianApi.searchAlbums(keyword, offset * limit, limit),
         ]);
 
-        let maxLength = Math.max(xiamiAlbums.length, neteaseAlbums.length);
-        for (let index = 0; index < maxLength; index++) {
-            let s1 = xiamiAlbums[index];
-            s1 ? items.push(s1) : null;
-            let s2 = neteaseAlbums[index];
-            s2 ? items.push(s2) : null;
-            let s3 = qqAlbums[index];
-            s3 ? items.push(s3) : null;
-        }
+        let items = insertMerge(list);
 
         items = makeItems(items);
         return items;
@@ -369,22 +391,14 @@ export class Music {
 
 
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
-        let items = [];
-        let [xiamiCollections, neteaseCollections, qqCollections] = await Promise.all([
+        let list = await Promise.all([
             this.xiamiApi.searchCollections(keyword, offset + 1, limit),
             this.neteaseApi.searchCollections(keyword, offset * limit, limit),
             this.qqApi.searchCollections(keyword, offset * limit, limit),
+            this.qianqianApi.searchCollections(keyword, offset * limit, limit),
         ]);
 
-        let maxLength = Math.max(xiamiCollections.length, neteaseCollections.length);
-        for (let index = 0; index < maxLength; index++) {
-            let s1 = xiamiCollections[index];
-            s1 ? items.push(s1) : null;
-            let s2 = neteaseCollections[index];
-            s2 ? items.push(s2) : null;
-            let s3 = qqCollections[index];
-            s3 ? items.push(s3) : null;
-        }
+        let items = insertMerge(list);
 
         items = makeItems(items);
         return items;
@@ -689,7 +703,7 @@ export class Music {
     /**
      * here, the userId is IUserProfile.userId
      */
-    public async userProfile(userId: string, userMid?: string): Promise<IUserProfile> {
+    public async userProfile(userId: string, userMid?: string, userName?: string): Promise<IUserProfile> {
         let userProfile;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -701,6 +715,9 @@ export class Music {
                 break;
             case ORIGIN.qq:
                 userProfile = await this.qqApi.userProfile(userId && userMid);
+                break;
+            case ORIGIN.qianqian:
+                userProfile = await this.qianqianApi.userProfile(userName);
                 break;
             default:
                 // Here will never be occured.
@@ -728,6 +745,9 @@ export class Music {
             case ORIGIN.qq:
                 songs = await this.qqApi.userFavoriteSongs(userMid, offset, limit);
                 break;
+            case ORIGIN.qianqian:
+                songs = await this.qianqianApi.userFavoriteSongs(originType.id, offset, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFavoriteSongs] Here will never be occured. [args]: ${userId}`);
@@ -750,6 +770,9 @@ export class Music {
             case ORIGIN.qq:
                 albums = await this.qqApi.userFavoriteAlbums(userMid, offset, limit);
                 break;
+            case ORIGIN.qianqian:
+                albums = await this.qianqianApi.userFavoriteAlbums(originType.id, offset, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFavoriteAlbums] Here will never be occured. [args]: ${userId}`);
@@ -770,6 +793,9 @@ export class Music {
                 break;
             case ORIGIN.qq:
                 artists = await this.qqApi.userFavoriteArtists(userMid, offset, limit);
+                break;
+            case ORIGIN.qianqian:
+                artists = await this.qianqianApi.userFavoriteArtists(originType.id, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -793,6 +819,9 @@ export class Music {
             case ORIGIN.qq:
                 collections = await this.qqApi.userFavoriteCollections(userMid, offset, limit);
                 break;
+            case ORIGIN.qianqian:
+                collections = await this.qianqianApi.userFavoriteCollections(originType.id, offset, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFavoriteCollections] Here will never be occured. [args]: ${userId}`);
@@ -814,6 +843,9 @@ export class Music {
                 break;
             case ORIGIN.qq:
                 collections = await this.qqApi.userCreatedCollections(userMid, offset, limit);
+                break;
+            case ORIGIN.qianqian:
+                collections = await this.qianqianApi.userCreatedCollections(originType.id, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -837,6 +869,9 @@ export class Music {
             case ORIGIN.qq:
                 userProfiles = await this.qqApi.userFollowings(userMid, offset, limit);
                 break;
+            case ORIGIN.qianqian:
+                userProfiles = await this.qianqianApi.userFollowings(originType.id, offset, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFollowings] Here will never be occured. [args]: ${userId}`);
@@ -858,6 +893,9 @@ export class Music {
                 break;
             case ORIGIN.qq:
                 userProfiles = await this.qqApi.userFollowers(userMid, offset, limit);
+                break;
+            case ORIGIN.qianqian:
+                userProfiles = await this.qianqianApi.userFollowers(originType.id, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -1009,6 +1047,8 @@ export class Music {
                 return this.neteaseApi.resizeImageUrl(url, size);
             case ORIGIN.qq:
                 return this.qqApi.resizeImageUrl(url, size);
+            case ORIGIN.qianqian:
+                return this.qianqianApi.resizeImageUrl(url, size);
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.resizeImageUrl] Here will never be occured. [args]: ${url}`);
@@ -1029,6 +1069,8 @@ export class Music {
                 futs.push(this.neteaseApi.fromURL(chunk));
             } else if (input.includes('qq.com')) {
                 futs.push(this.qqApi.fromURL(chunk));
+            } else if (input.includes('taihe.com')) {
+                futs.push(this.qianqianApi.fromURL(chunk));
             }
         }
         if (futs.length == 0) return [];

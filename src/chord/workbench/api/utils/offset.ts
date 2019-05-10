@@ -41,6 +41,7 @@ export function makeOffsets(origin: string, offset: IOffset, size: number): Arra
             break;
         case ORIGIN.netease:
         case ORIGIN.qq:
+        case ORIGIN.qianqian:
             // TODO: user's favorites do not need offset * limit in apis
             let _offset = initiateOffset();
             _offset.offset = offset.offset;
@@ -66,6 +67,7 @@ export function setCurrectOffset(origin: string, offset: IOffset, size: number):
             break;
         case ORIGIN.netease:
         case ORIGIN.qq:
+        case ORIGIN.qianqian:
             _offset = initiateOffset();
             _offset.offset = offset.offset + size;
             _offset.limit = 0;

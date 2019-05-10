@@ -7,6 +7,7 @@ export enum ORIGIN {
     xiami = 'xiami',
     netease = 'netease',
     qq = 'qq',
+    qianqian = 'qianqian',
 }
 
 export interface IOriginType {
@@ -36,30 +37,37 @@ export enum OriginSongUrl {
     xiami = 'https://www.xiami.com/song/{id}',
     netease = 'https://music.163.com/#/song?id={id}',
     qq = 'https://y.qq.com/n/yqq/song/{id}.html',
+    qianqian = 'http://music.taihe.com/song/{id}',
 }
 
 export enum OriginAlbumUrl {
     xiami = 'https://www.xiami.com/album/{id}',
     netease = 'https://music.163.com/#/album?id={id}',
     qq = 'https://y.qq.com/n/yqq/album/{id}.html',
+    qianqian = 'http://music.taihe.com/album/{id}',
 }
 
 export enum OriginArtistUrl {
     xiami = 'https://www.xiami.com/artist/{id}',
     netease = 'https://music.163.com/#/artist?id={id}',
     qq = 'https://y.qq.com/n/yqq/singer/{id}.html',
+    qianqian = 'http://music.taihe.com/artist/{id}',
 }
 
 export enum OriginCollectionUrl {
     xiami = 'https://www.xiami.com/collect/{id}',
     netease = 'https://music.163.com/#/playlist?id={id}',
     qq = 'https://y.qq.com/n/yqq/playsquare/{id}.html',
+    qianqian = 'http://music.taihe.com/songlist/{id}',
 }
 
 export enum OriginUserUrl {
     xiami = 'https://www.xiami.com/u/{id}',
     netease = 'https://music.163.com/#/user/home?id={id}',
     qq = 'https://y.qq.com/portal/profile.html?uin={id}',
+
+    // http://music.taihe.com/user?nickname=%E5%91%A8%E6%88%AA%E6%A3%8D%E7%9A%84%E5%8F%8C%E6%9D%B0%E4%BC%A6
+    qianqian = 'http://music.taihe.com/user?nickname={id}',
 }
 
 

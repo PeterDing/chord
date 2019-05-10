@@ -30,7 +30,9 @@ export interface IUserProfile {
     followerCount?: number;
     followingCount?: number;
 
+    // people who follows the user
     followers?: Array<IUserProfile>;
+    // people who is followed by the user
     followings?: Array<IUserProfile>;
 
     listenCount?: number;

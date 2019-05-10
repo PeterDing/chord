@@ -71,7 +71,8 @@ function CollectionInfo({ collection, handlePlayCollection, handleShowUserProfil
                 <div>
                     <span>By </span>
                     <span className='link-subtle a-like cursor-pointer'
-                        onClick={() => handleShowUserProfileViewById(collection.userId, collection.userMid)}>
+                        onClick={() => handleShowUserProfileViewById(
+                            collection.userId, collection.userMid, collection.userName)}>
                         {collection.userName}</span>
                 </div>
             </div>
@@ -159,7 +160,7 @@ function mapStateToProps(state: IStateGlobal) {
 function mapDispatchToProps(dispatch) {
     return {
         handlePlayCollection: collection => handlePlayCollection(collection).then(act => dispatch(act)),
-        handleShowUserProfileViewById: (userId, userMid) => handleShowUserProfileViewById(userId, userMid).then(act => dispatch(act)),
+        handleShowUserProfileViewById: (userId, userMid, userName) => handleShowUserProfileViewById(userId, userMid, userName).then(act => dispatch(act)),
         showCollectionMenu: (e, collection) => dispatch(showCollectionMenu(e, collection)),
     };
 }
