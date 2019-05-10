@@ -14,41 +14,71 @@ Chord uses the framework of spotify UI.
 
 [中文](README_ZH.md)
 
+
 ## Features
 
-* Support Xiami 虾米音乐, Netease music 网易云音乐, QQ music 腾讯音乐
-* Support functions:  
-  Search  
-  Play (shuffle, repeat)  
+- Support _Xiami 虾米音乐, Netease music 网易云音乐, QQ music 腾讯音乐, 千千音乐_
+
+- Support functions:
+
+  Search
+
+  Play (shuffle, repeat)
+
   Show Artist, album, collection, user profile at detail
-* High quality audio file (kbps >= 320)  
+
+- High quality audio file (kbps >= 320)
+
   **Login is needed to get high quality audio files for Netease music**  
+
   **and the logined user must be a vip user**
-* Login to music providers
-* Saving/removing and playing actions synchronize to matched music provider
-* Store your favoriate music to local library
-* Recommanded music (After user logined, recommanded music is based on the user)
-* New released music
-* Select collections by options
-* Select albums by options
-* Select artists by options
-* Toggle lyric
-* Notification
-* Frameless window
-* Common functions for player
+
+- Login to music providers
+
+- Saving/removing and playing actions synchronize to matched music provider
+
+- Store your favoriate music to local library
+
+- Recommanded music (After user logined, recommanded music is based on the user)
+
+- New released music
+
+- Select collections by options
+
+- Select albums by options
+
+- Select artists by options
+
+- Toggle lyric
+
+- Notification
+
+- Frameless window
+
+- Common functions for player
+
 
 ## Todos
 
 - App configuration
+
 - Selectable quality of audio file
+
 - Create customized playlist
+
 - ~~Music style/genre navigation~~ (xiami does not open apis for genres)
+
 - Add/Remove local music files
+
 - Downloader
+
 - i18n
+
 - More test
+
 
 ## For Developer
 
 - [Chord structure](docs/chord.md)
+
 - [Build app](docs/build.md)
