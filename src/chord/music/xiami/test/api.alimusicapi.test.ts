@@ -193,7 +193,6 @@ suite('music/xiami/AliMusicApi', () => {
 
     test('collectionListOptions', async function() {
         let collections = await aliApi.collectionListOptions();
-        console.log(collections);
 
         assert.equal(collections.length > 1, true);
     });
@@ -202,6 +201,12 @@ suite('music/xiami/AliMusicApi', () => {
         let collections = await aliApi.collectionList('古典', 'new', 1, 1);
 
         assert.equal(collections.length, 1);
+    });
+
+    test('artistList', async function() {
+        let artists = await aliApi.artistList('0', '0', '0');
+
+        assert.equal(artists.length, 1);
     });
 
     test('newSongs', async function() {
@@ -286,5 +291,19 @@ suite('music/xiami/AliMusicApi', () => {
     test('recommendCollections', async function() {
         let collections = await aliApi.recommendCollections(1, 1);
         assert.equal(collections.length > 0, true);
+    });
+
+    test('fromURL', async function() {
+        let data = [
+            ['https://www.xiami.com/song/xOeiBHc63b1', 'songOriginalId', '1810858337'],
+            ['https://www.xiami.com/artist/nmS0Gm85a40', 'artistOriginalId', '2100015120'],
+            ['https://www.xiami.com/album/yhVGfOd4398', 'albumOriginalId', '2104368824'],
+            ['https://www.xiami.com/collect/21816274', 'collectionOriginalId', '21816274'],
+            ['https://www.xiami.com/user/7437508', 'userOriginalId', '7437508'],
+        ];
+        for (let [url, key, id] of data) {
+            let items = await aliApi.fromURL(url);
+            assert.equal(items[0][key], id);
+        }
     });
 });
