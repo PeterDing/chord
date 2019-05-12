@@ -186,6 +186,7 @@ export class XiamiApi {
         await this.getCookies();
 
         let headers = { ...XiamiApi.HEADERS1 };
+
         let cookieJar = makeCookieJar();
         let cookies = { ...this.cookies };
         for (let key in cookies) {
@@ -225,6 +226,10 @@ export class XiamiApi {
 
         let headers = !!referer ? { ...XiamiApi.HEADERS1, referer: referer } : { ...XiamiApi.HEADERS1 };
         headers['authority'] = getHost(basicUrl);
+
+        let xmUA: string = undefined;
+        if (window && (window as any).uabModule) xmUA = (window as any).uabModule.getUA();
+        headers['xm-ua'] = xmUA;
 
         // Make cookie jar
         let cookieJar = makeCookieJar();
@@ -278,6 +283,10 @@ export class XiamiApi {
 
         let headers = !!referer ? { ...XiamiApi.HEADERS1, referer: referer } : { ...XiamiApi.HEADERS1 };
         headers['authority'] = getHost(basicUrl);
+
+        let xmUA: string = undefined;
+        if (window && (window as any).uabModule) xmUA = (window as any).uabModule.getUA();
+        headers['xm-ua'] = xmUA;
 
         if (data) headers['content-type'] = 'application/json';
 
@@ -1117,7 +1126,7 @@ export class AliMusicApi {
                 },
             );
         } catch (err) {
-            json = await this.xiamiWebApi.searchSongs(keyword, page, size);
+            return await this.xiamiWebApi.searchSongs(keyword, page, size);
         }
         let info = json.data.data.songs;
         let songs = makeAliSongs(info);
@@ -1146,7 +1155,7 @@ export class AliMusicApi {
                 },
             );
         } catch (err) {
-            json = await this.xiamiWebApi.searchAlbums(keyword, page, size);
+            return await this.xiamiWebApi.searchAlbums(keyword, page, size);
         }
         let info = json.data.data.albums;
         let albums = makeAliAlbums(info);
@@ -1168,7 +1177,7 @@ export class AliMusicApi {
                 },
             );
         } catch (err) {
-            json = await this.xiamiWebApi.searchArtists(keyword, page, size);
+            return await this.xiamiWebApi.searchArtists(keyword, page, size);
         }
         let info = json.data.data.artists;
         let artists = makeAliArtists(info);
@@ -1190,7 +1199,7 @@ export class AliMusicApi {
                 },
             );
         } catch (err) {
-            json = await this.xiamiWebApi.searchCollections(keyword, page, size);
+            return await this.xiamiWebApi.searchCollections(keyword, page, size);
         }
         let info = json.data.data.collects;
         let collections = makeAliCollections(info);
