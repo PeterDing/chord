@@ -76,7 +76,7 @@ export function makeSong(info: any): ISong {
 
     let lyricUrl = songInfo['lrclink'];
 
-    let audios = !audioUrls ? [] : audioUrls.map(a => makeAudio(a)).sort((x, y) => y.kbps < x.kbps);
+    let audios = !audioUrls ? [] : audioUrls.map(a => makeAudio(a)).sort((x, y) => y.kbps - x.kbps);
 
     let songOriginalId = songInfo['song_id'].toString();
 
