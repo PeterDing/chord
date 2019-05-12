@@ -26,7 +26,7 @@ suite('music/xiami/XiamiApi', () => {
     });
 
     test('audios', async function() {
-        let id = '1';
+        let id = '1768959568';
         let audios = await xiamiApi.audios(id);
         assert.equal(audios.length > 0, true);
     });
@@ -66,4 +66,23 @@ suite('music/xiami/XiamiApi', () => {
     //     assert.equal(artist.artistOriginalId, id);
     // });
 
+    test('searchSongs', async function() {
+        let items = await xiamiApi.searchSongs('linkin', 1, 2);
+        assert.equal(items.length, 2);
+    });
+
+    test('searchAlbums', async function() {
+        let items = await xiamiApi.searchAlbums('linkin', 1, 2);
+        assert.equal(items.length, 2);
+    });
+
+    test('searchArtists', async function() {
+        let items = await xiamiApi.searchArtists('linkin', 1, 2);
+        assert.equal(items.length, 2);
+    });
+
+    test('searchCollections', async function() {
+        let items = await xiamiApi.searchCollections('linkin', 1, 2);
+        assert.equal(items.length, 2);
+    });
 });
