@@ -58,7 +58,7 @@ export function makeSong(info: any): ISong {
 
     let audios = [];
     if (songInfo['listenFiles'] && songInfo['listenFiles'].length > 0) {
-        audios = songInfo['listenFiles'].map(a => makeAudio(a)).sort((x, y) => y.kbps < x.kbps);
+        audios = songInfo['listenFiles'].map(a => makeAudio(a)).sort((x, y) => y.kbps - x.kbps);
     } else {
         // block song audio may be at here
         let backupSong = songInfo['bakSong'];
@@ -124,7 +124,7 @@ export function makeSong(info: any): ISong {
 
 
 export function makeSongs(info: any): Array<ISong> {
-    return info.map(songInfo => makeSong(songInfo));
+    return (info || []).map(songInfo => makeSong(songInfo));
 }
 
 
@@ -148,7 +148,7 @@ export function makeAlbum(info: any): IAlbum {
     let releaseDate = info['gmtPublish'] || info['gmtCreate'];
 
     let duration: number = 0;
-    let songs = info['songs'].map(i => makeSong(i));
+    let songs = (info['songs'] || []).map(i => makeSong(i));
     songs.forEach(song => {
         duration += song.duration;
         if (!song.albumOriginalId) {
@@ -187,6 +187,11 @@ export function makeAlbum(info: any): IAlbum {
     };
 
     return album;
+}
+
+
+export function makeAlbums(info: any): Array<IAlbum> {
+    return (info || []).map(albumInfo => makeAlbum(albumInfo));
 }
 
 
@@ -236,6 +241,11 @@ export function makeCollection(info: any): ICollection {
 }
 
 
+export function makeCollections(info: any): Array<ICollection> {
+    return (info || []).map(collectionInfo => makeCollection(collectionInfo));
+}
+
+
 export function makeArtist(info: any): IArtist {
     let artistOriginalId = info['artistId'];
     let artistId = _getArtistId(artistOriginalId);
@@ -264,6 +274,12 @@ export function makeArtist(info: any): IArtist {
     };
     return artist;
 }
+
+
+export function makeArtists(info: any): Array<IArtist> {
+    return (info || []).map(artistInfo => makeArtist(artistInfo));
+}
+
 
 
 function getKbps(str: string): number {
@@ -302,7 +318,7 @@ export function makeAliSong(info: any): ISong {
 
     let audios = [];
     if (info['listenFiles'] && info['listenFiles'].length > 0) {
-        audios = info['listenFiles'].map(a => makeAudio(a)).sort((x, y) => y.kbps < x.kbps);
+        audios = info['listenFiles'].map(a => makeAudio(a)).sort((x, y) => y.kbps - x.kbps);
     } else {
         // block song audio may be at here
         let backupSong = info['bakSong'];
