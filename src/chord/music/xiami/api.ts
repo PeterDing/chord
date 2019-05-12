@@ -32,8 +32,11 @@ import {
     makeSong,
     makeSongs,
     makeAlbum,
-    makeCollection,
+    makeAlbums,
     makeArtist,
+    makeArtists,
+    makeCollection,
+    makeCollections,
 
     makeAliSong,
     makeAliLyric,
@@ -90,22 +93,39 @@ export class XiamiApi {
 
     static readonly NODE_MAP = {
         audios: 'song/getSongDetails',
+
         song: 'api/song/initialize',
+
         album: 'api/album/getAlbumDetail',
+
         collection: 'api/collect/getCollectDetail',
         collectionSongs: 'api/collect/getCollectSongs',
 
         artist: 'api/artist/initialize',
         // artist: 'api/artist/getArtistDetail',
+
+        searchSongs: 'api/search/searchSongs',
+        searchAlbums: 'api/search/searchAlbums',
+        searchArtists: 'api/search/searchArtists',
+        searchCollections: 'api/search/searchCollects',
     };
 
     static readonly REQUEST_METHOD_MAP = {
         audios: 'GET',
+
         song: 'GET',
+
         album: 'GET',
+
         collection: 'GET',
         collectionSongs: 'GET',
+
         artist: 'GET',
+
+        searchSongs: 'GET',
+        searchAlbums: 'GET',
+        searchArtists: 'GET',
+        searchCollections: 'GET',
     };
 
     // account
@@ -381,6 +401,79 @@ export class XiamiApi {
         );
         let artist = makeArtist(json.result.data.artistDetail);
         return artist;
+    }
+
+
+    public async searchSongs(keyword: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.searchSongs,
+            XiamiApi.NODE_MAP.searchSongs,
+            {
+                key: keyword,
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                }
+            },
+            `https://www.xiami.com/`,
+        );
+        let info = json.result.data.songs;
+        let artist = makeSongs(info);
+        return artist;
+    }
+
+
+    public async searchAlbums(keyword: string, page: number = 1, size: number = 10): Promise<Array<IAlbum>> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.searchAlbums,
+            XiamiApi.NODE_MAP.searchAlbums,
+            {
+                key: keyword,
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                }
+            },
+        );
+        let info = json.result.data.albums;
+        let albums = makeAlbums(info);
+        return albums;
+    }
+
+
+    public async searchArtists(keyword: string, page: number = 1, size: number = 10): Promise<Array<IArtist>> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.searchArtists,
+            XiamiApi.NODE_MAP.searchArtists,
+            {
+                key: keyword.replace(/\s+/g, '+'),
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                }
+            },
+        );
+        let info = json.result.data.artists;
+        let artists = makeArtists(info);
+        return artists;
+    }
+
+
+    public async searchCollections(keyword: string, page: number = 1, size: number = 10): Promise<Array<ICollection>> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.searchCollections,
+            XiamiApi.NODE_MAP.searchCollections,
+            {
+                key: keyword.replace(/\s+/g, '+'),
+                pagingVO: {
+                    page: page,
+                    pageSize: size,
+                }
+            },
+        );
+        let info = json.result.data.collects;
+        let collections = makeCollections(info);
+        return collections;
     }
 }
 
@@ -1006,18 +1099,26 @@ export class AliMusicApi {
      * Search Songs
      *
      * XXX Cookies must include 'uidXM=${userId}'
+     *
+     * If we call this api frequently, the xiami server will blocked us,
+     * so we instead to use the web api.
      */
     public async searchSongs(keyword: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.searchSongs,
-            {
-                key: keyword.replace(/\s+/g, '+'),
-                pagingVO: {
-                    page: page,
-                    pageSize: size,
-                }
-            },
-        );
+        let json;
+        try {
+            json = await this.request(
+                AliMusicApi.NODE_MAP.searchSongs,
+                {
+                    key: keyword.replace(/\s+/g, '+'),
+                    pagingVO: {
+                        page: page,
+                        pageSize: size,
+                    }
+                },
+            );
+        } catch (err) {
+            json = await this.xiamiWebApi.searchSongs(keyword, page, size);
+        }
         let info = json.data.data.songs;
         let songs = makeAliSongs(info);
         return songs;
@@ -1030,18 +1131,23 @@ export class AliMusicApi {
      * XXX Cookies must include 'uidXM=${userId}'
      */
     public async searchAlbums(keyword: string, page: number = 1, size: number = 10): Promise<Array<IAlbum>> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.searchAlbums,
-            {
-                // isRecommendCorrection: false,
-                // isTouFu: true,
-                key: keyword.replace(/\s+/g, '+'),
-                pagingVO: {
-                    page: page,
-                    pageSize: size,
-                }
-            },
-        );
+        let json;
+        try {
+            json = await this.request(
+                AliMusicApi.NODE_MAP.searchAlbums,
+                {
+                    // isRecommendCorrection: false,
+                    // isTouFu: true,
+                    key: keyword.replace(/\s+/g, '+'),
+                    pagingVO: {
+                        page: page,
+                        pageSize: size,
+                    }
+                },
+            );
+        } catch (err) {
+            json = await this.xiamiWebApi.searchAlbums(keyword, page, size);
+        }
         let info = json.data.data.albums;
         let albums = makeAliAlbums(info);
         return albums;
@@ -1049,16 +1155,21 @@ export class AliMusicApi {
 
 
     public async searchArtists(keyword: string, page: number = 1, size: number = 10): Promise<Array<IArtist>> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.searchArtists,
-            {
-                key: keyword.replace(/\s+/g, '+'),
-                pagingVO: {
-                    page: page,
-                    pageSize: size,
-                }
-            },
-        );
+        let json;
+        try {
+            json = await this.request(
+                AliMusicApi.NODE_MAP.searchArtists,
+                {
+                    key: keyword.replace(/\s+/g, '+'),
+                    pagingVO: {
+                        page: page,
+                        pageSize: size,
+                    }
+                },
+            );
+        } catch (err) {
+            json = await this.xiamiWebApi.searchArtists(keyword, page, size);
+        }
         let info = json.data.data.artists;
         let artists = makeAliArtists(info);
         return artists;
@@ -1066,16 +1177,21 @@ export class AliMusicApi {
 
 
     public async searchCollections(keyword: string, page: number = 1, size: number = 10): Promise<Array<ICollection>> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.searchCollections,
-            {
-                key: keyword.replace(/\s+/g, '+'),
-                pagingVO: {
-                    page: page,
-                    pageSize: size,
-                }
-            },
-        );
+        let json;
+        try {
+            json = await this.request(
+                AliMusicApi.NODE_MAP.searchCollections,
+                {
+                    key: keyword.replace(/\s+/g, '+'),
+                    pagingVO: {
+                        page: page,
+                        pageSize: size,
+                    }
+                },
+            );
+        } catch (err) {
+            json = await this.xiamiWebApi.searchCollections(keyword, page, size);
+        }
         let info = json.data.data.collects;
         let collections = makeAliCollections(info);
         return collections;
@@ -1245,12 +1361,12 @@ export class AliMusicApi {
             }));
 
         let option = {
-                type: null,
-                name: '全部歌单',
-                items: [{
-                    name: '全部',
-                    id: null,
-                }],
+            type: null,
+            name: '全部歌单',
+            items: [{
+                name: '全部',
+                id: null,
+            }],
         };
         return [option, ...options];
     }
