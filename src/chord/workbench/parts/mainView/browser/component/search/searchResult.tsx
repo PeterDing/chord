@@ -9,52 +9,22 @@ import SongItemView from 'chord/workbench/parts/common/component/songItem';
 import ArtistItemView from 'chord/workbench/parts/common/component/artistItem';
 import AlbumItemView from 'chord/workbench/parts/common/component/albumItem';
 import CollectionItemView from 'chord/workbench/parts/common/component/collectionItem';
+import EpisodeItemView from 'chord/workbench/parts/common/component/episodeItem';
+import PodcastItemView from 'chord/workbench/parts/common/component/podcastItem';
+import RadioItemView from 'chord/workbench/parts/common/component/radioItem';
+
+import { NavMenu } from 'chord/workbench/parts/common/component/navMenu';
 
 import {
     searchMoreSongs,
     searchMoreAlbums,
     searchMoreArtists,
     searchMoreCollections,
+
+    searchMoreEpisodes,
+    searchMorePodcasts,
+    searchMoreRadios,
 } from 'chord/workbench/parts/mainView/browser/action/searchResult';
-
-
-function SearchNavMenu({ view, changeSearchResultView }) {
-    return (
-        <nav className='search-nav-container'>
-            <ul className='search-nav-ul'>
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'top' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeSearchResultView('top')}>
-                        TOP RESULT</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'songs' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeSearchResultView('songs')}>
-                        SONGS</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'artists' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeSearchResultView('artists')}>
-                        ARTISTS</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'albums' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeSearchResultView('albums')}>
-                        ALBUMS</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'collections' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeSearchResultView('collections')}>
-                        PLAYLISTS</div>
-                </li>
-            </ul>
-        </nav>
-    );
-}
 
 
 class SearchResult extends React.Component<ISearchResultProps, any> {
@@ -141,12 +111,62 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
         return collectionsView;
     }
 
-    _getSearchNavMenu() {
-        return (
-            <SearchNavMenu
-                view={SearchResult.view}
-                changeSearchResultView={this.changeSearchResultView} />
+    _getEpisodesView(size?: number) {
+        let episodesView = this.props.episodes.slice(0, size ? size : Infinity).map(
+            (episode, index) => (
+                <EpisodeItemView
+                    key={'episode_search_' + index.toString().padStart(3, '0')}
+                    episode={episode}
+                    active={false}
+                    short={false}
+                    thumb={false}
+                    handlePlay={null} />
+            )
         );
+        return episodesView;
+    }
+
+    _getPodcastsView(size?: number) {
+        let podcastsView = this.props.podcasts.slice(0, size ? size : Infinity).map(
+            (podcast, index) => (
+                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'
+                    key={'podcast_search_' + index.toString().padStart(3, '0')}>
+                    <PodcastItemView podcast={podcast} />
+                </div>
+            )
+        );
+        return podcastsView;
+    }
+
+    _getRadiosView(size?: number) {
+        let radiosView = this.props.radios.slice(0, size ? size : Infinity).map(
+            (radio, index) => (
+                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'
+                    key={'radio_search_' + index.toString().padStart(3, '0')}>
+                    <RadioItemView radio={radio} />
+                </div>
+            )
+        );
+        return radiosView;
+    }
+
+    _getSearchNavMenu() {
+        let views = [
+            { name: 'TOP RESULT', value: 'top' },
+            { name: 'SONGS', value: 'songs' },
+            { name: 'ARTISTS', value: 'artists' },
+            { name: 'ALBUMS', value: 'albums' },
+            { name: 'COLLECTIONS', value: 'collections' },
+            { name: 'PODCASTS', value: 'podcasts' },
+            { name: 'RADIOS', value: 'radios' },
+            { name: 'EPISODES', value: 'episodes' },
+        ];
+
+        return <NavMenu
+            namespace='search-navmenu'
+            thisView={SearchResult.view}
+            views={views}
+            handleClick={this.changeSearchResultView} />;
     }
 
     topResult() {
@@ -156,6 +176,11 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
         let albumsView = this._getAlbumsView(defaultSize);
         let artistsView = this._getArtistsView(defaultSize);
         let collectionsView = this._getCollectionsView(defaultSize);
+
+        let episodesView = this._getEpisodesView(defaultSize);
+        let podcastsView = this._getPodcastsView(defaultSize);
+        let radiosView = this._getRadiosView(defaultSize);
+
         let searchNavMenu = this._getSearchNavMenu();
 
         return (
@@ -214,6 +239,43 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
                                         {collectionsView}
                                     </div>
                                 </div>
+                            </section>
+                        </div>
+
+                        {/* Podcasts View */}
+                        <div className='row'>
+                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                                Podcasts</h1>
+                            <section>
+                                <div className='container-fluid container-fluid--noSpaceAround'>
+                                    <div className='align-row-wrap row'>
+                                        {podcastsView}
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        {/* Radios View */}
+                        <div className='row'>
+                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                                Radios</h1>
+                            <section>
+                                <div className='container-fluid container-fluid--noSpaceAround'>
+                                    <div className='align-row-wrap row'>
+                                        {radiosView}
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        {/* Episodes View */}
+                        <div className='row'>
+                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                                Episodes</h1>
+                            <section className='tracklist-container'>
+                                <ol className='tracklist'>
+                                    {episodesView}
+                                </ol>
                             </section>
                         </div>
 
@@ -399,6 +461,137 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
         );
     }
 
+    episodesResult() {
+        let episodesView = this._getEpisodesView();
+        let searchNavMenu = this._getSearchNavMenu();
+        let keyword = this.props.keyword;
+        let offset = this.props.episodesOffset;
+
+        return (
+            <div>
+
+                {/* Search Result Nagivation Menu */}
+                {searchNavMenu}
+
+                <div className='contentSpacing'>
+                    <div className='container-fluid container-fluid--noSpaceAround'>
+
+                        {/* Episodes View */}
+                        <div className='row'>
+                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                                Episodes</h1>
+                            <section className='tracklist-container'>
+                                <ol className='tracklist'>
+                                    {episodesView}
+                                </ol>
+                            </section>
+                        </div>
+
+                        <div className='row'>
+                            <div className="view-more">
+                                <div className="view-more-button">
+                                    <div className="btn btn-fg-green"
+                                        onClick={() => this.props.searchMoreEpisodes(keyword, offset)}>
+                                        View More</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    podcastsResult() {
+        let podcastsView = this._getPodcastsView();
+        let searchNavMenu = this._getSearchNavMenu();
+        let keyword = this.props.keyword;
+        let offset = this.props.podcastsOffset;
+
+        return (
+            <div>
+
+                {/* Search Result Nagivation Menu */}
+                {searchNavMenu}
+
+                <div className='contentSpacing'>
+                    <div className='container-fluid container-fluid--noSpaceAround'>
+
+                        {/* Podcasts View */}
+                        <div className='row'>
+                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                                Podcasts</h1>
+                            <section>
+                                <div className='container-fluid container-fluid--noSpaceAround'>
+                                    <div className='align-row-wrap row'>
+                                        {podcastsView}
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div className='row'>
+                            <div className="view-more">
+                                <div className="view-more-button">
+                                    <div className="btn btn-fg-green"
+                                        onClick={() => this.props.searchMorePodcasts(keyword, offset)}>
+                                        View More</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        );
+    }
+
+    radiosResult() {
+        let radiosView = this._getRadiosView();
+        let searchNavMenu = this._getSearchNavMenu();
+        let keyword = this.props.keyword;
+        let offset = this.props.radiosOffset;
+
+        return (
+            <div>
+
+                {/* Search Result Nagivation Menu */}
+                {searchNavMenu}
+
+                <div className='contentSpacing'>
+                    <div className='container-fluid container-fluid--noSpaceAround'>
+
+                        {/* Radios View */}
+                        <div className='row'>
+                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                                Radios</h1>
+                            <section>
+                                <div className='container-fluid container-fluid--noSpaceAround'>
+                                    <div className='align-row-wrap row'>
+                                        {radiosView}
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div className='row'>
+                            <div className="view-more">
+                                <div className="view-more-button">
+                                    <div className="btn btn-fg-green"
+                                        onClick={() => this.props.searchMoreRadios(keyword, offset)}>
+                                        View More</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     render() {
         let view = SearchResult.view;
         switch (view) {
@@ -410,6 +603,14 @@ class SearchResult extends React.Component<ISearchResultProps, any> {
                 return this.albumsResult();
             case 'collections':
                 return this.collectionsResult();
+
+            case 'podcasts':
+                return this.podcastsResult();
+            case 'radios':
+                return this.radiosResult();
+            case 'episodes':
+                return this.episodesResult();
+
             default: // view == 'top'
                 return this.topResult();
         }
@@ -430,6 +631,10 @@ function mapDispatchToProps(dispatch) {
         searchMoreAlbums: (keyword, offset) => searchMoreAlbums(keyword, offset).then(act => dispatch(act)),
         searchMoreArtists: (keyword, offset) => searchMoreArtists(keyword, offset).then(act => dispatch(act)),
         searchMoreCollections: (keyword, offset) => searchMoreCollections(keyword, offset).then(act => dispatch(act)),
+
+        searchMoreEpisodes: (keyword, offset) => searchMoreEpisodes(keyword, offset).then(act => dispatch(act)),
+        searchMorePodcasts: (keyword, offset) => searchMorePodcasts(keyword, offset).then(act => dispatch(act)),
+        searchMoreRadios: (keyword, offset) => searchMoreRadios(keyword, offset).then(act => dispatch(act)),
     };
 }
 

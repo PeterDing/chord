@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { makeListKey } from 'chord/platform/utils/common/keys';
+
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import SongItemView from 'chord/workbench/parts/common/component/songItem';
 import ArtistItemView from 'chord/workbench/parts/common/component/artistItem';
@@ -10,7 +12,13 @@ import AlbumItemView from 'chord/workbench/parts/common/component/albumItem';
 import CollectionItemView from 'chord/workbench/parts/common/component/collectionItem';
 import UserProfileItemView from 'chord/workbench/parts/common/component/userProfileItem';
 
+import EpisodeItemView from 'chord/workbench/parts/common/component/episodeItem';
+import PodcastItemView from 'chord/workbench/parts/common/component/podcastItem';
+import RadioItemView from 'chord/workbench/parts/common/component/radioItem';
+
 import { ViewMorePlusItem } from 'chord/workbench/parts/common/component/viewMoreItem';
+
+import { NavMenu } from 'chord/workbench/parts/common/component/navMenu';
 
 import {
     getMoreSongs,
@@ -18,55 +26,14 @@ import {
     getMoreArtists,
     getMoreCollections,
     getMoreUserProfiles,
+
+    getMoreEpisodes,
+    getMorePodcasts,
+    getMoreRadios,
 } from 'chord/workbench/parts/mainView/browser/action/libraryResult';
 import { handlePlayLibrarySongs } from 'chord/workbench/parts/player/browser/action/playLibrarySongs';
 
 import { ILibraryResultProps } from 'chord/workbench/parts/mainView/browser/component/library/props/libraryResult';
-
-
-function LibraryNavMenu({ view, changeLibraryResultView }) {
-    return (
-        <nav className='search-nav-container'>
-            <ul className='search-nav-ul'>
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'top' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeLibraryResultView('top')}>
-                        TOP RESULT</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'songs' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeLibraryResultView('songs')}>
-                        SONGS</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'artists' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeLibraryResultView('artists')}>
-                        ARTISTS</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'albums' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeLibraryResultView('albums')}>
-                        ALBUMS</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'collections' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeLibraryResultView('collections')}>
-                        PLAYLISTS</div>
-                </li>
-
-                <li className='search-nav-li'>
-                    <div className={`search-nav-item link-subtle cursor-pointer ${view == 'userProfiles' ? 'search-nav-item__active' : ''}`}
-                        onClick={() => changeLibraryResultView('userProfiles')}>
-                        FOLLOWINGS</div>
-                </li>
-            </ul>
-        </nav>
-    );
-}
 
 
 class LibraryResult extends React.Component<ILibraryResultProps, any> {
@@ -84,11 +51,18 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
 
         this.changeLibraryResultView = this.changeLibraryResultView.bind(this);
 
+        this._itemWrap = this._itemWrap.bind(this);
+
         this._getSongsView = this._getSongsView.bind(this);
         this._getAlbumsView = this._getAlbumsView.bind(this);
         this._getArtistsView = this._getArtistsView.bind(this);
         this._getCollectionsView = this._getCollectionsView.bind(this);
         this._getUserProfilesView = this._getUserProfilesView.bind(this);
+
+        this._getEpisodesView = this._getEpisodesView.bind(this);
+        this._getPodcastsView = this._getPodcastsView.bind(this);
+        this._getRadiosView = this._getRadiosView.bind(this);
+
         this._getLibraryNavMenu = this._getLibraryNavMenu.bind(this);
 
         this.topResult = this.topResult.bind(this);
@@ -108,7 +82,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         let songsView = this.props.songs.slice(0, size ? size : Infinity).map(
             (userSong, index) => (
                 <SongItemView
-                    key={'song_library_' + index.toString().padStart(3, '0')}
+                    key={makeListKey(index, 'song', 'library')}
                     song={userSong.song}
                     active={false}
                     short={false}
@@ -119,13 +93,20 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         return songsView;
     }
 
+    _itemWrap(item, index, name) {
+        return (
+            <div key={makeListKey(index, name, 'library')}
+                className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'>
+                {item}
+            </div>
+        );
+    }
+
     _getAlbumsView(size?: number) {
         let albumsView = this.props.albums.slice(0, size ? size : Infinity).map(
             (userAlbum, index) => (
-                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'
-                    key={'album_library_' + index.toString().padStart(3, '0')}>
-                    <AlbumItemView album={userAlbum.album} />
-                </div>
+                this._itemWrap(
+                    <AlbumItemView album={userAlbum.album} />, index, 'album')
             )
         );
         return albumsView;
@@ -134,10 +115,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
     _getArtistsView(size?: number) {
         let artistsView = this.props.artists.slice(0, size ? size : Infinity).map(
             (userArtist, index) => (
-                <div key={'artist_library_' + index.toString().padStart(3, '0')}
-                    className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'>
-                    <ArtistItemView artist={userArtist.artist} />
-                </div>
+                this._itemWrap(<ArtistItemView artist={userArtist.artist} />, index, 'artist')
             )
         );
         return artistsView;
@@ -146,10 +124,7 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
     _getCollectionsView(size?: number) {
         let collectionsView = this.props.collections.slice(0, size ? size : Infinity).map(
             (userCollection, index) => (
-                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'
-                    key={'collection_library_' + index.toString().padStart(3, '0')}>
-                    <CollectionItemView collection={userCollection.collection} />
-                </div>
+                this._itemWrap(<CollectionItemView collection={userCollection.collection} />, index, 'collection')
             )
         );
         return collectionsView;
@@ -158,31 +133,96 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
     _getUserProfilesView(size?: number) {
         let userProfilesView = this.props.userProfiles.slice(0, size ? size : Infinity).map(
             (userUserProfile, index) => (
-                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2'
-                    key={'userProfile_library_' + index.toString().padStart(3, '0')}>
-                    <UserProfileItemView userProfile={userUserProfile.userProfile} />
-                </div>
+                this._itemWrap(<UserProfileItemView userProfile={userUserProfile.userProfile} />, index, 'userProfile')
             )
         );
         return userProfilesView;
     }
 
-    _getLibraryNavMenu() {
-        return (
-            <LibraryNavMenu
-                view={LibraryResult.view}
-                changeLibraryResultView={this.changeLibraryResultView} />
+    _getEpisodesView(size?: number) {
+        let episodesView = this.props.episodes.slice(0, size ? size : Infinity).map(
+            (userEpisode, index) => (
+                <EpisodeItemView
+                    key={makeListKey(index, 'episode', 'library')}
+                    episode={userEpisode.episode}
+                    active={false}
+                    short={false}
+                    thumb={false}
+                    handlePlay={null} />
+            )
         );
+        return episodesView;
+    }
+
+    _getPodcastsView(size?: number) {
+        let podcastsView = this.props.podcasts.slice(0, size ? size : Infinity).map(
+            (userPodcast, index) => (
+                this._itemWrap(
+                    <PodcastItemView podcast={userPodcast.podcast} />, index, 'podcast')
+            )
+        );
+        return podcastsView;
+    }
+
+    _getRadiosView(size?: number) {
+        let radiosView = this.props.radios.slice(0, size ? size : Infinity).map(
+            (userRadio, index) => (
+                this._itemWrap(<RadioItemView radio={userRadio.radio} />, index, 'radio')
+            )
+        );
+        return radiosView;
+    }
+
+    _getLibraryNavMenu() {
+        let views = [
+            { name: 'TOP RESULT', value: 'top' },
+            { name: 'SONGS', value: 'songs' },
+            { name: 'ARTISTS', value: 'artists' },
+            { name: 'ALBUMS', value: 'albums' },
+            { name: 'COLLECTIONS', value: 'collections' },
+            { name: 'USERS', value: 'userProfiles' },
+
+            { name: 'PODCASTS', value: 'podcasts' },
+            { name: 'RADIOS', value: 'radios' },
+            { name: 'EPISODES', value: 'episodes' },
+        ];
+
+        return <NavMenu
+            namespace='search-navmenu'
+            thisView={LibraryResult.view}
+            views={views}
+            handleClick={this.changeLibraryResultView} />;
     }
 
     topResult() {
         let defaultSize = 10;
+
         let songsView = this._getSongsView(defaultSize);
         let albumsView = this._getAlbumsView(defaultSize);
         let artistsView = this._getArtistsView(defaultSize);
         let collectionsView = this._getCollectionsView(defaultSize);
         let userProfilesView = this._getUserProfilesView(defaultSize);
+
+        let episodesView = this._getEpisodesView(defaultSize);
+        let podcastsView = this._getPodcastsView(defaultSize);
+        let radiosView = this._getRadiosView(defaultSize);
+
+
         let searchNavMenu = this._getLibraryNavMenu();
+
+        let makeItemsView = (name, itemsView) => (
+            <div className='row'>
+                <h1 className="search-result-title" style={{ textAlign: 'center' }}>
+                    {name}</h1>
+                <section>
+                    <div className='container-fluid container-fluid--noSpaceAround'>
+                        <div className='align-row-wrap row'>
+                            {itemsView}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        );
 
         return (
             <div>
@@ -209,54 +249,31 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                         </div>
 
                         {/* Artists View */}
-                        <div className='row'>
-                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
-                                Artists</h1>
-                            <section>
-                                <div className='container-fluid container-fluid--noSpaceAround'>
-                                    <div className='align-row-wrap row'>
-                                        {artistsView}
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
+                        {makeItemsView('Artists', artistsView)}
 
                         {/* Albums View */}
-                        <div className='row'>
-                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
-                                Albums</h1>
-                            <section>
-                                <div className='container-fluid container-fluid--noSpaceAround'>
-                                    <div className='align-row-wrap row'>
-                                        {albumsView}
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
+                        {makeItemsView('Albums', albumsView)}
 
                         {/* Collections View */}
-                        <div className='row'>
-                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
-                                Playlists</h1>
-                            <section>
-                                <div className='container-fluid container-fluid--noSpaceAround'>
-                                    <div className='align-row-wrap row'>
-                                        {collectionsView}
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
+                        {makeItemsView('Collections', collectionsView)}
 
                         {/* UserProfiles View */}
+                        {makeItemsView('Followings', userProfilesView)}
+
+                        {/* Podcasts View */}
+                        {makeItemsView('Podcasts', podcastsView)}
+
+                        {/* Radios View */}
+                        {makeItemsView('Radios', radiosView)}
+
+                        {/* Episodes View */}
                         <div className='row'>
                             <h1 className="search-result-title" style={{ textAlign: 'center' }}>
-                                Followings</h1>
-                            <section>
-                                <div className='container-fluid container-fluid--noSpaceAround'>
-                                    <div className='align-row-wrap row'>
-                                        {userProfilesView}
-                                    </div>
-                                </div>
+                                Episodes</h1>
+                            <section className='tracklist-container'>
+                                <ol className='tracklist'>
+                                    {episodesView}
+                                </ol>
                             </section>
                         </div>
 
@@ -305,12 +322,8 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
         );
     }
 
-    artistsResult() {
-        let artistsView = this._getArtistsView();
+    _itemsResult(itemsView, viewMore) {
         let searchNavMenu = this._getLibraryNavMenu();
-        let keyword = this.props.keyword;
-        let offset = this.props.artistsOffset;
-        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreArtists(keyword, offset, size)} />) : null;
 
         return (
             <div>
@@ -321,14 +334,14 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                 <div className='contentSpacing'>
                     <div className='container-fluid container-fluid--noSpaceAround'>
 
-                        {/* Artists View */}
+                        {/* Items View */}
                         <div className='row'>
                             <h1 className="search-result-title" style={{ textAlign: 'center' }}>
                                 Artists</h1>
                             <section>
                                 <div className='container-fluid container-fluid--noSpaceAround'>
                                     <div className='align-row-wrap row'>
-                                        {artistsView}
+                                        {itemsView}
                                     </div>
                                 </div>
                             </section>
@@ -340,91 +353,51 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                 </div>
             </div>
         );
+    }
+
+    artistsResult() {
+        let artistsView = this._getArtistsView();
+        let keyword = this.props.keyword;
+        let offset = this.props.artistsOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreArtists(keyword, offset, size)} />) : null;
+
+        return this._itemsResult(artistsView, viewMore);
     }
 
     albumsResult() {
         let albumsView = this._getAlbumsView();
-        let searchNavMenu = this._getLibraryNavMenu();
         let keyword = this.props.keyword;
         let offset = this.props.albumsOffset;
         let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreAlbums(keyword, offset, size)} />) : null;
 
-        return (
-            <div>
-
-                {/* Library Result Nagivation Menu */}
-                {searchNavMenu}
-
-                <div className='contentSpacing'>
-                    <div className='container-fluid container-fluid--noSpaceAround'>
-
-                        {/* Albums View */}
-                        <div className='row'>
-                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
-                                Albums</h1>
-                            <section>
-                                <div className='container-fluid container-fluid--noSpaceAround'>
-                                    <div className='align-row-wrap row'>
-                                        {albumsView}
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-
-                        {viewMore}
-
-                    </div>
-                </div>
-            </div>
-
-        );
+        return this._itemsResult(albumsView, viewMore);
     }
 
     collectionsResult() {
         let collectionsView = this._getCollectionsView();
-        let searchNavMenu = this._getLibraryNavMenu();
         let keyword = this.props.keyword;
         let offset = this.props.collectionsOffset;
         let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreCollections(keyword, offset, size)} />) : null;
 
-        return (
-            <div>
-
-                {/* Library Result Nagivation Menu */}
-                {searchNavMenu}
-
-                <div className='contentSpacing'>
-                    <div className='container-fluid container-fluid--noSpaceAround'>
-
-                        {/* Collections View */}
-                        <div className='row'>
-                            <h1 className="search-result-title" style={{ textAlign: 'center' }}>
-                                Playlists</h1>
-                            <section>
-                                <div className='container-fluid container-fluid--noSpaceAround'>
-                                    <div className='align-row-wrap row'>
-                                        {collectionsView}
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-
-                        {viewMore}
-
-                    </div>
-                </div>
-            </div>
-
-        );
+        return this._itemsResult(collectionsView, viewMore);
     }
 
     userProfilesResult() {
-        let artistsView = this._getUserProfilesView();
-        let searchNavMenu = this._getLibraryNavMenu();
+        let userProfilesView = this._getUserProfilesView();
         let keyword = this.props.keyword;
         let offset = this.props.userProfilesOffset;
         let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreUserProfiles(keyword, offset, size)} />) : null;
 
+        return this._itemsResult(userProfilesView, viewMore);
+    }
+
+    episodesResult() {
+        let episodesView = this._getEpisodesView();
+        let searchNavMenu = this._getLibraryNavMenu();
+        let keyword = this.props.keyword;
+        let offset = this.props.episodesOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreEpisodes(keyword, offset, size)} />) : null;
+
         return (
             <div>
 
@@ -434,16 +407,14 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                 <div className='contentSpacing'>
                     <div className='container-fluid container-fluid--noSpaceAround'>
 
-                        {/* Artists View */}
+                        {/* Episodes View */}
                         <div className='row'>
                             <h1 className="search-result-title" style={{ textAlign: 'center' }}>
-                                Following</h1>
-                            <section>
-                                <div className='container-fluid container-fluid--noSpaceAround'>
-                                    <div className='align-row-wrap row'>
-                                        {artistsView}
-                                    </div>
-                                </div>
+                                Episodes</h1>
+                            <section className='tracklist-container'>
+                                <ol className='tracklist'>
+                                    {episodesView}
+                                </ol>
                             </section>
                         </div>
 
@@ -453,6 +424,24 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                 </div>
             </div>
         );
+    }
+
+    podcastsResult() {
+        let podcastsView = this._getPodcastsView();
+        let keyword = this.props.keyword;
+        let offset = this.props.podcastsOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMorePodcasts(keyword, offset, size)} />) : null;
+
+        return this._itemsResult(podcastsView, viewMore);
+    }
+
+    radiosResult() {
+        let radiosView = this._getRadiosView();
+        let keyword = this.props.keyword;
+        let offset = this.props.radiosOffset;
+        let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreRadios(keyword, offset, size)} />) : null;
+
+        return this._itemsResult(radiosView, viewMore);
     }
 
     render() {
@@ -468,6 +457,14 @@ class LibraryResult extends React.Component<ILibraryResultProps, any> {
                 return this.collectionsResult();
             case 'userProfiles':
                 return this.userProfilesResult();
+
+            case 'episodes':
+                return this.episodesResult();
+            case 'podcasts':
+                return this.podcastsResult();
+            case 'radios':
+                return this.radiosResult();
+
             default: // view == 'top'
                 return this.topResult();
         }
@@ -490,9 +487,12 @@ function mapDispatchToProps(dispatch) {
         getMoreCollections: (keyword, offset, size) => dispatch(getMoreCollections(keyword, offset, size)),
         getMoreUserProfiles: (keyword, offset, size) => dispatch(getMoreUserProfiles(keyword, offset, size)),
 
+        getMoreEpisodes: (keyword, offset, size) => dispatch(getMoreEpisodes(keyword, offset, size)),
+        getMorePodcasts: (keyword, offset, size) => dispatch(getMorePodcasts(keyword, offset, size)),
+        getMoreRadios: (keyword, offset, size) => dispatch(getMoreRadios(keyword, offset, size)),
+
         handlePlayLibrarySongs: () => handlePlayLibrarySongs().then(act => dispatch(act)),
     };
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(LibraryResult);
