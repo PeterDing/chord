@@ -20,6 +20,14 @@ import { ILibraryArtist } from 'chord/library/api/artist';
 import { ILibraryCollection } from 'chord/library/api/collection';
 import { ILibraryUserProfile } from 'chord/library/api/userProfile';
 
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
+import { ILibraryEpisode } from 'chord/library/api/episode';
+import { ILibraryPodcast } from 'chord/library/api/podcast';
+import { ILibraryRadio } from 'chord/library/api/radio';
+
 import {
     toNumber,
     makeAudio,
@@ -28,6 +36,10 @@ import {
     makeArtist,
     makeCollection,
     makeUserProfile,
+
+    makeEpisode,
+    makePodcast,
+    makeRadio,
 } from 'chord/library/data/parser';
 
 import { TABLES } from 'chord/library/data/common';
@@ -189,6 +201,82 @@ export class LibraryDatabase {
             });
     }
 
+    public episodes(episodeIds: Array<string>): Array<IEpisode> {
+        let param = '?,'.repeat(episodeIds.length).slice(0, -1);
+        let sql = `SELECT * FROM episode WHERE episodeId IN (${param})`;
+        return this.db.prepare(sql).all(episodeIds)
+            .map(row => makeEpisode(row))
+            .map(episode => {
+                episode.audios = this.audio(episode.episodeId);
+                return <IEpisode>episode;
+            });
+    }
+
+    public libraryEpisodes(lastId: number, size: number, keyword?: string): Array<ILibraryEpisode> {
+        let searchCondition = '';
+        if (keyword) {
+            searchCondition = '((episode.episodeName like @kw) OR (episode.subTitle like @kw) OR (episode.podcastName like @kw) OR (episode.radioName like @kw) OR (episode.genres like @kw))';
+        }
+        let sql = `SELECT episode.*, library_episode.* FROM library_episode INNER JOIN episode ON library_episode.episodeId = episode.episodeId WHERE library_episode.id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY library_episode.id DESC LIMIT @size`;
+        return this.libraryItem(sql, lastId, size, keyword)
+            .map(row => {
+                let addAt = row.addAt;
+                let id = row.id;
+                delete row.id;
+                delete row.addAt;
+
+                let episode = makeEpisode(row);
+                episode.audios = this.audio(episode.episodeId);
+                return { id, addAt, episode };
+            });
+    }
+
+    public libraryPodcasts(lastId: number, size: number, keyword?: string): Array<ILibraryPodcast> {
+        let searchCondition = '';
+        if (keyword) {
+            searchCondition = '((subTitle like @kw) OR (podcastName like @kw) OR (radioName like @kw) OR (genres like @kw))';
+        }
+        let sql = `SELECT * FROM library_podcast WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
+        return this.libraryItem(sql, lastId, size, keyword)
+            .map(row => {
+                let addAt = row.addAt;
+                let id = row.id;
+                delete row.id;
+                delete row.addAt;
+
+                let podcast = makePodcast(row);
+                return { id, addAt, podcast };
+            });
+    }
+
+    public libraryPodcastEpisodes(podcastId: string): Array<IEpisode> {
+        let sql = `SELECT * FROM library_podcast WHERE podcastId = ?`;
+        let row = this.db.prepare(sql).get(podcastId);
+        if (row) {
+            return this.episodes(JSON.parse(row.episodes).map(row => { delete row.id; return row }));
+        } else {
+            return [];
+        }
+    }
+
+    public libraryRadios(lastId: number, size: number, keyword?: string): Array<ILibraryRadio> {
+        let searchCondition = '';
+        if (keyword) {
+            searchCondition = '(radioName like @kw)';
+        }
+        let sql = `SELECT * FROM library_radio WHERE id < @lastId ${keyword ? 'AND ' + searchCondition : ''} ORDER BY id DESC LIMIT @size`;
+        return this.libraryItem(sql, lastId, size, keyword)
+            .map(row => {
+                let addAt = row.addAt;
+                let id = row.id;
+                delete row.id;
+                delete row.addAt;
+
+                let radio = makeRadio(row);
+                return { id, addAt, radio };
+            });
+    }
+
     public storeAudio(audio: IAudio, songId: string): boolean {
         let _audio = <any>{ ...audio };
         _audio.songId = songId;
@@ -333,6 +421,85 @@ export class LibraryDatabase {
     }
 
 
+    public storeEpisode(episode: IEpisode, addAt: number): boolean {
+        // First, store audios
+        episode.audios.map(audio => this.storeAudio(audio, episode.episodeId));
+
+        let _episode = <any>{ ...episode };
+        delete _episode.audios;
+
+        removeEmtryAttributes(_episode);
+        toNumber(_episode);
+
+        jsonDumpValue(_episode);
+
+        let columns = Object.keys(_episode);
+        let columnsStr = columns.join(',')
+        let param = columns.map(c => '@' + c).join(',');
+        let sql = `INSERT OR IGNORE INTO episode (${columnsStr}) VALUES (${param})`;
+        this.db.prepare(sql).run(_episode);
+        return true;
+    }
+
+    public addEpisode(episode: IEpisode, addAt: number): ILibraryEpisode {
+        this.storeEpisode(episode, addAt);
+
+        let param = { addAt, episodeId: episode.episodeId };
+
+        let sql = 'INSERT OR IGNORE INTO library_episode (episodeId, addAt) VALUES (@episodeId, @addAt)';
+        let result = this.db.prepare(sql).run(param);
+
+        return { id: <number>result.lastInsertRowid, episode, addAt };
+    }
+
+    public addPodcast(podcast: IPodcast, addAt: number): ILibraryPodcast {
+        // First add episode;
+        podcast.episodes.map(episode => this.storeEpisode(episode, addAt));
+
+        let _podcast = <any>{ ...podcast };
+        _podcast.episodes = podcast.episodes.map(episode => episode.episodeId);
+
+        removeEmtryAttributes(_podcast);
+        toNumber(_podcast);
+
+        jsonDumpValue(_podcast);
+
+        _podcast.addAt = addAt;
+
+        let columns = Object.keys(_podcast);
+        let columnsStr = columns.join(',')
+        let param = columns.map(c => '@' + c).join(',');
+        let sql = `INSERT OR IGNORE INTO library_podcast (${columnsStr}) VALUES (${param})`;
+        let result = this.db.prepare(sql).run(_podcast);
+
+        return { id: <number>result.lastInsertRowid, podcast, addAt };
+    }
+
+    public addRadio(radio: IRadio, addAt: number): ILibraryRadio {
+        let _radio = <any>{ ...radio };
+        delete _radio.episodes;
+        delete _radio.radios;
+        delete _radio.podcasts;
+        delete _radio.favoritePodcasts;
+        delete _radio.followings;
+        delete _radio.followers;
+
+        removeEmtryAttributes(_radio);
+        toNumber(_radio);
+
+        jsonDumpValue(_radio);
+
+        _radio.addAt = addAt;
+
+        let columns = Object.keys(_radio);
+        let columnsStr = columns.join(',')
+        let param = columns.map(c => '@' + c).join(',');
+        let sql = `INSERT OR IGNORE INTO library_radio (${columnsStr}) VALUES (${param})`;
+        let result = this.db.prepare(sql).run(_radio);
+
+        return { id: <number>result.lastInsertRowid, radio, addAt };
+    }
+
     public removeSong(song: ISong): boolean {
         let sql = `DELETE FROM song WHERE songId = @songId AND songId NOT IN (SELECT songId FROM library_song WHERE songId = @songId)`;
         this.db.prepare(sql).run({ songId: song.songId });
@@ -376,8 +543,40 @@ export class LibraryDatabase {
         return true;
     }
 
-    public exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): boolean {
+    public removeEpisode(episode: IEpisode): boolean {
+        let sql = `DELETE FROM episode WHERE episodeId = @episodeId AND episodeId NOT IN (SELECT episodeId FROM library_episode WHERE episodeId = @episodeId)`;
+        this.db.prepare(sql).run({ episodeId: episode.episodeId });
+        return true;
+    }
+
+    public deleteEpisode(episode: IEpisode): boolean {
+        let sql = `DELETE FROM library_episode WHERE episodeId = ?`;
+        this.db.prepare(sql).run(episode.episodeId);
+
+        // WARN: no remove episode from `episode` table, that episode may be need by podcast or collection
+        // this.removeEpisode(episode);
+        return true;
+    }
+
+    public deletePodcast(podcast: IPodcast): boolean {
+        let sql = `DELETE FROM library_podcast WHERE podcastId = ?`;
+        this.db.prepare(sql).run(podcast.podcastId);
+
+        podcast.episodes.forEach(episode => this.removeEpisode(episode));
+        return true;
+    }
+
+    public deleteRadio(radio: IRadio): boolean {
+        let sql = `DELETE FROM library_radio WHERE radioId = ?`;
+        this.db.prepare(sql).run(radio.radioId);
+        return true;
+    }
+
+    public exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile | IEpisode | IPodcast | IRadio): boolean {
         let idName = item.type == 'userProfile' ? 'userId' : `${item.type}Id`;
+
+        if (!TABLES[item.type]) return false;
+
         let sql = `select 'id' from ${TABLES[item.type]} where ${idName} = ?`;
         let result = this.db.prepare(sql).get(item[idName]);
         return !!result;

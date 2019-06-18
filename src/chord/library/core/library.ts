@@ -22,6 +22,15 @@ import { ILibraryCollection } from 'chord/library/api/collection';
 import { ILibraryUserProfile } from 'chord/library/api/userProfile';
 // import { IUserPlayList } from 'chord/library/api/playList';
 
+
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
+import { ILibraryEpisode } from 'chord/library/api/episode';
+import { ILibraryPodcast } from 'chord/library/api/podcast';
+import { ILibraryRadio } from 'chord/library/api/radio';
+
 import { encryptPassword } from 'chord/library/auth/encrypt';
 
 import { LibraryDatabase } from 'chord/library/data/database';
@@ -90,6 +99,18 @@ export class Library {
     // return libraryPlayLists;
     // }
 
+    public libraryEpisodes(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryEpisode> {
+        return this.db.libraryEpisodes(lastId, size, keyword);
+    }
+
+    public libraryPodcasts(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryPodcast> {
+        return this.db.libraryPodcasts(lastId, size, keyword);
+    }
+
+    public libraryRadios(lastId: number = 0, size: number = 20, keyword?: string): Array<ILibraryRadio> {
+        return this.db.libraryRadios(lastId, size, keyword);
+    }
+
 
     public addUser(username: string, password: string): boolean {
         return this.db.addUser(username, password);
@@ -120,6 +141,21 @@ export class Library {
         return this.db.addUserProfile(userProfile, addAt);
     }
 
+    public addEpisode(episode: IEpisode): ILibraryEpisode {
+        let addAt = Date.now();
+        return this.db.addEpisode(episode, addAt);
+    }
+
+    public addPodcast(podcast: IPodcast): ILibraryPodcast {
+        let addAt = Date.now();
+        return this.db.addPodcast(podcast, addAt);
+    }
+
+    public addRadio(radio: IRadio): ILibraryRadio {
+        let addAt = Date.now();
+        return this.db.addRadio(radio, addAt);
+    }
+
     public deleteSong(song: ISong): boolean {
         return this.db.deleteSong(song);
     }
@@ -136,11 +172,23 @@ export class Library {
         return this.db.deleteCollection(collection);
     }
 
-    public deleteUserProfile(userProfile: IUserProfile):  boolean{
+    public deleteUserProfile(userProfile: IUserProfile): boolean {
         return this.db.deleteUserProfile(userProfile);
     }
 
-    public exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): boolean {
+    public deleteEpisode(episode: IEpisode): boolean {
+        return this.db.deleteEpisode(episode);
+    }
+
+    public deletePodcast(podcast: IPodcast): boolean {
+        return this.db.deletePodcast(podcast);
+    }
+
+    public deleteRadio(radio: IRadio): boolean {
+        return this.db.deleteRadio(radio);
+    }
+
+    public exists(item: ISong | IArtist | IAlbum | ICollection | IUserProfile | IEpisode | IPodcast | IRadio): boolean {
         return this.db.exists(item);
     }
 }
