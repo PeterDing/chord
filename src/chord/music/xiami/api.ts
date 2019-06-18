@@ -427,8 +427,8 @@ export class XiamiApi {
             `https://www.xiami.com/`,
         );
         let info = json.result.data.songs;
-        let artist = makeSongs(info);
-        return artist;
+        let songs = makeSongs(info);
+        return songs;
     }
 
 
