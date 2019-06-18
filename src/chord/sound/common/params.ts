@@ -36,4 +36,3 @@ export const OFFSETS = {
         limit: 30,
     }
 };
-
