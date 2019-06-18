@@ -1,7 +1,5 @@
 'use strict';
 
-import * as React from 'react';
-
 import { IAlbum } from 'chord/music/api/album';
 import { IPlayAlbumAct } from 'chord/workbench/api/common/action/player';
 import { IShowAlbumAct } from 'chord/workbench/api/common/action/mainView';

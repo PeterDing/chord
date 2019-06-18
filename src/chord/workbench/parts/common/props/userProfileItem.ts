@@ -1,7 +1,5 @@
 'use strict';
 
-import * as React from 'react';
-
 import { IUserProfile } from 'chord/music/api/user';
 import { IShowUserProfileAct } from 'chord/workbench/api/common/action/mainView';
 import { IPlayUserFavoriteSongsAct } from 'chord/workbench/api/common/action/player';
