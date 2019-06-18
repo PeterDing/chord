@@ -25,18 +25,18 @@ function switchLowerKbps() {
 
     let state: IStateGlobal = store.getState();
     let index = state.player.index;
-    let song = state.player.playList[index];
+    let playItem = state.player.playList[index];
 
-    let preKbps = song.audios[0].kbps;
+    let preKbps = playItem.audios[0].kbps;
 
-    logger.info('switch lower kbps:', song);
+    logger.info('switch lower kbps:', playItem);
 
     if (switchKbps(-1)) {
-        noticeBlockedKbps(song, preKbps);
+        noticeBlockedKbps(playItem, preKbps);
         handlePlay(index).then(act => store.dispatch(act));
     } else {
-        notice(NOTICES.NO_AUDIO, song);
-        // play next song
+        notice(NOTICES.NO_AUDIO, playItem);
+        // play next playItem
         handlePlay(index + 1).then(act => store.dispatch(act));
     }
 }
@@ -45,7 +45,7 @@ function switchLowerKbps() {
 /**
  * Switch to lower kbps for audio loading error
  */
-function onLoadError(soundId?: number, store?, audioUrl?: string, songId?: string) {
+function onLoadError(soundId?: number, store?, audioUrl?: string, playItemId?: string) {
     CAudio.destroy();
     switchLowerKbps();
 }
