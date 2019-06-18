@@ -7,7 +7,7 @@ import { IPlayerState } from 'chord/workbench/api/common/state/player';
 
 import { IPlayPauseAct, IPlayAct } from 'chord/workbench/api/common/action/player'
 
-import { addSongAudios } from 'chord/workbench/api/utils/song';
+import { addPlayItemAudios } from 'chord/workbench/api/utils/playItem';
 
 import { handlePlay } from 'chord/workbench/parts/player/browser/action/playList';
 
@@ -52,10 +52,10 @@ export async function handlePlayPause(): Promise<IPlayPauseAct> {
     let state: IStateGlobal = (<any>window).store.getState();
 
     let index = state.player.index || 0;
-    let song = state.player.playList[index];
-    if (song) {
-        // directly change song which is in state
-        await addSongAudios(song);
+    let playItem = state.player.playList[index];
+    if (playItem) {
+        // directly change playItem which is in state
+        await addPlayItemAudios(playItem);
     }
 
     return {

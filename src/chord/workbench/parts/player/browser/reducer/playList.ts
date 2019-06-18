@@ -5,7 +5,11 @@ import { IPlayerState } from 'chord/workbench/api/common/state/player';
 import { IPlayAct } from 'chord/workbench/api/common/action/player';
 import { CAudio } from 'chord/workbench/api/node/audio';
 
-import { selectAudio } from 'chord/workbench/api/utils/song';
+import { PlayItem } from 'chord/workbench/api/utils/playItem';
+
+import { selectAudio } from 'chord/workbench/api/utils/playItem';
+
+import { removeGlobelPlayPart } from 'chord/workbench/events/autoLoadNextPlayItems';
 
 
 export function playAudio(state: IPlayerState, act: IPlayAct): IPlayerState {
@@ -13,12 +17,15 @@ export function playAudio(state: IPlayerState, act: IPlayAct): IPlayerState {
 
     let index = act.index;
     if (!(index == state.index && CAudio.hasAudio() && CAudio.playing())) {
-        let song = state.playList[index];
-        if (song) {
+        let playItem = state.playList[index];
+        if (playItem) {
+            // remove auto-load next playing items for song
+            if (playItem.type == 'song') removeGlobelPlayPart();
+
             // TODO: read kbps configuration
-            let audio = selectAudio(song.audios);
+            let audio = selectAudio(playItem.audios);
             let audioUrl = audio.path || audio.url;
-            CAudio.makeAudio(audioUrl, song.songId);
+            CAudio.makeAudio(audioUrl, (new PlayItem(playItem)).id());
 
             // play now
             CAudio.play();

@@ -5,7 +5,7 @@ import { IPlayerState } from 'chord/workbench/api/common/state/player';
 import { IRewindAct, IPlayPauseAct, IForwardAct } from 'chord/workbench/api/common/action/player'
 import { CAudio } from 'chord/workbench/api/node/audio';
 
-import { selectAudio } from 'chord/workbench/api/utils/song';
+import { selectAudio, PlayItem } from 'chord/workbench/api/utils/playItem';
 
 
 export function rewind(state: IPlayerState, act: IRewindAct): IPlayerState {
@@ -18,13 +18,13 @@ export function rewind(state: IPlayerState, act: IRewindAct): IPlayerState {
         }
 
         let index = state.index - 1;
-        let song = state.playList[index];
+        let playItem = state.playList[index];
 
         // new audio
         // TODO: read kbps configuration
-        let audio = selectAudio(song.audios);
+        let audio = selectAudio(playItem.audios);
         let audioUrl = audio.path || audio.url;
-        CAudio.makeAudio(audioUrl, song.songId);
+        CAudio.makeAudio(audioUrl, (new PlayItem(playItem)).id());
         // play now
         CAudio.play();
         CAudio.volume(state.volume);
@@ -48,16 +48,16 @@ export function playPause(state: IPlayerState, act: IPlayPauseAct): IPlayerState
         }
         return { ...state, playing };
     } else {
-        // plays index's song
+        // plays index's playItem
         if (state.playList.length != 0) {
             let index = state.index || 0;
-            let song = state.playList[index];
+            let playItem = state.playList[index];
 
             // new audio
             // TODO: read kbps configuration
-            let audio = selectAudio(song.audios);
+            let audio = selectAudio(playItem.audios);
             let audioUrl = audio.path || audio.url;
-            CAudio.makeAudio(audioUrl, song.songId);
+            CAudio.makeAudio(audioUrl, (new PlayItem(playItem)).id());
             // play now
             CAudio.play();
             CAudio.volume(state.volume);
@@ -77,13 +77,13 @@ export function forward(state: IPlayerState, act: IForwardAct): IPlayerState {
         }
 
         let index = state.index + 1;
-        let song = state.playList[index];
+        let playItem = state.playList[index];
 
         // new audio
         // TODO: read kbps configuration
-        let audio = selectAudio(song.audios);
+        let audio = selectAudio(playItem.audios);
         let audioUrl = audio.path || audio.url;
-        CAudio.makeAudio(audioUrl, song.songId);
+        CAudio.makeAudio(audioUrl, (new PlayItem(playItem)).id());
         // play now
         CAudio.play();
         CAudio.volume(state.volume);
