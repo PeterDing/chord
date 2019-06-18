@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/PeterDing/chord.svg?branch=master)](https://travis-ci.org/PeterDing/chord)
 
-Chord supports many remote music providers' services and local music files service (developping).
+Chord supports many remote music/podcast providers' services and local music files service (developping).
 
 Chord uses the framework of spotify UI.
 
@@ -17,7 +17,17 @@ Chord uses the framework of spotify UI.
 
 ## Features
 
-- Support _Xiami 虾米音乐, Netease music 网易云音乐, QQ music 腾讯音乐, 千千音乐_
+- Support
+
+  **Xiami 虾米音乐**
+
+  **Netease music 网易云音乐**
+
+  **QQ music 腾讯音乐**
+
+  **千千音乐**
+
+  **Ximalaya 喜马拉雅FM**
 
 - Support functions:
 
@@ -25,7 +35,7 @@ Chord uses the framework of spotify UI.
 
   Play (shuffle, repeat)
 
-  Show Artist, album, collection, user profile at detail
+  Show Artist, album, collection, user profile, podcast, radio at detail
 
 - High quality audio file (kbps >= 320)
 

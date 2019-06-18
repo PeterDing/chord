@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/PeterDing/chord.svg?branch=master)](https://travis-ci.org/PeterDing/chord)
 
-弦提供很多音乐服务商的服务，也支持本地音乐文件的播放（开发中）。
+弦提供很多 音乐服务商/播客 的服务，也支持本地音乐文件的播放（开发中）。
 
 弦使用 spotify UI 的框架。
 
@@ -15,15 +15,25 @@
 
 ## 特性
 
-- 支持 _虾米, 网易云音乐, 腾讯(QQ)音乐, 千千音乐_
+- 支持 
+
+  **Xiami 虾米音乐**
+
+  **Netease music 网易云音乐**
+
+  **QQ music 腾讯音乐**
+
+  **千千音乐**
+
+  **Ximalaya 喜马拉雅FM**
 
 - 支持功能:
 
-  搜索  
+  搜索
 
   播放 (随机播放, 重复播放)  
 
-  展示艺人，专辑，歌单，用户详细界面
+  展示艺人，专辑，歌单，用户, 有声书 详细界面
 
 - 支持高品质音频文件 (kbps >= 320)  
 
