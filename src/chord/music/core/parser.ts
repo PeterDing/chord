@@ -7,6 +7,8 @@ import { defaultLibrary } from 'chord/library/core/library';
  * Check whether song, artist, album, collection exists at library
  */
 export function makeItem<T>(item: T): T {
+    if (!item) return item;
+
     if (defaultLibrary.exists(<any>item)) {
         (<any>item).like = true;
     }
@@ -14,5 +16,7 @@ export function makeItem<T>(item: T): T {
 }
 
 export function makeItems<T>(items: Array<T>): Array<T> {
-    return items.map(item => item ? makeItem(item) : item);
+    if (!items) return items;
+
+    return (items).map(item => item ? makeItem(item) : item);
 }
