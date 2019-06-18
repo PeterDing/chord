@@ -5,11 +5,16 @@ import { ILibraryAlbum } from 'chord/library/api/album';
 import { ILibraryArtist } from 'chord/library/api/artist';
 import { ILibraryCollection } from 'chord/library/api/collection';
 import { ILibraryUserProfile } from 'chord/library/api/userProfile';
+
+import { ILibraryEpisode } from 'chord/library/api/episode';
+import { ILibraryPodcast } from 'chord/library/api/podcast';
+import { ILibraryRadio } from 'chord/library/api/radio';
+
 import { IOffset, initiateOffset } from 'chord/workbench/api/common/state/offset';
 
 
 export interface ILibraryResultState {
-    // 'top' | 'artists' | 'songs' | 'albums' | 'collections'
+    // 'top' | 'artists' | 'songs' | 'albums' | 'collections' | 'episode' | 'podcast' | 'radio'
     // For searching result navigation
     view: string;
 
@@ -19,12 +24,20 @@ export interface ILibraryResultState {
     collections: Array<ILibraryCollection>;
     userProfiles: Array<ILibraryUserProfile>;
 
+    episodes: Array<ILibraryEpisode>;
+    podcasts: Array<ILibraryPodcast>;
+    radios: Array<ILibraryRadio>;
+
     // offset is lastId
     songsOffset: IOffset;
     albumsOffset: IOffset;
     artistsOffset: IOffset;
     collectionsOffset: IOffset;
     userProfilesOffset: IOffset;
+
+    episodesOffset: IOffset;
+    podcastsOffset: IOffset;
+    radiosOffset: IOffset;
 }
 
 export interface ILibraryViewState {
@@ -47,11 +60,19 @@ export function initiateLibraryResultState(): ILibraryResultState {
         collections: [],
         userProfiles: [],
 
+        episodes: [],
+        podcasts: [],
+        radios: [],
+
         songsOffset: { ...initiateOffset(), offset: MAX_ID },
         albumsOffset: { ...initiateOffset(), offset: MAX_ID },
         artistsOffset: { ...initiateOffset(), offset: MAX_ID },
         collectionsOffset: { ...initiateOffset(), offset: MAX_ID },
         userProfilesOffset: { ...initiateOffset(), offset: MAX_ID },
+
+        episodesOffset: { ...initiateOffset(), offset: MAX_ID },
+        podcastsOffset: { ...initiateOffset(), offset: MAX_ID },
+        radiosOffset: { ...initiateOffset(), offset: MAX_ID },
     };
 }
 

@@ -4,11 +4,16 @@ import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
+
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
 import { IOffset, initiateOffset } from 'chord/workbench/api/common/state/offset';
 
 
 export interface ISearchResultState {
-    // 'top' | 'artists' | 'songs' | 'albums' | 'collections'
+    // 'top' | 'artists' | 'songs' | 'albums' | 'collections' | 'podcast' | 'radio' | 'episode'
     // For searching result navigation
     view: string;
 
@@ -17,10 +22,18 @@ export interface ISearchResultState {
     artists: Array<IArtist>;
     collections: Array<ICollection>;
 
+    episodes: Array<IEpisode>;
+    podcasts: Array<IPodcast>;
+    radios: Array<IRadio>;
+
     songsOffset: IOffset;
     albumsOffset: IOffset;
     artistsOffset: IOffset;
     collectionsOffset: IOffset;
+
+    episodesOffset: IOffset;
+    podcastsOffset: IOffset;
+    radiosOffset: IOffset;
 }
 
 
@@ -50,10 +63,18 @@ export function initiateSearchResultState(): ISearchResultState {
         artists: [],
         collections: [],
 
+        episodes: [],
+        podcasts: [],
+        radios: [],
+
         songsOffset: initiateOffset(),
         albumsOffset: initiateOffset(),
         artistsOffset: initiateOffset(),
         collectionsOffset: initiateOffset(),
+
+        episodesOffset: initiateOffset(),
+        podcastsOffset: initiateOffset(),
+        radiosOffset: initiateOffset(),
     };
 }
 

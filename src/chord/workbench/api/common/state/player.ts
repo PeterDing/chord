@@ -1,15 +1,13 @@
 'use strict';
 
-import { ISong } from 'chord/music/api/song';
+import { TPlayItem } from 'chord/unity/api/items';
 
-
-export type IPlayerList = Array<ISong>;
 
 export interface IPlayerState {
     // currently playing song's index of play list
     index: number;
     kbps: number;
-    playList: IPlayerList;
+    playList: Array<TPlayItem>;
     volume: number;
     playing: boolean;
     shuffle: boolean;

@@ -13,7 +13,7 @@ export interface IOffset {
 
     // more is true, there are more items
     // more is false, there are no more items
-    more: boolean;
+    more?: boolean;
 }
 
 
