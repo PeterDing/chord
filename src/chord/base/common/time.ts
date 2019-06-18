@@ -1,5 +1,6 @@
 'use strict';
 
+import { isString } from 'chord/base/common/checker';
 
 export function getHumanDuration(millisecond: number): string {
     let duration = Math.floor(millisecond / 1000);
@@ -9,7 +10,8 @@ export function getHumanDuration(millisecond: number): string {
 }
 
 
-export function getDateYear(millisecond: number): number {
+export function getDateYear(millisecond: number | string): number | string {
+    if (isString(millisecond)) return millisecond;
     return new Date(millisecond).getFullYear();
 }
 
