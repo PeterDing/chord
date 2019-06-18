@@ -231,7 +231,7 @@ class PodcastView extends React.Component<IPodcastViewProps, IPodcastViewState> 
             size={11}
             handleClick={this.changePage} />;
 
-        let orders = ORDERS[podcast.origin];
+        let orders = ORDERS[podcast.origin].podcasts;
 
         let orderView = <NavMenu
             namespace={'podcast-orders'}
