@@ -185,7 +185,7 @@ export class QQMusicApi {
             cid: '205361747',
             guid: guid,
             songmid: songMid,
-            filename: '0.m4a',
+            filename: 'C400' + songMid + '.m4a',
             format: 'json',
             '_': Date.now(),
         };

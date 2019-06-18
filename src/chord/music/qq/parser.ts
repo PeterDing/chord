@@ -1,6 +1,6 @@
 'use strict';
 
-import { isObject } from 'chord/base/common/objects';
+import { isObject } from 'chord/base/common/checker';
 import { decodeHtml } from 'chord/base/browser/htmlContent';
 
 import { IAudio } from 'chord/music/api/audio';
