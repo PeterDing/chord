@@ -8,12 +8,16 @@ import { getLikeAndPlayCount } from 'chord/workbench/api/utils/statistic';
 import { ESize } from 'chord/music/common/size';
 
 import { IArtistItemViewProps } from 'chord/workbench/parts/common/props/artistItem';
-import { ArtistIcon } from 'chord/workbench/parts/common/component/common';
 
 import { handleShowArtistView } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 import { handlePlayArtist } from 'chord/workbench/parts/player/browser/action/playArtist';
 
 import { showArtistMenu } from 'chord/workbench/parts/menu/browser/action/menu';
+
+import { Card } from 'chord/workbench/parts/common/abc/card';
+
+import { ArtistIcon } from 'chord/workbench/parts/common/component/common';
+import { PlayIcon } from 'chord/workbench/parts/common/component/common';
 
 import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
 
@@ -33,49 +37,21 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
 
         let likeAndPlayCount = getLikeAndPlayCount(artist);
 
-        return (
-            <div>
-                <div draggable={true}>
-                    <div className="media-object mo-artist" style={{ maxWidth: '300px' }}>
-                        <div className="media-object-hoverable">
-                            <div className="react-contextmenu-wrapper"
-                                onContextMenu={(e) => this.props.showArtistMenu(e, artist)}>
+        let name = (<span>{originIcon} {artist.artistName}</span>);
 
-                                <div className="cover-art shadow actionable rounded linking cursor-pointer cover-art--with-auto-height"
-                                    aria-hidden="true" style={{ width: 'auto', height: 'auto' }}>
-                                    <div onClick={() => this.props.handleShowArtistView(artist)}>
-                                        {ArtistIcon}
-                                        <div className="cover-art-image cover-art-image-loaded"
-                                            style={{ backgroundImage: `url("${cover}")` }}>
-                                        </div>
-                                    </div>
-                                    <button className="cover-art-playback cursor-pointer"
-                                        onClick={() => this.props.handlePlayArtist(artist)}>
-                                        <svg className="icon-play" viewBox="0 0 85 100"><path fill="currentColor" d="M81 44.6c5 3 5 7.8 0 10.8L9 98.7c-5 3-9 .7-9-5V6.3c0-5.7 4-8 9-5l72 43.3z"><title>PLAY</title></path></svg></button>
-                                </div>
+        let infos = [
+            { item: likeAndPlayCount },
+        ];
 
-                            </div>
-
-                            {/* like count and play count */}
-                            <div className="mo-meta ellipsis-one-line">
-                                <div className="react-contextmenu-wrapper">
-                                    <span> {likeAndPlayCount} </span>
-                                </div>
-                            </div>
-
-                            <div className="mo-info ellipsis-one-line">
-                                <div className="react-contextmenu-wrapper">
-                                    {/* Origin Icon */}
-                                    {originIcon}
-
-                                    <span className="mo-info-name">{artist.artistName}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+        return <Card
+            name={name}
+            cover={{ item: cover, act: () => this.props.handleShowArtistView(artist) }}
+            defaultCover={ArtistIcon}
+            menu={(e) => this.props.showArtistMenu(e, artist)}
+            button={{ item: PlayIcon, act: () => this.props.handlePlayArtist(artist) }}
+            infos={infos}
+            draggable={true}
+            shape={'circle'} />;
     }
 }
 

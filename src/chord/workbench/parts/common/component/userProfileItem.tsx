@@ -8,12 +8,16 @@ import { getUserProfileCount } from 'chord/workbench/api/utils/statistic';
 import { ESize } from 'chord/music/common/size';
 
 import { IUserProfileItemViewProps } from 'chord/workbench/parts/common/props/userProfileItem';
-import { UserProfileIcon } from 'chord/workbench/parts/common/component/common';
 
 import { handleShowUserProfileView } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
 import { handlePlayUserFavoriteSongs } from 'chord/workbench/parts/player/browser/action/playUser';
 
 import { showUserProfileMenu } from 'chord/workbench/parts/menu/browser/action/menu';
+
+import { Card } from 'chord/workbench/parts/common/abc/card';
+
+import { UserProfileIcon } from 'chord/workbench/parts/common/component/common';
+import { PlayIcon } from 'chord/workbench/parts/common/component/common';
 
 import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
 
@@ -32,50 +36,21 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
         let originIcon = OriginIcon(userProfile.origin, 'cover-icon xiami-icon');
         let userProfileCount = getUserProfileCount(userProfile);
 
-        return (
-            <div>
-                <div draggable={true}>
-                    <div className="media-object mo-artist" style={{ maxWidth: '300px' }}>
-                        <div className="media-object-hoverable">
-                            <div className="react-contextmenu-wrapper"
-                                onContextMenu={(e) => this.props.showUserProfileMenu(e, userProfile)}>
+        let name = (<span>{originIcon} {userProfile.userName}</span>);
 
-                                <div className="cover-art shadow actionable rounded linking cursor-pointer cover-art--with-auto-height"
-                                    aria-hidden="true" style={{ width: 'auto', height: 'auto' }}>
-                                    <div onClick={() => this.props.handleShowUserProfileView(userProfile)}>
-                                        {UserProfileIcon}
-                                        <div className="cover-art-image cover-art-image-loaded"
-                                            style={{ backgroundImage: `url("${cover}")` }}>
-                                        </div>
-                                    </div>
-                                    <button className="cover-art-playback cursor-pointer"
-                                        onClick={() => this.props.handlePlayUserFavoriteSongs(userProfile)}>
-                                        <svg className="icon-play" viewBox="0 0 85 100"><path fill="currentColor" d="M81 44.6c5 3 5 7.8 0 10.8L9 98.7c-5 3-9 .7-9-5V6.3c0-5.7 4-8 9-5l72 43.3z"><title>PLAY</title></path></svg></button>
-                                </div>
+        let infos = [
+            { item: userProfileCount },
+        ];
 
-                            </div>
-
-                            <div className="mo-info ellipsis-one-line">
-                                <div className="react-contextmenu-wrapper">
-                                    {/* Origin Icon */}
-                                    {originIcon}
-
-                                    <span className="mo-info-name">{userProfile.userName}</span>
-                                </div>
-                            </div>
-
-                            {/* following, follower and song count */}
-                            <div className="mo-meta ellipsis-one-line">
-                                <div className="react-contextmenu-wrapper">
-                                    <span> {userProfileCount} </span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+        return <Card
+            name={name}
+            cover={{ item: cover, act: () => this.props.handleShowUserProfileView(userProfile) }}
+            defaultCover={UserProfileIcon}
+            menu={(e) => this.props.showUserProfileMenu(e, userProfile)}
+            button={{ item: PlayIcon, act: () => this.props.handlePlayUserFavoriteSongs(userProfile) }}
+            infos={infos}
+            draggable={true}
+            shape={'circle'} />;
     }
 }
 
