@@ -8,6 +8,10 @@ import {
     showAlbumMenu,
     showCollectionMenu,
     showUserProfileMenu,
+
+    showEpisodeMenu,
+    showPodcastMenu,
+    showRadioMenu,
 } from 'chord/workbench/parts/menu/browser/reducer/show';
 
 
@@ -39,8 +43,25 @@ export function map(act: string): IReducerMap {
                 node: 'userProfileMenu',
             };
 
+        // Sound
+        case 'c:menu:showEpisodeMenu':
+            return {
+                reducer: showEpisodeMenu,
+                node: 'episodeMenu',
+            };
+        case 'c:menu:showPodcastMenu':
+            return {
+                reducer: showPodcastMenu,
+                node: 'podcastMenu',
+            };
+        case 'c:menu:showRadioMenu':
+            return {
+                reducer: showRadioMenu,
+                node: 'radioMenu',
+            };
+
         default:
             return null;
 
-        }
+    }
 }

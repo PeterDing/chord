@@ -8,6 +8,10 @@ import {
     IShowAlbumMenuAct,
     IShowCollectionMenuAct,
     IShowUserProfileMenuAct,
+
+    IShowEpisodeMenuAct,
+    IShowPodcastMenuAct,
+    IShowRadioMenuAct,
 } from 'chord/workbench/api/common/action/menu';
 
 import { ISongMenuState } from 'chord/workbench/api/common/state/menu/songMenu';
@@ -15,6 +19,10 @@ import { IArtistMenuState } from 'chord/workbench/api/common/state/menu/artistMe
 import { IAlbumMenuState } from 'chord/workbench/api/common/state/menu/albumMenu';
 import { ICollectionMenuState } from 'chord/workbench/api/common/state/menu/collectionMenu';
 import { IUserProfileMenuState } from 'chord/workbench/api/common/state/menu/userProfileMenu';
+
+import { IEpisodeMenuState } from 'chord/workbench/api/common/state/menu/episodeMenu';
+import { IPodcastMenuState } from 'chord/workbench/api/common/state/menu/podcastMenu';
+import { IRadioMenuState } from 'chord/workbench/api/common/state/menu/radioMenu';
 
 
 export function showSongMenu(state: ISongMenuState, act: IShowSongMenuAct): ISongMenuState {
@@ -64,5 +72,38 @@ export function showUserProfileMenu(state: IUserProfileMenuState, act: IShowUser
         top: act.top,
         left: act.left,
         userProfile: act.userProfile,
+    }
+}
+
+
+// Sound
+
+export function showEpisodeMenu(state: IEpisodeMenuState, act: IShowEpisodeMenuAct): IEpisodeMenuState {
+    equal(act.act, 'c:menu:showEpisodeMenu');
+
+    return {
+        top: act.top,
+        left: act.left,
+        episode: act.episode,
+    }
+}
+
+export function showPodcastMenu(state: IPodcastMenuState, act: IShowPodcastMenuAct): IPodcastMenuState {
+    equal(act.act, 'c:menu:showPodcastMenu');
+
+    return {
+        top: act.top,
+        left: act.left,
+        podcast: act.podcast,
+    }
+}
+
+export function showRadioMenu(state: IRadioMenuState, act: IShowRadioMenuAct): IRadioMenuState {
+    equal(act.act, 'c:menu:showRadioMenu');
+
+    return {
+        top: act.top,
+        left: act.left,
+        radio: act.radio,
     }
 }
