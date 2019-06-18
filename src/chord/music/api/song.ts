@@ -70,7 +70,7 @@ export interface ISong {
     description?: string;
     duration?: number;
 
-    releaseDate?: number;
+    releaseDate?: number | string;
 
     audios?: Array<IAudio>;
 
