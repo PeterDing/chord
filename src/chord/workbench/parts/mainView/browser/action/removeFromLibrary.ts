@@ -10,6 +10,10 @@ import { IAlbum } from 'chord/music/api/album';
 import { ICollection } from 'chord/music/api/collection';
 import { IUserProfile } from 'chord/music/api/user';
 
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
 import { IRemoveFromLibraryAct } from 'chord/workbench/api/common/action/mainView';
 
 import { defaultLibrary } from 'chord/library/core/library';
@@ -18,7 +22,7 @@ import { defaultLibrary } from 'chord/library/core/library';
 import { syncRemove } from 'chord/workbench/parts/mainView/browser/action/plugins/syncAddRemove';
 
 
-export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): IRemoveFromLibraryAct {
+export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollection | IUserProfile | IEpisode | IPodcast | IRadio): IRemoveFromLibraryAct {
     item.like = false;
 
     switch (item.type) {
@@ -36,6 +40,16 @@ export function handleRemoveFromLibrary(item: ISong | IArtist | IAlbum | ICollec
             break;
         case 'userProfile':
             defaultLibrary.deleteUserProfile(<IUserProfile>item);
+            break;
+
+        case 'episode':
+            defaultLibrary.deleteEpisode(<IEpisode>item);
+            break;
+        case 'podcast':
+            defaultLibrary.deletePodcast(<IPodcast>item);
+            break;
+        case 'radio':
+            defaultLibrary.deleteRadio(<IRadio>item);
             break;
         default:
             logger.error('`handleRemoveFromLibrary` act: unknown item\'s type:', item.type, item);

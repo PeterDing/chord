@@ -14,6 +14,10 @@ export function librarySearch(keyword: string): ILibraryInputAct {
     let collections = defaultLibrary.libraryCollections(MAX_ID, 10, keyword);
     let userProfiles = defaultLibrary.libraryUserProfiles(MAX_ID, 10, keyword);
 
+    let episodes = defaultLibrary.libraryEpisodes(MAX_ID, 10, keyword);
+    let podcasts = defaultLibrary.libraryPodcasts(MAX_ID, 10, keyword);
+    let radios = defaultLibrary.libraryRadios(MAX_ID, 10, keyword);
+
     return {
         type: 'c:mainView:libraryInput',
         act: 'c:mainView:libraryInput',
@@ -23,5 +27,9 @@ export function librarySearch(keyword: string): ILibraryInputAct {
         artists,
         collections,
         userProfiles,
+
+        episodes,
+        podcasts,
+        radios,
     };
 }
