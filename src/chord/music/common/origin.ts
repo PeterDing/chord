@@ -8,6 +8,7 @@ export enum ORIGIN {
     netease = 'netease',
     qq = 'qq',
     qianqian = 'qianqian',
+    ximalaya = 'ximalaya',
 }
 
 export interface IOriginType {
