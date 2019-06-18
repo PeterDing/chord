@@ -12,7 +12,7 @@ import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import SongItemView from 'chord/workbench/parts/common/component/songItem';
 import CollectionItemView from 'chord/workbench/parts/common/component/collectionItem';
 
-import { handlePlayManySongs } from 'chord/workbench/parts/player/browser/action/playMany';
+import { handlePlayManyItems } from 'chord/workbench/parts/player/browser/action/playMany';
 
 
 interface IRecommendViewProps {
@@ -116,7 +116,7 @@ function mapStateToProps(state: IStateGlobal) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        handlePlayRecommendSongs: (songs) => handlePlayManySongs(songs).then(act => dispatch(act)),
+        handlePlayRecommendSongs: (songs) => handlePlayManyItems(songs).then(act => dispatch(act)),
     };
 }
 
