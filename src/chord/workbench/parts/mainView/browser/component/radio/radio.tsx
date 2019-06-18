@@ -43,7 +43,7 @@ const INIT_ENTRY = {
     [ORIGIN.ximalaya]: (type) => ({
         ...OFFSETS[ORIGIN.ximalaya],
         total: null,
-        order: DEFAULT_ORDER[ORIGIN.ximalaya][type],
+        order: DEFAULT_ORDER[ORIGIN.ximalaya].radio[type],
         keyword: '',
         items: [],
     }),
@@ -435,7 +435,7 @@ class RadioView extends React.Component<IRadioViewProps, IRadioViewState> {
 
         let paginationView = this.getPaginationView('episodes', entry);
 
-        let orders = ORDERS[this.props.radio.origin].episodes;
+        let orders = ORDERS[this.props.radio.origin].radio.episodes;
         let orderView = this.getOrderView('episodes', entry, orders, 'radio-episodes-orders');
 
         return (
@@ -489,7 +489,7 @@ class RadioView extends React.Component<IRadioViewProps, IRadioViewState> {
 
         let paginationView = this.getPaginationView('podcasts', entry);
 
-        let orders = ORDERS[this.props.radio.origin].podcasts;
+        let orders = ORDERS[this.props.radio.origin].radio.podcasts;
         let orderView = this.getOrderView('podcasts', entry, orders, 'radio-podcasts-orders');
 
         return this._itemsView(itemsView, orderView, paginationView, 'ALBUMS');
@@ -501,7 +501,7 @@ class RadioView extends React.Component<IRadioViewProps, IRadioViewState> {
 
         let paginationView = this.getPaginationView('favoritePodcasts', entry);
 
-        let orders = ORDERS[this.props.radio.origin].favoritePodcasts;
+        let orders = ORDERS[this.props.radio.origin].radio.favoritePodcasts;
         let orderView = this.getOrderView('favoritePodcasts', entry, orders, 'radio-favorite-podcasts-orders');
 
         return this._itemsView(itemsView, orderView, paginationView, 'FAVORITE PLAYLISTS');

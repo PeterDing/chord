@@ -105,7 +105,7 @@ const INIT_STATES = {
         total: null,
 
         ...OFFSETS[ORIGIN.ximalaya],
-        order: DEFAULT_ORDER[ORIGIN.ximalaya].podcasts,
+        order: DEFAULT_ORDER[ORIGIN.ximalaya].podcast.episodes,
     }
 };
 
@@ -231,7 +231,7 @@ class PodcastView extends React.Component<IPodcastViewProps, IPodcastViewState> 
             size={11}
             handleClick={this.changePage} />;
 
-        let orders = ORDERS[podcast.origin].podcasts;
+        let orders = ORDERS[podcast.origin].podcast.episodes;
 
         let orderView = <NavMenu
             namespace={'podcast-orders'}
