@@ -10,7 +10,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, Store } from 'redux';
 
 import { mainReducer } from 'chord/workbench/parts/reducer';
 
@@ -33,7 +33,7 @@ logger.info('electron rendering process activate')
 webFrame.setVisualZoomLevelLimits(1, 1);
 
 
-const store = createStore(mainReducer);
+const store = createStore(mainReducer) as Store;
 
 // Set global store
 (window as any).store = store;
