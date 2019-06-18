@@ -72,6 +72,8 @@ export class LRUCache {
 
     private store: { [key: string]: IEntry };
     private deque: Deque;
+
+    // second
     private timeout: number;
 
     constructor(timeout: number) {
