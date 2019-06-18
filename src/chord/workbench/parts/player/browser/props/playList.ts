@@ -2,10 +2,10 @@
 
 import * as React from 'react';
 
-import { ISong } from 'chord/music/api/song';
+import { TPlayItem } from 'chord/unity/api/items';
 
 import { IShowArtistAct, IShowAlbumAct } from 'chord/workbench/api/common/action/mainView';
-import { IAddLibrarySongAct } from 'chord/workbench/api/common/action/mainView';
+import { IAddLibrarySongAct, IAddLibraryEpisodeAct } from 'chord/workbench/api/common/action/mainView';
 import { IRemoveFromLibraryAct } from 'chord/workbench/api/common/action/mainView';
 import { IPlayAct } from 'chord/workbench/api/common/action/player';
 
@@ -22,12 +22,15 @@ export interface IPlayListContentProps extends IPlayerState {
 }
 
 
-export interface IPlayListSongDetailProps {
-    song: ISong;
+export interface IPlayListItemDetailProps {
+    playItem: TPlayItem;
     handleShowArtistViewById: (artistId: string) => Promise<IShowArtistAct>;
     handleShowAlbumViewById: (albumId: string) => Promise<IShowAlbumAct>;
-    handleAddLibrarySong: (song: ISong) => IAddLibrarySongAct;
-    handleRemoveFromLibrary: (item: ISong) => IRemoveFromLibraryAct;
+    handleAddLibrarySong: (playItem: TPlayItem) => IAddLibrarySongAct;
+
+    handleAddLibraryEpisode: (playItem: TPlayItem) => IAddLibraryEpisodeAct;
+
+    handleRemoveFromLibrary: (item: TPlayItem) => IRemoveFromLibraryAct;
 
     lyricOn: boolean;
     toggleLyric: () => void;

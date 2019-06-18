@@ -1,10 +1,14 @@
 'use strict';
 
+import { Act } from 'chord/workbench/api/common/action/proto';
+
+import { TPlayItem } from 'chord/unity/api/items';
 import { ISong } from 'chord/music/api/song';
 import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
-import { Act } from 'chord/workbench/api/common/action/proto';
+
+import { IPodcast } from 'chord/sound/api/podcast';
 
 
 export interface IPlayAct extends Act {
@@ -18,25 +22,25 @@ export interface IPlayAct extends Act {
 }
 
 /**
- * Play one song once
+ * Play one TPlayItem once
  */
 export interface IPlayOneAct extends Act {
     // 'c:player:playOne'
 
     type: string;
     act: string;
-    song: ISong;
+    playItem: TPlayItem;
 }
 
 /**
- * Play many songs once
+ * Play many TPlayItem once
  */
 export interface IPlayManyAct extends Act {
     // 'c:player:playMany'
 
     type: string;
     act: string;
-    songs: Array<ISong>;
+    playItems: Array<TPlayItem>;
 }
 
 /**
@@ -49,7 +53,6 @@ export interface IPlayArtistAct extends Act {
     act: string;
     artist: IArtist;
 }
-
 
 /**
  * Play an album once
@@ -77,6 +80,13 @@ export interface IPlayUserFavoriteSongsAct extends Act {
     type: string;
     act: string;
     songs: Array<ISong>;
+}
+
+export interface IPlayPodcastAct extends Act {
+    // 'c:player:playPodcast'
+    type: string;
+    act: string;
+    podcast: IPodcast;
 }
 
 export interface IVolumeAct extends Act {
@@ -111,11 +121,11 @@ export interface IForwardAct extends Act {
     act: string;
 }
 
-// add songs to play queue
+// add TPlayItem to play queue
 export interface IAddToQueueAct extends Act {
     // 'c:player:addToQueue'
     type: string;
     act: string;
-    songs: Array<ISong>;
+    playItems: Array<TPlayItem>;
     direction: string;
 }

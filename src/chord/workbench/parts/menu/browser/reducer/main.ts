@@ -18,6 +18,15 @@ function handleView(act: string): string {
             return 'collectionMenuView';
         case 'c:menu:showUserProfileMenu':
             return 'userProfileMenuView';
+
+        // Sound
+        case 'c:menu:showEpisodeMenu':
+            return 'episodeMenuView';
+        case 'c:menu:showPodcastMenu':
+            return 'podcastMenuView';
+        case 'c:menu:showRadioMenu':
+            return 'radioMenuView';
+
         default:
             return null;
     }

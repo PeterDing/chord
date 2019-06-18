@@ -6,12 +6,20 @@ import { IAlbum } from 'chord/music/api/album';
 import { ICollection } from 'chord/music/api/collection';
 import { IUserProfile } from 'chord/music/api/user';
 
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
 import {
     IAddLibrarySongAct,
     IAddLibraryArtistAct,
     IAddLibraryAlbumAct,
     IAddLibraryCollectionAct,
     IAddLibraryUserProfileAct,
+
+    IAddLibraryEpisodeAct,
+    IAddLibraryPodcastAct,
+    IAddLibraryRadioAct,
 } from 'chord/workbench/api/common/action/mainView';
 
 import { defaultLibrary as library } from 'chord/library/core/library';
@@ -72,5 +80,43 @@ export function handleAddLibraryUserProfile(userProfile: IUserProfile): IAddLibr
         type: 'c:mainView:addLibraryUserProfile',
         act: 'c:mainView:addLibraryUserProfile',
         userProfile: libraryUserProfile,
+    };
+}
+
+
+// Sound items
+
+export function handleAddLibraryEpisode(episode: IEpisode): IAddLibraryEpisodeAct {
+    episode.like = true;
+    let libraryEpisode = library.addEpisode(episode);
+    syncAdd(episode);
+    return {
+        type: 'c:mainView:addLibraryEpisode',
+        act: 'c:mainView:addLibraryEpisode',
+        episode: libraryEpisode,
+    };
+}
+
+
+export function handleAddLibraryPodcast(podcast: IPodcast): IAddLibraryPodcastAct {
+    podcast.like = true;
+    let libraryPodcast = library.addPodcast(podcast);
+    syncAdd(podcast);
+    return {
+        type: 'c:mainView:addLibraryPodcast',
+        act: 'c:mainView:addLibraryPodcast',
+        podcast: libraryPodcast,
+    };
+}
+
+
+export function handleAddLibraryRadio(radio: IRadio): IAddLibraryRadioAct {
+    radio.like = true;
+    let libraryRadio = library.addRadio(radio);
+    syncAdd(radio);
+    return {
+        type: 'c:mainView:addLibraryRadio',
+        act: 'c:mainView:addLibraryRadio',
+        radio: libraryRadio,
     };
 }

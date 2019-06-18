@@ -58,6 +58,8 @@ function createWindow() {
 
         // For windows, frameless
         frame: isWindows ? false : true,
+
+        webPreferences: { nodeIntegration: true },
     });
 
 

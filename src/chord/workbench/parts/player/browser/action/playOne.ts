@@ -1,21 +1,21 @@
 'use strict';
 
-import { ISong } from 'chord/music/api/song';
+import { TPlayItem } from 'chord/unity/api/items';
 import { IPlayOneAct } from 'chord/workbench/api/common/action/player';
 
-import { addSongAudios } from 'chord/workbench/api/utils/song';
+import { addPlayItemAudios } from 'chord/workbench/api/utils/playItem';
 
 import { noticePlayItem } from 'chord/workbench/parts/notification/action/notice';
 
 
-export async function handlePlayOne(song: ISong): Promise<IPlayOneAct> {
-    await addSongAudios(song);
+export async function handlePlayOne(playItem: TPlayItem): Promise<IPlayOneAct> {
+    await addPlayItemAudios(playItem);
 
-    noticePlayItem(song);
+    noticePlayItem(playItem);
 
     return {
         type: 'c:player:playOne',
         act: 'c:player:playOne',
-        song: song,
+        playItem: playItem,
     };
 }

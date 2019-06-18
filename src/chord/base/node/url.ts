@@ -8,6 +8,7 @@ type URL = url.URL;
 
 
 export function getAbsolutUrl(input: string, base?: string | URL): string {
+    if (!input) return input;
     if (!base) {
         if (input.startsWith('//')) {
             return 'http:' + input;
@@ -19,7 +20,7 @@ export function getAbsolutUrl(input: string, base?: string | URL): string {
 }
 
 
-export function querystringify(input: object): string {
+export function querystringify(input: any): string {
     return querystring.stringify(input);
 }
 

@@ -14,6 +14,10 @@ import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IUserProfile } from 'chord/music/api/user';
 
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
 import { INotice, NOTICES } from 'chord/workbench/api/common/state/notification';
 
 import { handleShowAlbumView } from 'chord/workbench/parts/mainView/browser/action/showAlbum';
@@ -21,8 +25,11 @@ import { handleShowArtistView } from 'chord/workbench/parts/mainView/browser/act
 import { handleShowCollectionView } from 'chord/workbench/parts/mainView/browser/action/showCollection';
 import { handleShowUserProfileView } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
 
+import { handleShowPodcastView } from 'chord/workbench/parts/mainView/browser/action/showPodcast';
+import { handleShowRadioView } from 'chord/workbench/parts/mainView/browser/action/showRadio';
 
-type Titems = ISong | IAlbum | IArtist | ICollection | IUserProfile;
+
+type Titems = ISong | IAlbum | IArtist | ICollection | IUserProfile | IEpisode | IPodcast | IRadio;
 
 
 function getItemName(item: Titems): string {
@@ -128,6 +135,9 @@ interface INavigationNotificationProps {
     handleShowArtistView: (artist: IArtist) => void;
     handleShowCollectionView: (collection: ICollection) => void;
     handleShowUserProfileView: (userProfile: IUserProfile) => void;
+
+    handleShowPodcastView: (podcast: IPodcast) => void;
+    handleShowRadioView: (radio: IRadio) => void;
 }
 
 interface INavigationNotificationState {
@@ -161,7 +171,14 @@ class Notification extends React.Component<INavigationNotificationProps, INaviga
                 return () => this.props.handleShowCollectionView(item as ICollection);
             case 'userProfile':
                 return () => this.props.handleShowUserProfileView(item as IUserProfile);
+
+            case 'podcast':
+                return () => this.props.handleShowPodcastView(item as IPodcast);
+            case 'radio':
+                return () => this.props.handleShowRadioView(item as IRadio);
+
             case 'song':
+            case 'episode':
             default:
                 return voidFn;
         }
@@ -177,6 +194,10 @@ class Notification extends React.Component<INavigationNotificationProps, INaviga
                 case NOTICES.PLAY_COLLECTION:
                 case NOTICES.PLAY_USERPROFILE:
                 case NOTICES.PLAY_LIST:
+
+                case NOTICES.PLAY_EPISODE:
+                case NOTICES.PLAY_PODCAST:
+                case NOTICES.PLAY_RADIO:
                     return <PlayItemNoticeView item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
 
                 case NOTICES.FILTER_SONGS:
@@ -232,6 +253,9 @@ function mapDispatchToProps(dispatch) {
         handleShowArtistView: artist => handleShowArtistView(artist).then(act => dispatch(act)),
         handleShowCollectionView: collection => handleShowCollectionView(collection).then(act => dispatch(act)),
         handleShowUserProfileView: userProfile => handleShowUserProfileView(userProfile).then(act => dispatch(act)),
+
+        handleShowPodcastView: podcast => handleShowPodcastView(podcast).then(act => dispatch(act)),
+        handleShowRadioView: radio => handleShowRadioView(radio).then(act => dispatch(act)),
     }
 }
 

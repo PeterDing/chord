@@ -1,16 +1,24 @@
 'use strict';
 
+import { initiateOffset } from 'chord/workbench/api/common/state/offset';
+
 import { ISearchInputAct } from 'chord/workbench/api/common/action/mainView';
 
 import { musicApi } from 'chord/music/core/api';
+import { soundApi } from 'chord/sound/core/api';
 
 
 export async function searchKeyword(keyword: string): Promise<ISearchInputAct> {
-    let [songs, albums, artists, collections] = await Promise.all([
-        musicApi.searchSongs(keyword, 0, 10),
-        musicApi.searchAlbums(keyword, 0, 10),
-        musicApi.searchArtists(keyword, 0, 10),
-        musicApi.searchCollections(keyword, 0, 10)
+    let {offset, limit} = initiateOffset();
+    let [songs, albums, artists, collections, episodes, podcasts, radios] = await Promise.all([
+        musicApi.searchSongs(keyword, offset, limit),
+        musicApi.searchAlbums(keyword, offset, limit),
+        musicApi.searchArtists(keyword, offset, limit),
+        musicApi.searchCollections(keyword, offset, limit),
+
+        soundApi.searchEpisodes(keyword, offset, limit),
+        soundApi.searchPodcasts(keyword, offset, limit),
+        soundApi.searchRadios(keyword, offset, limit),
     ]);
 
     return {
@@ -21,6 +29,10 @@ export async function searchKeyword(keyword: string): Promise<ISearchInputAct> {
         albums,
         artists,
         collections,
+
+        episodes,
+        podcasts,
+        radios,
     };
 }
 
@@ -32,7 +44,14 @@ export async function searchFromURL(input: string): Promise<ISearchInputAct> {
     let collections = [];
     let users = [];
 
-    let items = await musicApi.fromURL(input);
+    let episodes = [];
+    let podcasts = [];
+    let radios = [];
+
+    let items = [
+        ...(await musicApi.fromURL(input)),
+        ...(await soundApi.fromURL(input)),
+    ];
     if (items.length == 0) return null;
 
     items.forEach(item => {
@@ -52,6 +71,15 @@ export async function searchFromURL(input: string): Promise<ISearchInputAct> {
             case 'userProfile':
                 users.push(item);
                 break;
+            case 'episode':
+                episodes.push(item);
+                break;
+            case 'podcast':
+                podcasts.push(item);
+                break;
+            case 'radio':
+                radios.push(item);
+                break;
             default:
                 break;
         }
@@ -65,6 +93,10 @@ export async function searchFromURL(input: string): Promise<ISearchInputAct> {
         albums,
         artists,
         collections,
+
+        episodes,
+        podcasts,
+        radios,
     };
 }
 

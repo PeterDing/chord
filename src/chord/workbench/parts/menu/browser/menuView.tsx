@@ -10,6 +10,10 @@ import AlbumMenu from 'chord/workbench/parts/menu/browser/component/albumMenu';
 import CollectionMenu from 'chord/workbench/parts/menu/browser/component/collectionMenu';
 import UserProfileMenu from 'chord/workbench/parts/menu/browser/component/userProfileMenu';
 
+import EpisodeMenu from 'chord/workbench/parts/menu/browser/component/episodeMenu';
+import PodcastMenu from 'chord/workbench/parts/menu/browser/component/podcastMenu';
+import RadioMenu from 'chord/workbench/parts/menu/browser/component/radioMenu';
+
 
 function MenuView() {
     return (
@@ -19,6 +23,10 @@ function MenuView() {
             <AlbumMenu />
             <CollectionMenu />
             <UserProfileMenu />
+
+            <EpisodeMenu />
+            <PodcastMenu />
+            <RadioMenu />
         </div>
     );
 }

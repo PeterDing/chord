@@ -5,6 +5,8 @@ import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import { IOriginConfiguration } from 'chord/preference/api/user';
 import { userConfiguration } from 'chord/preference/configuration/user';
 
+import { PlayItem } from 'chord/workbench/api/utils/playItem';
+
 import { musicApi } from 'chord/music/core/api';
 
 
@@ -17,12 +19,12 @@ export async function handlePlayLog(): Promise<boolean> {
         return false;
     }
 
-    let song = playList[index];
-    let duration = song.duration || 120;
+    let playItem = playList[index];
+    let duration = playItem.duration || 120;
     let config = userConfiguration.getConfig();
-    let { account, syncAddRemove }: IOriginConfiguration = config[song.origin] || {};
+    let { account, syncAddRemove }: IOriginConfiguration = config[playItem.origin] || {};
     if (account && syncAddRemove) {
-        return musicApi.playLog(song.songId, duration);
+        return musicApi.playLog((new PlayItem(playItem)).id(), duration);
     } else {
         return true;
     }

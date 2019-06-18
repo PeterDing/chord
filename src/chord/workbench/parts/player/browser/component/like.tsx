@@ -29,9 +29,7 @@ class LikeButton extends React.Component<ILikeButtonProps, any> {
 
     render() {
         let song = this.props.song;
-        if (!song) {
-            return null;
-        }
+        if (!song) return null;
 
         let like = defaultLibrary.exists(song);
         song.like = like;

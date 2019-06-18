@@ -4,41 +4,44 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { ISong } from 'chord/music/api/song';
+import { IEpisode } from 'chord/sound/api/episode';
 
+import { TPlayItem } from 'chord/unity/api/items';
+import { PlayItem } from 'chord/workbench/api/utils/playItem';
 import { getDateYear } from 'chord/base/common/time';
 import { ESize } from 'chord/music/common/size';
 
-import { IPlayListButtomProps, IPlayListContentProps, IPlayListSongDetailProps } from 'chord/workbench/parts/player/browser/props/playList';
+import { IPlayListButtomProps, IPlayListContentProps, IPlayListItemDetailProps } from 'chord/workbench/parts/player/browser/props/playList';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 import { handlePlay } from 'chord/workbench/parts/player/browser/action/playList';
+import EpisodeItemView from 'chord/workbench/parts/common/component/episodeItem';
 import SongItemView from 'chord/workbench/parts/common/component/songItem';
 import LyricView from 'chord/workbench/parts/player/browser/component/lyric';
 import { SmallButton } from 'chord/workbench/parts/common/component/buttons';
 
-import { AlbumIcon } from 'chord/workbench/parts/common/component/common';
 import { OriginIcon } from 'chord/workbench/parts/common/component/originIcons';
 
 import { handleShowArtistViewById } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 import { handleShowAlbumViewById } from 'chord/workbench/parts/mainView/browser/action/showAlbum';
-import { handleAddLibrarySong } from 'chord/workbench/parts/mainView/browser/action/addLibraryItem';
+import { handleAddLibrarySong, handleAddLibraryEpisode } from 'chord/workbench/parts/mainView/browser/action/addLibraryItem';
 import { handleRemoveFromLibrary } from 'chord/workbench/parts/mainView/browser/action/removeFromLibrary';
 
 import { defaultLibrary } from 'chord/library/core/library';
-import { musicApi } from 'chord/music/core/api';
 
 
-class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> {
+class PlayListItemDetail extends React.Component<IPlayListItemDetailProps, any> {
 
-    constructor(props: IPlayListSongDetailProps) {
+    constructor(props: IPlayListItemDetailProps) {
         super(props);
         this.handleLibraryActFunc = this.handleLibraryActFunc.bind(this);
         this.scrollToCurrentPlaying = this.scrollToCurrentPlaying.bind(this);
     }
 
-    handleLibraryActFunc(song: ISong) {
-        let handleLibraryActFunc = song.like ? this.props.handleRemoveFromLibrary : this.props.handleAddLibrarySong;
-        song.like = !song.like;
-        handleLibraryActFunc(song);
+    handleLibraryActFunc(playItem: TPlayItem) {
+        let handleLibraryActFunc = playItem.like ? this.props.handleRemoveFromLibrary 
+            : (playItem.type == 'song') ? this.props.handleAddLibrarySong : this.props.handleAddLibraryEpisode;
+        playItem.like = !playItem.like;
+        handleLibraryActFunc(playItem);
         this.forceUpdate();
     }
 
@@ -49,16 +52,24 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
     }
 
     render() {
-        let song = this.props.song;
-        if (!song) {
+        let playItem = this.props.playItem;
+        if (!playItem) {
             return null;
         }
 
-        let like = defaultLibrary.exists(song);
-        song.like = like;
+        let like = defaultLibrary.exists(playItem);
+        playItem.like = like;
 
-        let cover = song.albumCoverPath || musicApi.resizeImageUrl(song.origin, song.albumCoverUrl, ESize.Large);
-        let originIcon = OriginIcon(song.origin, 'top-icon xiami-icon');
+        let item = new PlayItem(playItem),
+            cover = item.cover(ESize.Large),
+            icon = item.icon(),
+            itemName = item.name(),
+            boxId = item.boxId(),
+            boxName = item.boxName(),
+            ownerId = item.ownerId(),
+            ownerName = item.ownerName();
+
+        let originIcon = OriginIcon(playItem.origin, 'top-icon xiami-icon');
 
         let likeIconClass = like ? 'spoticon-heart-active-20' : 'spoticon-heart-20';
 
@@ -69,7 +80,7 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                         style={{ width: '200px', height: '200px', padding: 0 }}
                         onClick={this.scrollToCurrentPlaying}>
                         <div>
-                            {AlbumIcon}
+                            {icon}
                             <div className="cover-art-image cover-art-image-loaded"
                                 style={{ backgroundImage: `url("${cover}")` }}>
                             </div>
@@ -95,15 +106,15 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     {/* Song Name */}
                     <div className="mo-info">
                         <div className="react-contextmenu-wrapper">
-                            <span className="mo-info-name link-subtle">{song.songName}</span>
+                            <span className="mo-info-name link-subtle">{itemName}</span>
                         </div>
                     </div>
 
                     {/* Album Name */}
                     <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper"
-                            onClick={() => this.props.handleShowAlbumViewById(song.albumId)}>
-                            <span className="link-subtle a-like cursor-pointer">{song.albumName}</span>
+                            onClick={() => this.props.handleShowAlbumViewById(boxId)}>
+                            <span className="link-subtle a-like cursor-pointer">{boxName}</span>
                         </div>
                     </div>
 
@@ -111,15 +122,15 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     {/* Artist Name */}
                     <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper"
-                            onClick={() => this.props.handleShowArtistViewById(song.artistId)}>
-                            <span className="link-subtle a-like cursor-pointer">{song.artistName}</span>
+                            onClick={() => this.props.handleShowArtistViewById(ownerId)}>
+                            <span className="link-subtle a-like cursor-pointer">{ownerName}</span>
                         </div>
                     </div>
 
                     {/* Publish Date */}
                     <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper">
-                            <span>{song.releaseDate ? getDateYear(song.releaseDate) : null}</span>
+                            <span>{playItem.releaseDate ? getDateYear(playItem.releaseDate) : null}</span>
                         </div>
                     </div>
 
@@ -127,7 +138,7 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
                     <div className="mo-info">
                         <div className="react-contextmenu-wrapper">
                             <button className={`link-subtle control-button ${likeIconClass} cursor-pointer`}
-                                onClick={() => this.handleLibraryActFunc(song)}>
+                                onClick={() => this.handleLibraryActFunc(playItem)}>
                             </button>
                         </div>
                     </div>
@@ -139,16 +150,19 @@ class PlayListSongDetail extends React.Component<IPlayListSongDetailProps, any> 
 }
 
 
-function mapDispatchToPropsForSongDetail(dispatch) {
+function mapDispatchToPropsForItemDetail(dispatch) {
     return {
         handleShowArtistViewById: (artistId: string) => handleShowArtistViewById(artistId).then(act => dispatch(act)),
         handleShowAlbumViewById: (albumId: string) => handleShowAlbumViewById(albumId).then(act => dispatch(act)),
         handleAddLibrarySong: (song) => dispatch(handleAddLibrarySong(song)),
+
+        handleAddLibraryEpisode: (episode) => dispatch(handleAddLibraryEpisode(episode)),
+
         handleRemoveFromLibrary: (item) => dispatch(handleRemoveFromLibrary(item)),
     };
 }
 
-const _PlayListSongDetail = connect(null, mapDispatchToPropsForSongDetail)(PlayListSongDetail);
+const _PlayListItemDetail = connect(null, mapDispatchToPropsForItemDetail)(PlayListItemDetail);
 
 
 class PlayListContent extends React.Component<IPlayListContentProps, any> {
@@ -172,24 +186,37 @@ class PlayListContent extends React.Component<IPlayListContentProps, any> {
         let playList = this.props.playList;
         let index = this.props.index;
         let kbps = this.props.kbps;
-        let songItems = playList.map((song, i) => (
-            <SongItemView
-                key={i.toString()}
-                handlePlay={() => this.props.handlePlay(i)}
-                song={song}
-                active={index == i}
-                short={false}
-                thumb={true} />
-        ));
+        let playItems = playList.map((playItem, i) => {
+            switch (playItem.type) {
+                case 'song':
+                    return <SongItemView
+                        key={i.toString()}
+                        song={playItem as ISong}
+                        active={index == i}
+                        short={false}
+                        thumb={true}
+                        handlePlay={() => this.props.handlePlay(i)} />;
+                case 'episode':
+                    return <EpisodeItemView
+                        key={i.toString()}
+                        episode={playItem as IEpisode}
+                        active={index == i}
+                        short={false}
+                        thumb={true}
+                        handlePlay={() => this.props.handlePlay(i)} />;
+                default:
+                    return null;
+            }
+        });
 
-        let song = playList[index];
+        let playItem = playList[index];
         let playListInfo = `⦿ ${index + 1} / ${playList.length} ⫸ ${kbps}kbps`;
 
         return (
             <div>
                 <div className='playlist-content-songs'>
                     <div className='playlist-content-songs-container'>
-                        {songItems}
+                        {playItems}
                     </div>
 
                     <div style={{ textAlign: 'center' }}>
@@ -197,8 +224,8 @@ class PlayListContent extends React.Component<IPlayListContentProps, any> {
                     </div>
                 </div>
 
-                <_PlayListSongDetail
-                    song={song}
+                <_PlayListItemDetail
+                    playItem={playItem}
                     lyricOn={this.state.toggleLyric}
                     toggleLyric={this.toggleLyric} />
             </div>
@@ -208,14 +235,16 @@ class PlayListContent extends React.Component<IPlayListContentProps, any> {
     lyric() {
         let playList = this.props.playList;
         let index = this.props.index;
-        let song = playList[index];
+        let playItem = playList[index];
+
+        // episode has not lyric
 
         return (
             <div>
-                <LyricView song={song} />
+                <LyricView song={playItem.type == 'song' ? playItem as ISong : null} />
 
-                <_PlayListSongDetail
-                    song={song}
+                <_PlayListItemDetail
+                    playItem={playItem}
                     lyricOn={this.state.toggleLyric}
                     toggleLyric={this.toggleLyric} />
             </div>
@@ -275,4 +304,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 const _PlayListContent = connect(mapStateToProps, mapDispatchToProps)(PlayListContent);
-export { _PlayListContent as PlayListContent, _PlayListSongDetail as PlayListSongDetail };
+export { _PlayListContent as PlayListContent, _PlayListItemDetail as PlayListItemDetail };

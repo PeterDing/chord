@@ -7,12 +7,21 @@ import { IAlbum } from 'chord/music/api/album';
 import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IUserProfile } from 'chord/music/api/user';
+
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
 import {
     IShowSongMenuAct,
     IShowArtistMenuAct,
     IShowAlbumMenuAct,
     IShowCollectionMenuAct,
     IShowUserProfileMenuAct,
+
+    IShowEpisodeMenuAct,
+    IShowPodcastMenuAct,
+    IShowRadioMenuAct,
 } from 'chord/workbench/api/common/action/menu';
 
 
@@ -73,5 +82,44 @@ export function showUserProfileMenu(e: React.MouseEvent<HTMLDivElement>, userPro
         top: e.screenY - 50,
         left: e.screenX - 50,
         userProfile
+    }
+}
+
+
+// Sound
+
+export function showEpisodeMenu(e: React.MouseEvent<HTMLDivElement>, episode: IEpisode): IShowEpisodeMenuAct {
+    e.preventDefault();
+    return {
+        type: 'c:menu:showEpisodeMenu',
+        act: 'c:menu:showEpisodeMenu',
+
+        top: e.screenY - 50,
+        left: e.screenX - 50,
+        episode
+    }
+}
+
+export function showPodcastMenu(e: React.MouseEvent<HTMLDivElement>, podcast: IPodcast): IShowPodcastMenuAct {
+    e.preventDefault();
+    return {
+        type: 'c:menu:showPodcastMenu',
+        act: 'c:menu:showPodcastMenu',
+
+        top: e.screenY - 50,
+        left: e.screenX - 50,
+        podcast
+    }
+}
+
+export function showRadioMenu(e: React.MouseEvent<HTMLDivElement>, radio: IRadio): IShowRadioMenuAct {
+    e.preventDefault();
+    return {
+        type: 'c:menu:showRadioMenu',
+        act: 'c:menu:showRadioMenu',
+
+        top: e.screenY - 50,
+        left: e.screenX - 50,
+        radio
     }
 }

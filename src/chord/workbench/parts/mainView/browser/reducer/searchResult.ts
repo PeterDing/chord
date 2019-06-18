@@ -7,6 +7,10 @@ import {
     ISearchMoreAlbumsAct,
     ISearchMoreArtistsAct,
     ISearchMoreCollectionsAct,
+
+    ISearchMoreEpisodesAct,
+    ISearchMorePodcastsAct,
+    ISearchMoreRadiosAct,
 } from 'chord/workbench/api/common/action/mainView';
 import { ISearchViewState, ISearchResultState } from 'chord/workbench/api/common/state/mainView/searchView';
 
@@ -21,6 +25,10 @@ export function showSearchResult(state: ISearchViewState, act: ISearchInputAct):
         albums: act.albums,
         artists: act.artists,
         collections: act.collections,
+
+        episodes: act.episodes,
+        podcasts: act.podcasts,
+        radios: act.radios,
     };
     let keywords = act.keyword == state.history.keywords[0] ? [...state.history.keywords] : [act.keyword, ...state.history.keywords.filter(keyword => keyword != act.keyword).slice(0, 999)];
     let history = { keywords };
@@ -57,4 +65,29 @@ export function addSearchCollections(state: ISearchResultState, act: ISearchMore
     let collectionsOffset = act.collectionsOffset;
     let collections = [...state.collections, ...act.collections];
     return { ...state, collections, collectionsOffset };
+}
+
+
+export function addSearchEpisodes(state: ISearchResultState, act: ISearchMoreEpisodesAct): ISearchResultState {
+    equal(act.act, 'c:mainView:searchMoreEpisodes')
+
+    let episodesOffset = act.episodesOffset;
+    let episodes = [...state.episodes, ...act.episodes];
+    return { ...state, episodes, episodesOffset };
+}
+
+export function addSearchPodcasts(state: ISearchResultState, act: ISearchMorePodcastsAct): ISearchResultState {
+    equal(act.act, 'c:mainView:searchMorePodcasts')
+
+    let podcastsOffset = act.podcastsOffset;
+    let podcasts = [...state.podcasts, ...act.podcasts];
+    return { ...state, podcasts, podcastsOffset };
+}
+
+export function addSearchRadios(state: ISearchResultState, act: ISearchMoreRadiosAct): ISearchResultState {
+    equal(act.act, 'c:mainView:searchMoreRadios')
+
+    let radiosOffset = act.radiosOffset;
+    let radios = [...state.radios, ...act.radios];
+    return { ...state, radios, radiosOffset };
 }

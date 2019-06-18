@@ -2,6 +2,8 @@
 
 import { getOrigin, ORIGIN } from 'chord/music/common/origin';
 
+import { md5 } from 'chord/base/node/crypto';
+
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
 import { ILyric } from 'chord/music/api/lyric';
@@ -20,22 +22,13 @@ import { NeteaseMusicApi } from 'chord/music/netease/api';
 import { QQMusicApi } from 'chord/music/qq/api';
 import { QianQianApi } from 'chord/music/qianqian/api';
 
+import { cache12, cache30 } from 'chord/base/common/lru';
+
 import { userConfiguration } from 'chord/preference/configuration/user';
 
 import { makeItem, makeItems } from 'chord/music/core/parser';
 
-
-function insertMerge<T>(list: Array<Array<T>>): Array<T> {
-    let items = [];
-    let maxLength = Math.max(...list.map(i => i.length));
-    for (let index = 0; index < maxLength; index++) {
-        for (let array of list) {
-            let item = array[index];
-            if (item) items.push(item);
-        }
-    }
-    return items;
-}
+import { insertMerge } from 'chord/base/common/algorithms';
 
 
 export class Music {
@@ -98,54 +91,31 @@ export class Music {
      * audioId is Chord's audio id, not audio original id
      */
     public async audios(songId: string): Promise<Array<IAudio>> {
+        let h = md5(`music.core.api.audios(${songId})`);
+        let result = cache30.get(h);
+        if (result) return result;
+
         let originType = getOrigin(songId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                return await this.xiamiApi.audios(originType.id);
+                result = await this.xiamiApi.audios(originType.id);
+                break;
             case ORIGIN.netease:
-                return await this.neteaseApi.audios(originType.id);
+                result = await this.neteaseApi.audios(originType.id);
+                break;
             case ORIGIN.qq:
-                return await this.qqApi.audios(originType.id);
+                result = await this.qqApi.audios(originType.id);
+                break;
             case ORIGIN.qianqian:
-                return await this.qianqianApi.audios(originType.id);
+                result = await this.qianqianApi.audios(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.audio] Here will never be occured. [args]: ${songId}`);
         }
-    }
 
-
-    /**
-     * Get many songs' audios
-     */
-    public async songsAudios(songIds: Array<string>): Promise<Array<Array<IAudio>>> {
-        let songsOriginType = songIds.map(songId => getOrigin(songId));
-        let xiamiSongIds = songsOriginType.filter(originType => originType.origin == ORIGIN.xiami).reverse().map(originType => originType.id);
-        let neteaseSongIds = songsOriginType.filter(originType => originType.origin == ORIGIN.netease).reverse().map(originType => originType.id);
-
-        let [xiamiSongsAudios, neteaseSongsAudios] = await Promise.all([
-            this.xiamiApi.songsAudios(xiamiSongIds),
-            this.neteaseApi.songsAudios(neteaseSongIds)
-        ]);
-
-        let songsAudios = [];
-        songsOriginType.forEach(originType => {
-            let audios;
-            switch (originType.origin) {
-                case ORIGIN.xiami:
-                    audios = xiamiSongsAudios.pop();
-                    songsAudios.push(audios);
-                    break;
-                case ORIGIN.netease:
-                    audios = neteaseSongsAudios.pop();
-                    songsAudios.push(audios);
-                    break;
-                default:
-                    // Here will never be occured.
-                    throw new Error(`[ERROR] [Music.songsAudios] Here will never be occured. wrong originType: ${JSON.stringify(originType)}`);
-            }
-        });
-        return songsAudios;
+        cache30.set(h, result);
+        return result;
     }
 
 
@@ -153,6 +123,11 @@ export class Music {
      * songId is Chord's song id, not song original id
      */
     public async song(songId: string): Promise<ISong> {
+        let h = md5(`music.core.api.song(${songId})`);
+        let result = cache12.get(h);
+        result = makeItem(result);
+        if (result) return result;
+
         let song;
         let originType = getOrigin(songId);
         switch (originType.origin) {
@@ -172,12 +147,18 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.song] Here will never be occured. [args]: ${songId}`);
         }
-        song = makeItem(song);
-        return song;
+        result = makeItem(song);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async lyric(songId: string, song?: ISong): Promise<ILyric> {
+        let h = md5(`music.core.api.lyric(${songId})`);
+        let result = cache12.get(h);
+        if (result) return result;
+
         let lyric;
         let originType = getOrigin(songId);
         switch (originType.origin) {
@@ -197,7 +178,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.lyric] Here will never be occured. [args]: ${songId}`);
         }
-        return lyric;
+        result = lyric;
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -205,6 +189,11 @@ export class Music {
      * artistId is Chord's artist id, not artist original id
      */
     public async artist(artistId: string): Promise<IArtist> {
+        let h = md5(`music.core.api.artist(${artistId})`);
+        let result = cache12.get(h);
+        result = makeItem(result);
+        if (result) return result;
+
         let artist;
         let originType = getOrigin(artistId);
         switch (originType.origin) {
@@ -224,8 +213,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artist] Here will never be occured. [args]: ${artistId}`);
         }
-        artist = makeItem(artist);
-        return artist;
+        result = makeItem(artist);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -233,6 +224,11 @@ export class Music {
      * artistId is Chord's artist id, not artist original id
      */
     public async artistSongs(artistId: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let h = md5(`music.core.api.artistSongs(${artistId}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let songs = [];
         let originType = getOrigin(artistId);
         switch (originType.origin) {
@@ -252,8 +248,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artistSongs] Here will never be occured. [args]: ${artistId}`);
         }
-        songs = makeItems(songs);
-        return songs;
+        result = makeItems(songs);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -261,6 +259,11 @@ export class Music {
      * artistId is Chord's artist id, not artist original id
      */
     public async artistAlbums(artistId: string, offset: number = 0, limit: number = 10, artistMid?: string): Promise<Array<IAlbum>> {
+        let h = md5(`music.core.api.artistAlbums(${artistId}, ${offset}, ${limit}, ${artistMid})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let albums = [];
         let originType = getOrigin(artistId);
         switch (originType.origin) {
@@ -281,8 +284,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artistAlbums] Here will never be occured. [args]: ${artistId}`);
         }
-        albums = makeItems(albums);
-        return albums;
+        result = makeItems(albums);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -290,6 +295,11 @@ export class Music {
      * albumId is Chord's album id, not album original id
      */
     public async album(albumId: string): Promise<IAlbum> {
+        let h = md5(`music.core.api.album(${albumId})`);
+        let result = cache12.get(h);
+        result = makeItem(result);
+        if (result) return result;
+
         let album;
         let originType = getOrigin(albumId);
         switch (originType.origin) {
@@ -309,8 +319,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.album] Here will never be occured. [args]: ${albumId}`);
         }
-        album = makeItem(album);
-        return album;
+        result = makeItem(album);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -318,6 +330,11 @@ export class Music {
      * collectionId is Chord's collection id, not collection original id
      */
     public async collection(collectionId: string, offset: number = 0, limit: number = 1000): Promise<ICollection> {
+        let h = md5(`music.core.api.collection(${collectionId}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItem(result);
+        if (result) return result;
+
         let collection;
         let originType = getOrigin(collectionId);
         switch (originType.origin) {
@@ -337,8 +354,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.collection] Here will never be occured. [args]: ${collectionId}`);
         }
-        collection = makeItem(collection);
-        return collection;
+        result = makeItem(collection);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -346,6 +365,11 @@ export class Music {
      * xiami searching based on page
      */
     public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let h = md5(`music.core.api.searchSongs(${keyword}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let list = await Promise.all([
             this.xiamiApi.searchSongs(keyword, offset + 1, limit),
             this.neteaseApi.searchSongs(keyword, offset * limit, limit),
@@ -355,12 +379,19 @@ export class Music {
 
         let items = insertMerge(list);
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
+        let h = md5(`music.core.api.searchArtists(${keyword}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let list = await Promise.all([
             this.xiamiApi.searchArtists(keyword, offset + 1, limit),
             this.neteaseApi.searchArtists(keyword, offset * limit, limit),
@@ -370,12 +401,19 @@ export class Music {
 
         let items = insertMerge(list);
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let h = md5(`music.core.api.searchAlbums(${keyword}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let list = await Promise.all([
             this.xiamiApi.searchAlbums(keyword, offset + 1, limit),
             this.neteaseApi.searchAlbums(keyword, offset * limit, limit),
@@ -385,12 +423,19 @@ export class Music {
 
         let items = insertMerge(list);
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let h = md5(`music.core.api.searchCollections(${keyword}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let list = await Promise.all([
             this.xiamiApi.searchCollections(keyword, offset + 1, limit),
             this.neteaseApi.searchCollections(keyword, offset * limit, limit),
@@ -400,12 +445,18 @@ export class Music {
 
         let items = insertMerge(list);
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async albumListOptions(origin: string): Promise<Array<IListOption>> {
+        let h = md5(`music.core.api.albumListOptions(${origin})`);
+        let result = cache12.get(h);
+        if (result) return result;
+
         let items;
         switch (origin) {
             case ORIGIN.xiami:
@@ -422,20 +473,19 @@ export class Music {
                 throw new Error(`[ERROR] [Music.albumListOptions] Here will never be occured. [args]: ${origin}`);
         }
 
-        return items;
+        result = items;
+
+        cache12.set(h, result);
+        return result;
     }
 
 
-    public async albumList(
-        origin: string,
-        order: string,
-        area: string,
-        genre: string,
-        type: string,
-        year: string,
-        company: string,
-        offset: number = 0,
-        limit: number = 10): Promise<Array<IAlbum>> {
+    public async albumList(origin: string, order: string, area: string, genre: string, type: string, year: string, company: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let h = md5(`music.core.api.albumList(${origin}, ${order}, ${area}, ${genre}, ${type}, ${year}, ${company}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let items;
         switch (origin) {
             case ORIGIN.xiami:
@@ -467,8 +517,10 @@ export class Music {
                 throw new Error(`[ERROR] [Music.albumList] Here will never be occured. [args]: ${origin}, ${order}, ${area}, ${genre}, ${type}, ${year}, ${company}, ${offset}, ${limit}`);
         }
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -494,6 +546,10 @@ export class Music {
 
 
     public async collectionListOptions(origin: string): Promise<Array<IListOption>> {
+        let h = md5(`music.core.api.collectionListOptions(${origin})`);
+        let result = cache12.get(h);
+        if (result) return result;
+
         let items;
         switch (origin) {
             case ORIGIN.xiami:
@@ -510,16 +566,19 @@ export class Music {
                 throw new Error(`[ERROR] [Music.collectionListOptions] Here will never be occured. [args]: ${origin}`);
         }
 
-        return items;
+        result = items;
+
+        cache12.set(h, result);
+        return result;
     }
 
 
-    public async collectionList(
-        origin: string,
-        keyword: string,
-        order: string,
-        offset: number = 0,
-        limit: number = 10): Promise<Array<ICollection>> {
+    public async collectionList(origin: string, keyword: string, order: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let h = md5(`music.core.api.collectionList(${origin}, ${keyword}, ${order}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let items;
         switch (origin) {
             case ORIGIN.xiami:
@@ -536,19 +595,23 @@ export class Music {
                 throw new Error(`[ERROR] [Music.collectionList] Here will never be occured. [args]: ${origin}, ${keyword}, ${order}, ${offset}, ${limit}`);
         }
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
-    public async artistList(
-        origin: string,
-        area: string,
-        genre: string,
-        gender: string,
-        index: string,
-        offset: number = 0,
-        limit: number = 40): Promise<any> {
+    public async artistList(origin: string, area: string, genre: string, gender: string, index: string, offset: number = 0, limit: number = 40): Promise<any> {
+        let h = md5(`music.core.api.artistList(${origin}, ${area}, ${genre}, ${gender}, ${index}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        if (origin == ORIGIN.xiami) {
+            result[0] = makeItems(result[0]);
+        } else {
+            result = makeItems(result);
+        }
+        if (result) return result;
+
         let items;
         switch (origin) {
             case ORIGIN.xiami:
@@ -568,11 +631,17 @@ export class Music {
                 throw new Error(`[ERROR] [Music.artistList] Here will never be occured. [args]: ${origin}, ${area}, ${genre}, ${gender}, ${index}, ${offset}, ${limit}`);
         }
 
-        return items;
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async newSongs(origin: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let h = md5(`music.core.api.newSongs(${origin}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let items;
         switch (origin) {
             case ORIGIN.xiami:
@@ -589,12 +658,19 @@ export class Music {
                 throw new Error(`[ERROR] [Music.newSongs] Here will never be occured. [args]: ${origin}`);
         }
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async newAlbums(origin: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        let h = md5(`music.core.api.newAlbums(${origin}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let items;
         switch (origin) {
             case ORIGIN.xiami:
@@ -611,12 +687,18 @@ export class Music {
                 throw new Error(`[ERROR] [Music.newAlbums] Here will never be occured. [args]: ${origin}`);
         }
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async newCollections(origin: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        let h = md5(`music.core.api.newCollections(${origin}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        if (result) return result;
+
         let items;
         switch (origin) {
             case ORIGIN.xiami:
@@ -633,8 +715,10 @@ export class Music {
                 throw new Error(`[ERROR] [Music.newCollections] Here will never be occured. [args]: ${origin}`);
         }
 
-        items = makeItems(items);
-        return items;
+        result = makeItems(items);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -647,6 +731,7 @@ export class Music {
                 break;
             case ORIGIN.netease:
                 account = await this.neteaseApi.login(accountName, password);
+                // account = await this.neteaseApi.login();
                 this.neteaseApi.setAccount(account);
                 break;
             case ORIGIN.qq:
@@ -704,6 +789,11 @@ export class Music {
      * here, the userId is IUserProfile.userId
      */
     public async userProfile(userId: string, userMid?: string, userName?: string): Promise<IUserProfile> {
+        let h = md5(`music.core.api.userProfile(${userId}, ${userMid}, ${userName})`);
+        let result = cache12.get(h);
+        result = makeItem(result);
+        if (result) return result;
+
         let userProfile;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -723,8 +813,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.login] Here will never be occured. [args]: ${userId}`);
         }
-        // TODO: return makeItem(userProfile);
-        return userProfile;
+        result = makeItem(userProfile);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -732,6 +824,11 @@ export class Music {
      * here, the userId is IUserProfile.userId
      */
     public async userFavoriteSongs(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<ISong>> {
+        let h = md5(`music.core.api.userFavoriteSongs(${userId}, ${offset}, ${limit}, ${userMid})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let songs;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -752,11 +849,19 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFavoriteSongs] Here will never be occured. [args]: ${userId}`);
         }
-        return makeItems(songs);
+        result = makeItems(songs);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async userFavoriteAlbums(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<IAlbum>> {
+        let h = md5(`music.core.api.userFavoriteAlbums(${userId}, ${offset}, ${limit}, ${userMid})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let albums;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -777,11 +882,19 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFavoriteAlbums] Here will never be occured. [args]: ${userId}`);
         }
-        return makeItems(albums);
+        result = makeItems(albums);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async userFavoriteArtists(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<IArtist>> {
+        let h = md5(`music.core.api.userFavoriteArtists(${userId}, ${offset}, ${limit}, ${userMid})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let artists;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -801,11 +914,19 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFavoriteArtists] Here will never be occured. [args]: ${userId}`);
         }
-        return makeItems(artists);
+        result = makeItems(artists);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async userFavoriteCollections(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<ICollection>> {
+        let h = md5(`music.core.api.userFavoriteCollections(${userId}, ${offset}, ${limit}, ${userMid})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let collections;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -826,11 +947,19 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFavoriteCollections] Here will never be occured. [args]: ${userId}`);
         }
-        return makeItems(collections);
+        result = makeItems(collections);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async userCreatedCollections(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<ICollection>> {
+        let h = md5(`music.core.api.userCreatedCollections(${userId}, ${offset}, ${limit}, ${userMid})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let collections;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -851,11 +980,19 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userCreatedCollections] Here will never be occured. [args]: ${userId}`);
         }
-        return makeItems(collections);
+        result = makeItems(collections);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async userFollowings(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<IUserProfile>> {
+        let h = md5(`music.core.api.userFollowings(${userId}, ${offset}, ${limit}, ${userMid})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let userProfiles;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -876,11 +1013,19 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFollowings] Here will never be occured. [args]: ${userId}`);
         }
-        return makeItems(userProfiles);
+        result = makeItems(userProfiles);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
     public async userFollowers(userId: string, offset: number = 0, limit: number = 10, userMid?: string): Promise<Array<IUserProfile>> {
+        let h = md5(`music.core.api.userFollowers(${userId}, ${offset}, ${limit}, ${userMid})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let userProfiles;
         let originType = getOrigin(userId);
         switch (originType.origin) {
@@ -901,7 +1046,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.userFollowers] Here will never be occured. [args]: ${userId}`);
         }
-        return makeItems(userProfiles);
+        result = makeItems(userProfiles);
+
+        cache12.set(h, result);
+        return result;
     }
 
 
@@ -990,6 +1138,9 @@ export class Music {
             case ORIGIN.qq:
                 result = await this.qqApi.playLog(originType.id, seek, songMid);
                 break;
+            case ORIGIN.qianqian:
+            case ORIGIN.ximalaya:
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.playLog] Here will never be occured. [args]: ${songId} ${seek}`);
@@ -999,7 +1150,11 @@ export class Music {
 
 
     public async recommendSongs(origin: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
-        let result;
+        let h = md5(`music.core.api.recommendSongs(${origin}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         switch (origin) {
             case ORIGIN.xiami:
                 result = await this.xiamiApi.recommendSongs(offset, limit);
@@ -1014,12 +1169,20 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.recommendSongs] Here will never be occured. [args]: ${origin}`);
         }
+
+        result = makeItems(result);
+
+        cache12.set(h, result);
         return result;
     }
 
 
     public async recommendCollections(origin: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
-        let result;
+        let h = md5(`music.core.api.recommendCollections(${origin}, ${offset}, ${limit})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         switch (origin) {
             case ORIGIN.xiami:
                 result = await this.xiamiApi.recommendCollections(offset, limit);
@@ -1034,6 +1197,10 @@ export class Music {
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.recommendCollections] Here will never be occured. [args]: ${origin}`);
         }
+
+        result = makeItems(result);
+
+        cache12.set(h, result);
         return result;
     }
 
@@ -1060,6 +1227,11 @@ export class Music {
      * Get music items directly from urls
      */
     public async fromURL(input: string): Promise<Array<TMusicItems>> {
+        let h = md5(`music.core.api.fromURL(${input})`);
+        let result = cache12.get(h);
+        result = makeItems(result);
+        if (result) return result;
+
         let futs = [];
         let chunks = input.split(' ');
         for (let chunk of chunks) {
@@ -1075,7 +1247,10 @@ export class Music {
         }
         if (futs.length == 0) return [];
         let list = await Promise.all(futs);
-        return makeItems([].concat(...list));
+        result = makeItems([].concat(...list));
+
+        cache12.set(h, result);
+        return result;
     }
 }
 

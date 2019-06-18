@@ -2,9 +2,9 @@
 
 import { Store } from 'redux';
 
-import { hasSongAudio } from 'chord/workbench/api/utils/song';
+import { hasPlayItemAudio } from 'chord/workbench/api/utils/playItem';
 
-import { ISong } from 'chord/music/api/song';
+import { TPlayItem } from 'chord/unity/api/items';
 import { IUserProfile } from 'chord/music/api/user';
 
 import { INotice, NOTICES } from 'chord/workbench/api/common/state/notification';
@@ -29,11 +29,11 @@ export function notice<T>(type: NOTICES, item: T, message: string = null) {
 /**
  * Notice playing item
  *
- * item is one ISong | IAlbum | IArtist | ICollection | IUserProfile
+ * item is one TPlayItem | IAlbum | IArtist | ICollection | IUserProfile
  */
 export function noticePlayItem<T>(item: T, count?: number, missing?: number) {
-    if (item['type'] == 'song') {
-        if (!hasSongAudio(<any>item)) {
+    if (item['type'] == 'song' || item['type'] == 'episode') {
+        if (!hasPlayItemAudio(<any>item)) {
             notice(NOTICES.NO_AUDIO, item);
         } else {
             notice(NOTICES.PLAY_SONG, item);
@@ -62,12 +62,12 @@ export function loginFail(origin: string, message: string) {
 }
 
 
-export function noticeBlockedKbps(item: ISong, kbps: number) {
+export function noticeBlockedKbps(item: TPlayItem, kbps: number) {
     notice(NOTICES.BLOCKED_KBPS, item, kbps.toString());
 }
 
 
-export function noticeSwitchKbps(item: ISong, kbps: number) {
+export function noticeSwitchKbps(item: TPlayItem, kbps: number) {
     notice(NOTICES.SWITCH_KBPS, item, kbps.toString());
 }
 

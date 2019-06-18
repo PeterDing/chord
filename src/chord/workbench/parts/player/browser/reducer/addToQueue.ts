@@ -12,11 +12,11 @@ export function addToQueue(state: IPlayerState, act: IAddToQueueAct): IPlayerSta
     let index = state.index;
     switch (act.direction) {
         case 'tail':
-            playList = [...state.playList, ...act.songs];
+            playList = [...state.playList, ...act.playItems];
             break;
         case 'head':
-            index = state.index + act.songs.length;
-            playList = [...act.songs, ...state.playList];
+            index = state.index + act.playItems.length;
+            playList = [...act.playItems, ...state.playList];
             break;
     }
     return { ...state, playList, index, id: Date.now() };

@@ -18,7 +18,7 @@ import {
 } from 'chord/workbench/parts/mainView/browser/component/home/component/newRelease/actions';
 
 import { IPlayManyAct } from 'chord/workbench/api/common/action/player';
-import { handlePlayManySongs } from 'chord/workbench/parts/player/browser/action/playMany';
+import { handlePlayManyItems } from 'chord/workbench/parts/player/browser/action/playMany';
 
 
 interface INewReleaseProps {
@@ -162,7 +162,7 @@ class NewReleaseView extends React.Component<INewReleaseProps, INewReleaseState>
 
 function mapDispatchToProps(dispatch) {
     return {
-        handlePlaySongs: (songs) => handlePlayManySongs(songs).then(act => dispatch(act)),
+        handlePlaySongs: (songs) => handlePlayManyItems(songs).then(act => dispatch(act)),
     };
 }
 

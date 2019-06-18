@@ -8,12 +8,14 @@ import { ESize } from 'chord/music/common/size';
 import { getHumanDuration } from 'chord/base/common/time';
 import { ISong } from 'chord/music/api/song';
 import { ISongItemViewProps } from 'chord/workbench/parts/common/props/songItem';
+
+import { PlayIcon, MusicIcon } from 'chord/workbench/parts/common/component/common';
+
 import { handlePlayOne } from 'chord/workbench/parts/player/browser/action/playOne';
-
-import { PlayIcon, PlayListIcon } from 'chord/workbench/parts/common/component/common';
-
 import { handleShowArtistViewById } from 'chord/workbench/parts/mainView/browser/action/showArtist';
 import { handleShowAlbumViewById } from 'chord/workbench/parts/mainView/browser/action/showAlbum';
+
+import { List } from 'chord/workbench/parts/common/abc/list';
 
 import { showSongMenu } from 'chord/workbench/parts/menu/browser/action/menu';
 
@@ -34,97 +36,30 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
             this.props.handlePlay : () => this.props.handlePlayOne(song);
 
         let active = this.props.active;
-        let liClassName = active ?
-            (this.props.short ?
-                'tracklist-row tracklist-row--oneline tracklist-row--active'
-                : 'tracklist-row tracklist-row--active')
-            : (this.props.short ? 'tracklist-row tracklist-row--oneline' : 'tracklist-row');
-
-        let tracklistAlign = this.props.short ? 'tracklist-middle-align' : 'tracklist-top-align';
         let originIcon = OriginIcon(song.origin, 'tracklist-col xiami-icon');
 
-        let secondLine = this.props.short ? null : (
-            <span className='second-line ellipsis-one-line'>
-                {/* Artist Name */}
-                <span className='react-contextmenu-wrapper'>
-                    <span draggable={true}>
-                        <span className='link-subtle a-like cursor-pointer' tabIndex={-1}
-                            onClick={() => this.props.handleShowArtistViewById(song.artistId)}>
-                            {song.artistName}</span>
-                    </span>
-                </span>
-
-                <span className="second-line-separator" aria-label="in album">•</span>
-
-                {/* Album Name */}
-                <span className="react-contextmenu-wrapper">
-                    <span draggable={true}>
-                        <span className='link-subtle a-like cursor-pointer' tabIndex={-1}
-                            onClick={() => this.props.handleShowAlbumViewById(song.albumId)}>
-                            {song.albumName}</span>
-                    </span>
-                </span>
-            </span>
-        );
-
         let cover = song.albumCoverPath || musicApi.resizeImageUrl(song.origin, song.albumCoverUrl, ESize.Small);
-        let coverThumbView = this.props.thumb ? (
-            <div className='tracklist-col tracklist-col-cover-art-thumb'>
-                <div className='cover-art shadow tracklist-middle-align cover-art--with-auto-height'
-                    style={{ width: '50px', height: 'auto' }}>
-                    <div>
-                        {PlayListIcon}
-                        <div className='cover-art-image cover-art-image-loaded'
-                            style={{ backgroundImage: `url("${cover}")` }}>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        ) : null;
 
-        return (
-            <div className='react-contextmenu-wrapper'>
-                <div draggable={true} id={active ? 'playing-this' : undefined}
-                    onContextMenu={(e) => this.props.showSongMenu(e, song)}>
-                    <li className={liClassName} role='button' tabIndex={0}>
+        let infos = this.props.short ? null : [
+            { item: song.artistName, act: () => this.props.handleShowArtistViewById(song.artistId) },
+            { item: song.albumName, act: () => this.props.handleShowAlbumViewById(song.albumId) },
+        ];
 
-                        {/* music icon */}
-                        <div className='tracklist-col position-outer cursor-pointer' onClick={() => handlePlay()}>
-                            <div className={`tracklist-play-pause ${tracklistAlign}`}>{PlayIcon}</div>
-                            <div className={`position ${tracklistAlign}`}><span className='spoticon-track-16'></span></div>
-                        </div>
+        let leftInfos = [
+            { item: getHumanDuration(song.duration) },
+            { item: originIcon },
+        ];
 
-                        {/* album cover */}
-                        {coverThumbView}
-
-                        <div className='tracklist-col name'>
-                            <div className={`track-name-wrapper ellipsis-one-line ${tracklistAlign}`}>
-
-                                {/* Song Name */}
-                                <span className='tracklist-name'>
-                                    {song.songName}
-                                </span>
-
-                                {secondLine}
-                            </div>
-                        </div>
-
-                        <div className='tracklist-col tracklist-col-duration'>
-                            <div className={`tracklist-duration ${tracklistAlign}`}>
-                                <span>{getHumanDuration(song.duration)}</span>
-                            </div>
-                        </div>
-
-                        {/* Origin Icon */}
-                        <div className='tracklist-col tracklist-col-duration'>
-                            <div className={`${tracklistAlign}`}>
-                                <span>{originIcon}</span>
-                            </div>
-                        </div>
-                    </li>
-                </div>
-            </div>
-        );
+        return <List
+            name={song.songName}
+            cover={this.props.thumb && cover}
+            menu={(e) => this.props.showSongMenu(e, song)}
+            defaultButton={MusicIcon}
+            button={{ item: PlayIcon, act: () => handlePlay() }}
+            infos={infos}
+            leftInfos={leftInfos}
+            draggable={true}
+            active={active} />;
     }
 }
 
@@ -137,6 +72,5 @@ function mapDispatchToProps(dispatch) {
         showSongMenu: (e: React.MouseEvent<HTMLDivElement>, song: ISong) => dispatch(showSongMenu(e, song)),
     }
 }
-
 
 export default connect(null, mapDispatchToProps)(SongItemView);

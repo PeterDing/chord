@@ -4,10 +4,14 @@
 export interface IOption {
     id: string;
     name: string;
+    info?: any;
 }
 
+
 export interface IListOption {
+    id?: string;
     name: string;
     type: string;
-    items: Array<IOption>;
+    info?: any;
+    items?: Array<IListOption | IOption>;
 }

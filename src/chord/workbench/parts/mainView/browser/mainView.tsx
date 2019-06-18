@@ -18,6 +18,8 @@ import HomeView from 'chord/workbench/parts/mainView/browser/component/home/home
 import LibraryView from 'chord/workbench/parts/mainView/browser/component/library/library';
 import PreferenceView from 'chord/workbench/parts/mainView/browser/component/preference/preference';
 import UserProfileView from 'chord/workbench/parts/mainView/browser/component/user/userProfile';
+import PodcastView from 'chord/workbench/parts/mainView/browser/component/podcast/podcast';
+import RadioView from 'chord/workbench/parts/mainView/browser/component/radio/radio';
 
 
 function MainView({ view }) {
@@ -39,6 +41,12 @@ function MainView({ view }) {
             break;
         case 'userProfileView':
             View = <UserProfileView />
+            break;
+        case 'podcastView':
+            View = <PodcastView />
+            break;
+        case 'radioView':
+            View = <RadioView />
             break;
         case 'homeView':
             View = <HomeView />

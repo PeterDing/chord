@@ -9,6 +9,10 @@ import { ICollection } from "chord/music/api/collection";
 import { IUserProfile } from "chord/music/api/user";
 import { IAudio } from "chord/music/api/audio";
 
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
 
 export function toNumber(obj: any) {
     if (obj.type == 'song') {
@@ -83,7 +87,7 @@ export function makeSong(info: any): ISong {
 export function makeAlbum(info: any): IAlbum {
     let album = { ...info };
 
-    // Get songs use LibraryDatabase.userAlbumSongs
+    // Get songs use LibraryDatabase.libraryAlbumSongs
     album.songs = [];
     jsonLoadValue(album);
     toBoolean(album);
@@ -118,4 +122,35 @@ export function makeUserProfile(info: any): IUserProfile {
     userProfile.followings = [];
     toBoolean(userProfile);
     return <IUserProfile>userProfile;
+}
+
+export function makeEpisode(info: any): IEpisode {
+    let episode = { ...info };
+    jsonLoadValue(episode);
+    toBoolean(episode);
+    return <IEpisode>episode;
+}
+
+export function makePodcast(info: any): IPodcast {
+    let podcast = { ...info };
+
+    // Get songs use LibraryDatabase.podcastEpisodes
+    podcast.episodes = [];
+    jsonLoadValue(podcast);
+    toBoolean(podcast);
+    return <IPodcast>podcast;
+}
+
+export function makeRadio(info: any): IRadio {
+    let radio = { ...info };
+
+    jsonLoadValue(radio);
+    radio.episodes = [];
+    radio.podcasts = [];
+    radio.favoritePodcasts = [];
+    radio.followers = [];
+    radio.followings = [];
+    toBoolean(radio);
+    return <IRadio>radio;
+
 }

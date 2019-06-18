@@ -3,6 +3,7 @@
 @import './songItem.css';
 @import './spoticon.css';
 @import './icons.css';
+@import './pagination.css';
 
 @font-face {
     font-family: zh-font;

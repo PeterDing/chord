@@ -1,24 +1,24 @@
 'use strict';
 
-import { ISong } from 'chord/music/api/song';
+import { TPlayItem } from 'chord/unity/api/items';
 
 import { IPlayManyAct } from 'chord/workbench/api/common/action/player';
 
-import { addSongAudiosIter } from 'chord/workbench/api/utils/song';
+import { addPlayItemAudiosIter } from 'chord/workbench/api/utils/playItem';
 
 import { noticePlayItem } from 'chord/workbench/parts/notification/action/notice';
 
 
-export async function handlePlayManySongs(songs: Array<ISong>): Promise<IPlayManyAct> {
-    let count = songs.length;
-    songs = await addSongAudiosIter(songs);
+export async function handlePlayManyItems(playItems: Array<TPlayItem>): Promise<IPlayManyAct> {
+    let count = playItems.length;
+    playItems = await addPlayItemAudiosIter(playItems);
 
     let item = { type: 'list', listName: 'PlayList' };
-    noticePlayItem(item, count, count - songs.length);
+    noticePlayItem(item, count, count - playItems.length);
 
     return {
         'type': 'c:player:playMany',
         'act': 'c:player:playMany',
-        songs,
+        playItems,
     };
 }

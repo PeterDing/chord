@@ -9,6 +9,10 @@ import {
     addSearchAlbums,
     addSearchArtists,
     addSearchCollections,
+
+    addSearchEpisodes,
+    addSearchPodcasts,
+    addSearchRadios,
 } from 'chord/workbench/parts/mainView/browser/reducer/searchResult';
 import { showAlbumView } from 'chord/workbench/parts/mainView/browser/reducer/showAlbum';
 import { showCollectionView } from 'chord/workbench/parts/mainView/browser/reducer/showCollection';
@@ -24,6 +28,10 @@ import {
     getMoreLibraryAlbums,
     getMoreLibraryCollections,
     getMoreLibraryUserProfiles,
+
+    getMoreLibraryEpisodes,
+    getMoreLibraryPodcasts,
+    getMoreLibraryRadios,
 } from 'chord/workbench/parts/mainView/browser/reducer/libraryResult';
 import {
     addLibrarySong,
@@ -31,6 +39,11 @@ import {
     addLibraryAlbum,
     addLibraryCollection,
     addLibraryUserProfile,
+
+    addLibraryEpisode,
+    addLibraryPodcast,
+    addLibraryRadio,
+
     removeFromLibrary,
 } from 'chord/workbench/parts/mainView/browser/reducer/library';
 
@@ -51,6 +64,9 @@ import { showRecommendView } from 'chord/workbench/parts/mainView/browser/reduce
 import { showCollectionListOptions, showCollectionListView, getMoreCollections } from 'chord/workbench/parts/mainView/browser/reducer/home/collections';
 import { showAlbumListOptions, showAlbumList, getMoreAlbums } from 'chord/workbench/parts/mainView/browser/reducer/home/albums';
 import { showArtistListOptions, showArtistList } from 'chord/workbench/parts/mainView/browser/reducer/home/artists';
+
+import { showPodcastView } from 'chord/workbench/parts/mainView/browser/reducer/showPodcast';
+import { showRadioView } from 'chord/workbench/parts/mainView/browser/reducer/showRadio';
 
 
 export function map(act: string): IReducerMap {
@@ -85,6 +101,22 @@ export function map(act: string): IReducerMap {
         case 'c:mainView:searchMoreCollections':
             return {
                 reducer: addSearchCollections,
+                node: 'searchView.result',
+            };
+
+        case 'c:mainView:searchMoreEpisodes':
+            return {
+                reducer: addSearchEpisodes,
+                node: 'searchView.result',
+            };
+        case 'c:mainView:searchMorePodcasts':
+            return {
+                reducer: addSearchPodcasts,
+                node: 'searchView.result',
+            };
+        case 'c:mainView:searchMoreRadios':
+            return {
+                reducer: addSearchRadios,
                 node: 'searchView.result',
             };
 
@@ -158,6 +190,22 @@ export function map(act: string): IReducerMap {
                 reducer: getMoreLibraryUserProfiles,
                 node: 'libraryView.result',
             };
+        case 'c:mainView:getMoreLibraryEpisodes':
+            return {
+                reducer: getMoreLibraryEpisodes,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:getMoreLibraryPodcasts':
+            return {
+                reducer: getMoreLibraryPodcasts,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:getMoreLibraryRadios':
+            return {
+                reducer: getMoreLibraryRadios,
+                node: 'libraryView.result',
+            };
+
         case 'c:mainView:addLibrarySong':
             return {
                 reducer: addLibrarySong,
@@ -181,6 +229,21 @@ export function map(act: string): IReducerMap {
         case 'c:mainView:addLibraryUserProfile':
             return {
                 reducer: addLibraryUserProfile,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:addLibraryEpisode':
+            return {
+                reducer: addLibraryEpisode,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:addLibraryPodcast':
+            return {
+                reducer: addLibraryPodcast,
+                node: 'libraryView.result',
+            };
+        case 'c:mainView:addLibraryRadio':
+            return {
+                reducer: addLibraryRadio,
                 node: 'libraryView.result',
             };
         case 'c:mainView:removeFromLibrary':
@@ -231,6 +294,18 @@ export function map(act: string): IReducerMap {
             return {
                 reducer: getMoreUserFollowings,
                 node: 'userProfileView',
+            };
+
+        // Podcast
+        case 'c:mainView:showPodcastView':
+            return {
+                reducer: showPodcastView,
+                node: 'podcastView',
+            };
+        case 'c:mainView:showRadioView':
+            return {
+                reducer: showRadioView,
+                node: 'radioView',
             };
 
         // home view

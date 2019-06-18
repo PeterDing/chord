@@ -8,6 +8,10 @@ import { IArtist } from 'chord/music/api/artist';
 import { ICollection } from 'chord/music/api/collection';
 import { IUserProfile } from 'chord/music/api/user';
 
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
 
 export interface IShowSongMenuAct extends Act {
     // 'c:menu:showSongMenu'
@@ -62,4 +66,40 @@ export interface IShowUserProfileMenuAct extends Act {
     left: number;
 
     userProfile: IUserProfile;
+}
+
+
+// Sound
+
+export interface IShowEpisodeMenuAct extends Act {
+    // 'c:menu:showEpisodeMenu'
+    type: string;
+    act: string;
+
+    top: number;
+    left: number;
+
+    episode: IEpisode;
+}
+
+export interface IShowPodcastMenuAct extends Act {
+    // 'c:menu:showPodcastMenu'
+    type: string;
+    act: string;
+
+    top: number;
+    left: number;
+
+    podcast: IPodcast;
+}
+
+export interface IShowRadioMenuAct extends Act {
+    // 'c:menu:showRadioMenu'
+    type: string;
+    act: string;
+
+    top: number;
+    left: number;
+
+    radio: IRadio;
 }

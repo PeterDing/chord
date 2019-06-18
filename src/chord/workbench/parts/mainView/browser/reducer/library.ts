@@ -14,6 +14,11 @@ import {
     IAddLibraryAlbumAct,
     IAddLibraryCollectionAct,
     IAddLibraryUserProfileAct,
+
+    IAddLibraryEpisodeAct,
+    IAddLibraryPodcastAct,
+    IAddLibraryRadioAct,
+
     IRemoveFromLibraryAct,
 } from 'chord/workbench/api/common/action/mainView';
 
@@ -53,6 +58,31 @@ export function addLibraryUserProfile(state: ILibraryResultState, act: IAddLibra
     return { ...state, userProfiles };
 }
 
+
+// Sound
+
+export function addLibraryEpisode(state: ILibraryResultState, act: IAddLibraryEpisodeAct): ILibraryResultState {
+    equal(act.act, 'c:mainView:addLibraryEpisode');
+
+    let episodes = [act.episode, ...state.episodes];
+    return { ...state, episodes };
+}
+
+export function addLibraryPodcast(state: ILibraryResultState, act: IAddLibraryPodcastAct): ILibraryResultState {
+    equal(act.act, 'c:mainView:addLibraryPodcast');
+
+    let podcasts = [act.podcast, ...state.podcasts];
+    return { ...state, podcasts };
+}
+
+export function addLibraryRadio(state: ILibraryResultState, act: IAddLibraryRadioAct): ILibraryResultState {
+    equal(act.act, 'c:mainView:addLibraryRadio');
+
+    let radios = [act.radio, ...state.radios];
+    return { ...state, radios };
+}
+
+
 export function removeFromLibrary(state: ILibraryResultState, act: IRemoveFromLibraryAct): ILibraryResultState {
     equal(act.act, 'c:mainView:removeFromLibrary');
 
@@ -74,6 +104,16 @@ export function removeFromLibrary(state: ILibraryResultState, act: IRemoveFromLi
         case 'userProfile':
             let userProfiles = state.userProfiles.filter(userProfile => userProfile.userProfile.userId != (<any>item).userId);
             return { ...state, userProfiles };
+
+        case 'episode':
+            let episodes = state.episodes.filter(episode => episode.episode.episodeId != (<any>item).episodeId);
+            return { ...state, episodes };
+        case 'podcast':
+            let podcasts = state.podcasts.filter(podcast => podcast.podcast.podcastId != (<any>item).podcastId);
+            return { ...state, podcasts };
+        case 'radio':
+            let radios = state.radios.filter(radio => radio.radio.radioId != (<any>item).radioId);
+            return { ...state, radios };
         default:
             logger.error('`removeFromLibrary` reducer: unknown item\'s type:', item.type, item);
     }

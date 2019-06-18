@@ -82,7 +82,7 @@ export default class LyricView extends React.Component<ILyricProps, ILyricState>
         CAudio.registerOnLoadError('lyric-onloaderror', this.onloaderror);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         // After getting lyric, an action is needed to call the step function,
         // so, let the param to be `true`
         this.getLyric(true);
@@ -96,6 +96,8 @@ export default class LyricView extends React.Component<ILyricProps, ILyricState>
      * When playing song is changed, its lyric needs to fetch
      */
     componentDidUpdate(preProps) {
+        if (!this.props.song) return;
+
         if (this.props.song.songId != preProps.song.songId) {
             this.getLyric();
         }

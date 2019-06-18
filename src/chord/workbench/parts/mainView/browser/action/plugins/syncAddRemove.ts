@@ -14,13 +14,18 @@ import { IAlbum } from 'chord/music/api/album';
 import { ICollection } from 'chord/music/api/collection';
 import { IUserProfile } from 'chord/music/api/user';
 
+import { IEpisode } from 'chord/sound/api/episode';
+import { IPodcast } from 'chord/sound/api/podcast';
+import { IRadio } from 'chord/sound/api/radio';
+
 import { musicApi } from 'chord/music/core/api';
+// import { soundApi } from 'chord/sound/core/api';
 
 import { IOriginConfiguration } from 'chord/preference/api/user';
 import { userConfiguration } from 'chord/preference/configuration/user';
 
 
-export async function syncAdd(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): Promise<boolean> {
+export async function syncAdd(item: ISong | IArtist | IAlbum | ICollection | IUserProfile | IEpisode | IPodcast | IRadio): Promise<boolean> {
     let itemId = item.type == 'userProfile' ? item['userId'] : item[`${item.type}Id`];
     let itemMid = item.type == 'userProfile' ? item['userMid'] : item[`${item.type}Mid`];
     let originType = getOrigin(itemId);
@@ -42,6 +47,16 @@ export async function syncAdd(item: ISong | IArtist | IAlbum | ICollection | IUs
                 return musicApi.userLikeCollection(itemId, itemMid);
             case 'userProfile':
                 return musicApi.userLikeUserProfile(itemId, itemMid);
+
+            case 'episode':
+                return false;
+            // return soundApi.userLikeEpisode(itemId, itemMid);
+            case 'podcast':
+                return false;
+            // return soundApi.userLikePodcast(itemId, itemMid);
+            case 'radio':
+                return false;
+            // return soundApi.userLikeRadio(itemId, itemMid);
             default:
                 throw new Error(`[ERROR] [syncAdd] Here will never be occured. [args]: ${JSON.stringify(item)}`);
         }
@@ -51,7 +66,7 @@ export async function syncAdd(item: ISong | IArtist | IAlbum | ICollection | IUs
 }
 
 
-export async function syncRemove(item: ISong | IArtist | IAlbum | ICollection | IUserProfile): Promise<boolean> {
+export async function syncRemove(item: ISong | IArtist | IAlbum | ICollection | IUserProfile | IEpisode | IPodcast | IRadio): Promise<boolean> {
     let itemId = item.type == 'userProfile' ? item['userId'] : item[`${item.type}Id`];
     let itemMid = item.type == 'userProfile' ? item['userMid'] : item[`${item.type}Mid`];
     let originType = getOrigin(itemId);
@@ -73,6 +88,17 @@ export async function syncRemove(item: ISong | IArtist | IAlbum | ICollection | 
                 return musicApi.userDislikeCollection(itemId, itemMid);
             case 'userProfile':
                 return musicApi.userDislikeUserProfile(itemId, itemMid);
+
+            case 'episode':
+                return false;
+                // return musicApi.userDislikeEpisode(itemId, itemMid);
+            case 'podcast':
+                return false;
+                // return musicApi.userDislikePodcast(itemId, itemMid);
+            case 'radio':
+                return false;
+                // return musicApi.userDislikeRadio(itemId, itemMid);
+
             default:
                 throw new Error(`[ERROR] [syncRemove] Here will never be occured. [args]: ${JSON.stringify(item)}`);
         }

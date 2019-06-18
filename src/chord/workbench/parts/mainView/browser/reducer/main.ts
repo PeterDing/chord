@@ -17,6 +17,10 @@ function handleView(act: string): string {
         case 'c:mainView:searchMoreAlbums':
         case 'c:mainView:searchMoreArtists':
         case 'c:mainView:searchMoreCollections':
+
+        case 'c:mainView:searchMoreEpisodes':
+        case 'c:mainView:searchMorePodcasts':
+        case 'c:mainView:searchMoreRadios':
             return 'searchView';
 
         case 'c:mainView:showAlbumView':
@@ -50,6 +54,11 @@ function handleView(act: string): string {
         case 'c:mainView:getMoreUserCreatedCollections':
         case 'c:mainView:getMoreUserFollowings':
             return 'userProfileView';
+
+        case 'c:mainView:showPodcastView':
+            return 'podcastView';
+        case 'c:mainView:showRadioView':
+            return 'radioView';
 
         case 'c:mainView:home:navigation:changeView':
         case 'c:mainView:home:showRecommendView':

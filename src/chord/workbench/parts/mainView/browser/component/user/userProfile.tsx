@@ -265,20 +265,23 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
 
         return (
             <div>
-                <div className='artist-description'
+                <div className='col-xs-12 col-lg-9 col-xl-8 description'
                     dangerouslySetInnerHTML={{ __html: userProfile.description }}>
                 </div>
 
                 {/* Songs */}
-                <section className='artist-music container-fluid'>
+                <section className='container-fluid'>
                     <div className='row'>
                         <div className='contentSpacing'>
+
+                            <div className='col-xs-12 col-lg-9 col-xl-8 description'
+                                dangerouslySetInnerHTML={{ __html: userProfile.description }}>
+                            </div>
+
                             <section className='col-sm-12 col-md-10 col-md-push-1 artist-toptracks'>
                                 <h1 className='search-result-title' style={{ textAlign: 'center' }}>Songs</h1>
                                 <section className='tracklist-container full-width'>
-                                    <ol>
-                                        {songsView}
-                                    </ol>
+                                    <ol>{songsView}</ol>
                                 </section>
                             </section>
                         </div>
@@ -308,16 +311,14 @@ class UserProfileView extends React.Component<IUserProfileViewProps, any> {
         let viewMore = offset.more ? (<ViewMorePlusItem handler={(size) => this.props.getMoreFavoriteSongs(userProfile, offset, size)} />) : null;
 
         return (
-            <section className='artist-music container-fluid'>
+            <section className='container-fluid'>
                 <div className='row'>
                     <div className='contentSpacing'>
                         <section className='col-sm-12 col-md-10 col-md-push-1 artist-toptracks'>
                             { /* No Show */}
                             <h1 className='search-result-title' style={{ textAlign: 'center', display: 'none' }}>Songs</h1>
                             <section className='tracklist-container full-width'>
-                                <ol>
-                                    {songsView}
-                                </ol>
+                                <ol>{songsView}</ol>
                             </section>
                         </section>
                     </div>

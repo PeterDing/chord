@@ -12,6 +12,10 @@ export enum NOTICES {
     PLAY_USERPROFILE,
     PLAY_LIST,
 
+    PLAY_EPISODE,
+    PLAY_PODCAST,
+    PLAY_RADIO,
+
     // No song can be played
     NO_SONG,
     // Filter songs which have no audio.

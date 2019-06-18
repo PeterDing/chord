@@ -10,14 +10,14 @@ const MAIN_BACKGROUND_MAP = {
     // 'collectionView': 'linear-gradient(rgb(102, 56, 51), rgb(10, 6, 5) 85%)',
     'libraryView': 'linear-gradient(rgb(41, 50, 60), rgb(5, 7, 11) 85%)',
     'preferenceView': '-webkit-gradient(linear, left top, left bottom, from(#A0C3D2), to(#509BF5))',
-    'userProfileView': 'linear-gradient(rgb(133, 156, 179), rgb(1, 1, 11) 85%)',
+    'userProfileView': 'linear-gradient(rgb(104, 123, 122), rgb(1, 1, 11) 85%)',
     'homeView': 'linear-gradient(rgb(55, 93, 113), rgb(5, 9, 11) 85%)',
 }
 
 function pickColor(): string {
-    let r = getRandomInt(0, 120);
-    let g = getRandomInt(0, 120);
-    let b = getRandomInt(0, 120);
+    let r = getRandomInt(0, 160);
+    let g = getRandomInt(0, 160);
+    let b = getRandomInt(0, 160);
 
     let dr = Math.floor(r * 0.1);
     let dg = Math.floor(g * 0.1);
