@@ -3,6 +3,8 @@
 <h1 align="center">Chord 弦 - A Modern Music Player</h1>
 
 [![Build Status](https://travis-ci.org/PeterDing/chord.svg?branch=master)](https://travis-ci.org/PeterDing/chord)
+![Download Count](https://img.shields.io/github/downloads/PeterDing/chord/total.svg)
+![License](https://img.shields.io/github/license/PeterDing/chord.svg)
 
 Chord supports many remote music/podcast providers' services and local music files service (developping).
 
