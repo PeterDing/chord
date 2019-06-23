@@ -52,8 +52,8 @@ export function noticePlayItem<T>(item: T, count?: number, missing?: number) {
 }
 
 
-export function loginSeccess(userProfile: IUserProfile) {
-    notice(NOTICES.LOGIN_SECCESS, userProfile);
+export function loginSuccess(userProfile: IUserProfile) {
+    notice(NOTICES.LOGIN_SUCCESS, userProfile);
 }
 
 

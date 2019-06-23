@@ -99,9 +99,9 @@ function NoSongView({ item, handleShowItem }: { item: Titems, handleShowItem: TV
 }
 
 
-function LoginSeccess({ item, handleShowItem }: { item: IUserProfile, handleShowItem: TVoidFn }) {
+function LoginSuccess({ item, handleShowItem }: { item: IUserProfile, handleShowItem: TVoidFn }) {
     let name = getItemName(item);
-    return <NoticeView type={item.origin} name={name} message={'Login Seccess'} className='warning-ok' click={handleShowItem} />
+    return <NoticeView type={item.origin} name={name} message={'Login Success'} className='warning-ok' click={handleShowItem} />
 }
 
 
@@ -207,8 +207,8 @@ class Notification extends React.Component<INavigationNotificationProps, INaviga
                 case NOTICES.NO_SONG:
                     return <NoSongView item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
 
-                case NOTICES.LOGIN_SECCESS:
-                    return <LoginSeccess item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
+                case NOTICES.LOGIN_SUCCESS:
+                    return <LoginSuccess item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
                 case NOTICES.LOGIN_FAIL:
                     return <LoginFail origin={notice.item} message={notice.message} key={key} />;
 

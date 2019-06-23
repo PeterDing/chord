@@ -27,7 +27,7 @@ export enum NOTICES {
     // the audio which has this kbps is blocked by server
     BLOCKED_KBPS,
 
-    LOGIN_SECCESS,
+    LOGIN_SUCCESS,
     LOGIN_FAIL,
 
     // Can't connect server

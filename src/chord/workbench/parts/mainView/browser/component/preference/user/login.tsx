@@ -7,7 +7,7 @@ import { ESize } from 'chord/music/common/size';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
-import { loginSeccess, loginFail } from 'chord/workbench/parts/notification/action/notice';
+import { loginSuccess, loginFail } from 'chord/workbench/parts/notification/action/notice';
 
 import { handleShowUserProfileView } from 'chord/workbench/parts/mainView/browser/action/showUserProfile';
 import { handlePlayUserFavoriteSongs } from 'chord/workbench/parts/player/browser/action/playUser';
@@ -58,7 +58,7 @@ class Login extends React.Component<any, any> {
                 userConfiguration.setConfig(this.origin, { account });
                 userConfiguration.saveConfig();
                 this.setState({ account: '', password: '' });
-                loginSeccess(account.user);
+                loginSuccess(account.user);
             }).catch(err => {
                 loginFail(this.origin, err.message || 'login error');
             });
