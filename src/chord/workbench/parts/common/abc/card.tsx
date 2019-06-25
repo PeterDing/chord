@@ -69,8 +69,8 @@ export class Card extends React.Component<ICardProps, any> {
                                     <div className='cover-art-image cover-art-image-loaded'
                                         style={{ backgroundImage: `url('${this.props.cover.item}')` }}>
                                     </div>
-                                    {button}
                                 </div>
+                                {button}
                             </div>
 
                         </div>
