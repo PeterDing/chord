@@ -1,13 +1,16 @@
 'use strict';
 
-import { ISong } from 'chord/music/api/song';
+import { TPlayItem } from 'chord/unity/api/items';
 
-import { IAddLibrarySongAct } from 'chord/workbench/api/common/action/mainView';
+import { IAddLibrarySongAct, IAddLibraryEpisodeAct } from 'chord/workbench/api/common/action/mainView';
 import { IRemoveFromLibraryAct } from 'chord/workbench/api/common/action/mainView';
 
 
 export interface ILikeButtonProps {
-    song: ISong;
-    handleAddLibrarySong: (song: ISong) => IAddLibrarySongAct;
-    handleRemoveFromLibrary: (item: ISong) => IRemoveFromLibraryAct;
+    playItem: TPlayItem;
+
+    handleAddLibrarySong: (playItem: TPlayItem) => IAddLibrarySongAct;
+    handleAddLibraryEpisode: (playItem: TPlayItem) => IAddLibraryEpisodeAct;
+
+    handleRemoveFromLibrary: (item: TPlayItem) => IRemoveFromLibraryAct;
 }

@@ -3,11 +3,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { ISong } from 'chord/music/api/song';
+import { TPlayItem } from 'chord/unity/api/items';
 import { ILikeButtonProps } from 'chord/workbench/parts/player/browser/props/like';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 
-import { handleAddLibrarySong } from 'chord/workbench/parts/mainView/browser/action/addLibraryItem';
+import { handleAddLibrarySong, handleAddLibraryEpisode } from 'chord/workbench/parts/mainView/browser/action/addLibraryItem';
 import { handleRemoveFromLibrary } from 'chord/workbench/parts/mainView/browser/action/removeFromLibrary';
 
 import { defaultLibrary } from 'chord/library/core/library';
@@ -20,25 +20,26 @@ class LikeButton extends React.Component<ILikeButtonProps, any> {
         this.handleLibraryActFunc = this.handleLibraryActFunc.bind(this);
     }
 
-    handleLibraryActFunc(song: ISong) {
-        let handleLibraryActFunc = song.like ? this.props.handleRemoveFromLibrary : this.props.handleAddLibrarySong;
-        song.like = !song.like;
-        handleLibraryActFunc(song);
+    handleLibraryActFunc(playItem: TPlayItem) {
+        let handleLibraryActFunc = playItem.like ? this.props.handleRemoveFromLibrary
+            : (playItem.type == 'song') ? this.props.handleAddLibrarySong : this.props.handleAddLibraryEpisode;
+        playItem.like = !playItem.like;
+        handleLibraryActFunc(playItem);
         this.forceUpdate();
     }
 
     render() {
-        let song = this.props.song;
-        if (!song) return null;
+        let playItem = this.props.playItem;
+        if (!playItem) return null;
 
-        let like = defaultLibrary.exists(song);
-        song.like = like;
+        let like = defaultLibrary.exists(playItem);
+        playItem.like = like;
 
         let likeIconClass = like ? 'spoticon-heart-active-16' : 'spoticon-heart-16';
 
         return (
             <button className={`control-button ${likeIconClass} cursor-pointer`}
-                onClick={() => this.handleLibraryActFunc(song)}></button>
+                onClick={() => this.handleLibraryActFunc(playItem)}></button>
         );
     }
 
@@ -47,7 +48,7 @@ class LikeButton extends React.Component<ILikeButtonProps, any> {
 
 function mapStateToProps(state: IStateGlobal) {
     return {
-        song: state.player.playList.length ? state.player.playList[state.player.index] : null,
+        playItem: state.player.playList.length ? state.player.playList[state.player.index] : null,
     };
 }
 
@@ -55,6 +56,8 @@ function mapStateToProps(state: IStateGlobal) {
 function mapDispatchToProps(dispatch) {
     return {
         handleAddLibrarySong: (song) => dispatch(handleAddLibrarySong(song)),
+        handleAddLibraryEpisode: (episode) => dispatch(handleAddLibraryEpisode(episode)),
+
         handleRemoveFromLibrary: (item) => dispatch(handleRemoveFromLibrary(item)),
     };
 }

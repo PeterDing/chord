@@ -26,6 +26,9 @@ import { handleShowAlbumViewById } from 'chord/workbench/parts/mainView/browser/
 import { handleAddLibrarySong, handleAddLibraryEpisode } from 'chord/workbench/parts/mainView/browser/action/addLibraryItem';
 import { handleRemoveFromLibrary } from 'chord/workbench/parts/mainView/browser/action/removeFromLibrary';
 
+import { handleShowPodcastViewById } from 'chord/workbench/parts/mainView/browser/action/showPodcast';
+import { handleShowRadioViewById } from 'chord/workbench/parts/mainView/browser/action/showRadio';
+
 import { defaultLibrary } from 'chord/library/core/library';
 
 
@@ -38,7 +41,7 @@ class PlayListItemDetail extends React.Component<IPlayListItemDetailProps, any> 
     }
 
     handleLibraryActFunc(playItem: TPlayItem) {
-        let handleLibraryActFunc = playItem.like ? this.props.handleRemoveFromLibrary 
+        let handleLibraryActFunc = playItem.like ? this.props.handleRemoveFromLibrary
             : (playItem.type == 'song') ? this.props.handleAddLibrarySong : this.props.handleAddLibraryEpisode;
         playItem.like = !playItem.like;
         handleLibraryActFunc(playItem);
@@ -72,6 +75,21 @@ class PlayListItemDetail extends React.Component<IPlayListItemDetailProps, any> 
         let originIcon = OriginIcon(playItem.origin, 'top-icon xiami-icon');
 
         let likeIconClass = like ? 'spoticon-heart-active-20' : 'spoticon-heart-20';
+
+        let handleShowOwnerViewById;
+        let handleShowBoxViewById;
+        switch (playItem.type) {
+            case 'song':
+                handleShowOwnerViewById = this.props.handleShowArtistViewById;
+                handleShowBoxViewById = this.props.handleShowAlbumViewById;
+                break;
+            case 'episode':
+                handleShowOwnerViewById = this.props.handleShowRadioViewById;
+                handleShowBoxViewById = this.props.handleShowPodcastViewById;
+                break;
+            default:
+                throw new Error(`[PlayListItemDetail]: unknown playItem type: ${playItem}`);
+        }
 
         return (
             <div className='playlist-content-song-detail'>
@@ -113,7 +131,7 @@ class PlayListItemDetail extends React.Component<IPlayListItemDetailProps, any> 
                     {/* Album Name */}
                     <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper"
-                            onClick={() => this.props.handleShowAlbumViewById(boxId)}>
+                            onClick={() => handleShowBoxViewById(boxId)}>
                             <span className="link-subtle a-like cursor-pointer">{boxName}</span>
                         </div>
                     </div>
@@ -122,7 +140,7 @@ class PlayListItemDetail extends React.Component<IPlayListItemDetailProps, any> 
                     {/* Artist Name */}
                     <div className="mo-meta ellipsis-one-line">
                         <div className="react-contextmenu-wrapper"
-                            onClick={() => this.props.handleShowArtistViewById(ownerId)}>
+                            onClick={() => handleShowOwnerViewById(ownerId)}>
                             <span className="link-subtle a-like cursor-pointer">{ownerName}</span>
                         </div>
                     </div>
@@ -159,6 +177,9 @@ function mapDispatchToPropsForItemDetail(dispatch) {
         handleAddLibraryEpisode: (episode) => dispatch(handleAddLibraryEpisode(episode)),
 
         handleRemoveFromLibrary: (item) => dispatch(handleRemoveFromLibrary(item)),
+
+        handleShowPodcastViewById: (podcastId: string) => handleShowPodcastViewById(podcastId).then(act => dispatch(act)),
+        handleShowRadioViewById: (radioId: string) => handleShowRadioViewById(radioId).then(act => dispatch(act)),
     };
 }
 
