@@ -43,6 +43,10 @@ const PARAMS = {
         ...OFFSETS[ORIGIN.ximalaya],
         order: '0', // 正序
     },
+    [ORIGIN.himalaya]: {
+        ...OFFSETS[ORIGIN.himalaya],
+        order: '1', // here, order is not working
+    },
 };
 
 
