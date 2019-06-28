@@ -8,6 +8,7 @@ import { userConfiguration } from 'chord/preference/configuration/user';
 import { PlayItem } from 'chord/workbench/api/utils/playItem';
 
 import { musicApi } from 'chord/music/core/api';
+import { soundApi } from 'chord/sound/core/api';
 
 
 export async function handlePlayLog(): Promise<boolean> {
@@ -24,7 +25,13 @@ export async function handlePlayLog(): Promise<boolean> {
     let config = userConfiguration.getConfig();
     let { account, syncAddRemove }: IOriginConfiguration = config[playItem.origin] || {};
     if (account && syncAddRemove) {
-        return musicApi.playLog((new PlayItem(playItem)).id(), duration);
+        if (playItem.type == 'song') {
+            return musicApi.playLog((new PlayItem(playItem)).id(), duration);
+        }
+        if (playItem.type == 'episode') {
+            return soundApi.playLog((new PlayItem(playItem)).id(), duration);
+        }
+        return false;
     } else {
         return true;
     }
