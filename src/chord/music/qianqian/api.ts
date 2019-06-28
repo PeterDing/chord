@@ -290,7 +290,7 @@ export class QianQianApi {
                 type: '0',
             },
         );
-        let songs = makeSongs(json['result']['song_info']['song_list']);
+        let songs = makeSongs(json['result']['song_info']['song_list'].filter(i => i.song_id));
         return songs;
     }
 
