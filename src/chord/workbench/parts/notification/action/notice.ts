@@ -75,3 +75,8 @@ export function noticeSwitchKbps(item: TPlayItem, kbps: number) {
 export function noticeServerFail<T>(item: T) {
     notice(NOTICES.SERVER_FAIL, item);
 }
+
+
+export function noticeInfo<T>(item: T, message: string) {
+    notice(NOTICES.INFO, item, message);
+}

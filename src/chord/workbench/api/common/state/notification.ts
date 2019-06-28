@@ -32,6 +32,8 @@ export enum NOTICES {
 
     // Can't connect server
     SERVER_FAIL,
+
+    INFO,
 }
 
 
