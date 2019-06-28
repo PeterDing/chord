@@ -1139,7 +1139,6 @@ export class Music {
                 result = await this.qqApi.playLog(originType.id, seek, songMid);
                 break;
             case ORIGIN.qianqian:
-            case ORIGIN.ximalaya:
                 break;
             default:
                 // Here will never be occured.
