@@ -21,25 +21,32 @@ import { makeItem, makeItems } from 'chord/music/core/parser';
 import { insertMerge } from 'chord/base/common/algorithms';
 
 import { XimalayaApi } from 'chord/sound/ximalaya/api';
+import { HimalayaApi } from 'chord/sound/himalaya/api';
 
 
 export class Sound {
 
     ximalayaApi: XimalayaApi;
+    himalayaApi: HimalayaApi;
 
 
     constructor() {
         let ximalayaApi = new XimalayaApi();
         this.ximalayaApi = ximalayaApi;
+
+        let himalayaApi = new HimalayaApi();
+        this.himalayaApi = himalayaApi;
     }
 
 
     public clean(origin: string): void {
         switch (origin) {
-            case ORIGIN.ximalaya: {
+            case ORIGIN.ximalaya:
                 this.ximalayaApi = new XimalayaApi();
                 break;
-            }
+            case ORIGIN.himalaya:
+                this.himalayaApi = new HimalayaApi();
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Sound.clean] Here will never be occured. [args]: ${origin}`);
@@ -56,6 +63,9 @@ export class Sound {
         switch (originType.origin) {
             case ORIGIN.ximalaya:
                 result = await this.ximalayaApi.audios(originType.id);
+                break;
+            case ORIGIN.himalaya:
+                result = await this.himalayaApi.audios(originType.id);
                 break;
             default:
                 // Here will never be occured.
@@ -78,6 +88,9 @@ export class Sound {
         switch (originType.origin) {
             case ORIGIN.ximalaya:
                 item = await this.ximalayaApi.episode(originType.id);
+                break;
+            case ORIGIN.himalaya:
+                item = await this.himalayaApi.episode(originType.id);
                 break;
             default:
                 // Here will never be occured.
@@ -102,6 +115,9 @@ export class Sound {
             case ORIGIN.ximalaya:
                 item = await this.ximalayaApi.podcast(originType.id);
                 break;
+            case ORIGIN.himalaya:
+                item = await this.himalayaApi.podcast(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Sound.podcast] Here will never be occured. [args]: ${podcastId}`);
@@ -123,6 +139,9 @@ export class Sound {
         switch (originType.origin) {
             case ORIGIN.ximalaya:
                 item = await this.ximalayaApi.podcastEpisodeCount(originType.id);
+                break;
+            case ORIGIN.himalaya:
+                item = await this.himalayaApi.podcastEpisodeCount(originType.id);
                 break;
             default:
                 // Here will never be occured.
@@ -147,6 +166,9 @@ export class Sound {
             case ORIGIN.ximalaya:
                 item = await this.ximalayaApi.podcastEpisodes(originType.id, offset + 1, params.order || '1');
                 break;
+            case ORIGIN.himalaya:
+                item = await this.himalayaApi.podcastEpisodes(originType.id, offset + 1, limit, params.order || '1');
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Sound.podcastEpisodes] Here will never be occured. [args]: ${podcastId}, ${JSON.stringify(params)}, ${offset}, ${limit}`);
@@ -170,6 +192,8 @@ export class Sound {
             case ORIGIN.ximalaya:
                 item = await this.ximalayaApi.radio(originType.id);
                 break;
+            case ORIGIN.himalaya:
+                return null;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Sound.radio] Here will never be occured. [args]: ${radioId}`);
@@ -498,6 +522,7 @@ export class Sound {
 
         let list = await Promise.all([
             this.ximalayaApi.searchEpisodes(keyword, offset + 1, limit),
+            this.himalayaApi.searchEpisodes(keyword, offset + 1, limit),
         ]);
 
         let items = insertMerge(list);
@@ -516,7 +541,8 @@ export class Sound {
         if (result) return result;
 
         let list = await Promise.all([
-            this.ximalayaApi.searchPodcasts(keyword, offset + 1, limit)
+            this.ximalayaApi.searchPodcasts(keyword, offset + 1, limit),
+            this.himalayaApi.searchPodcasts(keyword, offset + 1, limit),
         ]);
 
         let items = insertMerge(list);
@@ -547,17 +573,34 @@ export class Sound {
     }
 
 
+    public async playLog(episodeId: string, seek: number): Promise<boolean> {
+        let result;
+        let originType = getOrigin(episodeId);
+        switch (originType.origin) {
+            case ORIGIN.qianqian:
+            case ORIGIN.ximalaya:
+                break;
+            default:
+                // Here will never be occured.
+                throw new Error(`[ERROR] [Sound.playLog] Here will never be occured. [args]: ${episodeId} ${seek}`);
+        }
+        return result;
+    }
+
+
     public resizeImageUrl(origin: string, url: string, limit: ESize | number): string {
         let item;
         switch (origin) {
             case ORIGIN.ximalaya:
                 item = this.ximalayaApi.resizeImageUrl(url, limit);
                 break;
+            case ORIGIN.himalaya:
+                item = this.himalayaApi.resizeImageUrl(url, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Sound.resizeImageUrl] Here will never be occured. [args]: ${origin}, ${url}, ${limit}`);
         }
-
         return item;
     }
 
@@ -573,6 +616,9 @@ export class Sound {
         for (let chunk of chunks) {
             if (chunk.includes('ximalaya')) {
                 futs.push(this.ximalayaApi.fromURL(chunk));
+            }
+            if (chunk.includes('himalaya')) {
+                futs.push(this.himalayaApi.fromURL(chunk));
             }
         }
         if (futs.length == 0) return [];
