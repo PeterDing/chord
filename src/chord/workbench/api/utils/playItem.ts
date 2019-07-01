@@ -12,6 +12,8 @@ import { AlbumIcon, PodcastIcon } from 'chord/workbench/parts/common/component/c
 import { musicApi } from 'chord/music/core/api';
 import { soundApi } from 'chord/sound/core/api';
 
+import { appConfiguration } from 'chord/preference/configuration/app';
+
 
 export function hasPlayItemAudioPath(playItem: TPlayItem): boolean {
     for (let audio of playItem.audios) {
@@ -65,14 +67,21 @@ export async function addPlayItemAudiosIter(playItems: Array<TPlayItem>): Promis
  * maximum of kbps
  * https://en.wikipedia.org/wiki/Bit_rate
  */
-export function selectAudio(audios: Array<IAudio>, supKbps: number = 6000): IAudio {
+export function selectAudio(audios: Array<IAudio>, supKbps?: number): IAudio {
+    supKbps = supKbps || appConfiguration.getConfig().maxKbps;
+
     if (audios.length == 0) return null;
 
-    return audios.filter(audio =>
+    let audio = audios.filter(audio =>
         (audio.url || audio.path)
         && (audio.format != 'ape')  // howler does not support `ape` audio format
         && ((audio.kbps || 128) <= supKbps)
     ).sort((x, y) => y.kbps - x.kbps)[0];
+
+    // TODO, notice no available kbps
+
+    if (!audio) audio = audios[0];
+    return audio;
 }
 
 
