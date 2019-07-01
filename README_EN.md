@@ -32,6 +32,8 @@ Chord uses the style of spotify UI.
 
   **Ximalaya 喜马拉雅FM**
 
+  **Himalaya**
+
 - Support functions:
 
   Search
