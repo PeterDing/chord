@@ -38,3 +38,7 @@ export class AppConfiguration {
         fs.writeFileSync(APP_CONFIGURATION_PATH, JSON.stringify(config, null, 4), { encoding: 'utf-8' });
     }
 }
+
+
+// Global app configuration
+export const appConfiguration = new AppConfiguration();
