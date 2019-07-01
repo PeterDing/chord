@@ -9,6 +9,7 @@ export enum ORIGIN {
     qq = 'qq',
     qianqian = 'qianqian',
     ximalaya = 'ximalaya',
+    himalaya = 'himalaya',
 }
 
 export interface IOriginType {

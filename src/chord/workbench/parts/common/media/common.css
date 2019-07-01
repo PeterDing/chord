@@ -563,3 +563,30 @@ button:hover {
 .warning-ok {
     color: #1db954
 }
+
+.select-control {
+    box-sizing: border-box;
+    clear: both;
+    font-size: 1rem;
+    position: relative;
+    text-align: left
+}
+
+.select-container {
+    display: inline-block;
+    max-width: 100%;
+    position: relative;
+    vertical-align: top
+}
+
+.select-container select {
+    cursor: pointer;
+    display: block;
+    font-size: 1em;
+    max-width: 100%;
+    outline: 0
+}
+
+.select-container select[disabled]:hover,fieldset[disabled] .select-container select:hover {
+    border-color: #f5f5f5
+}

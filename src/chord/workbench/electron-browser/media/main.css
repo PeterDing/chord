@@ -121,5 +121,6 @@ body {
     left: 0;
     top: 0;
     position: fixed;
-    will-change: transform
+    will-change: transform;
+    z-index: -100;
 }

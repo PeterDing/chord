@@ -4,6 +4,9 @@ import { Howl, Howler } from 'howler';
 import { ok } from 'chord/base/common/assert';
 import { Store } from 'redux';
 
+import { hasChinaDomain } from 'chord/unity/api/blocked';
+import { setBrowserGlobalProxy } from 'chord/base/browser/proxy';
+
 
 type IHookFn = (soundId?: number, store?: Store, url?: string, playItemId?: string) => void;
 
@@ -98,6 +101,12 @@ class Audio {
             Audio.stop();
             Audio.destroy();
         }
+
+        // Cancel global proxy for China webs
+        if (hasChinaDomain(url)) {
+            setBrowserGlobalProxy(null);
+        }
+
         Audio.audio = Audio.doMakeAudio(url, playItemId);
     }
 

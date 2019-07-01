@@ -14,6 +14,11 @@ export const DEFAULT_ORDER = {
             favoritePodcasts: '1',
             followings: '',
         },
+    },
+    [ORIGIN.himalaya]: {
+        podcast: {
+            episodes: '1',
+        },
     }
 };
 
@@ -40,11 +45,20 @@ export const ORDERS = {
                 { id: '3', name: '最近订阅' },
             ],
         },
+    },
+    [ORIGIN.himalaya]: {
+        podcast: {
+            episodes: [],
+        },
     }
 };
 
 export const OFFSETS = {
     [ORIGIN.ximalaya]: {
+        offset: 0,
+        limit: 30,
+    },
+    [ORIGIN.himalaya]: {
         offset: 0,
         limit: 30,
     }

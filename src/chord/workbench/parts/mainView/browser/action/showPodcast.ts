@@ -8,6 +8,7 @@ import { soundApi } from 'chord/sound/core/api';
 
 
 export async function handleShowPodcastView(podcast: IPodcast): Promise<IShowPodcastAct> {
+    podcast = await soundApi.podcast(podcast.podcastId);
     return {
         type: 'c:mainView:showPodcastView',
         act: 'c:mainView:showPodcastView',

@@ -128,6 +128,11 @@ function ServerFail({ item, handleShowItem }: { item: Titems, handleShowItem: TV
 }
 
 
+function Info({ item, message }: { item: any, message: string }) {
+    return <NoticeView type='INFO' name={item} message={message} className='warning-warn' click={voidFn} />
+}
+
+
 interface INavigationNotificationProps {
     entries: Array<INotice<any>>;
 
@@ -219,6 +224,9 @@ class Notification extends React.Component<INavigationNotificationProps, INaviga
 
                 case NOTICES.SERVER_FAIL:
                     return <ServerFail item={notice.item} handleShowItem={this._handleShowItem(notice.item)} key={key} />;
+
+                case NOTICES.INFO:
+                    return <Info item={notice.item} message={notice.message} key={key} />;
 
                 default:
                     throw new Error(`[_makeNoticeViews]: unknown notice type: ${notice.type}`);

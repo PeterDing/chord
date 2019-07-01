@@ -4,6 +4,8 @@ import { Store } from 'redux';
 
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 
+import { selectAudio } from 'chord/workbench/api/utils/playItem';
+
 
 /**
  * Switch playItem's audio to one which of kbps is equal less to @param kbps
@@ -18,11 +20,13 @@ export function switchKbps(kbps: number): boolean {
     let index = state.player.index;
     let playItem = playList[index];
 
-    let audios;
+    let audio = selectAudio(playItem.audios);
+    let audios = playItem.audios.filter(a => a.kbps <= audio.kbps);
+
     if (kbps == -1) {
-        audios = playItem.audios.slice(1);
+        audios = audios.slice(1);
     } else {
-        audios = playItem.audios.filter(audio => audio.kbps <= kbps);
+        audios = audios.filter(audio => audio.kbps <= kbps);
     }
 
     if (audios.length == 0) {

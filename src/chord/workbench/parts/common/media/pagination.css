@@ -106,8 +106,11 @@
 }
 
 .pagination-ellipsis {
-    color: #b5b5b5;
-    pointer-events: none
+    color: #b5b5b5
+}
+
+.pagination-ellipsis:hover,.pagination-ellipsis:hover {
+    color: #1ed760
 }
 
 .pagination-list {

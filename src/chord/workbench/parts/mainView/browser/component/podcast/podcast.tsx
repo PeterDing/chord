@@ -106,6 +106,13 @@ const INIT_STATES = {
 
         ...OFFSETS[ORIGIN.ximalaya],
         order: DEFAULT_ORDER[ORIGIN.ximalaya].podcast.episodes,
+    },
+    [ORIGIN.himalaya]: {
+        episodes: null,
+        total: null,
+
+        ...OFFSETS[ORIGIN.himalaya],
+        order: DEFAULT_ORDER[ORIGIN.himalaya].podcast.episodes,
     }
 };
 
