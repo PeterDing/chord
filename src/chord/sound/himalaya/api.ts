@@ -64,9 +64,9 @@ export class HimalayaApi {
     }
 
 
-    public async request(uri: string, params?: object, domain: string = HimalayaApi.SERVER): Promise<any> {
+    public async request(uri: string, params?: object, timeout?: number): Promise<any> {
         let paramstr = params ? '?' + querystringify(params) : '';
-        let url = domain + uri + paramstr;
+        let url = HimalayaApi.SERVER + uri + paramstr;
 
         let headers = { ...HimalayaApi.HEADERS };
 
@@ -75,6 +75,7 @@ export class HimalayaApi {
             url,
             headers,
             gzip: true,
+            timeout,
             resolveWithFullResponse: false,
         };
         let result: any = await request(options);
@@ -148,20 +149,31 @@ export class HimalayaApi {
                 pageId: page,
                 pageSize: size,
             },
+            5000,
         );
         return json;
     }
 
 
     public async searchEpisodes(keyword: string, page: number = 1, size: number = 10): Promise<Array<IEpisode>> {
-        let json = await this.search('track', keyword, page, size);
+        let json;
+        try {
+            json = await this.search('track', keyword, page, size);
+        } catch {
+            return [];
+        }
         return makeEpisodes(json.list.map(i => (i.track.nickname = i.user.nickname, i.track)));
     }
 
 
     public async searchPodcasts(keyword: string, page: number = 1, size: number = 10): Promise<Array<IPodcast>> {
-        let json = await this.search('album', keyword, page, size);
-        return makePodcasts(json.list.map(i => (i.album.nickname = i.user.nickname,i.album)));
+        let json;
+        try {
+            json = await this.search('album', keyword, page, size);
+        } catch {
+            return [];
+        }
+        return makePodcasts(json.list.map(i => (i.album.nickname = i.user.nickname, i.album)));
     }
 
 
