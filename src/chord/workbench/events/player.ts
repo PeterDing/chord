@@ -2,6 +2,9 @@
 
 import { Store } from 'redux';
 
+import { setBrowserGlobalProxy } from 'chord/base/browser/proxy';
+import { hasChinaDomain } from 'chord/unity/api/blocked';
+
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
 
 import { NOTICES } from 'chord/workbench/api/common/state/notification';
@@ -16,6 +19,10 @@ import { switchKbps } from 'chord/workbench/parts/player/browser/action/switchKb
 
 import { handlePlay } from 'chord/workbench/parts/player/browser/action/playList';
 
+import { selectAudio } from 'chord/workbench/api/utils/playItem';
+
+import { appConfiguration } from 'chord/preference/configuration/app';
+
 
 const logger = new Logger(filenameToNodeName(__filename));
 
@@ -27,7 +34,8 @@ function switchLowerKbps() {
     let index = state.player.index;
     let playItem = state.player.playList[index];
 
-    let preKbps = playItem.audios[0].kbps;
+    let audio = selectAudio(playItem.audios);
+    let preKbps = audio.kbps;
 
     logger.info('switch lower kbps:', playItem);
 
@@ -43,10 +51,39 @@ function switchLowerKbps() {
 
 
 /**
+ * When radio url's domain is not from China, we try to use a proxy to request
+ */
+function handleBlockedByISP(): boolean {
+    let proxy = appConfiguration.getConfig().proxy;
+    if (!proxy) return false;
+
+    let store: Store = (<any>window).store;
+
+    let state: IStateGlobal = store.getState();
+    let index = state.player.index;
+    let playItem = state.player.playList[index];
+
+    let audio = selectAudio(playItem.audios);
+    if (!audio) return false;
+
+    if (!hasChinaDomain(audio.url)) {
+        setBrowserGlobalProxy(proxy);
+        handlePlay(index).then(act => store.dispatch(act));
+        return true;
+    }
+
+    return false;
+}
+
+
+/**
  * Switch to lower kbps for audio loading error
  */
 function onLoadError(soundId?: number, store?, audioUrl?: string, playItemId?: string) {
     CAudio.destroy();
+
+    if (handleBlockedByISP()) return;
+
     switchLowerKbps();
 }
 
