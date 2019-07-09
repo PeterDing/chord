@@ -36,6 +36,12 @@ import {
 } from 'chord/music/qianqian/parser';
 
 
+const CURL_HEADERS = {
+    'User-Agent': 'curl/7.65.1',
+    'Accept': '*/*',
+};
+
+
 export class QianQianApi {
 
     static readonly HEADERS = {
@@ -54,7 +60,8 @@ export class QianQianApi {
     static readonly AUDIO = 'http://music.taihe.com/data/music/fmlink';
 
     static readonly NODE_MAP = {
-        song: 'baidu.ting.song.getInfos',
+        audio: 'baidu.ting.song.getInfos',
+        song: 'baidu.ting.song.baseInfo',
         album: 'baidu.ting.album.getAlbumInfo',
         artist: 'baidu.ting.artist.getInfo',
         artistSongs: 'baidu.ting.artist.getSongList',
@@ -76,14 +83,16 @@ export class QianQianApi {
     }
 
 
-    public async request(params: object, data?: string, url: string = QianQianApi.SERVER): Promise<any> {
+    public async request(params: object, data?: string, url: string = QianQianApi.SERVER, headers?: any): Promise<any> {
         let paramstr = querystringify(params);
         url = url + '?' + paramstr;
+
+        headers = headers || QianQianApi.HEADERS;
 
         let options: IRequestOptions = {
             method: 'GET',
             url,
-            headers: QianQianApi.HEADERS,
+            headers,
             body: data,
             gzip: true,
             resolveWithFullResponse: false,
@@ -100,16 +109,20 @@ export class QianQianApi {
 
 
     public async getAudio(songId: string, kbps: number): Promise<IAudio> {
+        let params = {
+            songIds: songId,
+            type: kbps <= 320 ? 'mp3' : 'flac',
+        };
+        if (kbps <= 320) params['rate'] = kbps;
+
         let json = await this.request(
-            {
-                songIds: songId,
-                type: kbps <= 320 ? 'mp3' : 'flac',
-                rate: kbps <= 320 ? kbps : undefined,
-            },
+            params,
             null,
             QianQianApi.AUDIO,
+            CURL_HEADERS,
         );
         let info = json['data']['songList'][0];
+
         if (info['songLink']) {
             let audio = {
                 url: info['songLink'],
@@ -124,8 +137,7 @@ export class QianQianApi {
 
 
     public async audios(songId: string): Promise<Array<IAudio>> {
-        let song = await this.song(songId);
-        let audios = song.audios;
+        let audios = await this.audio(songId);
 
         // no audios
         if (audios.length < 1) return [];
@@ -140,6 +152,26 @@ export class QianQianApi {
     }
 
 
+    public async audio(songId: string): Promise<Array<IAudio>> {
+        let json = await this.request(
+            {
+                method: QianQianApi.NODE_MAP.audio,
+                from: 'qianqianmini',
+                version: '1.0.0',
+                platform: 'darwin',
+                songid: songId,
+                res: '1',
+                aac: '1',
+                e: encryptParams({ songid: songId, ts: +new Date }),
+            },
+        );
+        if (json.error_code != 22000) return [];
+
+        let song = makeSong(json);
+        return song.audios;
+    }
+
+
     public async song(songId: string): Promise<ISong> {
         let json = await this.request(
             {
@@ -149,11 +181,11 @@ export class QianQianApi {
                 platform: 'darwin',
                 songid: songId,
                 res: '1',
-                aac: '0',
+                aac: '1',
                 e: encryptParams({ songid: songId, ts: +new Date }),
             },
         );
-        return makeSong(json);
+        return makeSong(json.content);
     }
 
 
