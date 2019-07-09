@@ -21,13 +21,18 @@ suite('music/qianqian/QianQianApi', () => {
     if (IN_CI) return;
 
     test('audios', async function() {
-        let audios = await api.audios('613447489');
+        let audios = await api.audios('931434');
+        assert.equal(audios.length > 0, true);
+    });
+
+    test('audio', async function() {
+        let audios = await api.audio('2108946');
         assert.equal(audios.length > 0, true);
     });
 
     test('song', async function() {
-        let song = await api.song('931434');
-        assert.equal(song.songOriginalId, '931434');
+        let song = await api.song('2108946');
+        assert.equal(song.songOriginalId, '2108946');
     });
 
     test('album', async function() {
