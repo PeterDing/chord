@@ -91,8 +91,8 @@ export function makeSong(info: any): ISong {
 
     let songName = formatText(songInfo['title']);
 
-    let songWriters = (songInfo['songwriting'] || '').split(',').map(i => formatText(i));
-    let singers = (songInfo['author'] || '').split(',').map(i => formatText(i));
+    let songWriters = songInfo['songwriting'] ? songInfo['songwriting'].split(',').map(i => formatText(i)) : null;
+    let singers = songInfo['author'] ? songInfo['author'].split(',').map(i => formatText(i)) : null;
 
     let song: ISong = {
         songId: _getSongId(songOriginalId),
