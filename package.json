@@ -13,7 +13,7 @@
         "dist": "electron-builder --win --mac --linux deb",
         "dist:mac": "electron-builder --mac",
         "dist:win": "electron-builder --win",
-        "dist:linux": "electron-builder --linux deb pacman",
+        "dist:linux": "electron-builder --linux deb rpm pacman AppImage",
         "pack": "electron-builder --dir",
         "postinstall": "electron-rebuild -f -w better-sqlite3 && electron-rebuild -f -w big-integer"
     },
@@ -27,8 +27,12 @@
         "linux": {
             "target": [
                 "deb",
-                "packman"
-            ]
+                "rpm",
+                "packman",
+                "AppImage"
+            ],
+            "category": "Music",
+            "executableName": "chord"
         },
         "deb": {
             "compression": "gz"

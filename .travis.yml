@@ -69,6 +69,8 @@ deploy:
   file_glob: true
   file:
     - dist/$PROJECT_NAME-*.deb
+    - dist/$PROJECT_NAME-*.rpm
+    - dist/$PROJECT_NAME-*.AppImage
     - dist/$PROJECT_NAME-*.pacman
     - dist/$PROJECT_NAME-*-mac.zip
     - dist/$PROJECT_NAME-*-mac.dmg
