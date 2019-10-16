@@ -341,7 +341,7 @@ define(["require", "exports", "querystring"], function(require, exports, queryst
     exports.getXmSign = function() {
         return function(t) {
             var e = Date.now();
-            return ("{ximalaya-" + t + "}(" + Fe(100) + ")" + t + "(" + Fe(100) + ")" + e).replace(/{([\w-]+)}/, function(t, e) {
+            return ("{himalaya-" + t + "}(" + Fe(100) + ")" + t + "(" + Fe(100) + ")" + e).replace(/{([\w-]+)}/, function(t, e) {
                 return He(e)
             })
         }(Ue() ? Date.now() : window.XM_SERVER_CLOCK || 0)
