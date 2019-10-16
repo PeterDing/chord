@@ -27,7 +27,6 @@
         "linux": {
             "target": [
                 "deb",
-                "rpm",
                 "packman",
                 "AppImage"
             ],
