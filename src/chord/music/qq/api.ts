@@ -180,12 +180,12 @@ export class QQMusicApi {
     }
 
 
-    public async qqKey(guid: string, songMid: string): Promise<string> {
+    public async qqKey(guid: string, songMid: string, songMediaMid: string): Promise<string> {
         let params = {
             cid: '205361747',
             guid: guid,
             songmid: songMid,
-            filename: 'C400' + songMid + '.m4a',
+            filename: 'M500' + songMediaMid + '.mp3',
             format: 'json',
             '_': Date.now(),
         };
@@ -217,9 +217,9 @@ export class QQMusicApi {
                     + AUDIO_FORMAT_MAP[`${audio.kbps || ''}${audio.format}`]
                     + song.songMediaMid + '.' + audio.format
                     + '?guid=' + guid
-                    + '&uin=0'
-                    + '&fromtag=53'
-                    + '&vkey=' + qqKey;
+                    + '&vkey=' + qqKey
+                    + '&uin='
+                    + '&fromtag=121';
                 return audio;
             });
     }
@@ -244,8 +244,7 @@ export class QQMusicApi {
 
         let guid = this.makeguid();
         let song = await this.song(songId);
-        let songMid = song.songMid;
-        let qqKey = await this.qqKey(guid, songMid);
+        let qqKey = await this.qqKey(guid, song.songMid, song.songMediaMid);
         if (!qqKey) return [];
         return this.makeAudios(song, qqKey, guid);
     }
