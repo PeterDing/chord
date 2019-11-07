@@ -23,7 +23,7 @@
         "appId": "chord.music",
         "compression": "maximum",
         "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
-        "electronVersion": "5.0.3",
+        "electronVersion": "7.1.0",
         "linux": {
             "target": [
                 "deb",
