@@ -21,8 +21,8 @@ export async function handlePlayUserFavoriteSongs(userProfile: IUserProfile): Pr
         let _songs = await musicApi.userFavoriteSongs(userProfile.userId, 0, 100, userProfile.userMid);
         count = _songs.length;
         songs = _songs
-            .filter(song => !song.disable)
-            .filter(song => song.origin != ORIGIN.xiami || hasPlayItemAudio(song));
+            .filter(song => !song.disable);
+            // .filter(song => song.origin != ORIGIN.xiami || hasPlayItemAudio(song));
     }
 
     songs = (await addPlayItemAudiosIter(songs)) as Array<ISong>;
