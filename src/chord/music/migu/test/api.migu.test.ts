@@ -1,6 +1,7 @@
 'use strict';
 
 import * as assert from 'assert';
+import * as process from 'process';
 
 import { suite, test } from 'mocha';
 
@@ -9,12 +10,16 @@ import { MiguMusicApi } from 'chord/music/migu/api';
 
 let api = new MiguMusicApi();
 
+const IN_CI = process.env.IN_CI;
+
+
 suite('music/migu/api', () => {
 
     /**
      * Net requests have some probability to be fail,
      * so we test these requests at local, missing at CI
     */
+    if (IN_CI) return;
 
     test('encrypt', function() {
         encrypt('{"copyrightId":"60054704083","auditionsFlag":0}');
