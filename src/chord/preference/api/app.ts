@@ -6,7 +6,7 @@ export interface IAppConfiguration {
     itemSize: number;
 
     // able origins
-    origins: Array<string>;
+    origins: { [origin: string]: boolean };
 
     volumn: number;
 
@@ -21,7 +21,16 @@ export interface IAppConfiguration {
 export function initiateAppConfiguration(): IAppConfiguration {
     return {
         itemSize: 10,
-        origins: ['xiami', 'netease', 'qq', 'qianqian', 'ximalaya', 'himalaya'],
+        origins: {
+            xiami: true,
+            netease: true,
+            qq: true,
+            qianqian: true,
+
+            ximalaya: true,
+            himalaya: true,
+            migu: true,
+        },
         volumn: 0.5,
         proxy: null,
         maxKbps: 6000,
