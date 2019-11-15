@@ -78,6 +78,8 @@ export class XiamiApi {
 
         artist: 'api/artist/initialize',
         // artist: 'api/artist/getArtistDetail',
+        artistAlbums: 'api/album/getArtistAlbums',
+        artistSongs: 'api/album/getArtistSongs',
 
         searchSongs: 'api/search/searchSongs',
         searchAlbums: 'api/search/searchAlbums',
@@ -96,6 +98,8 @@ export class XiamiApi {
         collectionSongs: 'GET',
 
         artist: 'GET',
+        artistAlbums: 'GET',
+        artistSongs: 'GET',
 
         searchSongs: 'GET',
         searchAlbums: 'GET',
@@ -381,10 +385,55 @@ export class XiamiApi {
             XiamiApi.REQUEST_METHOD_MAP.artist,
             XiamiApi.NODE_MAP.artist,
             { artistId },
-            `https://www.xiami.com/artist/${artistId}`,
+            `https://www.xiami.com/list/album?artistId=${artistId}`,
         );
         let artist = makeArtist(json.result.data.artistDetail);
         return artist;
+    }
+
+
+    /**
+     * Get albums amount of an artist, the artistId must be number string
+     */
+    public async artistAlbums(artistId: string, page: number = 1, size: number = 10): Promise<Array<IAlbum>> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.artistAlbums,
+            XiamiApi.NODE_MAP.artistAlbums,
+            {
+                artistId,
+                pagingVO: {
+                    page: page,
+                    pageSize: size
+                },
+                category: 0,
+            },
+            `https://www.xiami.com/list/album?artistId=${artistId}`,
+        );
+        let info = json.result.data.albums;
+        let albums = makeAlbums(info);
+        return albums;
+    }
+
+
+    /**
+     * Get songs of an artist, the artistId must be number string
+     */
+    public async artistSongs(artistId: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
+        let json = await this.request_with_sign(
+            XiamiApi.REQUEST_METHOD_MAP.artistSongs,
+            XiamiApi.NODE_MAP.artistSongs,
+            {
+                artistId,
+                pagingVO: {
+                    page: page,
+                    pageSize: size
+                },
+            },
+            `https://www.xiami.com/list/song?id=${artistId}&type=all`,
+        );
+        let info = json.result.data.songs;
+        let songs = makeSongs(info);
+        return songs;
     }
 
 
