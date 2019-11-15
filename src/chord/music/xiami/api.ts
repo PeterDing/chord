@@ -568,21 +568,25 @@ export class AliMusicApi {
      * Get albums of an artist, the artistId must be number string
      */
     public async artistAlbums(artistId: string, page: number = 1, size: number = 10): Promise<Array<IAlbum>> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.artistAlbums,
-            {
-                artistId: artistId,
-                pagingVO: {
-                    page: page,
-                    pageSize: size,
-                }
-            },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
-        );
+        try {
+            let json = await this.request(
+                AliMusicApi.NODE_MAP.artistAlbums,
+                {
+                    artistId: artistId,
+                    pagingVO: {
+                        page: page,
+                        pageSize: size,
+                    }
+                },
+                `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
+            );
 
-        let info = json.data.data.albums;
-        let albums = makeAliAlbums(info);
-        return albums;
+            let info = json.data.data.albums;
+            let albums = makeAliAlbums(info);
+            return albums;
+        } catch (e) {
+            return this.xiamiWebApi.artistAlbums(artistId, page, size);
+        }
     }
 
 
@@ -610,22 +614,26 @@ export class AliMusicApi {
      * Get songs of an artist, the artistId must be number string
      */
     public async artistSongs(artistId: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
-        let json = await this.request(
-            AliMusicApi.NODE_MAP.artistSongs,
-            {
-                artistId: artistId,
-                backwardOffSale: true,
-                pagingVO: {
-                    page: page,
-                    pageSize: size,
-                }
-            },
-            `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
-        );
+        try {
+            let json = await this.request(
+                AliMusicApi.NODE_MAP.artistSongs,
+                {
+                    artistId: artistId,
+                    backwardOffSale: true,
+                    pagingVO: {
+                        page: page,
+                        pageSize: size,
+                    }
+                },
+                `http://h.xiami.com/artist_detail.html?id=${artistId}&f=&from=&ch=`,
+            );
 
-        let info = json.data.data.songs;
-        let songs = makeAliSongs(info);
-        return songs;
+            let info = json.data.data.songs;
+            let songs = makeAliSongs(info);
+            return songs;
+        } catch (e) {
+            return this.xiamiWebApi.artistSongs(artistId, page, size);
+        }
     }
 
 
