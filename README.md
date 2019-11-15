@@ -55,6 +55,8 @@ Preferences >> CONFIGURATION >> Proxy
 
   **千千音乐**
 
+  **Migu 咪咕音乐**
+
   **Ximalaya 喜马拉雅FM**
 
   **Himalaya**
