@@ -5,7 +5,7 @@ import * as process from 'process';
 
 import { suite, test } from 'mocha';
 
-import { XiamiApi } from 'chord/music/xiami/api';
+import { XiamiApi } from 'chord/music/xiami/webApi';
 
 const xiamiApi = new XiamiApi();
 
@@ -39,12 +39,12 @@ suite('music/xiami/XiamiApi', () => {
     });
 
     // Login is needed
-    // test('album', async function() {
-    //     let id = '1';
-    //     let album = await xiamiApi.album(id);
-    //     let originalId = album.albumOriginalId;
-    //     assert.equal(originalId, id);
-    // });
+    test('album', async function() {
+        let id = '1';
+        let album = await xiamiApi.album(id);
+        let originalId = album.albumOriginalId;
+        assert.equal(originalId, id);
+    });
 
     test('collection', async function() {
         let id = '254834530';
@@ -60,11 +60,18 @@ suite('music/xiami/XiamiApi', () => {
     });
 
     // Login is needed
-    // test('artist', async function() {
-    //     let id = '1';
-    //     let artist = await xiamiApi.artist(id);
-    //     assert.equal(artist.artistOriginalId, id);
-    // });
+    test('artist', async function() {
+        let id = '1';
+        let artist = await xiamiApi.artist(id);
+        assert.equal(artist.artistOriginalId, id);
+    });
+
+    test('artistAlbums', async function() {
+        let id = '1';
+        let albums = await xiamiApi.artistAlbums(id, 1, 1);
+        console.log(albums);
+        assert.equal(albums.length, 1);
+    });
 
     test('searchSongs', async function() {
         let items = await xiamiApi.searchSongs('linkin', 1, 2);

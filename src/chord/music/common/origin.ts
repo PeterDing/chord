@@ -10,6 +10,7 @@ export enum ORIGIN {
     qianqian = 'qianqian',
     ximalaya = 'ximalaya',
     himalaya = 'himalaya',
+    migu = 'migu',
 }
 
 export interface IOriginType {
@@ -40,6 +41,7 @@ export enum OriginSongUrl {
     netease = 'https://music.163.com/#/song?id={id}',
     qq = 'https://y.qq.com/n/yqq/song/{id}.html',
     qianqian = 'http://music.taihe.com/song/{id}',
+    migu = 'http://music.migu.cn/v3/music/song/{id}',
 }
 
 export enum OriginAlbumUrl {
@@ -47,6 +49,7 @@ export enum OriginAlbumUrl {
     netease = 'https://music.163.com/#/album?id={id}',
     qq = 'https://y.qq.com/n/yqq/album/{id}.html',
     qianqian = 'http://music.taihe.com/album/{id}',
+    migu = 'http://music.migu.cn/v3/music/album/{id}',
 }
 
 export enum OriginArtistUrl {
@@ -54,6 +57,7 @@ export enum OriginArtistUrl {
     netease = 'https://music.163.com/#/artist?id={id}',
     qq = 'https://y.qq.com/n/yqq/singer/{id}.html',
     qianqian = 'http://music.taihe.com/artist/{id}',
+    migu = 'http://music.migu.cn/v3/music/artist/{id}',
 }
 
 export enum OriginCollectionUrl {
@@ -61,6 +65,7 @@ export enum OriginCollectionUrl {
     netease = 'https://music.163.com/#/playlist?id={id}',
     qq = 'https://y.qq.com/n/yqq/playsquare/{id}.html',
     qianqian = 'http://music.taihe.com/songlist/{id}',
+    migu = 'http://music.migu.cn/v3/music/playlist/{id}',
 }
 
 export enum OriginUserUrl {
@@ -70,6 +75,7 @@ export enum OriginUserUrl {
 
     // http://music.taihe.com/user?nickname=%E5%91%A8%E6%88%AA%E6%A3%8D%E7%9A%84%E5%8F%8C%E6%9D%B0%E4%BC%A6
     qianqian = 'http://music.taihe.com/user?nickname={id}',
+    migu = 'http://music.migu.cn/v2/user/{id}',
 }
 
 

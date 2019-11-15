@@ -36,6 +36,7 @@ export function makeOffsets(origin: string, offset: IOffset, size: number): Arra
     let total;
     switch (origin) {
         case ORIGIN.xiami:
+        case ORIGIN.migu:
             total = offset.offset * offset.limit + size;
             findPages(offset.offset, offset.limit, total, offsets);
             break;
@@ -58,6 +59,7 @@ export function setCurrectOffset(origin: string, offset: IOffset, size: number):
     let _offset;
     switch (origin) {
         case ORIGIN.xiami:
+        case ORIGIN.migu:
             // `offset.offset * offset.limit` is equal to the amount of songs which have been token.
             // `total` is equal to `page * size + amount of wonted songs`
             total = offset.offset * offset.limit + size;
