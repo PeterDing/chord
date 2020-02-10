@@ -32,6 +32,8 @@ Chord uses the style of spotify UI.
 
   **Migu 咪咕音乐**
 
+  **Kuwo 酷我音乐**
+
   **Ximalaya 喜马拉雅FM**
 
   **Himalaya**
