@@ -12,3 +12,5 @@ ubuntu-docker/
 *login.test.ts
 
 .DS_Store
+
+yarn.lock
