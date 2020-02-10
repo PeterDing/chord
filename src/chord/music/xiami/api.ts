@@ -407,7 +407,7 @@ export class AliMusicApi {
      * WARN: AliMusicApi.song could be easily blocked by server,
      * We try XiamiApi.audios to get the audio urls
      */
-    public async audios(songId: string): Promise<Array<IAudio>> {
+    public async audios(songId: string, supkbps?: number): Promise<Array<IAudio>> {
         try {
             let audios = await this.xiamiWebApi.audios(songId);
             return audios;

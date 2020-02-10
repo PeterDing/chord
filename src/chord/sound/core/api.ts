@@ -54,7 +54,7 @@ export class Sound {
     }
 
 
-    public async audios(episodeId: string): Promise<Array<IAudio>> {
+    public async audios(episodeId: string, supKbps?: number): Promise<Array<IAudio>> {
         let h = md5(`sound.core.api.audios(${episodeId})`);
         let result = cache30.get(h);
         if (result) return result;
@@ -62,10 +62,10 @@ export class Sound {
         let originType = getOrigin(episodeId);
         switch (originType.origin) {
             case ORIGIN.ximalaya:
-                result = await this.ximalayaApi.audios(originType.id);
+                result = await this.ximalayaApi.audios(originType.id, supKbps);
                 break;
             case ORIGIN.himalaya:
-                result = await this.himalayaApi.audios(originType.id);
+                result = await this.himalayaApi.audios(originType.id, supKbps);
                 break;
             default:
                 // Here will never be occured.

@@ -136,7 +136,7 @@ export class QianQianApi {
     }
 
 
-    public async audios(songId: string): Promise<Array<IAudio>> {
+    public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
         let audios = await this.audio(songId);
 
         // no audios

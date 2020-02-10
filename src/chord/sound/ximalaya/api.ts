@@ -116,7 +116,7 @@ export class XimalayaApi {
     }
 
 
-    public async audios(episodeId: string): Promise<Array<IAudio>> {
+    public async audios(episodeId: string, supKbps?: number): Promise<Array<IAudio>> {
         let json = await this.request(
             XimalayaApi.NODE_MAP.audio,
             { trackIds: episodeId },
@@ -178,26 +178,34 @@ export class XimalayaApi {
         let episodes = makeEpisodes(json.data.tracks);
         if (episodes.length == 0) return [];
 
-        let episode = await this.episode(episodes[0].episodeOriginalId);
-        let {
-            radioId,
-            radioOriginalId,
-            radioName,
-            radioCoverUrl,
-            podcastName,
-            podcastCoverUrl,
-            description,
-        } = episode;
-        return episodes.map(s => ({
-            ...s,
-            radioId,
-            radioOriginalId,
-            radioName,
-            radioCoverUrl,
-            podcastName,
-            podcastCoverUrl,
-            description,
-        }));
+        for (let episode of episodes) {
+            try {
+                // Some episodes are not avaiable
+                let tmp_episode = await this.episode(episode.episodeOriginalId);
+                let {
+                    radioId,
+                    radioOriginalId,
+                    radioName,
+                    radioCoverUrl,
+                    podcastName,
+                    podcastCoverUrl,
+                    description,
+                } = tmp_episode;
+                return episodes.map(s => ({
+                    ...s,
+                    radioId,
+                    radioOriginalId,
+                    radioName,
+                    radioCoverUrl,
+                    podcastName,
+                    podcastCoverUrl,
+                    description,
+                }));
+            } catch {
+                continue;
+            }
+        }
+        return [];
     }
 
 

@@ -33,15 +33,17 @@ export function filterPlayItemWithAudios(playItems: Array<TPlayItem>): Array<TPl
     return playItems.filter(playItem => hasPlayItemAudio(playItem));
 }
 
-export async function addPlayItemAudios(playItem: TPlayItem) {
+export async function addPlayItemAudios(playItem: TPlayItem, supKbps?: number) {
+    supKbps = supKbps || appConfiguration.getConfig().maxKbps;
+
     // netease, qianqian, qq and ximalaya's audio url needs to be got by realtime
     if (!hasPlayItemAudio(playItem)) {
         switch (playItem.type) {
             case 'song':
-                playItem.audios = await musicApi.audios((playItem as ISong).songId);
+                playItem.audios = await musicApi.audios((playItem as ISong).songId, supKbps);
                 break;
             case 'episode':
-                playItem.audios = await soundApi.audios((playItem as IEpisode).episodeId);
+                playItem.audios = await soundApi.audios((playItem as IEpisode).episodeId, supKbps);
                 break;
             default:
                 break;

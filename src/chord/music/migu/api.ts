@@ -170,14 +170,13 @@ export class MiguMusicApi {
     }
 
 
-    public async audios(songId: string): Promise<Array<IAudio>> {
+    public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
         let node = MiguMusicApi.NODE_MAP.audio;
         let params = {
             copyrightId: songId,
             auditionsFlag: 0,
         };
         let json = await this.request(node, params, true);
-        console.log('---->', songId, json);
         let audios = makeAudios(json['data']);
         return audios;
     }

@@ -186,11 +186,11 @@ export class NeteaseMusicApi {
      * to get directly link (128kbps)
      * http://music.163.com/song/media/outer/url?id=${songId}.mp3
      */
-    public async audios(songId: string): Promise<Array<IAudio>> {
+    public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
         let node = NeteaseMusicApi.NODE_MAP.audio;
         let data = {
             ids: [songId],
-            br: 999000,
+            br: supKbps * 1000,
             csrf_token: '',
         };
         let json = await this.request(node, data);

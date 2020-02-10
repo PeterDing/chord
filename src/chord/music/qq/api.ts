@@ -236,7 +236,7 @@ export class QQMusicApi {
     }
 
 
-    public async audios(songId: string): Promise<Array<IAudio>> {
+    public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
         // if (this.ips.length == 0) {
         // this.ips = await this.getIPs();
         // this.ip_index = -1;
@@ -1500,16 +1500,18 @@ export class QQMusicApi {
 
 
     public async recommendCollections(offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
-        let data = escape(JSON.stringify({
-            recomPlaylist: {
-                module: "playlist.HotRecommendServer",
-                method: "get_hot_recommend",
-                param: {
-                    cmd: 2,
-                    async: 1
-                }
-            },
-        }));
+        let data = JSON.stringify(
+            {
+                recomPlaylist: {
+                    module: "playlist.HotRecommendServer",
+                    method: "get_hot_recommend",
+                    param: {
+                        cmd: 2,
+                        async: 1
+                    }
+                },
+            }
+        );
         let params = {
             g_tk: this.getACSRFToken(),
             loginUin: '0',

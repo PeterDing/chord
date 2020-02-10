@@ -89,7 +89,7 @@ export class HimalayaApi {
     }
 
 
-    public async audios(episodeId: string): Promise<Array<IAudio>> {
+    public async audios(episodeId: string, supKbps?: number): Promise<Array<IAudio>> {
         let episode = await this.episode(episodeId);
         return episode.audios;
     }
