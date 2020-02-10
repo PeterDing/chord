@@ -17,8 +17,10 @@ export class AppConfiguration {
     constructor() {
         let config: IAppConfiguration;
         try {
-            config = JSON.parse(fs.readFileSync(APP_CONFIGURATION_PATH).toString());
-            config = { ...initiateAppConfiguration(), ...config };
+            let appConfig = JSON.parse(fs.readFileSync(APP_CONFIGURATION_PATH).toString());
+            let defaultConfig = initiateAppConfiguration();
+            appConfig.origins = { ...defaultConfig.origins, ...appConfig.origins };
+            config = { ...defaultConfig, ...appConfig };
         } catch (e) {
             config = initiateAppConfiguration();
         }

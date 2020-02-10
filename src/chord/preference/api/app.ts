@@ -26,10 +26,11 @@ export function initiateAppConfiguration(): IAppConfiguration {
             netease: true,
             qq: true,
             qianqian: true,
+            migu: true,
+            kuwo: true,
 
             ximalaya: true,
             himalaya: true,
-            migu: true,
         },
         volumn: 0.5,
         proxy: null,
