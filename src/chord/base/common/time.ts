@@ -27,6 +27,8 @@ export function sleep(millisecond: number): Promise<void> {
  * Parse a time string to millisecond
  */
 export function parseToMillisecond(info: string): number {
+    if (!!!info) return null;
+
     let c = Array.from(info).filter(i => i == ':').length;
     let tm;
     switch (c) {
