@@ -108,7 +108,7 @@ export default class ConfigurationView extends React.Component<any, IConfigurati
     maxKbpsView() {
         let config = appConfiguration.getConfig();
 
-        let options = [6000, 320, 128].map(
+        let options = [6000, 320, 192, 128].map(
             kbps => ({ name: kbps + 'kbps', value: kbps, selected: config.maxKbps == kbps }));
 
         let selectView = <Select
