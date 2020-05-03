@@ -29,7 +29,7 @@ matrix:
       env: TARGET=linux
       install:
         - sudo apt-get update
-        - sudo apt-get install -y build-essential gcc g++ make bsdtar python-dev
+        - sudo apt-get install -y build-essential gcc g++ make bsdtar python-dev rpm
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
