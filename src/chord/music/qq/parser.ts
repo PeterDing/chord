@@ -45,6 +45,7 @@ const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 
 
 export const AUDIO_FORMAT_MAP = {
+    '96m4a': 'C400',
     '128mp3': 'M500',
     '320mp3': 'M800',
     '1ape': 'A000',
@@ -52,6 +53,7 @@ export const AUDIO_FORMAT_MAP = {
 };
 
 export const KBPS_MAP = {
+    '96aac': 96,
     '128': 128,
     '320': 320,
     '128mp3': 128,
@@ -62,6 +64,7 @@ export const KBPS_MAP = {
 };
 
 export const FORMAT_MAP = {
+    '96aac': 'm4a',
     '128': 'mp3',
     '320': 'mp3',
     '128mp3': 'mp3',

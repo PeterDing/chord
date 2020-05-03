@@ -47,6 +47,8 @@ import {
 
 import { getACSRFToken } from 'chord/music/qq/util';
 
+import { getSecuritySign } from 'chord/music/qq/crypto';
+
 import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
 
 import { ARTIST_LIST_OPTIONS } from 'chord/music/qq/common';
@@ -78,7 +80,8 @@ export class QQMusicApi {
 
     static readonly NODE_MAP = {
         // qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_musicexpress.fcg',
-        qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg',
+        // qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg',
+        qqKey: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         song: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         // lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_yqq.fcg',
         lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg',
@@ -180,7 +183,8 @@ export class QQMusicApi {
     }
 
 
-    public async qqKey(guid: string, songMid: string, songMediaMid: string): Promise<string> {
+    // This api has been blocked.
+    public async qqKey2(guid: string, songMid: string, songMediaMid: string): Promise<string> {
         let params = {
             cid: '205361747',
             guid: guid,
@@ -192,6 +196,42 @@ export class QQMusicApi {
         let url = QQMusicApi.NODE_MAP.qqKey;
         let json = await this.request('GET', url, params);
         return json['data']['items'][0]['vkey'];
+    }
+
+
+    public async qqKey(guid: string, songMid: string, songMediaMid: string): Promise<string> {
+        let data = JSON.stringify({
+            'req_0': {
+                'module': 'vkey.GetVkeyServer',
+                'method': 'CgiGetVkey',
+                'param': {
+                    guid,
+                    'songmid': [songMid],
+                    'songtype': [0],
+                    'uin': '0',
+                    'loginflag': 1,
+                    'platform': '20'
+                }
+            },
+            'comm': { 'uin': 0, 'format': 'json', 'ct': 24, 'cv': 0 }
+        });
+        let sign = getSecuritySign(data);
+        let params = {
+            g_tk: '5381',
+            sign,
+            loginUin: '0',
+            hostUin: '0',
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8',
+            notice: '0',
+            platform: 'yqq.json',
+            needNewCode: '0',
+            data,
+        };
+        let url = QQMusicApi.NODE_MAP.qqKey;
+        let json = await this.request('GET', url, params);
+        return json.req_0.data.midurlinfo[0].vkey;
     }
 
 
