@@ -77,7 +77,7 @@ export function selectAudio(audios: Array<IAudio>, supKbps?: number): IAudio {
     let audio = audios.filter(audio =>
         (audio.url || audio.path)
         && (audio.format != 'ape')  // howler does not support `ape` audio format
-        && ((audio.kbps || 128) <= supKbps)
+        && ((audio.kbps || 96) <= supKbps)
     ).sort((x, y) => y.kbps - x.kbps)[0];
 
     // TODO, notice no available kbps

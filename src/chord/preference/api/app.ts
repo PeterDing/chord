@@ -25,7 +25,7 @@ export function initiateAppConfiguration(): IAppConfiguration {
             xiami: true,
             netease: true,
             qq: true,
-            qianqian: true,
+            qianqian: false,
             migu: true,
             kuwo: true,
 
