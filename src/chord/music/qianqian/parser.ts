@@ -50,12 +50,12 @@ function formatHtml(str: string): string {
 }
 
 
-export function makeAudio(info: any): IAudio {
+export function makeAudio(format: string): IAudio {
     let audio = {
-        format: info['file_format'],
-        size: info['file_size'],
-        kbps: info['file_bitrate'],
-        url: info['file_link'],
+        format: format != 'flac' ? 'mp3' : 'flac',
+        size: null,
+        kbps: format != 'flac' ? Number.parseInt(format) : 720,
+        url: null,
     };
     return audio;
 }
@@ -72,11 +72,10 @@ export function makeLyric(songId: string, lyricInfo: any): ILyric {
 
 export function makeSong(info: any): ISong {
     let songInfo = info['songinfo'] || info;
-    let audioUrls = info['songurl'] && info['songurl']['url'];
 
     let lyricUrl = songInfo['lrclink'];
 
-    let audios = !audioUrls ? [] : audioUrls.map(a => makeAudio(a)).sort((x, y) => y.kbps - x.kbps);
+    let audios = (songInfo['all_rate'] || '').split(',').map(a => makeAudio(a)).sort((x, y) => y.kbps - x.kbps);
 
     let songOriginalId = songInfo['song_id'].toString();
 

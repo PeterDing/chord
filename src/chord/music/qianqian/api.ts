@@ -19,7 +19,7 @@ import { IUserProfile } from 'chord/music/api/user';
 
 import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
-import { encryptParams, encryptPass } from 'chord/music/qianqian/crypto';
+import { encryptPass } from 'chord/music/qianqian/crypto';
 
 import {
     makeLyric,
@@ -46,18 +46,20 @@ export class QianQianApi {
 
     static readonly HEADERS = {
         'Connection': 'keep-alive',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) baidu-music/1.2.6 Chrome/66.0.3359.181 Electron/3.0.5 Safari/537.36',
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Accept': '*/*',
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept-Language': 'en-US',
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'DNT': '1',
+        'X-Requested-With': 'XMLHttpRequest',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6',
+        'Referer': 'http://music.taihe.com/',
     };
 
     static readonly BASICURL = 'http://music.taihe.com/';
 
-    static readonly SERVER = 'http://musicapi.taihe.com/v1/restserver/ting';
+    static readonly SERVER = 'http://music.taihe.com/data/tingapi/v1/restserver/ting';
 
-    static readonly AUDIO = 'http://music.taihe.com/data/music/fmlink';
+    // static readonly AUDIO = 'http://music.taihe.com/data/music/fmlink';
+    static readonly AUDIO = ' http://music.baidu.com/data/music/fmlink';
 
     static readonly NODE_MAP = {
         audio: 'baidu.ting.song.getInfos',
@@ -89,21 +91,28 @@ export class QianQianApi {
 
         headers = headers || QianQianApi.HEADERS;
 
-        let options: IRequestOptions = {
-            method: 'GET',
-            url,
-            headers,
-            body: data,
-            gzip: true,
-            resolveWithFullResponse: false,
-        };
-        let result: any = await request(options);
-        let json = JSON.parse(result.trim());
+        let json = null;
+        for (let i = 0; i < 5; i++) {
+            let options: IRequestOptions = {
+                method: 'GET',
+                url,
+                headers,
+                body: data,
+                gzip: true,
+                resolveWithFullResponse: false,
+            };
+            let result: any = await request(options);
+            json = JSON.parse(result.trim());
 
-        if (json.error_code && json.error_code != 22000) {
-            loggerWarning.warning('[QianQianApi.request] [Error]: (params, response):', options, json);
+            if (json.error_code && json.error_code == 22001) {
+                continue;
+            }
+
+            if (json.error_code && json.error_code != 22000) {
+                loggerWarning.warning('[QianQianApi.request] [Error]: (params, response):', options, json);
+            }
+            break;
         }
-
         return json;
     }
 
@@ -137,15 +146,16 @@ export class QianQianApi {
 
 
     public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
-        let audios = await this.audio(songId);
-
-        // no audios
-        if (audios.length < 1) return [];
+        let song = await this.song(songId);
+        let audios = song.audios;
 
         for (let audio of audios) {
-            if (!audio.url) {
+            if (!audio.url && audio.kbps <= supKbps) {
                 let _audio = await this.getAudio(songId, audio.kbps);
-                if (_audio) audio.url = _audio.url;
+                if (_audio) {
+                    audio.url = _audio.url;
+                    break;
+                }
             }
         }
         return audios.filter(audio => !!audio.url);
@@ -156,13 +166,8 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.audio,
-                from: 'qianqianmini',
-                version: '1.0.0',
-                platform: 'darwin',
+                from: 'web',
                 songid: songId,
-                res: '1',
-                aac: '1',
-                e: encryptParams({ songid: songId, ts: +new Date }),
             },
         );
         if (json.error_code != 22000) return [];
@@ -176,13 +181,8 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.song,
-                from: 'qianqianmini',
-                version: '1.0.0',
-                platform: 'darwin',
+                from: 'web',
                 songid: songId,
-                res: '1',
-                aac: '1',
-                e: encryptParams({ songid: songId, ts: +new Date }),
             },
         );
         return makeSong(json.content);
@@ -206,9 +206,7 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.album,
-                from: 'qianqianmini',
-                version: '11.2.6',
-                platform: 'darwin',
+                from: 'web',
                 album_id: albumId,
             },
         );
@@ -220,11 +218,8 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.artist,
-                from: 'qianqianmini',
-                version: '11.2.6',
-                platform: 'darwin',
+                from: 'web',
                 artistid: artistId,
-                tinguid: '0',
             },
         );
         return makeArtist(json);
@@ -235,11 +230,8 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.artistSongs,
-                from: 'qianqianmini',
-                version: '11.2.6',
-                platform: 'darwin',
+                from: 'web',
                 artistid: artistId,
-                tinguid: '0',
                 offset: offset,
                 limits: limit,
             },
@@ -252,11 +244,8 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.artistAlbums,
-                from: 'qianqianmini',
-                version: '11.2.6',
-                platform: 'darwin',
+                from: 'web',
                 artistid: artistId,
-                tinguid: '0',
                 order: '1',
                 offset: offset,
                 limits: limit,
@@ -270,13 +259,14 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.collection,
+                from: 'web',
                 ...(encryptPass(
                     {
-                        from: "qianqianmini",
-                        platform: "darwin",
-                        version: "11.2.6",
-                        withcount: "1",
                         list_id: collectionId,
+                        size: limit,
+                        offset,
+                        withcount: 1,
+                        from: "web",
                     }
                 )),
             },
@@ -294,9 +284,7 @@ export class QianQianApi {
                 method: QianQianApi.NODE_MAP.collectionSongs,
                 ...(encryptPass(
                     {
-                        from: "qianqianmini",
-                        version: "11.2.6",
-                        platform: "darwin",
+                        from: "web",
                         list_id: collectionId,
                         start: offset,
                         num: limit,
@@ -309,12 +297,11 @@ export class QianQianApi {
 
 
     public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        return [];
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.search,
-                from: 'qianqianmini',
-                version: '11.2.6',
-                platform: 'darwin',
+                from: 'web',
                 isNew: '1',
                 query: keyword,
                 page_no: offset,
@@ -328,12 +315,11 @@ export class QianQianApi {
 
 
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
+        return [];
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.search,
-                from: 'qianqianmini',
-                version: '11.2.6',
-                platform: 'darwin',
+                from: 'web',
                 isNew: '1',
                 query: keyword,
                 page_no: offset,
@@ -347,12 +333,11 @@ export class QianQianApi {
 
 
     public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
+        return [];
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.search,
-                from: 'qianqianmini',
-                version: '11.2.6',
-                platform: 'darwin',
+                from: 'web',
                 isNew: '1',
                 query: keyword,
                 page_no: offset,
@@ -366,12 +351,11 @@ export class QianQianApi {
 
 
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
+        return [];
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.search,
-                from: 'qianqianmini',
-                version: '11.2.6',
-                platform: 'darwin',
+                from: 'web',
                 isNew: '1',
                 query: keyword,
                 page_no: offset,
@@ -388,6 +372,7 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.userProfile,
+                from: 'web',
                 ...(encryptPass(
                     {
                         nickname: userName,
@@ -410,11 +395,10 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.userFavoriteAlbums,
+                from: 'web',
                 ...(encryptPass(
                     {
-                        from: 'qianqianmini',
-                        platform: 'darwin',
-                        version: '11.2.6',
+                        from: 'web',
                         offset,
                         size: limit,
                         source: '1',
@@ -432,11 +416,10 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.userFavoriteArtists,
+                from: 'web',
                 ...(encryptPass(
                     {
-                        from: 'qianqianmini',
-                        platform: 'darwin',
-                        version: '11.2.6',
+                        from: 'web',
                         offset,
                         size: limit,
                         source: '2',
@@ -454,11 +437,10 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.userFavoriteCollections,
+                from: 'web',
                 ...(encryptPass(
                     {
-                        from: 'qianqianmini',
-                        platform: 'darwin',
-                        version: '11.2.6',
+                        from: 'web',
                         offset,
                         size: limit,
                         source: '0',
@@ -476,11 +458,10 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.userCreatedCollections,
+                from: 'web',
                 ...(encryptPass(
                     {
-                        from: 'qianqianmini',
-                        platform: 'darwin',
-                        version: '11.2.6',
+                        from: 'web',
                         offset,
                         size: limit,
                         source: '0',
@@ -498,12 +479,11 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.userFollowers,
+                from: 'web',
                 ...(encryptPass(
                     {
-                        from: 'qianqianmini',
-                        platform: 'darwin',
-                        version: '11.2.6',
-                        author_id: '2698337947',
+                        from: 'web',
+                        author_id: userId,
                         offset,
                         size: limit,
                         type: '2',
@@ -519,12 +499,11 @@ export class QianQianApi {
         let json = await this.request(
             {
                 method: QianQianApi.NODE_MAP.userFollowings,
+                from: 'web',
                 ...(encryptPass(
                     {
-                        from: 'qianqianmini',
-                        platform: 'darwin',
-                        version: '11.2.6',
-                        author_id: '2698337947',
+                        from: 'web',
+                        author_id: userId,
                         offset,
                         size: limit,
                         type: '1',

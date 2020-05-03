@@ -15,7 +15,7 @@ export function encryptParams(params: object): string {
 
 export function encryptPass(params: object): any {
     let tm = Math.floor(Date.now() / 1000);
-    let e = md5("baidu_taihe_music_secret_key" + tm).slice(8, 24);
+    let e = md5("baidu_taihe_music_secret_key" + tm).substr(8, 16);
     let KEY = Buffer.from(e);
     let IV = Buffer.from(e);
 
