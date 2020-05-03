@@ -53,7 +53,7 @@ Preferences >> CONFIGURATION >> Proxy
 
   **QQ music 腾讯音乐**
 
-  **千千音乐**
+  ~~**千千音乐**~~ (千千音乐服务不稳定，影响用户体验，所以不再支持)
 
   **Migu 咪咕音乐**
 

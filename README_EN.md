@@ -28,7 +28,7 @@ Chord uses the style of spotify UI.
 
   **QQ music 腾讯音乐**
 
-  **千千音乐**
+  ~~**千千音乐**~~ (This service is not stable. We don't support it.)
 
   **Migu 咪咕音乐**
 
