@@ -54,29 +54,31 @@ const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 export function makeAudios(infos: any): Array<IAudio> {
     if (!infos) return null;
     let audios = [];
-    for (let keystr of Object.keys(infos)) {
-        if (!infos[keystr]) { continue; };
-        let url = infos[keystr]['playUrl'];
-        let kbps;
-        if (url.includes('MP3_128')) {
-            kbps = 128;
-        } else if (url.includes('MP3_320')) {
-            kbps = 320;
-        } else if (url.includes('/flac/')) {
-            kbps = 720;
-        } else {
-            continue;
-        }
+    let url = infos['playUrl'];
 
-        let audio = {
-            format: url.split('.').slice(-1)[0],
-            size: null,
-            kbps,
-            url,
-            path: null,
-        };
-        audios.push(audio);
+    let format;
+    let kbps;
+    if (url.includes('/flac/')) {
+        kbps = 720;
+        format = 'flac';
+    } else {
+        format = 'mp3';
+        if (url.match(/MP3_\d+/)) {
+            let m = /MP3_(\d+)/.exec(url)[1];
+            kbps = Number.parseInt(m);
+        } else {
+            kbps = 90;
+        }
     }
+
+    let audio = {
+        format,
+        size: null,
+        kbps,
+        url,
+        path: null,
+    };
+    audios.push(audio);
     return audios;
 }
 

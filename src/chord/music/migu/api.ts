@@ -170,14 +170,34 @@ export class MiguMusicApi {
     }
 
 
+    // flac: type = 3
+    // 320kbps: type = 2
+    // 40kbps: type = 1
     public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
-        let node = MiguMusicApi.NODE_MAP.audio;
-        let params = {
-            copyrightId: songId,
-            auditionsFlag: 0,
-        };
-        let json = await this.request(node, params, true);
-        let audios = makeAudios(json['data']);
+        let audios = [];
+        while (true) {
+            let tp = 2;
+            if (supKbps > 320) {
+                tp = 3;
+            }
+            let node = MiguMusicApi.NODE_MAP.audio;
+            let params = {
+                copyrightId: songId,
+                auditionsFlag: 0,
+                type: tp,
+            };
+            let json = await this.request(node, params, true);
+            audios = makeAudios(json['data']);
+
+            // if the audio is not flac, changing to 320kbps
+            if (audios.length > 0 && tp == 3) {
+                if (audios[0].kbps < 320) {
+                    supKbps = 320;
+                    continue;
+                }
+            }
+            break;
+        }
         return audios;
     }
 
