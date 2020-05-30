@@ -1,12 +1,17 @@
 'use strict';
 
+import { remote } from 'electron';
+
+import { sleep } from 'chord/base/common/time';
 import { Logger, LogLevel } from 'chord/platform/log/common/log';
 import { filenameToNodeName } from 'chord/platform/utils/common/paths';
 const loggerWarning = new Logger(filenameToNodeName(__filename), LogLevel.Warning);
 
+import { LoginTimeoutError } from 'chord/music/common/errors';
+
 import { md5 } from 'chord/base/node/crypto';
 
-import { Cookie, makeCookieJar, makeCookies } from 'chord/base/node/cookies';
+import { Cookie, makeCookieJar, makeCookies, makeCookie } from 'chord/base/node/cookies';
 import { querystringify, getHost } from 'chord/base/node/url';
 import { request, IRequestOptions } from 'chord/base/node/_request';
 
@@ -160,6 +165,52 @@ export class XiamiApi {
     }
 
 
+    async handleVerify(url: string) {
+        let win = new remote.BrowserWindow(
+            {
+                width: 380, height: 320,
+                webPreferences: {
+                    enableRemoteModule: false,
+                    disableHtmlFullscreenWindowResize: true,
+                },
+            });
+        // win.webContents.openDevTools();
+        win.on('close', () => {
+            win = null;
+        });
+        win.loadURL(url, { httpReferrer: 'https://www.xiami.com/' });
+        // clear cache
+        win.webContents.session.clearStorageData();
+        win.show();
+
+        for (let timeout = 0; timeout < 12000000; timeout += 1000) {
+            // waiting to get cookies
+            await sleep(1000);
+            let cookiesStr = await win.webContents.executeJavaScript('Promise.resolve(document.cookie)', true);
+            if (cookiesStr.includes('x5sec')) {
+                let cookies = {};
+                cookiesStr.split('; ').forEach(chunk => {
+                    let index = chunk.indexOf('=');
+                    cookies[chunk.slice(0, index)] = chunk.slice(index + 1);
+                });
+
+                Object.keys(cookies).forEach(key => {
+                    let cookie = makeCookie(key, cookies[key], DOMAIN);
+                    this.cookies[key] = cookie;
+                });
+
+                // close window
+                win.close();
+                return;
+            }
+        }
+
+        // Handle timeout
+        win.close();
+        throw new LoginTimeoutError('Timeout !!!');
+    }
+
+
     public async request(method: string, url: string, data?: string): Promise<any> {
         // init cookies
         await this.getCookies();
@@ -229,6 +280,12 @@ export class XiamiApi {
         };
         let result: any = await request(options);
         let json = JSON.parse(result.trim());
+
+        // Handle verify
+        if (json['rgv587_flag'] == 'sm') {
+            await this.handleVerify('https:' + json.url);
+            return this.request_with_sign(method, node, apiParams, referer, basicUrl, excludedCookies);
+        }
 
         // msg: "令牌过期"
         if (json.code == 'SG_TOKEN_EXPIRED') {
