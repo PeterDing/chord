@@ -1,5 +1,7 @@
 'use strict';
 
+import { writeLocalSearchHistory } from 'chord/preference/utils/app';
+
 import { initiateOffset } from 'chord/workbench/api/common/state/offset';
 
 import { ISearchInputAct } from 'chord/workbench/api/common/action/mainView';
@@ -8,8 +10,11 @@ import { musicApi } from 'chord/music/core/api';
 import { soundApi } from 'chord/sound/core/api';
 
 
+/**
+ * Search keyword
+ */
 export async function searchKeyword(keyword: string): Promise<ISearchInputAct> {
-    let {offset, limit} = initiateOffset();
+    let { offset, limit } = initiateOffset();
     let [songs, albums, artists, collections, episodes, podcasts, radios] = await Promise.all([
         musicApi.searchSongs(keyword, offset, limit),
         musicApi.searchAlbums(keyword, offset, limit),
@@ -37,6 +42,9 @@ export async function searchKeyword(keyword: string): Promise<ISearchInputAct> {
 }
 
 
+/**
+ * Search input as url
+ */
 export async function searchFromURL(input: string): Promise<ISearchInputAct> {
     let songs = [];
     let albums = [];
@@ -101,8 +109,15 @@ export async function searchFromURL(input: string): Promise<ISearchInputAct> {
 }
 
 
+function saveSearchKeyword(keyword: string) {
+    writeLocalSearchHistory(keyword);
+}
+
+
 export async function search(keyword: string): Promise<ISearchInputAct> {
-    let act;
+    saveSearchKeyword(keyword);
+
+    let act: ISearchInputAct;
     if (/[\/?=]/.exec(keyword)) {
         act = await searchFromURL(keyword);
     }
