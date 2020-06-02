@@ -349,7 +349,7 @@ export function makeAliSong(info: any): ISong {
         albumCoverUrl: albumCoverUrl,
 
         artistId: _getArtistId(info['artistId']),
-        artistOriginalId: info['artistId'].toString(),
+        artistOriginalId: (info['artistId'] || '').toString(),
         artistName: info['artistName'],
         artistAvatarUrl: artistAvatarUrl,
 
