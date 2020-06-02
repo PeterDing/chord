@@ -13,6 +13,7 @@ export const menuTemplate = (win): MenuItemConstructorOptions[] => [
             },
             { type: 'separator' },
             { label: 'Quit', accelerator: 'Command+Q', click: function() { app.quit(); } },
+            { label: 'Relaunch', accelerator: 'Command+R', click: function() { app.relaunch() } },
         ]
     },
     {
