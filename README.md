@@ -18,34 +18,9 @@
 [English](README_EN.md)
 
 
-## 注意
-
-为了正常使用 Himalaya，用户需要在系统 hosts 文件中添加下面一条:  
-
-```
-47.254.50.181 api.himalaya.com
-```
-
-Windows 用户设置 hosts 文件 见： `https://www.cnblogs.com/chenfei0801/p/3422985.html`  
-MacOS，Linux 用户编辑 `/etc/hosts`  
-
-中国国内用户如果要收听部分的 Himalaya 的内容，需要设置一个(科学上网)代理。  
-chord 默认不使用代理来访问所有的音频链接，如果音频请求出错且音频链接的域名不属于中国，那么 chord 会尝试用代理来链接。  
-
-如果用户没有设置 hosts 和 代理，可能无法搜索到 Himalaya 的内容。
-
-### 设置代理
-
-依次点击下面选项输入代理链接:
-
-```
-Preferences >> CONFIGURATION >> Proxy
-```
-
-
 ## 特性
 
-- 支持 
+- 支持
 
   **Xiami 虾米音乐**
 
@@ -117,6 +92,61 @@ Preferences >> CONFIGURATION >> Proxy
 - 多国语言
 
 - 更多的测试
+
+
+## 关于 QQ 音乐
+
+QQ 音乐的高品质音乐链接只提供给 vip 用户，一般用户只能得到 128kbps 的链接。
+
+如果你有一个 vip 用户的 cookies，你也可以获得高品质音乐链接，通过在下面的文件中加入这个 cookies。
+
+- Mac, Linux
+
+  `~/.chord/cookies-for-audio.json`
+
+- Windows
+
+  `%USERPROFILE%\Appdata\Roaming\chord\cookies-for-audio.json`
+
+内容如下：
+
+```json
+{
+    "qq": {
+        "key1": "val1",
+        ...
+    }
+}
+```
+
+`key1`, `val1` 是这个 cookies 的值。
+
+
+## 关于 Himalaya
+
+**Himalaya 已经被 GFW 屏蔽，它的 api 无法使用(没有通过代理)，导致下面的设置也失效了**
+
+为了正常使用 Himalaya，用户需要在系统 hosts 文件中添加下面一条:  
+
+```
+47.254.50.181 api.himalaya.com
+```
+
+Windows 用户设置 hosts 文件 见： `https://www.cnblogs.com/chenfei0801/p/3422985.html`  
+MacOS，Linux 用户编辑 `/etc/hosts`  
+
+中国国内用户如果要收听部分的 Himalaya 的内容，需要设置一个(科学上网)代理。  
+chord 默认不使用代理来访问所有的音频链接，如果音频请求出错且音频链接的域名不属于中国，那么 chord 会尝试用代理来链接。  
+
+如果用户没有设置 hosts 和 代理，可能无法搜索到 Himalaya 的内容。
+
+### 设置代理
+
+依次点击下面选项输入代理链接:
+
+```
+Preferences >> CONFIGURATION >> Proxy
+```
 
 
 ## 开发者
