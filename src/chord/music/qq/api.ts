@@ -2,6 +2,11 @@
 
 import { remote } from 'electron';
 
+import * as stdFs from 'fs';
+import * as stdPath from 'path';
+import { CHORD_DIR } from 'chord/preference/common/chord';
+
+import { isEmptyObject } from 'chord/base/common/objects';
 import { ok } from 'chord/base/common/assert';
 import { sleep } from 'chord/base/common/time';
 import { getRandom } from 'chord/base/node/random';
@@ -25,7 +30,7 @@ import { IUserProfile, IAccount } from 'chord/music/api/user';
 
 import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
-import { CookieJar, makeCookie, makeCookieJar } from 'chord/base/node/cookies';
+import { makeCookie, makeCookieJar } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
 import { request, htmlGet, IRequestOptions } from 'chord/base/node/_request';
 
@@ -66,22 +71,22 @@ const ALBUM_OPTION_NAME_MAP = {
 export class QQMusicApi {
 
     static readonly HEADERS = {
-        'accept-encoding': 'gzip, deflate, br',
+        'accept-encoding': 'gzip, deflate',
         'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,ja;q=0.6,zh-TW;q=0.5',
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
         'accept': '*/*',
     };
 
-    static readonly AUDIO_URI = 'http://mobileoc.music.tc.qq.com/';
+    // static readonly AUDIO_URI = 'http://mobileoc.music.tc.qq.com/';
     // static readonly AUDIO_URI = 'http://streamoc.music.tc.qq.com/';
     // static readonly AUDIO_URI = 'http://223.111.154.151/amobile.music.tc.qq.com/';
     // static readonly AUDIO_URI = 'http://dl.stream.qqmusic.qq.com/';
-    // static readonly AUDIO_URI = 'http://isure.stream.qqmusic.qq.com/';
+    static readonly AUDIO_URI = 'http://isure.stream.qqmusic.qq.com/';
 
     static readonly NODE_MAP = {
         // qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_musicexpress.fcg',
-        // qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg',
-        qqKey: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        qqKey: 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg',
+        audio: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         song: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         // lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_yqq.fcg',
         lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg',
@@ -138,16 +143,28 @@ export class QQMusicApi {
     };
 
     private account: IAccount;
-    private cookieJar: CookieJar;
+    private cookies: Object;
+
+    // The cookies are for getting audio url.
+    // They can be these cookies of a vip user.
+    private cookiesForAudio: Object;
 
     private ip_index: number;
     private ips: Array<string>;
 
 
     constructor() {
-        this.cookieJar = makeCookieJar();
+        this.cookies = {};
         this.ip_index = -1;
         this.ips = [];
+
+        try {
+            let cookiesForAudioPath = stdPath.join(CHORD_DIR, 'cookies-for-audio.json');
+            let cookiesForAudio = JSON.parse(stdFs.readFileSync(cookiesForAudioPath).toString());
+            this.cookiesForAudio = cookiesForAudio[ORIGIN.qq] || this.cookies;
+        } catch {
+            this.cookiesForAudio = this.cookies;
+        }
     }
 
 
@@ -156,7 +173,13 @@ export class QQMusicApi {
     }
 
 
-    public async request(method: string, url: string, params?: any, data?: any, referer?: string): Promise<any> {
+    public async request(
+        method: string,
+        url: string,
+        params?: any,
+        data?: any,
+        referer?: string,
+        cookies: Object = {}): Promise<any> {
         if (params) {
             url = url + '?' + querystringify(params);
         }
@@ -164,25 +187,37 @@ export class QQMusicApi {
         referer = referer || 'https://y.qq.com';
         let headers = { ...QQMusicApi.HEADERS, referer };
 
+        // Here, domains are different. Make a new CookieJar for a request.
+        if (isEmptyObject(cookies)) {
+            cookies = this.cookies;
+        }
+        let jar = makeCookieJar();
+        for (let k of Object.keys(cookies)) {
+            let cookie = makeCookie(k, cookies[k]);
+            jar.setCookie(cookie, url);
+        }
+
         let options: IRequestOptions = {
             method,
             url,
-            jar: this.cookieJar || null,
+            jar,
             headers: headers,
             body: data,
             gzip: true,
         };
+
         let body: any = await request(options);
         return body.trim().startsWith('<') || body == '' ? body : JSON.parse(body);
     }
 
 
     public makeguid(): string {
-        return '0';
-        // return Math.floor(Math.random() * 1000000000).toString();
+        // return '0';
+        return Math.floor(Math.random() * 1000000000).toString();
     }
 
 
+    // Deprecated. Do not use it
     // This api has been blocked.
     public async qqKey2(guid: string, songMid: string, songMediaMid: string): Promise<string> {
         let params = {
@@ -199,9 +234,10 @@ export class QQMusicApi {
     }
 
 
+    // Deprecated. Do not use it
     public async qqKey(guid: string, songMid: string, songMediaMid: string): Promise<string> {
         let data = JSON.stringify({
-            'req_0': {
+            'req': {
                 'module': 'vkey.GetVkeyServer',
                 'method': 'CgiGetVkey',
                 'param': {
@@ -231,22 +267,34 @@ export class QQMusicApi {
         };
         let url = QQMusicApi.NODE_MAP.qqKey;
         let json = await this.request('GET', url, params);
-        return json.req_0.data.midurlinfo[0].vkey;
+        return json.req.data.midurlinfo[0].vkey;
     }
 
 
+    /**
+     * Uin is important for get audio url
+     */
+    private getUinForAudio(): string {
+        let uin = this.cookiesForAudio['uin'] || (this.account && this.account.user && this.account.user.userOriginalId);
+        return uin || '';
+    }
+
+
+    // Deprecated
     private getAudioServerIP(): string {
         this.ip_index = (this.ip_index + 1) % this.ips.length;
         return this.ips[this.ip_index];
     }
 
 
+    // Deprecated
     private getAudioURI(): string {
         let ip = this.getAudioServerIP();
         return 'http://' + ip + '/amobile.music.tc.qq.com/';
     }
 
 
+    // Deprecated
     public makeAudios(song: ISong, qqKey: string, guid: string): Array<IAudio> {
         if (!qqKey) return [];
 
@@ -258,13 +306,14 @@ export class QQMusicApi {
                     + song.songMediaMid + '.' + audio.format
                     + '?guid=' + guid
                     + '&vkey=' + qqKey
-                    + '&uin='
-                    + '&fromtag=121';
+                    + '&uin=0'
+                    + '&fromtag=66';
                 return audio;
             });
     }
 
 
+    // Deprecated
     /**
      * Get available qq music server ips
      */
@@ -276,17 +325,82 @@ export class QQMusicApi {
     }
 
 
-    public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
-        // if (this.ips.length == 0) {
-        // this.ips = await this.getIPs();
-        // this.ip_index = -1;
-        // }
-
+    /**
+     * Get audio url
+     */
+    async getAudioUrl(songMid: string, songMediaMid: string, kbps: number, format: string): Promise<string> {
         let guid = this.makeguid();
+        let uin = this.getUinForAudio();
+
+        if (!(AUDIO_FORMAT_MAP[`${kbps || ''}${format}`])) {
+            return null;
+        }
+
+        let filename = AUDIO_FORMAT_MAP[`${kbps || ''}${format}`] + songMediaMid + '.' + format;
+
+        let data = JSON.stringify({
+            'req_0': {
+                'module': 'vkey.GetVkeyServer',
+                'method': 'CgiGetVkey',
+                'param': {
+                    'filename': [filename],
+                    guid,
+                    'songmid': [songMid],
+                    'songtype': [0],
+                    uin,
+                    'loginflag': 1,
+                    'platform': '20',
+                }
+            },
+            'comm': {
+                uin,
+                'format': 'json',
+                'ct': 19,
+                'cv': 0
+            }
+
+        });
+        let sign = getSecuritySign(data);
+        let params = {
+            sign,
+            g_tk: 5381,
+            loginUin: '',
+            hostUin: 0,
+            format: 'json',
+            inCharset: 'utf8',
+            outCharset: 'utf-8¬ice=0',
+            platform: 'yqq.json',
+            needNewCode: 0,
+            data,
+        };
+        let url = QQMusicApi.NODE_MAP.audio;
+        let json = await this.request('GET', url, params, null, null, this.cookiesForAudio);
+        let audioUri = json.req_0.data.midurlinfo[0].purl;
+        if (audioUri) {
+            return QQMusicApi.AUDIO_URI + audioUri;
+        } else {
+            return null;
+        }
+    }
+
+
+    public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
         let song = await this.song(songId);
-        let qqKey = await this.qqKey(guid, song.songMid, song.songMediaMid);
-        if (!qqKey) return [];
-        return this.makeAudios(song, qqKey, guid);
+        let { songMid, songMediaMid } = song;
+        let audios = song.audios;
+
+        for (let audio of audios) {
+            let { kbps, format } = audio;
+            if (audio.kbps <= supKbps) {
+                let audioUrl = await this.getAudioUrl(songMid, songMediaMid, kbps, format);
+                if (audioUrl) {
+                    audio.url = audioUrl;
+                    break;
+                }
+            }
+        }
+
+        return audios;
     }
 
 
@@ -947,6 +1061,7 @@ export class QQMusicApi {
             await sleep(1000);
             let cookiesStr = await win.webContents.executeJavaScript('Promise.resolve(document.cookie)', true);
             if (cookiesStr.includes('pt4_token')) {
+                await sleep(2000);
                 let cookies = {};
                 cookiesStr.split('; ').forEach(chunk => {
                     let index = chunk.indexOf('=');
@@ -954,14 +1069,9 @@ export class QQMusicApi {
                 });
 
                 // get user profile
-                let userOriginalId = cookies['ptui_loginuin'] || cookies['uin'].slice(2);
+                let userOriginalId = cookies['ptui_loginuin'] || cookies['uin'];
                 let tmpApi = new QQMusicApi();
-
-                let domain = 'qq.com';
-                Object.keys(cookies).forEach(key => {
-                    let cookie = makeCookie(key, cookies[key], domain);
-                    tmpApi.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
-                });
+                tmpApi.cookies = cookies;
 
                 let userProfile = await tmpApi.userProfile(userOriginalId);
 
@@ -987,12 +1097,7 @@ export class QQMusicApi {
     public setAccount(account: IAccount): void {
         ok(account.user.origin == ORIGIN.qq, `[QQMusicApi.setAccount]: this account is not a qq account`);
 
-        let domain = 'qq.com';
-        Object.keys(account.cookies).forEach(key => {
-            let cookie = makeCookie(key, account.cookies[key], domain);
-            this.cookieJar.setCookie(cookie, domain.startsWith('http') ? domain : 'http://' + domain);
-        });
-
+        this.cookies = { ...account.cookies };
         this.account = account;
     }
 
