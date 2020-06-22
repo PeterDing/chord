@@ -16,17 +16,25 @@ import { appConfiguration } from 'chord/preference/configuration/app';
 
 
 export function hasPlayItemAudioPath(playItem: TPlayItem): boolean {
+    let has = false;
     for (let audio of playItem.audios) {
-        return !!(audio.path);
+        has = !!(audio.path);
+        if (has) {
+            return has;
+        }
     }
-    return false;
+    return has;
 }
 
 export function hasPlayItemAudio(playItem: TPlayItem): boolean {
+    let has = false;
     for (let audio of playItem.audios) {
-        return !!(audio.url || audio.path);
+        has = !!(audio.url || audio.path);
+        if (has) {
+            return has;
+        }
     }
-    return false;
+    return has;
 }
 
 export function filterPlayItemWithAudios(playItems: Array<TPlayItem>): Array<TPlayItem> {
