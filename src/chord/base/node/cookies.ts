@@ -1,10 +1,8 @@
 'use strict';
 
-import { Cookie } from 'tough-cookie';
 import * as r from 'request';
+import { Cookie } from 'request';
 
-
-export type Cookie = Cookie;
 export type CookieJar = r.CookieJar;
 
 
@@ -18,7 +16,7 @@ export function makeCookies(rawCookies: Array<string>, jar?: CookieJar): Array<C
 }
 
 export function makeCookie(key: string, value: string, domain?: string): Cookie {
-    let s = `${key}=${value}; expires=; max-age=; path=/; domain=${domain ? domain : ''}`;
+    let s = `${key}=${value}; domain=${domain ? domain : ''}`;
     return makeCookieFrom(s);
 }
 
