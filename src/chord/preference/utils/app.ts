@@ -29,11 +29,12 @@ export function writeLocalSearchHistory(...keywords: string[]): void {
     let kws = [...keywords];
     for (let k of searchHistoryState.keywords) {
         // Remove all words which are in kwSet
-        if (!kws[k]) {
+        if (!kwSet[k]) {
             kws.push(k);
+            kwSet[k] = true;
         }
     }
     searchHistoryState.keywords = kws;
 
-    if (searchHistoryState) fs.writeFileSync(APP_SEARCH_HISTORY_PATH, JSON.stringify(searchHistoryState, null, 4), { encoding: 'utf-8' });
+    fs.writeFileSync(APP_SEARCH_HISTORY_PATH, JSON.stringify(searchHistoryState, null, 4), { encoding: 'utf-8' });
 }
