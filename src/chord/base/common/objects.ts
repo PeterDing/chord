@@ -32,3 +32,7 @@ export function deepCopy(obj: any): any {
         return obj;
     }
 }
+
+export function isEmptyObject(obj: Object) {
+    return Object.keys(obj).length === 0;
+}
