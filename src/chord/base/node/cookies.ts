@@ -1,9 +1,9 @@
 'use strict';
 
 import * as r from 'request';
-import { Cookie } from 'request';
 
 export type CookieJar = r.CookieJar;
+export type Cookie = r.Cookie;
 
 
 export function makeCookieJar(): CookieJar {
