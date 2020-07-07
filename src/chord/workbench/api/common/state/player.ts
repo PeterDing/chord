@@ -3,6 +3,17 @@
 import { TPlayItem } from 'chord/unity/api/items';
 
 
+// Repeat Kinds
+// `No`: No repeat
+// `Repeat`: Repeat playlist relentlessly
+// `RepeatOne`: Repeat single `TPlayItem` relentlessly
+export enum RepeatKind {
+    No,
+    Repeat,
+    RepeatOne,
+}
+
+
 export interface IPlayerState {
     // currently playing song's index of play list
     index: number;
@@ -11,7 +22,8 @@ export interface IPlayerState {
     volume: number;
     playing: boolean;
     shuffle: boolean;
-    repeat: boolean;
+
+    repeat: RepeatKind;
 
     // Play list id is an unique number, default the timestamp where changing is active
     // When `playList` changes, the id changes
@@ -27,7 +39,7 @@ export function initiatePlayerState() {
         volume: 0.5,
         playing: false,
         shuffle: false,
-        repeat: false,
+        repeat: RepeatKind.No,
         id: 0,
     };
 }
