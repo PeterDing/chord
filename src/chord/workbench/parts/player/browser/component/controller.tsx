@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { IControllerProps } from 'chord/workbench/parts/player/browser/props/controller';
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
-import { IPlayerState } from 'chord/workbench/api/common/state/player';
+import { IPlayerState, RepeatKind } from 'chord/workbench/api/common/state/player';
 
 import {
     handleRewind,
@@ -18,7 +18,7 @@ export class Controller extends React.Component<IControllerProps, any> {
 
     constructor(props: IControllerProps) {
         super(props);
-        this.state = { shuffle: false, repeat: false };
+        this.state = { shuffle: false, repeat: RepeatKind.No };
 
         this.handleShuffle = this.handleShuffle.bind(this);
         this.handleRepeat = this.handleRepeat.bind(this);
@@ -40,8 +40,8 @@ export class Controller extends React.Component<IControllerProps, any> {
     handleRepeat() {
         let player: IPlayerState = (window as any).store.getState().player;
         this.setState((state) => {
-            let repeat = !state.repeat;
-            let shuffle = repeat ? false : state.shuffle;
+            let repeat = (state.repeat + 1) % 3;
+            let shuffle = repeat != RepeatKind.No ? false : state.shuffle;
 
             player.shuffle = shuffle;
             player.repeat = repeat;
@@ -54,6 +54,11 @@ export class Controller extends React.Component<IControllerProps, any> {
         let status = this.props.playing ? 'pause' : 'play';
         let shuffle = this.state.shuffle;
         let repeat = this.state.repeat;
+        let repeatIcon = 'spoticon-repeat-16';
+        if (repeat == RepeatKind.RepeatOne) {
+            repeatIcon = 'spoticon-repeatonce-16';
+        }
+        let repeatActive = repeat != RepeatKind.No ? 'active' : 'disabled';
 
         return (
             <div className='player-controls__buttons'>
@@ -81,7 +86,7 @@ export class Controller extends React.Component<IControllerProps, any> {
                 </button>
 
                 {/* repeat */}
-                <button className={`control-button spoticon-repeat-16 control-button--${repeat ? 'active' : 'disabled'} cursor-pointer`}
+                <button className={`control-button ${repeatIcon} control-button--${repeatActive} cursor-pointer`}
                     onClick={this.handleRepeat}>
                 </button>
             </div>

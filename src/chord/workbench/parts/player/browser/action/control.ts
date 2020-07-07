@@ -3,7 +3,7 @@
 import { getRandomSample } from 'chord/base/node/random';
 
 import { IStateGlobal } from 'chord/workbench/api/common/state/stateGlobal';
-import { IPlayerState } from 'chord/workbench/api/common/state/player';
+import { IPlayerState, RepeatKind } from 'chord/workbench/api/common/state/player';
 
 import { IPlayPauseAct, IPlayAct } from 'chord/workbench/api/common/action/player'
 
@@ -72,9 +72,18 @@ export async function handleForward(): Promise<IPlayAct> {
 
     let state: IStateGlobal = (<any>window).store.getState();
 
-    let index = Math.max(state.player.index + 1, 0);
-    if (player.repeat) {
-        index = index % state.player.playList.length;
+    let index: number;
+    switch (player.repeat) {
+        case RepeatKind.No:
+            index = Math.max(state.player.index + 1, 0);
+            break;
+        case RepeatKind.Repeat:
+            index = Math.max(state.player.index + 1, 0);
+            index = index % state.player.playList.length;
+            break;
+        case RepeatKind.RepeatOne:
+            index = Math.max(state.player.index, 0);
+            break;
     }
 
     return handlePlay(index);
