@@ -22,8 +22,11 @@ export function getRandomFloat(min: number, max: number): number {
 export function getRandomSample(array: Array<any>, size: number): Array<any> {
     let range = array.length;
     let result = [];
-    let indexRange = [...Array(range).keys()];
+    let indexRange = [];
     while (result.length < size) {
+        if (indexRange.length == 0) {
+            indexRange = [...Array(range).keys()];
+        }
         let index = getRandomInt(0, indexRange.length - 1);
         result.push(array[indexRange[index]]);
         indexRange = [...indexRange.slice(0, index), ...indexRange.slice(index + 1)];
