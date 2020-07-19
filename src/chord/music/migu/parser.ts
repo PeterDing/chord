@@ -47,17 +47,17 @@ const _getArtistUrl: (id: string) => string = getArtistUrl.bind(null, _origin);
 const _getArtistId: (id: string) => string = getArtistId.bind(null, _origin);
 const _getCollectionUrl: (id: string) => string = getCollectionUrl.bind(null, _origin);
 const _getCollectionId: (id: string) => string = getCollectionId.bind(null, _origin);
-const _getUserUrl: (id: string) => string = getUserUrl.bind(null, _origin);
+// const _getUserUrl: (id: string) => string = getUserUrl.bind(null, _origin);
 const _getUserId: (id: string) => string = getUserId.bind(null, _origin);
 
 
 export function makeAudios(infos: any): Array<IAudio> {
     if (!infos) return null;
     let audios = [];
-    let url = infos['playUrl'];
+    let url = absoluteUrl(infos['playUrl']);
 
-    let format;
-    let kbps;
+    let format: string;
+    let kbps: number;
     if (url.includes('/flac/')) {
         kbps = 720;
         format = 'flac';
