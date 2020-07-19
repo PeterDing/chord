@@ -28,7 +28,7 @@ export class Controller extends React.Component<IControllerProps, any> {
         let player: IPlayerState = (window as any).store.getState().player;
         this.setState((state) => {
             let shuffle = !state.shuffle;
-            let repeat = shuffle ? false : state.repeat;
+            let repeat = shuffle ? RepeatKind.No : state.repeat;
 
             player.shuffle = shuffle;
             player.repeat = repeat;
