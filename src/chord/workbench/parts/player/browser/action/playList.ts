@@ -58,6 +58,10 @@ export async function handlePlay(index: number): Promise<IPlayAct> {
                 break;
             }
 
+            if (state.player.shuffle) {
+                index = index % state.player.playList.length;
+            }
+
             continue;
         }
         break;
