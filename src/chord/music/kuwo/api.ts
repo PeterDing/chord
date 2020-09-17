@@ -33,7 +33,7 @@ import {
     makeCollections,
 } from "chord/music/kuwo/parser";
 
-
+import { encryptQuery } from 'chord/music/kuwo/crypto';
 
 const DOMAIN = 'kuwo.cn';
 const LETTERS = Array.from(ASCII_LETTER_DIGIT);
@@ -57,9 +57,11 @@ export class KuwoMusicApi {
     };
 
     static readonly BASICURL = 'http://www.kuwo.cn/';
+    static readonly BASICURL_FLAC = 'http://mobi.kuwo.cn/';
 
     static readonly NODE_MAP = {
         audios: 'url',
+        audios_flac: 'mobi.s',
 
         // No use this song node, it does not give audio url
         song: 'api/www/music/musicInfo',
@@ -132,21 +134,92 @@ export class KuwoMusicApi {
 
 
     /**
+     * Request flac audio
+     */
+    public async request_audio_flac(songId: string): Promise<any | null> {
+        let domain = KuwoMusicApi.BASICURL_FLAC;
+        let url = domain + KuwoMusicApi.NODE_MAP.audios_flac;
+
+        let apiParams = {
+            f: 'kuwo',
+            q: encryptQuery('corp=kuwo&p2p=1&type=convert_url2&sig=0&format=flac&rid=' + songId),
+        };
+        let params = querystringify(apiParams);
+
+        let headers = {
+            'user-agent': 'okhttp/3.10.0',
+        };
+
+        url = url + '?' + params;
+        let options: IRequestOptions = {
+            method: 'GET',
+            url: url,
+            headers: headers,
+            jar: null,
+            gzip: true,
+            resolveWithFullResponse: false,
+        };
+
+        let info: any;
+        try {
+            info = await request(options);
+        } catch (e) {
+            return null;
+        }
+
+        if (info && info.startsWith('format=flac')) {
+            let kbps = /bitrate=(\d+)/.exec(info)[1];
+            let url = /url=([^\s]+)/.exec(info)[1];
+            return {
+                kbps: Number.parseInt(kbps),
+                url,
+            }
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
      * Get audio urls, the songId must be number string
      */
     public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
         let br: string;
         let kbps: number;
-        if (supKbps == 128) {
+        if (supKbps <= 128) {
             br = '128kmp3';
             kbps = 128;
-        } else if (supKbps == 192) {
+        } else if (supKbps <= 192) {
             br = '192kmp3';
             kbps = 192;
-        } else {
+        } else if (supKbps <= 320) {
             br = '320kmp3';
             kbps = 320;
+        } else {
+            kbps = 720;
         }
+
+        // flac
+        if (supKbps > 320) {
+            let info = await this.request_audio_flac(songId);
+            if (info) {
+                let audios = [
+                    {
+                        format: 'flac',
+                        size: null,
+                        kbps: info['kbps'],
+                        url: info['url'],
+                        path: null,
+                    }
+                ];
+                console.log(audios);
+                return audios;
+            } else {
+                br = '320kmp3';
+                kbps = 320;
+            }
+        }
+
         let info = await this.request(
             KuwoMusicApi.NODE_MAP.audios,
             {
@@ -284,7 +357,7 @@ export class KuwoMusicApi {
             },
         );
 
-        let info = json.data;
+        let info = json && json.data;
         let collection = makeCollection(info);
         return collection;
     }
@@ -303,7 +376,7 @@ export class KuwoMusicApi {
             },
         );
 
-        let info = json.data.list;
+        let info = json && json.data && json.data.list;
         let songs = makeSongs(info);
         return songs;
     }
@@ -322,7 +395,7 @@ export class KuwoMusicApi {
             },
         );
 
-        let info = json.data.albumList;
+        let info = json && json.data && json.data.albumList;
         let albums = makeAlbums(info);
         return albums;
     }
@@ -338,7 +411,7 @@ export class KuwoMusicApi {
             },
         );
 
-        let info = json.data.artistList;
+        let info = json && json.data && json.data.artistList;
         let artists = makeArtists(info);
         return artists;
     }
@@ -354,7 +427,7 @@ export class KuwoMusicApi {
             },
         );
 
-        let info = json.data.list;
+        let info = json && json.data && json.data.list;
         let collections = makeCollections(info);
         return collections;
     }
