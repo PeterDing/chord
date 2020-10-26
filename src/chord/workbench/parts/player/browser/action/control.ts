@@ -13,8 +13,6 @@ import { handlePlay } from 'chord/workbench/parts/player/browser/action/playList
 
 
 let SHUFFLE_SONG_ID_LIST: Array<number> = [];
-let PLAYLIST_ID: number;
-
 
 function shuffleIndex(): number {
     let { playList } = (<any>window).store.getState().player;
@@ -22,6 +20,10 @@ function shuffleIndex(): number {
         SHUFFLE_SONG_ID_LIST = getRandomSample([...Array(playList.length).keys()], playList.length);
     }
     let index = SHUFFLE_SONG_ID_LIST.pop();
+    if (index >= playList.length) {
+        SHUFFLE_SONG_ID_LIST.length = 0;
+        return shuffleIndex();
+    }
     return index;
 }
 
