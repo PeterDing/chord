@@ -3,6 +3,10 @@
 const OneK = 1000;
 
 export function literal_number(num: number): string {
+    if (num === null || null === undefined) {
+        return '';
+    }
+
     if (num < OneK) {
         return num.toString();
     }
