@@ -114,6 +114,18 @@
     flex-flow: row nowrap
 }
 
+.player-rate {
+    display: none;
+    position: absolute;
+    top: -215px;
+    border-radius: 3px;
+    text-align: center;
+    color: #e8e8e8;
+    line-height: 22px;
+    padding: 5px 10px;
+    margin: 0px -4px;
+    background: #0a0b0d;
+}
 
 
 /* control button */

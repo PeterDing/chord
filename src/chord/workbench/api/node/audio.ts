@@ -1,6 +1,6 @@
 'use strict';
 
-import { Howl, Howler } from 'howler';
+import { Howl, Howler, HowlOptions } from 'howler';
 import { ok } from 'chord/base/common/assert';
 import { Store } from 'redux';
 
@@ -31,6 +31,8 @@ class Audio {
     private static onendFns: Array<IHook> = [];
     private static onseekFns: Array<IHook> = [];
     private static onloaderrorFns: Array<IHook> = [];
+
+    private static rateVal: number;
 
     private static onplay(soundId?: number, store?: Store, url?: string, playItemId?: string): void {
         this.onplayFns.forEach(item => {
@@ -77,12 +79,13 @@ class Audio {
      * Make a Howl instance
      */
     protected static doMakeAudio(url: string, playItemId?: string): Howl {
-        let audioOptions = {
+        let audioOptions: HowlOptions = {
             src: url,
 
             // Force to HTML5 so that the audio can stream in (best for large files).
             html5: true,
             autoplay: false,
+            rate: Audio.rateVal || 1.0,
 
             onplay: (soundId: number) => Audio.onplay(soundId, Audio.store, url, playItemId),
             onpause: (soundId: number) => Audio.onpause(soundId, Audio.store, url, playItemId),
@@ -139,6 +142,14 @@ class Audio {
     static pause() {
         ok(Audio.audio, '[Audio.pause] no audio instance');
         Audio.audio.pause();
+    }
+
+    // Set and change rate
+    static rate(r: number) {
+        Audio.rateVal = r;
+        if (Audio.audio) {
+            Audio.audio.rate(r);
+        }
     }
 
     static playing(): boolean {
