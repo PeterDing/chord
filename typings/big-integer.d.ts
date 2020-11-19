@@ -8,7 +8,7 @@ export as namespace bigInt;
 declare var bigInt: bigInt.BigIntegerStatic;
 
 declare namespace bigInt {
-    type BigNumber = number | string | BigInteger;
+    type BigNumber = number | bigint | string | BigInteger;
 
     interface BigIntegerStatic {
         /**
@@ -20,6 +20,11 @@ declare namespace bigInt {
          * Parse a Javascript number into a bigInt.
          */
         (number: number): BigInteger;
+
+        /**
+         * Parse a Javascript native bigint into a bigInt.
+         */
+        (number: bigint): BigInteger;
 
         /**
          * Parse a string into a bigInt.
@@ -79,7 +84,7 @@ declare namespace bigInt {
         /**
          * Returns a random number between min and max.
          */
-        randBetween: (min: BigNumber, max: BigNumber) => BigInteger;
+        randBetween: (min: BigNumber, max: BigNumber, rng?: () => number) => BigInteger;
 
         /**
          * Equivalent to bigInt(0).
@@ -200,7 +205,7 @@ declare namespace bigInt {
         /**
          * Returns true if the number is very likely to be prime, false otherwise.
          */
-        isProbablePrime(iterations?: number): boolean;
+        isProbablePrime(iterations?: number, rng?: () => number): boolean;
 
         /**
          * Returns true if the number is 1 or -1, false otherwise.
@@ -359,7 +364,7 @@ declare namespace bigInt {
         /**
          * Converts a bigInt to a string.
          */
-        toString(radix?: number): string;
+        toString(radix?: number, alphabet?: string): string;
 
 		/**
          * Converts a bigInt to a string. This method is called behind the scenes in JSON.stringify.
