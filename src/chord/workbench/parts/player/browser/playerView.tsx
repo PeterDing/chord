@@ -11,6 +11,7 @@ import Controller from 'chord/workbench/parts/player/browser/component/controlle
 import VolumeBar from 'chord/workbench/parts/player/browser/component/volume';
 import { PlayListButtom, PlayListContent } from 'chord/workbench/parts/player/browser/component/playList';
 import AudioInfo from 'chord/workbench/parts/player/browser/component/audioInfo';
+import RateView from 'chord/workbench/parts/player/browser/component/rate';
 
 
 export class PlayerView extends React.Component<any, any> {
@@ -76,6 +77,7 @@ export class PlayerView extends React.Component<any, any> {
                                 <div className='player-bar__right__inner'>
                                     <div className='extra-controls'>
                                         <AudioInfo />
+                                        <RateView />
                                         <PlayListButtom playListContent={this.playListContentRef} />
                                         <VolumeBar />
                                     </div>
