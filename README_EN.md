@@ -42,7 +42,7 @@ Chord uses the style of spotify UI.
 
   Search
 
-  Play (shuffle, repeat)
+  Play (shuffle, repeat, rate)
 
   Show Artist, album, collection, user profile, podcast, radio at detail
 
