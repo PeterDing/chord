@@ -433,7 +433,7 @@ export function makeAliAlbums(info: any): Array<IAlbum> {
 export function makeAliArtist(info: any): IArtist {
     let artistOriginalId = info['artistId'].toString();
     let artistAvatarUrl = getAbsolutUrl(info['artistLogo'], _staticResourceBasicUrl);
-    let artistAlias = info['alias'].split('/').filter(a => a.trim() != '').map(a => a.trim());
+    let artistAlias = info['alias'] && info['alias'].split('/').filter(a => a.trim() != '').map(a => a.trim());
     let artist: IArtist = {
         artistId: _getArtistId(artistOriginalId),
         type: 'artist',
