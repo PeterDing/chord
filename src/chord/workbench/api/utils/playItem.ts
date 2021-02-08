@@ -1,6 +1,7 @@
 'use strict';
 
-import { TPlayItem } from 'chord/unity/api/items';
+import { TPlayItem, isOriginAlive } from 'chord/unity/api/items';
+import { ORIGIN } from 'chord/music/common/origin';
 import { ISong } from 'chord/music/api/song';
 import { IEpisode } from 'chord/sound/api/episode';
 import { IAudio } from 'chord/music/api/audio';
@@ -42,6 +43,10 @@ export function filterPlayItemWithAudios(playItems: Array<TPlayItem>): Array<TPl
 }
 
 export async function addPlayItemAudios(playItem: TPlayItem, supKbps?: number) {
+    if (!isOriginAlive(playItem.origin as ORIGIN)) {
+        return;
+    }
+
     supKbps = supKbps || appConfiguration.getConfig().maxKbps;
 
     // netease, qianqian, qq and ximalaya's audio url needs to be got by realtime
