@@ -1,7 +1,7 @@
 'use strict';
 
-import { TPlayItem, isOriginAlive } from 'chord/unity/api/items';
-import { ORIGIN } from 'chord/music/common/origin';
+import { TPlayItem } from 'chord/unity/api/items';
+import { ORIGIN, isOriginAlive } from 'chord/music/common/origin';
 import { ISong } from 'chord/music/api/song';
 import { IEpisode } from 'chord/sound/api/episode';
 import { IAudio } from 'chord/music/api/audio';

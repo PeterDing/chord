@@ -14,6 +14,19 @@ export enum ORIGIN {
     kuwo = 'kuwo',
 }
 
+export enum UnavailableOrigins {
+    // xiami has shutdown its server.
+    xiami = ORIGIN.xiami,
+}
+
+export function isOriginAlive(origin: ORIGIN): boolean {
+    if (UnavailableOrigins[origin]) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 export interface IOriginType {
     origin: string;
 
