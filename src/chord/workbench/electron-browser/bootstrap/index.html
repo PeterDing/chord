@@ -14,24 +14,6 @@
     </div>
 </body>
 
-<script src="https://g.alicdn.com/AWSC/AWSC/awsc.js" crossorigin></script>
-<script>
-    AWSC.use('uab', function(state, uab) {
-        window.uabModule = uab;
-    });
-    AWSC.use('um', function(state, um) {
-        if (state === 'loaded') {
-            um.init({
-                appName: 'web-xiami-main-node',
-            }, function(state, result) {
-                if (state === 'success') {
-                    document.cookie = '_xm_umtoken=' + result.tn + '; secure;';
-                }
-            });
-        }
-    });
-</script>
-
 <script src="./index.js"></script>
 
 </html>
