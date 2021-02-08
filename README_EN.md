@@ -22,7 +22,7 @@ Chord uses the style of spotify UI.
 
 - Support
 
-  **Xiami 虾米音乐**
+  ~~**Xiami 虾米音乐**~~ (Xiami music has shutdown at 2020-02-06)
 
   **Netease music 网易云音乐**
 
