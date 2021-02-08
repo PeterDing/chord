@@ -49,7 +49,6 @@ class UserProfileItemView extends React.Component<IUserProfileItemViewProps, any
             menu={(e) => this.props.showUserProfileMenu(e, userProfile)}
             button={{ item: PlayIcon, act: () => this.props.handlePlayUserFavoriteSongs(userProfile) }}
             infos={infos}
-            draggable={true}
             shape={'circle'} />;
     }
 }

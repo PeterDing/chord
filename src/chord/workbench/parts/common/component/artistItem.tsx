@@ -50,7 +50,6 @@ class ArtistItemView extends React.Component<IArtistItemViewProps, object> {
             menu={(e) => this.props.showArtistMenu(e, artist)}
             button={{ item: PlayIcon, act: () => this.props.handlePlayArtist(artist) }}
             infos={infos}
-            draggable={true}
             shape={'circle'} />;
     }
 }

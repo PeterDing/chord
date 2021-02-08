@@ -109,7 +109,6 @@ class PodcastItemView extends React.Component<IPodcastItemViewProps, any> {
             menu={(e) => this.props.showPodcastMenu(e, podcast)}
             button={{ item: PlayIcon, act: this.handlePlayPodcast }}
             infos={infos}
-            draggable={true}
             shape={'rectangle'} />;
     }
 }

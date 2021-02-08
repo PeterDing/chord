@@ -86,7 +86,6 @@ class EpisodeItemView extends React.Component<IEpisodeItemViewProps, any> {
             button={{ item: PlayIcon, act: () => handlePlay() }}
             infos={infos}
             leftInfos={leftInfos}
-            draggable={true}
             active={active} />;
     }
 }

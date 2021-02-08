@@ -25,10 +25,10 @@
     display: flex;
     height: 4.56em;
     list-style-type: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
     outline: none
 }
 

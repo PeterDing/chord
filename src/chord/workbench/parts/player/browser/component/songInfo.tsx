@@ -32,7 +32,7 @@ class Cover extends React.Component<ICoverProps, any> {
         let cover = item.cover(ESize.Small);
 
         return (
-            <span draggable={true}>
+            <span>
                 <div className='player__cover-art'>
                     <div className="cover-art"
                         style={{ width: '56px', height: '56px', background: 'none' }}

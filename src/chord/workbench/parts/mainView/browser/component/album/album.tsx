@@ -32,7 +32,7 @@ function AlbumEntity({ album, handlePlayAlbum, handleShowArtistViewById, showAlb
     return (
         <header className='entity-info'>
             <div>
-                <div draggable={true}>
+                <div>
                     <div className="media-object">
                         <div className="media-object-hoverable">
                             <div className="react-contextmenu-wrapper"

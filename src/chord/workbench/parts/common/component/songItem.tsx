@@ -58,7 +58,6 @@ class SongItemView extends React.Component<ISongItemViewProps, object> {
             button={{ item: PlayIcon, act: () => handlePlay() }}
             infos={infos}
             leftInfos={leftInfos}
-            draggable={true}
             active={active} />;
     }
 }
