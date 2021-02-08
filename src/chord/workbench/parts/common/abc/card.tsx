@@ -17,8 +17,6 @@ interface ICardProps {
 
     infos: Array<IClickItem>;
 
-    draggable: boolean;
-
     shape: string;
 }
 
@@ -56,7 +54,7 @@ export class Card extends React.Component<ICardProps, any> {
             </button> : null;
 
         return (
-            <div draggable={!!this.props.draggable}>
+            <div>
                 <div className='media-object' style={{ maxWidth: '300px' }}>
                     <div className='media-object-hoverable'>
                         <div className='react-contextmenu-wrapper'

@@ -63,7 +63,6 @@ class RadioItemView extends React.Component<IRadioItemViewProps, any> {
             menu={(e) => this.props.showRadioMenu(e, radio)}
             button={null}
             infos={infos}
-            draggable={true}
             shape={'circle'} />;
     }
 }

@@ -60,7 +60,6 @@ class AlbumItemView extends React.Component<IAlbumItemViewProps, any> {
             menu={(e) => this.props.showAlbumMenu(e, album)}
             button={{ item: PlayIcon, act: () => this.props.handlePlayAlbum(album) }}
             infos={infos}
-            draggable={true}
             shape={'rectangle'} />;
     }
 }

@@ -19,8 +19,6 @@ interface IListProps {
 
     leftInfos: Array<IClickItem>;
 
-    draggable: boolean;
-
     active: boolean;
 }
 
@@ -93,7 +91,7 @@ export class List extends React.Component<IListProps, any> {
 
         return (
             <div className='react-contextmenu-wrapper'>
-                <div draggable={this.props.draggable} id={this.props.active ? 'playing-this' : undefined}
+                <div id={this.props.active ? 'playing-this' : undefined}
                     onContextMenu={(e) => this.props.menu(e)}>
                     <li className={liClassName} role='button' tabIndex={0}>
 

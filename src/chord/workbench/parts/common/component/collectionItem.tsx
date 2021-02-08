@@ -63,7 +63,6 @@ class CollectionItemView extends React.Component<ICollectionItemViewProps, any> 
             menu={(e) => this.props.showCollectionMenu(e, collection)}
             button={{ item: PlayIcon, act: () => this.props.handlePlayCollection(collection) }}
             infos={infos}
-            draggable={true}
             shape={'rectangle'} />;
     }
 }
