@@ -1,6 +1,6 @@
 'use strict';
 
-import { getOrigin, ORIGIN } from 'chord/music/common/origin';
+import { getOrigin, ORIGIN, isOriginAlive } from 'chord/music/common/origin';
 
 import { md5 } from 'chord/base/node/crypto';
 
@@ -46,10 +46,12 @@ export class Music {
 
 
     constructor() {
+        // WARNING: Xiami has shutdown its server
         // initiate xiami api
-        let xiamiApi = new AliMusicApi();
-        xiamiApi.setUserId('1');
-        this.xiamiApi = xiamiApi;
+        // let xiamiApi = new AliMusicApi();
+        // xiamiApi.setUserId('1');
+        // this.xiamiApi = xiamiApi;
+        this.xiamiApi = null;
 
         // initiate netease api
         this.neteaseApi = new NeteaseMusicApi();
@@ -68,13 +70,16 @@ export class Music {
 
         // set user configuration
         let userConfig = userConfiguration.getConfig();
-        this.setAccount(userConfig.xiami && userConfig.xiami.account);
+        // this.setAccount(userConfig.xiami && userConfig.xiami.account);
         this.setAccount(userConfig.netease && userConfig.netease.account);
         this.setAccount(userConfig.qq && userConfig.qq.account);
     }
 
 
     public isOriginOn(origin: string): boolean {
+        if (!isOriginAlive(origin as ORIGIN)) {
+            return false;
+        }
         let config = appConfiguration.getConfig();
         return config.origins[origin];
     }
