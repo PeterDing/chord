@@ -542,10 +542,10 @@ export class Music {
         let result = cache12.get(h);
         if (result) return result;
 
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = await this.xiamiApi.albumListOptions();
+                // items = await this.xiamiApi.albumListOptions();
                 break;
             case ORIGIN.netease:
                 items = [];
@@ -571,17 +571,17 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = await this.xiamiApi.albumList(
-                    Number.parseInt(order),
-                    Number.parseInt(area),
-                    Number.parseInt(genre),
-                    Number.parseInt(year),
-                    Number.parseInt(type),
-                    offset,
-                    limit);
+                // items = await this.xiamiApi.albumList(
+                //     Number.parseInt(order),
+                //     Number.parseInt(area),
+                //     Number.parseInt(genre),
+                //     Number.parseInt(year),
+                //     Number.parseInt(type),
+                //     offset,
+                //     limit);
                 break;
             case ORIGIN.netease:
                 items = [];
@@ -610,10 +610,10 @@ export class Music {
 
 
     public collectionListOrders(origin: string): Array<{ name: string, id: string }> {
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = this.xiamiApi.collectionListOrders();
+                // items = this.xiamiApi.collectionListOrders();
                 break;
             case ORIGIN.netease:
                 items = this.neteaseApi.collectionListOrders();
@@ -635,10 +635,10 @@ export class Music {
         let result = cache12.get(h);
         if (result) return result;
 
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = await this.xiamiApi.collectionListOptions();
+                // items = await this.xiamiApi.collectionListOptions();
                 break;
             case ORIGIN.netease:
                 items = await this.neteaseApi.collectionListOptions();
@@ -664,10 +664,10 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = await this.xiamiApi.collectionList(keyword, order, offset, limit);
+                // items = await this.xiamiApi.collectionList(keyword, order, offset, limit);
                 break;
             case ORIGIN.netease:
                 items = await this.neteaseApi.collectionList(keyword, order, offset, limit);
@@ -697,11 +697,11 @@ export class Music {
         }
         if (result) return result;
 
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = await this.xiamiApi.artistList(area, genre, gender, offset, limit);
-                items[0] = makeItems(items[0]);
+                // items = await this.xiamiApi.artistList(area, genre, gender, offset, limit);
+                // items[0] = makeItems(items[0]);
                 break;
             case ORIGIN.netease:
                 items = await this.neteaseApi.artistList(genre, index, offset, limit);
@@ -727,10 +727,10 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = await this.xiamiApi.newSongs(offset, limit);
+                // items = await this.xiamiApi.newSongs(offset, limit);
                 break;
             case ORIGIN.netease:
                 items = await this.neteaseApi.newSongs(offset, limit);
@@ -756,10 +756,10 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = await this.xiamiApi.newAlbums(offset, limit);
+                // items = await this.xiamiApi.newAlbums(offset, limit);
                 break;
             case ORIGIN.netease:
                 items = await this.neteaseApi.newAlbums(offset, limit);
@@ -784,10 +784,10 @@ export class Music {
         let result = cache12.get(h);
         if (result) return result;
 
-        let items;
+        let items = [];
         switch (origin) {
             case ORIGIN.xiami:
-                items = await this.xiamiApi.newCollections(offset, limit);
+                // items = await this.xiamiApi.newCollections(offset, limit);
                 break;
             case ORIGIN.netease:
                 items = await this.neteaseApi.newCollections(offset, limit);
@@ -811,8 +811,8 @@ export class Music {
         let account: IAccount;
         switch (origin) {
             case ORIGIN.xiami:
-                account = await this.xiamiApi.login(accountName, password);
-                this.xiamiApi.setAccount(account);
+                // account = await this.xiamiApi.login(accountName, password);
+                // this.xiamiApi.setAccount(account);
                 break;
             case ORIGIN.netease:
                 account = await this.neteaseApi.login(accountName, password);
@@ -837,7 +837,8 @@ export class Music {
     public logined(origin: string): boolean {
         switch (origin) {
             case ORIGIN.xiami:
-                return this.xiamiApi.logined();
+                // return this.xiamiApi.logined();
+                return false;
             case ORIGIN.netease:
                 return this.neteaseApi.logined();
             case ORIGIN.qq:
@@ -855,7 +856,7 @@ export class Music {
         let origin = account.user.origin;
         switch (origin) {
             case ORIGIN.xiami:
-                this.xiamiApi.setAccount(account);
+                // this.xiamiApi.setAccount(account);
                 break;
             case ORIGIN.netease:
                 this.neteaseApi.setAccount(account);
@@ -883,7 +884,7 @@ export class Music {
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                userProfile = await this.xiamiApi.userProfile(originType.id);
+                // userProfile = await this.xiamiApi.userProfile(originType.id);
                 break;
             case ORIGIN.netease:
                 userProfile = await this.neteaseApi.userProfile(originType.id);
@@ -914,11 +915,11 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let songs;
+        let songs = [];
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                songs = await this.xiamiApi.userFavoriteSongs(originType.id, offset, limit);
+                // songs = await this.xiamiApi.userFavoriteSongs(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
@@ -947,11 +948,11 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let albums;
+        let albums = [];
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                albums = await this.xiamiApi.userFavoriteAlbums(originType.id, offset, limit);
+                // albums = await this.xiamiApi.userFavoriteAlbums(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
@@ -980,11 +981,11 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let artists;
+        let artists = [];
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                artists = await this.xiamiApi.userFavoriteArtists(originType.id, offset, limit);
+                // artists = await this.xiamiApi.userFavoriteArtists(originType.id, offset, limit);
                 break;
             case ORIGIN.netease:
                 artists = await this.neteaseApi.userFavoriteArtists(originType.id, offset, limit);
@@ -1012,11 +1013,11 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let collections;
+        let collections = [];
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                collections = await this.xiamiApi.userFavoriteCollections(originType.id, offset, limit);
+                // collections = await this.xiamiApi.userFavoriteCollections(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
@@ -1045,11 +1046,11 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let collections;
+        let collections = [];
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                collections = await this.xiamiApi.userCreatedCollections(originType.id, offset, limit);
+                // collections = await this.xiamiApi.userCreatedCollections(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
@@ -1078,11 +1079,11 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let userProfiles;
+        let userProfiles = [];
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                userProfiles = await this.xiamiApi.userFollowings(originType.id, offset, limit);
+                // userProfiles = await this.xiamiApi.userFollowings(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
@@ -1111,11 +1112,11 @@ export class Music {
         result = makeItems(result);
         if (result) return result;
 
-        let userProfiles;
+        let userProfiles = [];
         let originType = getOrigin(userId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                userProfiles = await this.xiamiApi.userFollowers(originType.id, offset, limit);
+                // userProfiles = await this.xiamiApi.userFollowers(originType.id, offset, limit);
                 break;
             // netease only give favorite collections
             case ORIGIN.netease:
@@ -1143,8 +1144,8 @@ export class Music {
         let originType = getOrigin(itemId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                result = await this.xiamiApi[funcName](originType.id, itemMid);
-                break;
+                // result = await this.xiamiApi[funcName](originType.id, itemMid);
+                return false;
             // netease only give favorite collections
             case ORIGIN.netease:
                 result = await this.neteaseApi[funcName](originType.id, itemMid);
@@ -1215,7 +1216,7 @@ export class Music {
         let originType = getOrigin(songId);
         switch (originType.origin) {
             case ORIGIN.xiami:
-                result = await this.xiamiApi.playLog(originType.id, seek);
+                // result = await this.xiamiApi.playLog(originType.id, seek);
                 break;
             case ORIGIN.netease:
                 result = await this.neteaseApi.playLog(originType.id, seek);
@@ -1239,11 +1240,15 @@ export class Music {
         let h = md5(`music.core.api.recommendSongs(${origin}, ${offset}, ${limit})`);
         let result = cache12.get(h);
         result = makeItems(result);
-        if (result) return result;
+        if (result) {
+            return result;
+        } else {
+            result = [];
+        }
 
         switch (origin) {
             case ORIGIN.xiami:
-                result = await this.xiamiApi.recommendSongs(offset, limit);
+                // result = await this.xiamiApi.recommendSongs(offset, limit);
                 break;
             case ORIGIN.netease:
                 result = await this.neteaseApi.recommendSongs(offset, limit);
@@ -1267,11 +1272,15 @@ export class Music {
         let h = md5(`music.core.api.recommendCollections(${origin}, ${offset}, ${limit})`);
         let result = cache12.get(h);
         result = makeItems(result);
-        if (result) return result;
+        if (result) {
+            return result;
+        } else {
+            result = [];
+        }
 
         switch (origin) {
             case ORIGIN.xiami:
-                result = await this.xiamiApi.recommendCollections(offset, limit);
+                // result = await this.xiamiApi.recommendCollections(offset, limit);
                 break;
             case ORIGIN.netease:
                 result = await this.neteaseApi.recommendCollections(offset, limit);
@@ -1295,7 +1304,8 @@ export class Music {
         if (!url) { return url; }
         switch (origin) {
             case ORIGIN.xiami:
-                return this.xiamiApi.resizeImageUrl(url, size);
+                return null;
+            // return this.xiamiApi.resizeImageUrl(url, size);
             case ORIGIN.netease:
                 return this.neteaseApi.resizeImageUrl(url, size);
             case ORIGIN.qq:
@@ -1326,7 +1336,7 @@ export class Music {
         let chunks = input.split(' ');
         for (let chunk of chunks) {
             if (chunk.includes('xiami')) {
-                futs.push(this.xiamiApi.fromURL(chunk));
+                // futs.push(this.xiamiApi.fromURL(chunk));
             } else if (input.includes('163.com')) {
                 futs.push(this.neteaseApi.fromURL(chunk));
             } else if (input.includes('qq.com')) {
