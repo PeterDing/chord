@@ -1,6 +1,6 @@
 'use strict';
 
-import { getOrigin, ORIGIN } from 'chord/music/common/origin';
+import { getOrigin, ORIGIN, isOriginAlive } from 'chord/music/common/origin';
 
 import { md5 } from 'chord/base/node/crypto';
 
@@ -11,6 +11,8 @@ import { IEpisode } from 'chord/sound/api/episode';
 import { IPodcast } from 'chord/sound/api/podcast';
 import { IRadio } from 'chord/sound/api/radio';
 import { TSoundItems } from 'chord/sound/api/items';
+
+import { appConfiguration } from 'chord/preference/configuration/app';
 
 import { ESize } from 'chord/music/common/size';
 
@@ -36,6 +38,15 @@ export class Sound {
 
         let himalayaApi = new HimalayaApi();
         this.himalayaApi = himalayaApi;
+    }
+
+
+    public isOriginOn(origin: string): boolean {
+        if (!isOriginAlive(origin as ORIGIN)) {
+            return false;
+        }
+        let config = appConfiguration.getConfig();
+        return config.origins[origin];
     }
 
 
@@ -521,8 +532,8 @@ export class Sound {
         if (result) return result;
 
         let list = await Promise.all([
-            this.ximalayaApi.searchEpisodes(keyword, offset + 1, limit),
-            this.himalayaApi.searchEpisodes(keyword, offset + 1, limit),
+            !this.isOriginOn(ORIGIN.ximalaya) ? [] : this.ximalayaApi.searchEpisodes(keyword, offset + 1, limit),
+            !this.isOriginOn(ORIGIN.himalaya) ? [] : this.himalayaApi.searchEpisodes(keyword, offset + 1, limit),
         ]);
 
         let items = insertMerge(list);
@@ -541,8 +552,8 @@ export class Sound {
         if (result) return result;
 
         let list = await Promise.all([
-            this.ximalayaApi.searchPodcasts(keyword, offset + 1, limit),
-            this.himalayaApi.searchPodcasts(keyword, offset + 1, limit),
+            !this.isOriginOn(ORIGIN.ximalaya) ? [] : this.ximalayaApi.searchPodcasts(keyword, offset + 1, limit),
+            !this.isOriginOn(ORIGIN.himalaya) ? [] : this.himalayaApi.searchPodcasts(keyword, offset + 1, limit),
         ]);
 
         let items = insertMerge(list);
@@ -561,7 +572,7 @@ export class Sound {
         if (result) return result;
 
         let list = await Promise.all([
-            this.ximalayaApi.searchRadios(keyword, offset + 1, limit)
+            !this.isOriginOn(ORIGIN.ximalaya) ? [] : this.ximalayaApi.searchRadios(keyword, offset + 1, limit)
         ]);
 
         let items = insertMerge(list);

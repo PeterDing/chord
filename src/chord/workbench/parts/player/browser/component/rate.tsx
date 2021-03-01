@@ -40,35 +40,36 @@ export default class RateView extends React.Component<any, any> {
     render() {
         let m = {
             3.0: '3.0',
-            2.7: '2.7',
+            2.75: '2.7',
             2.5: '2.5',
-            2.2: '2.2',
+            2.25: '2.2',
             2.0: '2.0',
-            1.7: '1.7',
+            1.75: '1.7',
             1.5: '1.5',
-            1.2: '1.2',
+            1.25: '1.2',
             1.0: '1.0',
-            0.7: '0.7',
+            0.75: '0.7',
             0.5: '0.5',
         };
         let rate = 'x' + m[this.state.rate];
         return (
             <div>
-                <div className='player-rate' ref={this.rateRef}>
-                    <span onClick={() => this.handleRate(3.0)}>3.0</span>
-                    <span onClick={() => this.handleRate(2.7)}>2.7</span>
-                    <span onClick={() => this.handleRate(2.5)}>2.5</span>
-                    <span onClick={() => this.handleRate(2.2)}>2.2</span>
-                    <span onClick={() => this.handleRate(2.0)}>2.0</span>
-                    <span onClick={() => this.handleRate(1.7)}>1.7</span>
-                    <span onClick={() => this.handleRate(1.5)}>1.5</span>
-                    <span onClick={() => this.handleRate(1.2)}>1.2</span>
-                    <span onClick={() => this.handleRate(1.0)}>1.0</span>
-                    <span onClick={() => this.handleRate(0.7)}>0.7</span>
-                    <span onClick={() => this.handleRate(0.5)}>0.5</span>
+                <div className='player-rate cursor-pointer' ref={this.rateRef}>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(3.0)}>3.0</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(2.75)}>2.7</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(2.5)}>2.5</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(2.25)}>2.2</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(2.0)}>2.0</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(1.75)}>1.7</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(1.5)}>1.5</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(1.25)}>1.2</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(1.0)}>1.0</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(0.75)}>0.7</span>
+                    <span className='cursor-pointer' onClick={() => this.handleRate(0.5)}>0.5</span>
                 </div>
 
-                <span style={{padding: '0px 2px'}} onClick={() => this.toggleSelect()}>{rate}</span>
+                <span className='cursor-pointer' style={{ padding: '0px 2px' }}
+                    onClick={() => this.toggleSelect()}>{rate}</span>
             </div>
         );
     }

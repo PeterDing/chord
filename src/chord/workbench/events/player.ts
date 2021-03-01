@@ -12,6 +12,8 @@ import { notice, noticeBlockedKbps } from 'chord/workbench/parts/notification/ac
 
 import { CAudio } from 'chord/workbench/api/node/audio';
 
+import { ORIGIN } from 'chord/music/common/origin';
+
 import { Logger } from 'chord/platform/log/common/log';
 import { filenameToNodeName } from 'chord/platform/utils/common/paths';
 
@@ -76,6 +78,26 @@ function handleBlockedByISP(): boolean {
 }
 
 
+function handleUrlExpire(): boolean {
+    let store: Store = (<any>window).store;
+
+    let state: IStateGlobal = store.getState();
+    let index = state.player.index;
+    let playItem = state.player.playList[index];
+
+    // Kuwo url has an expire time
+    if (playItem.origin == ORIGIN.kuwo) {
+        playItem.audios.map(a => a.url = null);
+    }
+
+    let audio = selectAudio(playItem.audios);
+    if (!audio) return false;
+
+    handlePlay(index).then(act => store.dispatch(act));
+    return true;
+}
+
+
 /**
  * Switch to lower kbps for audio loading error
  */
@@ -83,6 +105,8 @@ function onLoadError(soundId?: number, store?, audioUrl?: string, playItemId?: s
     CAudio.destroy();
 
     if (handleBlockedByISP()) return;
+
+    if (handleUrlExpire()) return;
 
     switchLowerKbps();
 }
