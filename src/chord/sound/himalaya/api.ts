@@ -484,6 +484,8 @@ export class HimalayaApi {
 
 
     public resizeImageUrl(url: string, size: ESize | number): string {
+        if (!url) return null;
+
         return resizeImageUrl(
             '', size,
             (_, size) => {
