@@ -212,7 +212,6 @@ export class KuwoMusicApi {
                         path: null,
                     }
                 ];
-                console.log(audios);
                 return audios;
             } else {
                 br = '320kmp3';
