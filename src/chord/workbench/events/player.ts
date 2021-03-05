@@ -88,6 +88,8 @@ function handleUrlExpire(): boolean {
     // Kuwo url has an expire time
     if (playItem.origin == ORIGIN.kuwo) {
         playItem.audios.map(a => a.url = null);
+    } else {
+        return false;
     }
 
     let audio = selectAudio(playItem.audios);
@@ -104,9 +106,11 @@ function handleUrlExpire(): boolean {
 function onLoadError(soundId?: number, store?, audioUrl?: string, playItemId?: string) {
     CAudio.destroy();
 
-    if (handleBlockedByISP()) return;
+    // if (handleBlockedByISP()) return;
 
-    if (handleUrlExpire()) return;
+    if (handleUrlExpire()) {
+        return;
+    }
 
     switchLowerKbps();
 }
