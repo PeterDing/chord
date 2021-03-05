@@ -2,6 +2,7 @@
 
 import { getOrigin, ORIGIN, isOriginAlive } from 'chord/music/common/origin';
 
+import { deepCopy } from 'chord/base/common/objects';
 import { md5 } from 'chord/base/node/crypto';
 
 import { IAudio } from 'chord/music/api/audio';
@@ -122,7 +123,7 @@ export class Music {
     public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
         let h = md5(`music.core.api.audios(${songId})`);
         let result = cache30.get(h);
-        if (result) return result;
+        if (result) return deepCopy(result);
 
         let originType = getOrigin(songId);
         switch (originType.origin) {
@@ -150,7 +151,7 @@ export class Music {
         }
 
         cache30.set(h, result);
-        return result;
+        return deepCopy(result);
     }
 
 
