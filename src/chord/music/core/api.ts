@@ -423,7 +423,7 @@ export class Music {
                 collection = await this.qianqianApi.collection(originType.id, offset, limit);
                 break;
             case ORIGIN.migu:
-                collection = await this.miguApi.collection(originType.id, offset, limit);
+                collection = await this.miguApi.collection(originType.id, offset);
                 break;
             case ORIGIN.kuwo:
                 collection = await this.kuwoApi.collection(originType.id, offset, limit);
