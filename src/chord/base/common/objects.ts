@@ -16,7 +16,7 @@ export function removeEmtryAttributes(obj: any) {
 }
 
 export function deepCopy(obj: any): any {
-    let dup;
+    let dup: any;
     if (typeof (obj) == 'object') {
         if (obj == null) {
             dup = null;
