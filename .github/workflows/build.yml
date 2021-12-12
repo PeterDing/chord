@@ -29,7 +29,7 @@ jobs:
           yarn install
 
       - name: Install dependencies of Linux
-        if: runner.os == "Linux"
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update &&
           sudo apt-get install --no-install-recommends -y build-essential gcc g++ make bsdtar python-dev rpm
