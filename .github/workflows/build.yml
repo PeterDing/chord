@@ -10,10 +10,6 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
 
-    defaults:
-      run:
-        shell: bash
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
@@ -36,5 +32,4 @@ jobs:
 
       - name: Build
         run: |
-          yarn run compile &&
-          yarn run test
+          yarn run compile
