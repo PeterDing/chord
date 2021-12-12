@@ -7,7 +7,7 @@
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
- * Please make sure to make edits in the .ts file at https://github.com/Microsoft/vscode-loader/
+ * Please make sure to make edits in the .ts file at https://github.com/microsoft/vscode-loader/
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
@@ -16,10 +16,6 @@
 'use strict';
 var CSSLoaderPlugin;
 (function (CSSLoaderPlugin) {
-    /**
-     * Known issue:
-     * - In IE there is no way to know if the CSS file loaded successfully or not.
-     */
     var BrowserCSSLoader = /** @class */ (function () {
         function BrowserCSSLoader() {
             this._pendingLoads = 0;
@@ -51,13 +47,7 @@ var CSSLoaderPlugin;
         BrowserCSSLoader.prototype._insertLinkNode = function (linkNode) {
             this._pendingLoads++;
             var head = document.head || document.getElementsByTagName('head')[0];
-            var other = head.getElementsByTagName('link') || document.head.getElementsByTagName('script');
-            if (other.length > 0) {
-                head.insertBefore(linkNode, other[other.length - 1]);
-            }
-            else {
-                head.appendChild(linkNode);
-            }
+            head.appendChild(linkNode);
         };
         BrowserCSSLoader.prototype.createLinkTag = function (name, cssUrl, externalCallback, externalErrorback) {
             var _this = this;
@@ -97,7 +87,14 @@ var CSSLoaderPlugin;
         function CSSPlugin() {
             this._cssLoader = new BrowserCSSLoader();
         }
-        CSSPlugin.prototype.load = function (name, req, load) {
+        CSSPlugin.prototype.load = function (name, req, load, config) {
+            config = config || {};
+            var cssConfig = config['chord/css'] || {};
+            if (cssConfig.disabled) {
+                // the plugin is asked to not create any style sheets
+                load({});
+                return;
+            }
             var cssUrl = req.toUrl(name + '.css');
             this._cssLoader.load(name, cssUrl, function (contents) {
                 load({});
