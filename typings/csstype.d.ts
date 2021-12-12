@@ -95,6 +95,20 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   alignSelf?: Property.AlignSelf;
   /**
+   * The **`align-tracks`** CSS property sets the alignment in the masonry axis for grid containers that have masonry in their block axis.
+   *
+   * **Syntax**: `[ normal | <baseline-position> | <content-distribution> | <overflow-position>? <content-position> ]#`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |   No   |   n/a   |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/align-tracks
+   */
+  alignTracks?: Property.AlignTracks;
+  /**
    * The **`animation-delay`** CSS property specifies the amount of time to wait from applying the animation to an element before beginning to perform the animation. The animation can start later, immediately from its beginning, or immediately and partway through the animation.
    *
    * **Syntax**: `<time>#`
@@ -202,7 +216,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
   /**
    * The **`animation-timing-function`** CSS property sets how an animation progresses through the duration of each cycle.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    *
@@ -215,7 +229,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   animationTimingFunction?: Property.AnimationTimingFunction;
   /**
-   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this propery, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support `-webkit-appearance`, for compatibility reasons.
+   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this property, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support **`-webkit-appearance`**, for compatibility reasons.
    *
    * **Syntax**: `none | auto | textfield | menulist-button | <compat-auto>`
    *
@@ -230,15 +244,15 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   appearance?: Property.Appearance;
   /**
-   * The **`aspect-ratio`**   CSS property sets a **preferred aspect ratio** for the box, which will be used in the calculation of auto sizes and some other layout functions.
+   * The **`aspect-ratio`**  CSS property sets a **preferred aspect ratio** for the box, which will be used in the calculation of auto sizes and some other layout functions.
    *
    * **Syntax**: `auto | <ratio>`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **79** | **71**  | **14** | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |  n/a   |   n/a   |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/aspect-ratio
    */
@@ -456,7 +470,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-block-color
    */
@@ -552,9 +566,9 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `none`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-block-style
    */
@@ -566,9 +580,9 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `medium`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-block-width
    */
@@ -603,7 +617,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   borderBottomLeftRadius?: Property.BorderBottomLeftRadius<TLength>;
   /**
-   * The **`border-bottom-right-radius`** CSS property rounds the top-left corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
+   * The **`border-bottom-right-radius`** CSS property rounds the bottom-right corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -660,7 +674,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   borderCollapse?: Property.BorderCollapse;
   /**
-   * The **`border-end-end-radius`** CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on on the element's `writing-mode`, `direction`, and `text-orientation`. This is useful when building styles to work regardless of the text orientation and writing mode.
+   * The **`border-end-end-radius`** CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on the element's `writing-mode`, `direction`, and `text-orientation`. This is useful when building styles to work regardless of the text orientation and writing mode.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -668,7 +682,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **89** | **66**  |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-end-end-radius
    */
@@ -682,7 +696,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **89** | **66**  |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-end-start-radius
    */
@@ -764,9 +778,9 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `currentcolor`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-inline-color
    */
@@ -867,9 +881,9 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `none`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-inline-style
    */
@@ -881,9 +895,9 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `medium`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-inline-width
    */
@@ -995,13 +1009,13 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **89** | **66**  |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-start-end-radius
    */
   borderStartEndRadius?: Property.BorderStartEndRadius<TLength>;
   /**
-   * The **`border-start-start-radius`** CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on the element's `writing-mode`, `direction`, and `text-orientation`. This is useful when building styles to work regardless of the text orientation and writing mode.
+   * The **`border-start-start-radius`** CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on the element's `writing-mode`, `direction`, and `text-orientation`. This is useful when building styles to work regardless of the text orientation and writing mode.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -1009,7 +1023,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **89** | **66**  |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-start-start-radius
    */
@@ -1157,7 +1171,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari |  Edge  |   IE   |
    * | :----: | :-----: | :----: | :----: | :----: |
-   * | **50** |   No    |   No   | **12** | **10** |
+   * | **50** | **65**  |   No   | **12** | **10** |
    *
    * ---
    *
@@ -1166,14 +1180,6 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    * | Chrome | Firefox | Safari |  Edge  |   IE   |
    * | :----: | :-----: | :----: | :----: | :----: |
    * | **50** | **65**  | **10** | **12** | **10** |
-   *
-   * ---
-   *
-   * _Supported in CSS Regions_
-   *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    |   No   |  No  | No  |
    *
    * ---
    *
@@ -1205,14 +1211,6 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * ---
    *
-   * _Supported in CSS Regions_
-   *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    |   No   |  No  | No  |
-   *
-   * ---
-   *
    * @see https://developer.mozilla.org/docs/Web/CSS/break-before
    */
   breakBefore?: Property.BreakBefore;
@@ -1238,14 +1236,6 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    * | Chrome | Firefox | Safari |  Edge  |   IE   |
    * | :----: | :-----: | :----: | :----: | :----: |
    * | **50** | **65**  | **10** | **12** | **10** |
-   *
-   * ---
-   *
-   * _Supported in CSS Regions_
-   *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    |   No   |  No  | No  |
    *
    * ---
    *
@@ -1310,7 +1300,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   clipPath?: Property.ClipPath;
   /**
-   * The **`color`** CSS property sets the foreground color value of an element's text and text decorations, and sets the `currentcolor` value. `currentcolor` may be used as an indirect value on _other_ properties and is the default for other color properties, such as `border-color`.
+   * The **`color`** CSS property sets the foreground color value of an element's text and text decorations, and sets the `<currentcolor>` value. `currentcolor` may be used as an indirect value on _other_ properties and is the default for other color properties, such as `border-color`.
    *
    * **Syntax**: `<color>`
    *
@@ -1509,6 +1499,20 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   content?: Property.Content;
   /**
+   * The **`content-visibility`** CSS property controls whether or not an element renders its contents at all, along with forcing a strong set of containments, allowing user agents to potentially omit large swathes of layout and rendering work until it becomes needed. Basically it enables the user agent to skip an element's rendering work, including layout and painting, until it is needed, makes the initial page load much faster.
+   *
+   * **Syntax**: `visible | auto | hidden`
+   *
+   * **Initial value**: `visible`
+   *
+   * | Chrome | Firefox | Safari |  Edge  | IE  |
+   * | :----: | :-----: | :----: | :----: | :-: |
+   * | **85** |   No    |   No   | **85** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/content-visibility
+   */
+  contentVisibility?: Property.ContentVisibility;
+  /**
    * The **`counter-increment`** CSS property increases or decreases the value of a CSS counter by a given value.
    *
    * **Syntax**: `[ <custom-ident> <integer>? ]+ | none`
@@ -1579,7 +1583,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   direction?: Property.Direction;
   /**
-   * The **`display`** CSS property sets whether an element is treated as a block or inline element and the layout used for its children, such as flow layout, grid or flex.
+   * The **`display`** CSS property sets whether an element is treated as a block or inline element and the layout used for its children, such as flow layout, grid or flex.
    *
    * **Syntax**: `[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>`
    *
@@ -1868,7 +1872,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   fontSynthesis?: Property.FontSynthesis;
   /**
-   * The **font-variant** CSS shorthand property allows you to set all the font variants for a font.
+   * The **`font-variant`** CSS shorthand property allows you to set all the font variants for a font.
    *
    * **Syntax**: `normal | none | [ <common-lig-values> || <discretionary-lig-values> || <historical-lig-values> || <contextual-alt-values> || stylistic( <feature-value-name> ) || historical-forms || styleset( <feature-value-name># ) || character-variant( <feature-value-name># ) || swash( <feature-value-name> ) || ornaments( <feature-value-name> ) || annotation( <feature-value-name> ) || [ small-caps | all-small-caps | petite-caps | all-petite-caps | unicase | titling-caps ] || <numeric-figure-values> || <numeric-spacing-values> || <numeric-fraction-values> || ordinal || slashed-zero || <east-asian-variant-values> || <east-asian-width-values> || ruby ]`
    *
@@ -1980,6 +1984,20 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    * @see https://developer.mozilla.org/docs/Web/CSS/font-weight
    */
   fontWeight?: Property.FontWeight;
+  /**
+   * The **`forced-color-adjust`** CSS property allows authors to opt certain elements out of forced colors mode. This then restores the control of those values to CSS.
+   *
+   * **Syntax**: `auto | none`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome | Firefox | Safari |                Edge                 |                 IE                  |
+   * | :----: | :-----: | :----: | :---------------------------------: | :---------------------------------: |
+   * |  n/a   |   No    |   No   | **79** _(-ms-high-contrast-adjust)_ | **10** _(-ms-high-contrast-adjust)_ |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/forced-color-adjust
+   */
+  forcedColorAdjust?: Property.ForcedColorAdjust;
   /**
    * The **`grid-auto-columns`** CSS property specifies the size of an implicitly-created grid column track or pattern of tracks.
    *
@@ -2170,7 +2188,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Syntax**: `from-image | <angle> | [ <angle>? flip ]`
    *
-   * **Initial value**: `0deg`
+   * **Initial value**: `from-image`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -2228,7 +2246,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   inlineSize?: Property.InlineSize<TLength>;
   /**
-   * The **`inset`** CSS property, though part of the logical specification, doesn't define logical block or inline offsets, and instead defines physical offsets, regardless of the element's writing mode, directionality, and text orientation. It has the same multi-value syntax of the `margin` shorthand. It is a shorthand that corresponds to the `top`, `right`, `bottom`, and/or `left` properties.
+   * The **`inset`** CSS property is a shorthand that corresponds to the `top`, `right`, `bottom`, and/or `left` properties. It has the same multi-value syntax of the `margin` shorthand.
    *
    * **Syntax**: `<'top'>{1,4}`
    *
@@ -2236,13 +2254,13 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset
    */
   inset?: Property.Inset<TLength>;
   /**
-   * The **`inset-block`** CSS property defines the logical block start and end offsets of an element, which maps to physical offsets depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top` and `bottom`, or `right` and `left` properties depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
+   * The **`inset-inline`** CSS property defines the logical start and end offsets of an element in the inline direction, which maps to physical offsets depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top` and `bottom`, or `right` and `left` properties depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
    *
    * **Syntax**: `<'top'>{1,2}`
    *
@@ -2250,7 +2268,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-block
    */
@@ -2264,7 +2282,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-block-end
    */
@@ -2278,7 +2296,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-block-start
    */
@@ -2292,13 +2310,13 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-inline
    */
   insetInline?: Property.InsetInline<TLength>;
   /**
-   * The **`inset-inline-end`** CSS property defines the logical inline end inset of an element, which maps to a physical inset depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top`, `right`, `bottom`, or `left` property depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
+   * The **`inset-inline-end`** CSS property defines the logical inline end inset of an element, which maps to a physical offset depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top`, `right`, `bottom`, or `left` property depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
    *
    * **Syntax**: `<'top'>`
    *
@@ -2306,7 +2324,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-inline-end
    */
@@ -2320,7 +2338,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-inline-start
    */
@@ -2425,6 +2443,20 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   justifySelf?: Property.JustifySelf;
   /**
+   * The **`justify-tracks`** CSS property sets the alignment in the masonry axis for grid containers that have masonry in their inline axis.
+   *
+   * **Syntax**: `[ normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ] ]#`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |   No   |   n/a   |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/justify-tracks
+   */
+  justifyTracks?: Property.JustifyTracks;
+  /**
    * The **`left`** CSS property participates in specifying the horizontal position of a positioned element. It has no effect on non-positioned elements.
    *
    * **Syntax**: `<length> | <percentage> | auto`
@@ -2439,7 +2471,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   left?: Property.Left<TLength>;
   /**
-   * The **`letter-spacing`** CSS property sets the horizontal spacing behavior between text characters. This value is added to the natural spacing between characters while rendering the text. Positive values of `letter-spacing` causes characters to spread farther apart, while negative values of `letter-spacing` bring characters closer together.
+   * The **`letter-spacing`** CSS property sets the horizontal spacing behavior between text characters. This value is added to the natural spacing between characters while rendering the text. Positive values of `letter-spacing` causes characters to spread farther apart, while negative values of `letter-spacing` bring characters closer together.
    *
    * **Syntax**: `normal | <length>`
    *
@@ -2546,7 +2578,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/margin-block
    */
@@ -2602,7 +2634,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/margin-inline
    */
@@ -2859,6 +2891,12 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    * **Syntax**: `normal | compact`
    *
    * **Initial value**: `normal`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |  n/a   |   n/a   |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/math-style
    */
   mathStyle?: Property.MathStyle;
   /**
@@ -2890,7 +2928,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   maxHeight?: Property.MaxHeight<TLength>;
   /**
-   * The **`max-inline-size`** CSS property defines the horizontal or vertical maximum size of an element's block depending on its writing mode. It corresponds to the `max-width` or the `max-height` property depending on the value defined for `writing-mode`. If the writing mode is vertically oriented, the value of `max-inline-size` relates to the maximal height of the element, otherwise it relates to the maximal width of the element. It relates to `max-block-size`, which defines the other dimension of the element.
+   * The **`max-inline-size`** CSS property defines the horizontal or vertical maximum size of an element's block, depending on its writing mode. It corresponds to either the `max-width` or the `max-height` property, depending on the value of `writing-mode`.
    *
    * **Syntax**: `<'max-width'>`
    *
@@ -3410,7 +3448,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/padding-block
    */
@@ -3444,7 +3482,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   paddingBlockStart?: Property.PaddingBlockStart<TLength>;
   /**
-   * The **`padding-bottom`** CSS property sets the height of the padding area on the bottom of an element.
+   * The **`padding-bottom`** CSS property sets the height of the padding area on the bottom of an element.
    *
    * **Syntax**: `<length> | <percentage>`
    *
@@ -3466,7 +3504,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/padding-inline
    */
@@ -3502,7 +3540,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   paddingInlineStart?: Property.PaddingInlineStart<TLength>;
   /**
-   * The **`padding-left`** CSS property sets the width of the padding area to the left of an element.
+   * The **`padding-left`** CSS property sets the width of the padding area to the left of an element.
    *
    * **Syntax**: `<length> | <percentage>`
    *
@@ -3516,7 +3554,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   paddingLeft?: Property.PaddingLeft<TLength>;
   /**
-   * The **`padding-right`** CSS property sets the width of the padding area on the right of an element.
+   * The **`padding-right`** CSS property sets the width of the padding area on the right of an element.
    *
    * **Syntax**: `<length> | <percentage>`
    *
@@ -3797,9 +3835,10 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `over`
    *
-   * | Chrome | Firefox | Safari | Edge  | IE  |
-   * | :----: | :-----: | :----: | :---: | :-: |
-   * |   No   | **38**  |   No   | 12-79 | No  |
+   * | Chrome  | Firefox |    Safari     | Edge  | IE  |
+   * | :-----: | :-----: | :-----------: | :---: | :-: |
+   * | **84**  | **38**  | **6.1** _-x-_ | 12-79 | No  |
+   * | 1 _-x-_ |         |               |       |     |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/ruby-position
    */
@@ -3827,7 +3866,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * | Chrome | Firefox | Safari |  Edge  | IE  |
    * | :----: | :-----: | :----: | :----: | :-: |
-   * | **61** | **36**  | **14** | **79** | No  |
+   * | **61** | **36**  |  n/a   | **79** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/scroll-behavior
    */
@@ -4268,6 +4307,20 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    */
   scrollbarColor?: Property.ScrollbarColor;
   /**
+   * The **`scrollbar-gutter`** CSS property allows authors to reserve space for the scrollbar, preventing unwanted layout changes as the content grows while also avoiding unnecessary visuals when scrolling isn't needed.
+   *
+   * **Syntax**: `auto | [ stable | always ] && both? && force?`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |  n/a   |   No    |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/scrollbar-gutter
+   */
+  scrollbarGutter?: Property.ScrollbarGutter;
+  /**
    * The **`scrollbar-width`** property allows the author to set the maximum thickness of an element’s scrollbars when they are shown.
    *
    * **Syntax**: `auto | thin | none`
@@ -4386,10 +4439,10 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `none`
    *
-   * |           Chrome           | Firefox |              Safari              |                  Edge                  |                   IE                   |
-   * | :------------------------: | :-----: | :------------------------------: | :------------------------------------: | :------------------------------------: |
-   * |           **48**           | **48**  | **5.1** _(-webkit-text-combine)_ | **12** _(-ms-text-combine-horizontal)_ | **11** _(-ms-text-combine-horizontal)_ |
-   * | 9 _(-webkit-text-combine)_ |         |                                  |                                        |                                        |
+   * |           Chrome           | Firefox |              Safari              |                Edge                |                   IE                   |
+   * | :------------------------: | :-----: | :------------------------------: | :--------------------------------: | :------------------------------------: |
+   * |           **48**           | **48**  | **5.1** _(-webkit-text-combine)_ |               15-79                | **11** _(-ms-text-combine-horizontal)_ |
+   * | 9 _(-webkit-text-combine)_ |         |                                  | 12 _(-ms-text-combine-horizontal)_ |                                        |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/text-combine-upright
    */
@@ -4475,9 +4528,9 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   | **70**  | **12.1** |  No  | No  |
+   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
+   * | :----: | :-----: | :------: | :----: | :-: |
+   * | **87** | **70**  | **12.1** | **87** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/text-decoration-thickness
    */
@@ -4489,9 +4542,9 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   | **70**  | **12.1** |  No  | No  |
+   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
+   * | :----: | :-----: | :------: | :----: | :-: |
+   * | **87** | **70**  | **12.1** | **87** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/text-decoration-thickness
    */
@@ -4658,9 +4711,9 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   | **70**  | **12.1** |  No  | No  |
+   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
+   * | :----: | :-----: | :------: | :----: | :-: |
+   * | **87** | **70**  | **12.1** | **87** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/text-underline-offset
    */
@@ -4816,7 +4869,7 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    *
@@ -4989,12 +5042,6 @@ export interface StandardLonghandProperties<TLength = (string & {}) | 0, TTime =
    * **Syntax**: `normal | break-word`
    *
    * **Initial value**: `normal`
-   *
-   * | Chrome | Firefox | Safari |  Edge  |   IE    |
-   * | :----: | :-----: | :----: | :----: | :-----: |
-   * | **1**  | **3.5** | **2**  | **12** | **5.5** |
-   *
-   * @see https://developer.mozilla.org/docs/Web/CSS/overflow-wrap
    */
   wordWrap?: Property.WordWrap;
   /**
@@ -5097,11 +5144,11 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
   /**
    * The **`border-block`** CSS property is a shorthand property for setting the individual logical block border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-block
    */
@@ -5109,7 +5156,7 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
   /**
    * The **`border-block-end`** CSS property is a shorthand property for setting the individual logical block-end border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -5121,7 +5168,7 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
   /**
    * The **`border-block-start`** CSS property is a shorthand property for setting the individual logical block-start border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -5170,11 +5217,11 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
   /**
    * The **`border-inline`** CSS property is a shorthand property for setting the individual logical inline border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-inline
    */
@@ -5182,7 +5229,7 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
   /**
    * The **`border-inline-end`** CSS property is a shorthand property for setting the individual logical inline-end border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -5194,7 +5241,7 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
   /**
    * The **`border-inline-start`** CSS property is a shorthand property for setting the individual logical inline-start border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -5204,7 +5251,7 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
    */
   borderInlineStart?: Property.BorderInlineStart<TLength>;
   /**
-   * The **`border-left`** shorthand CSS property set an element's left border.
+   * The **`border-left`** shorthand CSS property sets all the properties of an element's left border.
    *
    * **Syntax**: `<line-width> || <line-style> || <color>`
    *
@@ -5229,7 +5276,7 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
    */
   borderRadius?: Property.BorderRadius<TLength>;
   /**
-   * The **`border-right`** shorthand CSS property sets the properties of an element's right border.
+   * The **`border-right`** shorthand CSS property sets all the properties of an element's right border.
    *
    * **Syntax**: `<line-width> || <line-style> || <color>`
    *
@@ -5592,7 +5639,7 @@ export interface StandardShorthandProperties<TLength = (string & {}) | 0, TTime 
    *
    * | Chrome | Firefox | Safari |  Edge  | IE  |
    * | :----: | :-----: | :----: | :----: | :-: |
-   * | **59** | **45**  |   No   | **79** | No  |
+   * | **59** | **45**  | **11** | **79** | No  |
    *
    * ---
    *
@@ -5702,13 +5749,13 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
   /**
    * The **`animation-timing-function`** CSS property sets how an animation progresses through the duration of each cycle.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
   MozAnimationTimingFunction?: Property.AnimationTimingFunction;
   /**
-   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this propery, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support `-webkit-appearance`, for compatibility reasons.
+   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this property, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support **`-webkit-appearance`**, for compatibility reasons.
    *
    * **Syntax**: `none | button | button-arrow-down | button-arrow-next | button-arrow-previous | button-arrow-up | button-bevel | button-focus | caret | checkbox | checkbox-container | checkbox-label | checkmenuitem | dualbutton | groupbox | listbox | listitem | menuarrow | menubar | menucheckbox | menuimage | menuitem | menuitemtext | menulist | menulist-button | menulist-text | menulist-textfield | menupopup | menuradio | menuseparator | meterbar | meterchunk | progressbar | progressbar-vertical | progresschunk | progresschunk-vertical | radio | radio-container | radio-label | radiomenuitem | range | range-thumb | resizer | resizerpanel | scale-horizontal | scalethumbend | scalethumb-horizontal | scalethumbstart | scalethumbtick | scalethumb-vertical | scale-vertical | scrollbarbutton-down | scrollbarbutton-left | scrollbarbutton-right | scrollbarbutton-up | scrollbarthumb-horizontal | scrollbarthumb-vertical | scrollbartrack-horizontal | scrollbartrack-vertical | searchfield | separator | sheet | spinner | spinner-downbutton | spinner-textfield | spinner-upbutton | splitter | statusbar | statusbarpanel | tab | tabpanel | tabpanels | tab-scroll-arrow-back | tab-scroll-arrow-forward | textfield | textfield-multiline | toolbar | toolbarbutton | toolbarbutton-dropdown | toolbargripper | toolbox | tooltip | treeheader | treeheadercell | treeheadersortarrow | treeitem | treeline | treetwisty | treetwistyopen | treeview | -moz-mac-unified-toolbar | -moz-win-borderless-glass | -moz-win-browsertabbar-toolbox | -moz-win-communicationstext | -moz-win-communications-toolbox | -moz-win-exclude-glass | -moz-win-glass | -moz-win-mediatext | -moz-win-media-toolbox | -moz-window-button-box | -moz-window-button-box-maximized | -moz-window-button-close | -moz-window-button-maximize | -moz-window-button-minimize | -moz-window-button-restore | -moz-window-frame-bottom | -moz-window-frame-left | -moz-window-frame-right | -moz-window-titlebar | -moz-window-titlebar-maximized`
    *
@@ -6038,7 +6085,7 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
@@ -6526,7 +6573,7 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
@@ -6702,13 +6749,13 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
   /**
    * The **`animation-timing-function`** CSS property sets how an animation progresses through the duration of each cycle.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
   WebkitAnimationTimingFunction?: Property.AnimationTimingFunction;
   /**
-   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this propery, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support `-webkit-appearance`, for compatibility reasons.
+   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this property, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support **`-webkit-appearance`**, for compatibility reasons.
    *
    * **Syntax**: `none | button | button-bevel | caret | checkbox | default-button | inner-spin-button | listbox | listitem | media-controls-background | media-controls-fullscreen-background | media-current-time-display | media-enter-fullscreen-button | media-exit-fullscreen-button | media-fullscreen-button | media-mute-button | media-overlay-play-button | media-play-button | media-seek-back-button | media-seek-forward-button | media-slider | media-sliderthumb | media-time-remaining-display | media-toggle-closed-captions-button | media-volume-slider | media-volume-slider-container | media-volume-sliderthumb | menulist | menulist-button | menulist-text | menulist-textfield | meter | progress-bar | progress-bar-value | push-button | radio | searchfield | searchfield-cancel-button | searchfield-decoration | searchfield-results-button | searchfield-results-decoration | slider-horizontal | slider-vertical | sliderthumb-horizontal | sliderthumb-vertical | square-button | textarea | textfield | -apple-pay-button`
    *
@@ -6756,7 +6803,7 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
    */
   WebkitBackgroundSize?: Property.BackgroundSize<TLength>;
   /**
-   * **Syntax**: `<'color'>`
+   * **Syntax**: `<color>`
    *
    * **Initial value**: `currentcolor`
    */
@@ -6782,7 +6829,7 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
    */
   WebkitBorderBottomLeftRadius?: Property.BorderBottomLeftRadius<TLength>;
   /**
-   * The **`border-bottom-right-radius`** CSS property rounds the top-left corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
+   * The **`border-bottom-right-radius`** CSS property rounds the bottom-right corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -7142,7 +7189,7 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
    */
   WebkitMaskSize?: Property.WebkitMaskSize<TLength>;
   /**
-   * The **`max-inline-size`** CSS property defines the horizontal or vertical maximum size of an element's block depending on its writing mode. It corresponds to the `max-width` or the `max-height` property depending on the value defined for `writing-mode`. If the writing mode is vertically oriented, the value of `max-inline-size` relates to the maximal height of the element, otherwise it relates to the maximal width of the element. It relates to `max-block-size`, which defines the other dimension of the element.
+   * The **`max-inline-size`** CSS property defines the horizontal or vertical maximum size of an element's block, depending on its writing mode. It corresponds to either the `max-width` or the `max-height` property, depending on the value of `writing-mode`.
    *
    * **Syntax**: `<'max-width'>`
    *
@@ -7205,6 +7252,14 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
    * **Initial value**: `economy`
    */
   WebkitPrintColorAdjust?: Property.ColorAdjust;
+  /**
+   * The `**ruby-position**` CSS property defines the position of a ruby element relatives to its base element. It can be position over the element (`over`), under it (`under`), or between the characters, on their right side (`inter-character`).
+   *
+   * **Syntax**: `over | under | inter-character`
+   *
+   * **Initial value**: `over`
+   */
+  WebkitRubyPosition?: Property.RubyPosition;
   /**
    * The **`scroll-snap-type`** CSS property sets how strictly snap points are enforced on the scroll container in case there is one.
    *
@@ -7400,7 +7455,7 @@ export interface VendorLonghandProperties<TLength = (string & {}) | 0, TTime = s
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
@@ -7511,7 +7566,7 @@ export interface VendorShorthandProperties<TLength = (string & {}) | 0, TTime = 
   /**
    * The **`-webkit-border-before`** CSS property is a shorthand property for setting the individual logical block start border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-width'> || <'border-style'> || <'color'>`
+   * **Syntax**: `<'border-width'> || <'border-style'> || <color>`
    */
   WebkitBorderBefore?: Property.WebkitBorderBefore<TLength>;
   /**
@@ -7580,6 +7635,16 @@ export interface VendorProperties<TLength = (string & {}) | 0, TTime = string & 
 
 export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string & {}> {
   /**
+   * In combination with `elevation`, the **`azimuth`** CSS property enables different audio sources to be positioned spatially for aural presentation. This is important in that it provides a natural way to tell several voices apart, as each can be positioned to originate at a different location on the sound stage. Stereo output produce a lateral sound stage, while binaural headphones and multi-speaker setups allow for a fully three-dimensional stage.
+   *
+   * **Syntax**: `<angle> | [ [ left-side | far-left | left | center-left | center | center-right | right | far-right | right-side ] || behind ] | leftwards | rightwards`
+   *
+   * **Initial value**: `center`
+   *
+   * @deprecated
+   */
+  azimuth?: Property.Azimuth;
+  /**
    * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
@@ -7640,7 +7705,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
    */
   boxOrdinalGroup?: Property.BoxOrdinalGroup;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * This is a property of the original CSS Flexible Box Layout Module draft, and has been replaced by a newer standard. See flexbox for information about the current standard.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -7718,7 +7783,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
    */
   imeMode?: Property.ImeMode;
   /**
-   * The **`inset-block`** CSS property defines the logical block start and end offsets of an element, which maps to physical offsets depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top` and `bottom`, or `right` and `left` properties depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
+   * The **`inset-inline`** CSS property defines the logical start and end offsets of an element in the inline direction, which maps to physical offsets depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top` and `bottom`, or `right` and `left` properties depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
    *
    * **Syntax**: `<'top'>{1,2}`
    *
@@ -7758,7 +7823,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
    */
   offsetInline?: Property.InsetInline<TLength>;
   /**
-   * The **`inset-inline-end`** CSS property defines the logical inline end inset of an element, which maps to a physical inset depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top`, `right`, `bottom`, or `left` property depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
+   * The **`inset-inline-end`** CSS property defines the logical inline end inset of an element, which maps to a physical offset depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top`, `right`, `bottom`, or `left` property depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
    *
    * **Syntax**: `<'top'>`
    *
@@ -7918,7 +7983,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
    */
   KhtmlBoxOrdinalGroup?: Property.BoxOrdinalGroup;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * This is a property of the original CSS Flexible Box Layout Module draft, and has been replaced by a newer standard. See flexbox for information about the current standard.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -8036,7 +8101,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
    */
   MozBorderRadiusBottomleft?: Property.BorderBottomLeftRadius<TLength>;
   /**
-   * The **`border-bottom-right-radius`** CSS property rounds the top-left corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
+   * The **`border-bottom-right-radius`** CSS property rounds the bottom-right corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -8106,7 +8171,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
    */
   MozBoxOrdinalGroup?: Property.BoxOrdinalGroup;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * This is a property of the original CSS Flexible Box Layout Module draft, and has been replaced by a newer standard. See flexbox for information about the current standard.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -8402,7 +8467,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
   /**
    * The **`animation-timing-function`** CSS property sets how an animation progresses through the duration of each cycle.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    *
@@ -8478,7 +8543,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    *
@@ -8546,7 +8611,7 @@ export interface ObsoleteProperties<TLength = (string & {}) | 0, TTime = string 
    */
   WebkitBoxOrdinalGroup?: Property.BoxOrdinalGroup;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * This is a property of the original CSS Flexible Box Layout Module draft, and has been replaced by a newer standard. See flexbox for information about the current standard.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -8745,6 +8810,20 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "align-self"?: Property.AlignSelf;
   /**
+   * The **`align-tracks`** CSS property sets the alignment in the masonry axis for grid containers that have masonry in their block axis.
+   *
+   * **Syntax**: `[ normal | <baseline-position> | <content-distribution> | <overflow-position>? <content-position> ]#`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |   No   |   n/a   |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/align-tracks
+   */
+  "align-tracks"?: Property.AlignTracks;
+  /**
    * The **`animation-delay`** CSS property specifies the amount of time to wait from applying the animation to an element before beginning to perform the animation. The animation can start later, immediately from its beginning, or immediately and partway through the animation.
    *
    * **Syntax**: `<time>#`
@@ -8852,7 +8931,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
   /**
    * The **`animation-timing-function`** CSS property sets how an animation progresses through the duration of each cycle.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    *
@@ -8865,7 +8944,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "animation-timing-function"?: Property.AnimationTimingFunction;
   /**
-   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this propery, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support `-webkit-appearance`, for compatibility reasons.
+   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this property, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support **`-webkit-appearance`**, for compatibility reasons.
    *
    * **Syntax**: `none | auto | textfield | menulist-button | <compat-auto>`
    *
@@ -8880,15 +8959,15 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   appearance?: Property.Appearance;
   /**
-   * The **`aspect-ratio`**   CSS property sets a **preferred aspect ratio** for the box, which will be used in the calculation of auto sizes and some other layout functions.
+   * The **`aspect-ratio`**  CSS property sets a **preferred aspect ratio** for the box, which will be used in the calculation of auto sizes and some other layout functions.
    *
    * **Syntax**: `auto | <ratio>`
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **79** | **71**  | **14** | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |  n/a   |   n/a   |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/aspect-ratio
    */
@@ -9106,7 +9185,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-block-color
    */
@@ -9202,9 +9281,9 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `none`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-block-style
    */
@@ -9216,9 +9295,9 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `medium`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-block-width
    */
@@ -9253,7 +9332,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "border-bottom-left-radius"?: Property.BorderBottomLeftRadius<TLength>;
   /**
-   * The **`border-bottom-right-radius`** CSS property rounds the top-left corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
+   * The **`border-bottom-right-radius`** CSS property rounds the bottom-right corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -9310,7 +9389,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "border-collapse"?: Property.BorderCollapse;
   /**
-   * The **`border-end-end-radius`** CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on on the element's `writing-mode`, `direction`, and `text-orientation`. This is useful when building styles to work regardless of the text orientation and writing mode.
+   * The **`border-end-end-radius`** CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on the element's `writing-mode`, `direction`, and `text-orientation`. This is useful when building styles to work regardless of the text orientation and writing mode.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -9318,7 +9397,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **89** | **66**  |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-end-end-radius
    */
@@ -9332,7 +9411,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **89** | **66**  |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-end-start-radius
    */
@@ -9414,9 +9493,9 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `currentcolor`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-inline-color
    */
@@ -9517,9 +9596,9 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `none`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-inline-style
    */
@@ -9531,9 +9610,9 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `medium`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-inline-width
    */
@@ -9645,13 +9724,13 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **89** | **66**  |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-start-end-radius
    */
   "border-start-end-radius"?: Property.BorderStartEndRadius<TLength>;
   /**
-   * The **`border-start-start-radius`** CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on the element's `writing-mode`, `direction`, and `text-orientation`. This is useful when building styles to work regardless of the text orientation and writing mode.
+   * The **`border-start-start-radius`** CSS property defines a logical border radius on an element, which maps to a physical border radius that depends on the element's `writing-mode`, `direction`, and `text-orientation`. This is useful when building styles to work regardless of the text orientation and writing mode.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -9659,7 +9738,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **89** | **66**  |   No   |  No  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-start-start-radius
    */
@@ -9807,7 +9886,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari |  Edge  |   IE   |
    * | :----: | :-----: | :----: | :----: | :----: |
-   * | **50** |   No    |   No   | **12** | **10** |
+   * | **50** | **65**  |   No   | **12** | **10** |
    *
    * ---
    *
@@ -9816,14 +9895,6 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    * | Chrome | Firefox | Safari |  Edge  |   IE   |
    * | :----: | :-----: | :----: | :----: | :----: |
    * | **50** | **65**  | **10** | **12** | **10** |
-   *
-   * ---
-   *
-   * _Supported in CSS Regions_
-   *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    |   No   |  No  | No  |
    *
    * ---
    *
@@ -9855,14 +9926,6 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * ---
    *
-   * _Supported in CSS Regions_
-   *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    |   No   |  No  | No  |
-   *
-   * ---
-   *
    * @see https://developer.mozilla.org/docs/Web/CSS/break-before
    */
   "break-before"?: Property.BreakBefore;
@@ -9888,14 +9951,6 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    * | Chrome | Firefox | Safari |  Edge  |   IE   |
    * | :----: | :-----: | :----: | :----: | :----: |
    * | **50** | **65**  | **10** | **12** | **10** |
-   *
-   * ---
-   *
-   * _Supported in CSS Regions_
-   *
-   * | Chrome | Firefox | Safari | Edge | IE  |
-   * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   |   No    |   No   |  No  | No  |
    *
    * ---
    *
@@ -9960,7 +10015,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "clip-path"?: Property.ClipPath;
   /**
-   * The **`color`** CSS property sets the foreground color value of an element's text and text decorations, and sets the `currentcolor` value. `currentcolor` may be used as an indirect value on _other_ properties and is the default for other color properties, such as `border-color`.
+   * The **`color`** CSS property sets the foreground color value of an element's text and text decorations, and sets the `<currentcolor>` value. `currentcolor` may be used as an indirect value on _other_ properties and is the default for other color properties, such as `border-color`.
    *
    * **Syntax**: `<color>`
    *
@@ -10159,6 +10214,20 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   content?: Property.Content;
   /**
+   * The **`content-visibility`** CSS property controls whether or not an element renders its contents at all, along with forcing a strong set of containments, allowing user agents to potentially omit large swathes of layout and rendering work until it becomes needed. Basically it enables the user agent to skip an element's rendering work, including layout and painting, until it is needed, makes the initial page load much faster.
+   *
+   * **Syntax**: `visible | auto | hidden`
+   *
+   * **Initial value**: `visible`
+   *
+   * | Chrome | Firefox | Safari |  Edge  | IE  |
+   * | :----: | :-----: | :----: | :----: | :-: |
+   * | **85** |   No    |   No   | **85** | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/content-visibility
+   */
+  "content-visibility"?: Property.ContentVisibility;
+  /**
    * The **`counter-increment`** CSS property increases or decreases the value of a CSS counter by a given value.
    *
    * **Syntax**: `[ <custom-ident> <integer>? ]+ | none`
@@ -10229,7 +10298,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   direction?: Property.Direction;
   /**
-   * The **`display`** CSS property sets whether an element is treated as a block or inline element and the layout used for its children, such as flow layout, grid or flex.
+   * The **`display`** CSS property sets whether an element is treated as a block or inline element and the layout used for its children, such as flow layout, grid or flex.
    *
    * **Syntax**: `[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>`
    *
@@ -10518,7 +10587,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "font-synthesis"?: Property.FontSynthesis;
   /**
-   * The **font-variant** CSS shorthand property allows you to set all the font variants for a font.
+   * The **`font-variant`** CSS shorthand property allows you to set all the font variants for a font.
    *
    * **Syntax**: `normal | none | [ <common-lig-values> || <discretionary-lig-values> || <historical-lig-values> || <contextual-alt-values> || stylistic( <feature-value-name> ) || historical-forms || styleset( <feature-value-name># ) || character-variant( <feature-value-name># ) || swash( <feature-value-name> ) || ornaments( <feature-value-name> ) || annotation( <feature-value-name> ) || [ small-caps | all-small-caps | petite-caps | all-petite-caps | unicase | titling-caps ] || <numeric-figure-values> || <numeric-spacing-values> || <numeric-fraction-values> || ordinal || slashed-zero || <east-asian-variant-values> || <east-asian-width-values> || ruby ]`
    *
@@ -10630,6 +10699,20 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    * @see https://developer.mozilla.org/docs/Web/CSS/font-weight
    */
   "font-weight"?: Property.FontWeight;
+  /**
+   * The **`forced-color-adjust`** CSS property allows authors to opt certain elements out of forced colors mode. This then restores the control of those values to CSS.
+   *
+   * **Syntax**: `auto | none`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome | Firefox | Safari |                Edge                 |                 IE                  |
+   * | :----: | :-----: | :----: | :---------------------------------: | :---------------------------------: |
+   * |  n/a   |   No    |   No   | **79** _(-ms-high-contrast-adjust)_ | **10** _(-ms-high-contrast-adjust)_ |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/forced-color-adjust
+   */
+  "forced-color-adjust"?: Property.ForcedColorAdjust;
   /**
    * The **`grid-auto-columns`** CSS property specifies the size of an implicitly-created grid column track or pattern of tracks.
    *
@@ -10820,7 +10903,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Syntax**: `from-image | <angle> | [ <angle>? flip ]`
    *
-   * **Initial value**: `0deg`
+   * **Initial value**: `from-image`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -10878,7 +10961,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "inline-size"?: Property.InlineSize<TLength>;
   /**
-   * The **`inset`** CSS property, though part of the logical specification, doesn't define logical block or inline offsets, and instead defines physical offsets, regardless of the element's writing mode, directionality, and text orientation. It has the same multi-value syntax of the `margin` shorthand. It is a shorthand that corresponds to the `top`, `right`, `bottom`, and/or `left` properties.
+   * The **`inset`** CSS property is a shorthand that corresponds to the `top`, `right`, `bottom`, and/or `left` properties. It has the same multi-value syntax of the `margin` shorthand.
    *
    * **Syntax**: `<'top'>{1,4}`
    *
@@ -10886,13 +10969,13 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |   No   | **66**  |   No   |  No  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset
    */
   inset?: Property.Inset<TLength>;
   /**
-   * The **`inset-block`** CSS property defines the logical block start and end offsets of an element, which maps to physical offsets depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top` and `bottom`, or `right` and `left` properties depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
+   * The **`inset-inline`** CSS property defines the logical start and end offsets of an element in the inline direction, which maps to physical offsets depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top` and `bottom`, or `right` and `left` properties depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
    *
    * **Syntax**: `<'top'>{1,2}`
    *
@@ -10900,7 +10983,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-block
    */
@@ -10914,7 +10997,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-block-end
    */
@@ -10928,7 +11011,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-block-start
    */
@@ -10942,13 +11025,13 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-inline
    */
   "inset-inline"?: Property.InsetInline<TLength>;
   /**
-   * The **`inset-inline-end`** CSS property defines the logical inline end inset of an element, which maps to a physical inset depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top`, `right`, `bottom`, or `left` property depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
+   * The **`inset-inline-end`** CSS property defines the logical inline end inset of an element, which maps to a physical offset depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top`, `right`, `bottom`, or `left` property depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
    *
    * **Syntax**: `<'top'>`
    *
@@ -10956,7 +11039,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-inline-end
    */
@@ -10970,7 +11053,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **63**  |   No   | n/a  | No  |
+   * | **87** | **63**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/inset-inline-start
    */
@@ -11075,6 +11158,20 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "justify-self"?: Property.JustifySelf;
   /**
+   * The **`justify-tracks`** CSS property sets the alignment in the masonry axis for grid containers that have masonry in their inline axis.
+   *
+   * **Syntax**: `[ normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ] ]#`
+   *
+   * **Initial value**: `normal`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |   No   |   n/a   |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/justify-tracks
+   */
+  "justify-tracks"?: Property.JustifyTracks;
+  /**
    * The **`left`** CSS property participates in specifying the horizontal position of a positioned element. It has no effect on non-positioned elements.
    *
    * **Syntax**: `<length> | <percentage> | auto`
@@ -11089,7 +11186,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   left?: Property.Left<TLength>;
   /**
-   * The **`letter-spacing`** CSS property sets the horizontal spacing behavior between text characters. This value is added to the natural spacing between characters while rendering the text. Positive values of `letter-spacing` causes characters to spread farther apart, while negative values of `letter-spacing` bring characters closer together.
+   * The **`letter-spacing`** CSS property sets the horizontal spacing behavior between text characters. This value is added to the natural spacing between characters while rendering the text. Positive values of `letter-spacing` causes characters to spread farther apart, while negative values of `letter-spacing` bring characters closer together.
    *
    * **Syntax**: `normal | <length>`
    *
@@ -11196,7 +11293,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/margin-block
    */
@@ -11252,7 +11349,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/margin-inline
    */
@@ -11509,6 +11606,12 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    * **Syntax**: `normal | compact`
    *
    * **Initial value**: `normal`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |  n/a   |   n/a   |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/math-style
    */
   "math-style"?: Property.MathStyle;
   /**
@@ -11540,7 +11643,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "max-height"?: Property.MaxHeight<TLength>;
   /**
-   * The **`max-inline-size`** CSS property defines the horizontal or vertical maximum size of an element's block depending on its writing mode. It corresponds to the `max-width` or the `max-height` property depending on the value defined for `writing-mode`. If the writing mode is vertically oriented, the value of `max-inline-size` relates to the maximal height of the element, otherwise it relates to the maximal width of the element. It relates to `max-block-size`, which defines the other dimension of the element.
+   * The **`max-inline-size`** CSS property defines the horizontal or vertical maximum size of an element's block, depending on its writing mode. It corresponds to either the `max-width` or the `max-height` property, depending on the value of `writing-mode`.
    *
    * **Syntax**: `<'max-width'>`
    *
@@ -12060,7 +12163,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/padding-block
    */
@@ -12094,7 +12197,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "padding-block-start"?: Property.PaddingBlockStart<TLength>;
   /**
-   * The **`padding-bottom`** CSS property sets the height of the padding area on the bottom of an element.
+   * The **`padding-bottom`** CSS property sets the height of the padding area on the bottom of an element.
    *
    * **Syntax**: `<length> | <percentage>`
    *
@@ -12116,7 +12219,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari | Edge | IE  |
    * | :----: | :-----: | :----: | :--: | :-: |
-   * |  n/a   | **66**  |   No   | n/a  | No  |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/padding-inline
    */
@@ -12152,7 +12255,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "padding-inline-start"?: Property.PaddingInlineStart<TLength>;
   /**
-   * The **`padding-left`** CSS property sets the width of the padding area to the left of an element.
+   * The **`padding-left`** CSS property sets the width of the padding area to the left of an element.
    *
    * **Syntax**: `<length> | <percentage>`
    *
@@ -12166,7 +12269,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "padding-left"?: Property.PaddingLeft<TLength>;
   /**
-   * The **`padding-right`** CSS property sets the width of the padding area on the right of an element.
+   * The **`padding-right`** CSS property sets the width of the padding area on the right of an element.
    *
    * **Syntax**: `<length> | <percentage>`
    *
@@ -12447,9 +12550,10 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `over`
    *
-   * | Chrome | Firefox | Safari | Edge  | IE  |
-   * | :----: | :-----: | :----: | :---: | :-: |
-   * |   No   | **38**  |   No   | 12-79 | No  |
+   * | Chrome  | Firefox |    Safari     | Edge  | IE  |
+   * | :-----: | :-----: | :-----------: | :---: | :-: |
+   * | **84**  | **38**  | **6.1** _-x-_ | 12-79 | No  |
+   * | 1 _-x-_ |         |               |       |     |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/ruby-position
    */
@@ -12477,7 +12581,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * | Chrome | Firefox | Safari |  Edge  | IE  |
    * | :----: | :-----: | :----: | :----: | :-: |
-   * | **61** | **36**  | **14** | **79** | No  |
+   * | **61** | **36**  |  n/a   | **79** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/scroll-behavior
    */
@@ -12918,6 +13022,20 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    */
   "scrollbar-color"?: Property.ScrollbarColor;
   /**
+   * The **`scrollbar-gutter`** CSS property allows authors to reserve space for the scrollbar, preventing unwanted layout changes as the content grows while also avoiding unnecessary visuals when scrolling isn't needed.
+   *
+   * **Syntax**: `auto | [ stable | always ] && both? && force?`
+   *
+   * **Initial value**: `auto`
+   *
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * |  n/a   |   No    |   No   |  No  | No  |
+   *
+   * @see https://developer.mozilla.org/docs/Web/CSS/scrollbar-gutter
+   */
+  "scrollbar-gutter"?: Property.ScrollbarGutter;
+  /**
    * The **`scrollbar-width`** property allows the author to set the maximum thickness of an element’s scrollbars when they are shown.
    *
    * **Syntax**: `auto | thin | none`
@@ -13036,10 +13154,10 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `none`
    *
-   * |           Chrome           | Firefox |              Safari              |                  Edge                  |                   IE                   |
-   * | :------------------------: | :-----: | :------------------------------: | :------------------------------------: | :------------------------------------: |
-   * |           **48**           | **48**  | **5.1** _(-webkit-text-combine)_ | **12** _(-ms-text-combine-horizontal)_ | **11** _(-ms-text-combine-horizontal)_ |
-   * | 9 _(-webkit-text-combine)_ |         |                                  |                                        |                                        |
+   * |           Chrome           | Firefox |              Safari              |                Edge                |                   IE                   |
+   * | :------------------------: | :-----: | :------------------------------: | :--------------------------------: | :------------------------------------: |
+   * |           **48**           | **48**  | **5.1** _(-webkit-text-combine)_ |               15-79                | **11** _(-ms-text-combine-horizontal)_ |
+   * | 9 _(-webkit-text-combine)_ |         |                                  | 12 _(-ms-text-combine-horizontal)_ |                                        |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/text-combine-upright
    */
@@ -13125,9 +13243,9 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   | **70**  | **12.1** |  No  | No  |
+   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
+   * | :----: | :-----: | :------: | :----: | :-: |
+   * | **87** | **70**  | **12.1** | **87** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/text-decoration-thickness
    */
@@ -13139,9 +13257,9 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   | **70**  | **12.1** |  No  | No  |
+   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
+   * | :----: | :-----: | :------: | :----: | :-: |
+   * | **87** | **70**  | **12.1** | **87** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/text-decoration-thickness
    */
@@ -13308,9 +13426,9 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    *
    * **Initial value**: `auto`
    *
-   * | Chrome | Firefox |  Safari  | Edge | IE  |
-   * | :----: | :-----: | :------: | :--: | :-: |
-   * |   No   | **70**  | **12.1** |  No  | No  |
+   * | Chrome | Firefox |  Safari  |  Edge  | IE  |
+   * | :----: | :-----: | :------: | :----: | :-: |
+   * | **87** | **70**  | **12.1** | **87** | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/text-underline-offset
    */
@@ -13466,7 +13584,7 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    *
@@ -13639,12 +13757,6 @@ export interface StandardLonghandPropertiesHyphen<TLength = (string & {}) | 0, T
    * **Syntax**: `normal | break-word`
    *
    * **Initial value**: `normal`
-   *
-   * | Chrome | Firefox | Safari |  Edge  |   IE    |
-   * | :----: | :-----: | :----: | :----: | :-----: |
-   * | **1**  | **3.5** | **2**  | **12** | **5.5** |
-   *
-   * @see https://developer.mozilla.org/docs/Web/CSS/overflow-wrap
    */
   "word-wrap"?: Property.WordWrap;
   /**
@@ -13747,11 +13859,11 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
   /**
    * The **`border-block`** CSS property is a shorthand property for setting the individual logical block border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-block
    */
@@ -13759,7 +13871,7 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
   /**
    * The **`border-block-end`** CSS property is a shorthand property for setting the individual logical block-end border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -13771,7 +13883,7 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
   /**
    * The **`border-block-start`** CSS property is a shorthand property for setting the individual logical block-start border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -13820,11 +13932,11 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
   /**
    * The **`border-inline`** CSS property is a shorthand property for setting the individual logical inline border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
-   * | Chrome | Firefox | Safari |  Edge  | IE  |
-   * | :----: | :-----: | :----: | :----: | :-: |
-   * | **69** | **66**  |   No   | **79** | No  |
+   * | Chrome | Firefox | Safari | Edge | IE  |
+   * | :----: | :-----: | :----: | :--: | :-: |
+   * | **87** | **66**  |   No   | n/a  | No  |
    *
    * @see https://developer.mozilla.org/docs/Web/CSS/border-inline
    */
@@ -13832,7 +13944,7 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
   /**
    * The **`border-inline-end`** CSS property is a shorthand property for setting the individual logical inline-end border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -13844,7 +13956,7 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
   /**
    * The **`border-inline-start`** CSS property is a shorthand property for setting the individual logical inline-start border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <'color'>`
+   * **Syntax**: `<'border-top-width'> || <'border-top-style'> || <color>`
    *
    * | Chrome | Firefox |  Safari  |  Edge  | IE  |
    * | :----: | :-----: | :------: | :----: | :-: |
@@ -13854,7 +13966,7 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
    */
   "border-inline-start"?: Property.BorderInlineStart<TLength>;
   /**
-   * The **`border-left`** shorthand CSS property set an element's left border.
+   * The **`border-left`** shorthand CSS property sets all the properties of an element's left border.
    *
    * **Syntax**: `<line-width> || <line-style> || <color>`
    *
@@ -13879,7 +13991,7 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
    */
   "border-radius"?: Property.BorderRadius<TLength>;
   /**
-   * The **`border-right`** shorthand CSS property sets the properties of an element's right border.
+   * The **`border-right`** shorthand CSS property sets all the properties of an element's right border.
    *
    * **Syntax**: `<line-width> || <line-style> || <color>`
    *
@@ -14242,7 +14354,7 @@ export interface StandardShorthandPropertiesHyphen<TLength = (string & {}) | 0, 
    *
    * | Chrome | Firefox | Safari |  Edge  | IE  |
    * | :----: | :-----: | :----: | :----: | :-: |
-   * | **59** | **45**  |   No   | **79** | No  |
+   * | **59** | **45**  | **11** | **79** | No  |
    *
    * ---
    *
@@ -14352,13 +14464,13 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
   /**
    * The **`animation-timing-function`** CSS property sets how an animation progresses through the duration of each cycle.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
   "-moz-animation-timing-function"?: Property.AnimationTimingFunction;
   /**
-   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this propery, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support `-webkit-appearance`, for compatibility reasons.
+   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this property, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support **`-webkit-appearance`**, for compatibility reasons.
    *
    * **Syntax**: `none | button | button-arrow-down | button-arrow-next | button-arrow-previous | button-arrow-up | button-bevel | button-focus | caret | checkbox | checkbox-container | checkbox-label | checkmenuitem | dualbutton | groupbox | listbox | listitem | menuarrow | menubar | menucheckbox | menuimage | menuitem | menuitemtext | menulist | menulist-button | menulist-text | menulist-textfield | menupopup | menuradio | menuseparator | meterbar | meterchunk | progressbar | progressbar-vertical | progresschunk | progresschunk-vertical | radio | radio-container | radio-label | radiomenuitem | range | range-thumb | resizer | resizerpanel | scale-horizontal | scalethumbend | scalethumb-horizontal | scalethumbstart | scalethumbtick | scalethumb-vertical | scale-vertical | scrollbarbutton-down | scrollbarbutton-left | scrollbarbutton-right | scrollbarbutton-up | scrollbarthumb-horizontal | scrollbarthumb-vertical | scrollbartrack-horizontal | scrollbartrack-vertical | searchfield | separator | sheet | spinner | spinner-downbutton | spinner-textfield | spinner-upbutton | splitter | statusbar | statusbarpanel | tab | tabpanel | tabpanels | tab-scroll-arrow-back | tab-scroll-arrow-forward | textfield | textfield-multiline | toolbar | toolbarbutton | toolbarbutton-dropdown | toolbargripper | toolbox | tooltip | treeheader | treeheadercell | treeheadersortarrow | treeitem | treeline | treetwisty | treetwistyopen | treeview | -moz-mac-unified-toolbar | -moz-win-borderless-glass | -moz-win-browsertabbar-toolbox | -moz-win-communicationstext | -moz-win-communications-toolbox | -moz-win-exclude-glass | -moz-win-glass | -moz-win-mediatext | -moz-win-media-toolbox | -moz-window-button-box | -moz-window-button-box-maximized | -moz-window-button-close | -moz-window-button-maximize | -moz-window-button-minimize | -moz-window-button-restore | -moz-window-frame-bottom | -moz-window-frame-left | -moz-window-frame-right | -moz-window-titlebar | -moz-window-titlebar-maximized`
    *
@@ -14688,7 +14800,7 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
@@ -15176,7 +15288,7 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
@@ -15352,13 +15464,13 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
   /**
    * The **`animation-timing-function`** CSS property sets how an animation progresses through the duration of each cycle.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
   "-webkit-animation-timing-function"?: Property.AnimationTimingFunction;
   /**
-   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this propery, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support `-webkit-appearance`, for compatibility reasons.
+   * The `**appearance**` CSS property is used to display an element using platform-native styling, based on the operating system's theme. The **`-moz-appearance`** and **`-webkit-appearance`** properties are non-standard versions of this property, used (respectively) by Gecko (Firefox) and by WebKit-based (e.g., Safari) and Blink-based (e.g., Chrome, Opera) browsers to achieve the same thing. Note that Firefox and Edge also support **`-webkit-appearance`**, for compatibility reasons.
    *
    * **Syntax**: `none | button | button-bevel | caret | checkbox | default-button | inner-spin-button | listbox | listitem | media-controls-background | media-controls-fullscreen-background | media-current-time-display | media-enter-fullscreen-button | media-exit-fullscreen-button | media-fullscreen-button | media-mute-button | media-overlay-play-button | media-play-button | media-seek-back-button | media-seek-forward-button | media-slider | media-sliderthumb | media-time-remaining-display | media-toggle-closed-captions-button | media-volume-slider | media-volume-slider-container | media-volume-sliderthumb | menulist | menulist-button | menulist-text | menulist-textfield | meter | progress-bar | progress-bar-value | push-button | radio | searchfield | searchfield-cancel-button | searchfield-decoration | searchfield-results-button | searchfield-results-decoration | slider-horizontal | slider-vertical | sliderthumb-horizontal | sliderthumb-vertical | square-button | textarea | textfield | -apple-pay-button`
    *
@@ -15406,7 +15518,7 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
    */
   "-webkit-background-size"?: Property.BackgroundSize<TLength>;
   /**
-   * **Syntax**: `<'color'>`
+   * **Syntax**: `<color>`
    *
    * **Initial value**: `currentcolor`
    */
@@ -15432,7 +15544,7 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
    */
   "-webkit-border-bottom-left-radius"?: Property.BorderBottomLeftRadius<TLength>;
   /**
-   * The **`border-bottom-right-radius`** CSS property rounds the top-left corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
+   * The **`border-bottom-right-radius`** CSS property rounds the bottom-right corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -15792,7 +15904,7 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
    */
   "-webkit-mask-size"?: Property.WebkitMaskSize<TLength>;
   /**
-   * The **`max-inline-size`** CSS property defines the horizontal or vertical maximum size of an element's block depending on its writing mode. It corresponds to the `max-width` or the `max-height` property depending on the value defined for `writing-mode`. If the writing mode is vertically oriented, the value of `max-inline-size` relates to the maximal height of the element, otherwise it relates to the maximal width of the element. It relates to `max-block-size`, which defines the other dimension of the element.
+   * The **`max-inline-size`** CSS property defines the horizontal or vertical maximum size of an element's block, depending on its writing mode. It corresponds to either the `max-width` or the `max-height` property, depending on the value of `writing-mode`.
    *
    * **Syntax**: `<'max-width'>`
    *
@@ -15855,6 +15967,14 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
    * **Initial value**: `economy`
    */
   "-webkit-print-color-adjust"?: Property.ColorAdjust;
+  /**
+   * The `**ruby-position**` CSS property defines the position of a ruby element relatives to its base element. It can be position over the element (`over`), under it (`under`), or between the characters, on their right side (`inter-character`).
+   *
+   * **Syntax**: `over | under | inter-character`
+   *
+   * **Initial value**: `over`
+   */
+  "-webkit-ruby-position"?: Property.RubyPosition;
   /**
    * The **`scroll-snap-type`** CSS property sets how strictly snap points are enforced on the scroll container in case there is one.
    *
@@ -16050,7 +16170,7 @@ export interface VendorLonghandPropertiesHyphen<TLength = (string & {}) | 0, TTi
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    */
@@ -16161,7 +16281,7 @@ export interface VendorShorthandPropertiesHyphen<TLength = (string & {}) | 0, TT
   /**
    * The **`-webkit-border-before`** CSS property is a shorthand property for setting the individual logical block start border property values in a single place in the style sheet.
    *
-   * **Syntax**: `<'border-width'> || <'border-style'> || <'color'>`
+   * **Syntax**: `<'border-width'> || <'border-style'> || <color>`
    */
   "-webkit-border-before"?: Property.WebkitBorderBefore<TLength>;
   /**
@@ -16232,6 +16352,16 @@ export interface VendorPropertiesHyphen<TLength = (string & {}) | 0, TTime = str
 
 export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = string & {}> {
   /**
+   * In combination with `elevation`, the **`azimuth`** CSS property enables different audio sources to be positioned spatially for aural presentation. This is important in that it provides a natural way to tell several voices apart, as each can be positioned to originate at a different location on the sound stage. Stereo output produce a lateral sound stage, while binaural headphones and multi-speaker setups allow for a fully three-dimensional stage.
+   *
+   * **Syntax**: `<angle> | [ [ left-side | far-left | left | center-left | center | center-right | right | far-right | right-side ] || behind ] | leftwards | rightwards`
+   *
+   * **Initial value**: `center`
+   *
+   * @deprecated
+   */
+  azimuth?: Property.Azimuth;
+  /**
    * The **`box-align`** CSS property specifies how an element aligns its contents across its layout in a perpendicular direction. The effect of the property is only visible if there is extra space in the box.
    *
    * **Syntax**: `start | center | end | baseline | stretch`
@@ -16292,7 +16422,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    */
   "box-ordinal-group"?: Property.BoxOrdinalGroup;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * This is a property of the original CSS Flexible Box Layout Module draft, and has been replaced by a newer standard. See flexbox for information about the current standard.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -16370,7 +16500,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    */
   "ime-mode"?: Property.ImeMode;
   /**
-   * The **`inset-block`** CSS property defines the logical block start and end offsets of an element, which maps to physical offsets depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top` and `bottom`, or `right` and `left` properties depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
+   * The **`inset-inline`** CSS property defines the logical start and end offsets of an element in the inline direction, which maps to physical offsets depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top` and `bottom`, or `right` and `left` properties depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
    *
    * **Syntax**: `<'top'>{1,2}`
    *
@@ -16410,7 +16540,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    */
   "offset-inline"?: Property.InsetInline<TLength>;
   /**
-   * The **`inset-inline-end`** CSS property defines the logical inline end inset of an element, which maps to a physical inset depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top`, `right`, `bottom`, or `left` property depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
+   * The **`inset-inline-end`** CSS property defines the logical inline end inset of an element, which maps to a physical offset depending on the element's writing mode, directionality, and text orientation. It corresponds to the `top`, `right`, `bottom`, or `left` property depending on the values defined for `writing-mode`, `direction`, and `text-orientation`.
    *
    * **Syntax**: `<'top'>`
    *
@@ -16570,7 +16700,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    */
   "-khtml-box-ordinal-group"?: Property.BoxOrdinalGroup;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * This is a property of the original CSS Flexible Box Layout Module draft, and has been replaced by a newer standard. See flexbox for information about the current standard.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -16688,7 +16818,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    */
   "-moz-border-radius-bottomleft"?: Property.BorderBottomLeftRadius<TLength>;
   /**
-   * The **`border-bottom-right-radius`** CSS property rounds the top-left corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
+   * The **`border-bottom-right-radius`** CSS property rounds the bottom-right corner of an element by specifying the radius (or the radius of the semi-major and semi-minor axes) of the ellipse defining the curvature of the corner.
    *
    * **Syntax**: `<length-percentage>{1,2}`
    *
@@ -16758,7 +16888,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    */
   "-moz-box-ordinal-group"?: Property.BoxOrdinalGroup;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * This is a property of the original CSS Flexible Box Layout Module draft, and has been replaced by a newer standard. See flexbox for information about the current standard.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -17054,7 +17184,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
   /**
    * The **`animation-timing-function`** CSS property sets how an animation progresses through the duration of each cycle.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    *
@@ -17130,7 +17260,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
   /**
    * The **`transition-timing-function`** CSS property sets how intermediate values are calculated for CSS properties being affected by a transition effect.
    *
-   * **Syntax**: `<timing-function>#`
+   * **Syntax**: `<easing-function>#`
    *
    * **Initial value**: `ease`
    *
@@ -17198,7 +17328,7 @@ export interface ObsoletePropertiesHyphen<TLength = (string & {}) | 0, TTime = s
    */
   "-webkit-box-ordinal-group"?: Property.BoxOrdinalGroup;
   /**
-   * The **`box-orient`** CSS property sets whether an element lays out its contents horizontally or vertically.
+   * This is a property of the original CSS Flexible Box Layout Module draft, and has been replaced by a newer standard. See flexbox for information about the current standard.
    *
    * **Syntax**: `horizontal | vertical | inline-axis | block-axis | inherit`
    *
@@ -17395,6 +17525,7 @@ export type AtRules =
   | "@media"
   | "@namespace"
   | "@page"
+  | "@property"
   | "@supports"
   | "@viewport";
 
@@ -17438,6 +17569,7 @@ export type SimplePseudos =
   | "::-moz-range-thumb"
   | "::-moz-range-track"
   | "::-moz-selection"
+  | "::-moz-ui-invalid"
   | "::-ms-backdrop"
   | "::-ms-browse"
   | "::-ms-check"
@@ -17478,6 +17610,7 @@ export type SimplePseudos =
   | ":before"
   | ":blank"
   | ":checked"
+  | ":current"
   | ":default"
   | ":defined"
   | ":disabled"
@@ -17492,6 +17625,7 @@ export type SimplePseudos =
   | ":focus-visible"
   | ":focus-within"
   | ":fullscreen"
+  | ":future"
   | ":hover"
   | ":in-range"
   | ":indeterminate"
@@ -17500,10 +17634,16 @@ export type SimplePseudos =
   | ":last-of-type"
   | ":left"
   | ":link"
+  | ":local-link"
+  | ":nth-col"
+  | ":nth-last-col"
   | ":only-child"
   | ":only-of-type"
   | ":optional"
   | ":out-of-range"
+  | ":past"
+  | ":paused"
+  | ":picture-in-picture"
   | ":placeholder-shown"
   | ":read-only"
   | ":read-write"
@@ -17512,13 +17652,14 @@ export type SimplePseudos =
   | ":root"
   | ":scope"
   | ":target"
+  | ":target-within"
+  | ":user-invalid"
   | ":valid"
   | ":visited";
 
 export type Pseudos = AdvancedPseudos | SimplePseudos;
 
 export type HtmlAttributes =
-  | "[-webkit-dropzone]"
   | "[abbr]"
   | "[accept-charset]"
   | "[accept]"
@@ -17578,10 +17719,10 @@ export type HtmlAttributes =
   | "[defer]"
   | "[dir]"
   | "[direction]"
+  | "[dirname]"
   | "[disabled]"
   | "[download]"
   | "[draggable]"
-  | "[dropzone]"
   | "[enctype]"
   | "[enterkeyhint]"
   | "[exportparts]"
@@ -17696,6 +17837,7 @@ export type HtmlAttributes =
   | "[sandbox-allow-popups-to-escape-sandbox]"
   | "[sandbox-allow-popups]"
   | "[sandbox-allow-presentation]"
+  | "[sandbox-allow-same-origin]"
   | "[sandbox-allow-storage-access-by-user-activation]"
   | "[sandbox-allow-top-navigation-by-user-activation]"
   | "[sandbox]"
@@ -17998,6 +18140,8 @@ export namespace Property {
 
   export type AlignSelf = Globals | DataType.SelfPosition | "auto" | "baseline" | "normal" | "stretch" | (string & {});
 
+  export type AlignTracks = Globals | DataType.ContentDistribution | DataType.ContentPosition | "baseline" | "normal" | (string & {});
+
   export type All = Globals;
 
   export type Animation<TTime = string & {}> = Globals | DataType.SingleAnimation<TTime> | (string & {});
@@ -18016,11 +18160,27 @@ export namespace Property {
 
   export type AnimationPlayState = Globals | "paused" | "running" | (string & {});
 
-  export type AnimationTimingFunction = Globals | DataType.TimingFunction | (string & {});
+  export type AnimationTimingFunction = Globals | DataType.EasingFunction | (string & {});
 
   export type Appearance = Globals | DataType.CompatAuto | "auto" | "menulist-button" | "none" | "textfield";
 
   export type AspectRatio = Globals | "auto" | (string & {});
+
+  export type Azimuth =
+    | Globals
+    | "behind"
+    | "center"
+    | "center-left"
+    | "center-right"
+    | "far-left"
+    | "far-right"
+    | "left"
+    | "left-side"
+    | "leftwards"
+    | "right"
+    | "right-side"
+    | "rightwards"
+    | (string & {});
 
   export type BackdropFilter = Globals | "none" | (string & {});
 
@@ -18274,6 +18434,8 @@ export namespace Property {
 
   export type Content = Globals | DataType.ContentList | "none" | "normal" | (string & {});
 
+  export type ContentVisibility = Globals | "auto" | "hidden" | "visible";
+
   export type CounterIncrement = Globals | "none" | (string & {});
 
   export type CounterReset = Globals | "none" | (string & {});
@@ -18461,6 +18623,8 @@ export namespace Property {
 
   export type FontWeight = Globals | DataType.FontWeightAbsolute | "bolder" | "lighter";
 
+  export type ForcedColorAdjust = Globals | "auto" | "none";
+
   export type Gap<TLength = (string & {}) | 0> = Globals | TLength | "normal" | (string & {});
 
   export type Grid = Globals | "none" | (string & {});
@@ -18538,6 +18702,8 @@ export namespace Property {
   export type JustifyItems = Globals | DataType.SelfPosition | "baseline" | "left" | "legacy" | "normal" | "right" | "stretch" | (string & {});
 
   export type JustifySelf = Globals | DataType.SelfPosition | "auto" | "baseline" | "left" | "normal" | "right" | "stretch" | (string & {});
+
+  export type JustifyTracks = Globals | DataType.ContentDistribution | DataType.ContentPosition | "left" | "normal" | "right" | (string & {});
 
   export type Left<TLength = (string & {}) | 0> = Globals | TLength | "auto" | (string & {});
 
@@ -18864,6 +19030,8 @@ export namespace Property {
 
   export type ScrollbarColor = Globals | DataType.Color | "auto" | "dark" | "light";
 
+  export type ScrollbarGutter = Globals | "always" | "auto" | "stable" | (string & {});
+
   export type MsScrollbarTrackColor = Globals | DataType.Color;
 
   export type ScrollbarWidth = Globals | "auto" | "none" | "thin";
@@ -18882,7 +19050,7 @@ export namespace Property {
 
   export type TextAlignLast = Globals | "auto" | "center" | "end" | "justify" | "left" | "right" | "start";
 
-  export type TextCombineUpright = Globals | "all" | "digits" | "none" | (string & {});
+  export type TextCombineUpright = Globals | "-ms-text-combine-horizontal" | "all" | "digits" | "none" | (string & {});
 
   export type TextDecoration<TLength = (string & {}) | 0> =
     | Globals
@@ -18979,7 +19147,7 @@ export namespace Property {
 
   export type TransitionProperty = Globals | "all" | "none" | (string & {});
 
-  export type TransitionTimingFunction = Globals | DataType.TimingFunction | (string & {});
+  export type TransitionTimingFunction = Globals | DataType.EasingFunction | (string & {});
 
   export type Translate<TLength = (string & {}) | 0> = Globals | TLength | "none" | (string & {});
 
@@ -19569,19 +19737,43 @@ export namespace AtRule {
     [P in keyof FontFaceHyphen<TLength, TTime>]: FontFaceHyphen<TLength, TTime>[P] | FontFaceHyphen<TLength, TTime>[P][];
   };
 
+  export interface Page<TLength = (string & {}) | 0, TTime = string & {}> {
+    size?: Size<TLength>;
+  }
+
+  export interface PageHyphen<TLength = (string & {}) | 0, TTime = string & {}> {
+    size?: Size<TLength>;
+  }
+
+  export type PageFallback<TLength = (string & {}) | 0, TTime = string & {}> = {
+    [P in keyof Page<TLength, TTime>]: Page<TLength, TTime>[P] | Page<TLength, TTime>[P][];
+  };
+
+  export type PageHyphenFallback<TLength = (string & {}) | 0, TTime = string & {}> = {
+    [P in keyof PageHyphen<TLength, TTime>]: PageHyphen<TLength, TTime>[P] | PageHyphen<TLength, TTime>[P][];
+  };
+
+  export interface Property<TLength = (string & {}) | 0, TTime = string & {}> {
+    inherits?: Inherits;
+    initialValue?: string;
+    syntax?: string;
+  }
+
+  export interface PropertyHyphen<TLength = (string & {}) | 0, TTime = string & {}> {
+    inherits?: Inherits;
+    "initial-value"?: string;
+    syntax?: string;
+  }
+
+  export type PropertyFallback<TLength = (string & {}) | 0, TTime = string & {}> = {
+    [P in keyof Property<TLength, TTime>]: Property<TLength, TTime>[P] | Property<TLength, TTime>[P][];
+  };
+
+  export type PropertyHyphenFallback<TLength = (string & {}) | 0, TTime = string & {}> = {
+    [P in keyof PropertyHyphen<TLength, TTime>]: PropertyHyphen<TLength, TTime>[P] | PropertyHyphen<TLength, TTime>[P][];
+  };
+
   export interface Viewport<TLength = (string & {}) | 0, TTime = string & {}> {
-    msHeight?: Height<TLength>;
-    msMaxHeight?: MaxHeight<TLength>;
-    msMaxWidth?: MaxWidth<TLength>;
-    msMaxZoom?: MaxZoom;
-    msMinHeight?: MinHeight<TLength>;
-    msMinWidth?: MinWidth<TLength>;
-    msMinZoom?: MinZoom;
-    msOrientation?: Orientation;
-    msUserZoom?: UserZoom;
-    msWidth?: Width<TLength>;
-    msZoom?: Zoom;
-    OOrientation?: Orientation;
     height?: Height<TLength>;
     maxHeight?: MaxHeight<TLength>;
     maxWidth?: MaxWidth<TLength>;
@@ -19591,23 +19783,12 @@ export namespace AtRule {
     minZoom?: MinZoom;
     orientation?: Orientation;
     userZoom?: UserZoom;
+    viewportFit?: ViewportFit;
     width?: Width<TLength>;
     zoom?: Zoom;
   }
 
   export interface ViewportHyphen<TLength = (string & {}) | 0, TTime = string & {}> {
-    "-ms-height"?: Height<TLength>;
-    "-ms-max-height"?: MaxHeight<TLength>;
-    "-ms-max-width"?: MaxWidth<TLength>;
-    "-ms-max-zoom"?: MaxZoom;
-    "-ms-min-height"?: MinHeight<TLength>;
-    "-ms-min-width"?: MinWidth<TLength>;
-    "-ms-min-zoom"?: MinZoom;
-    "-ms-orientation"?: Orientation;
-    "-ms-user-zoom"?: UserZoom;
-    "-ms-width"?: Width<TLength>;
-    "-ms-zoom"?: Zoom;
-    "-o-orientation"?: Orientation;
     height?: Height<TLength>;
     "max-height"?: MaxHeight<TLength>;
     "max-width"?: MaxWidth<TLength>;
@@ -19617,6 +19798,7 @@ export namespace AtRule {
     "min-zoom"?: MinZoom;
     orientation?: Orientation;
     "user-zoom"?: UserZoom;
+    "viewport-fit"?: ViewportFit;
     width?: Width<TLength>;
     zoom?: Zoom;
   }
@@ -19679,6 +19861,10 @@ export namespace AtRule {
 
   type FontWeight = DataType.FontWeightAbsolute | (string & {});
 
+  type Size<TLength> = DataType.PageSize | TLength | "auto" | "landscape" | "portrait" | (string & {});
+
+  type Inherits = "false" | "true";
+
   type Height<TLength> = DataType.ViewportLength<TLength> | (string & {});
 
   type MaxHeight<TLength> = DataType.ViewportLength<TLength>;
@@ -19695,7 +19881,9 @@ export namespace AtRule {
 
   type Orientation = "auto" | "landscape" | "portrait";
 
-  type UserZoom = "-ms-zoom" | "fixed" | "zoom";
+  type UserZoom = "fixed" | "zoom";
+
+  type ViewportFit = "auto" | "contain" | "cover";
 
   type Width<TLength> = DataType.ViewportLength<TLength> | (string & {});
 
@@ -19823,6 +20011,8 @@ declare namespace DataType {
   type DisplayLegacy = "-ms-inline-flexbox" | "-ms-inline-grid" | "-webkit-inline-flex" | "inline-block" | "inline-flex" | "inline-grid" | "inline-list-item" | "inline-table";
 
   type DisplayOutside = "block" | "inline" | "run-in";
+
+  type EasingFunction = CubicBezierTimingFunction | StepTimingFunction | "linear";
 
   type EastAsianVariantValues = "jis04" | "jis78" | "jis83" | "jis90" | "simplified" | "traditional";
 
@@ -20007,6 +20197,8 @@ declare namespace DataType {
     | "yellow"
     | "yellowgreen";
 
+  type PageSize = "A3" | "A4" | "A5" | "B4" | "B5" | "JIS-B4" | "JIS-B5" | "ledger" | "legal" | "letter";
+
   type Paint = Color | "child" | "context-fill" | "context-stroke" | "none" | (string & {});
 
   type Position<TLength> = TLength | "bottom" | "center" | "left" | "right" | "top" | (string & {});
@@ -20018,7 +20210,7 @@ declare namespace DataType {
   type SelfPosition = "center" | "end" | "flex-end" | "flex-start" | "self-end" | "self-start" | "start";
 
   type SingleAnimation<TTime> =
-    | TimingFunction
+    | EasingFunction
     | SingleAnimationDirection
     | SingleAnimationFillMode
     | TTime
@@ -20033,11 +20225,9 @@ declare namespace DataType {
 
   type SingleAnimationFillMode = "backwards" | "both" | "forwards" | "none";
 
-  type SingleTransition<TTime> = TimingFunction | TTime | "all" | "none" | (string & {});
+  type SingleTransition<TTime> = EasingFunction | TTime | "all" | "none" | (string & {});
 
   type StepTimingFunction = "step-end" | "step-start" | (string & {});
-
-  type TimingFunction = CubicBezierTimingFunction | StepTimingFunction | "linear";
 
   type TrackBreadth<TLength> = TLength | "auto" | "max-content" | "min-content" | (string & {});
 

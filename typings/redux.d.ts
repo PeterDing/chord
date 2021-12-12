@@ -1,5 +1,3 @@
-/// <reference types="symbol-observable" />
-
 /**
  * An *action* is a plain object that represents an intention to change the
  * state. Actions are the only way to get data into the store. Any data,
@@ -53,23 +51,26 @@ declare const $CombinedState: unique symbol
  * typed as always undefined, so its never expected to have a meaningful
  * value anyway. It just makes this type distinquishable from plain `{}`.
  */
-export type CombinedState<S> = { readonly [$CombinedState]?: undefined } & S
+interface EmptyObject {
+  readonly [$CombinedState]?: undefined
+}
+export type CombinedState<S> = EmptyObject & S
 
 /**
  * Recursively makes combined state objects partial. Only combined state _root
  * objects_ (i.e. the generated higher level object with keys mapping to
  * individual reducers) are partial.
  */
-export type PreloadedState<S> = Required<S> extends {
-  [$CombinedState]: undefined
-}
+export type PreloadedState<S> = Required<S> extends EmptyObject
   ? S extends CombinedState<infer S1>
     ? {
         [K in keyof S1]?: S1[K] extends object ? PreloadedState<S1[K]> : S1[K]
       }
-    : never
+    : S
   : {
-      [K in keyof S]: S[K] extends object ? PreloadedState<S[K]> : S[K]
+      [K in keyof S]: S[K] extends string | number | boolean | symbol
+        ? S[K]
+        : PreloadedState<S[K]>
     }
 
 /* reducers */
@@ -219,6 +220,12 @@ export interface Dispatch<A extends Action = AnyAction> {
  */
 export interface Unsubscribe {
   (): void
+}
+
+declare global {
+  interface SymbolConstructor {
+    readonly observable: symbol
+  }
 }
 
 /**
