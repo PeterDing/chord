@@ -26,8 +26,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-        npm install -g gulp mocha
-        yarn install
+          npm install -g gulp mocha
+          yarn install
 
       - name: Install dependencies of Linux
         run: |
