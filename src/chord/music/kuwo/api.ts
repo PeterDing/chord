@@ -60,7 +60,7 @@ export class KuwoMusicApi {
     static readonly BASICURL_FLAC = 'http://mobi.kuwo.cn/';
 
     static readonly NODE_MAP = {
-        audios: 'url',
+        audios: 'api/v1/www/music/playUrl',
         audios_flac: 'mobi.s',
 
         // No use this song node, it does not give audio url
@@ -161,6 +161,7 @@ export class KuwoMusicApi {
         };
 
         let info: any;
+
         try {
             info = await request(options);
         } catch (e) {
@@ -222,13 +223,10 @@ export class KuwoMusicApi {
         let info = await this.request(
             KuwoMusicApi.NODE_MAP.audios,
             {
-                format: 'mp3',
-                rid: songId,
-                response: 'url',
-                type: 'convert_url3',
+                mid: songId,
+                format: 'flac',
+                type: 'music',
                 br,
-                from: 'web',
-                t: Date.now(),
             },
         );
 
@@ -237,7 +235,7 @@ export class KuwoMusicApi {
                 format: 'mp3',
                 size: null,
                 kbps,
-                url: info['url'],
+                url: info['data']['url'],
                 path: null,
             }
         ];
