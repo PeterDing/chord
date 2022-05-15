@@ -43,25 +43,25 @@ jobs:
       - name: Extract node_modules archive
         if: ${{ steps.cacheNodeModules.outputs.cache-hit == 'true' }}
         run: 7z.exe x .build/node_modules_cache/cache.7z -aos
-      - name: Get npm cache directory path
-        id: npmCacheDirPath
+      - name: Get yarn cache directory path
+        id: yarnCacheDirPath
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
-        run: echo "::set-output name=dir::%LocalAppData%\\npm-cache"
-      - name: Cache npm directory
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn directory
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npmCacheDirPath.outputs.dir }}
-          key: ${{ runner.os }}-npmCacheDir-${{ steps.nodeModulesCacheKey.outputs.value }}
-          restore-keys: ${{ runner.os }}-npmCacheDir-
-      - name: Execute npm
+          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
+          key: ${{ runner.os }}-yarnCacheDir-${{ steps.nodeModulesCacheKey.outputs.value }}
+          restore-keys: ${{ runner.os }}-yarnCacheDir-
+      - name: Execute yarn
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
         run: |
-          npm global add gulp mocha
-          npm --frozen-lockfile --network-timeout 180000
+          yarn global add gulp mocha
+          yarn --frozen-lockfile --network-timeout 180000
       - name: Create node_modules archive
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         run: |
@@ -71,7 +71,7 @@ jobs:
           7z.exe a .build/node_modules_cache/cache.7z -mx3 `@.build/node_modules_list.txt
 
       - name: Compile
-        run: npm run compile
+        run: yarn run compile
 
   linux:
     name: Linux
@@ -102,27 +102,28 @@ jobs:
           path: "**/node_modules"
           key: ${{ runner.os }}-cacheNodeModules21-${{ steps.nodeModulesCacheKey.outputs.value }}
           restore-keys: ${{ runner.os }}-cacheNodeModules21-
-      - name: Get npm cache directory path
-        id: npmCacheDirPath
+      - name: Get yarn cache directory path
+        id: yarnCacheDirPath
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
-        run: echo "::set-output name=dir::~/.npm"
-      - name: Cache npm directory
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn directory
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npmCacheDirPath.outputs.dir }}
-          key: ${{ runner.os }}-npmCacheDir-${{ steps.nodeModulesCacheKey.outputs.value }}
-          restore-keys: ${{ runner.os }}-npmCacheDir-
-      - name: Execute npm
+          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
+          key: ${{ runner.os }}-yarnCacheDir-${{ steps.nodeModulesCacheKey.outputs.value }}
+          restore-keys: ${{ runner.os }}-yarnCacheDir-
+      - name: Execute yarn
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
         run: |
-          npm --frozen-lockfile --network-timeout 180000
+          yarn global add gulp mocha
+          yarn --frozen-lockfile --network-timeout 180000
 
       - name: Compile
-        run: npm run compile
+        run: yarn run compile
 
   darwin:
     name: macOS
@@ -147,25 +148,25 @@ jobs:
           path: "**/node_modules"
           key: ${{ runner.os }}-cacheNodeModules21-${{ steps.nodeModulesCacheKey.outputs.value }}
           restore-keys: ${{ runner.os }}-cacheNodeModules21-
-      - name: Get npm cache directory path
-        id: npmCacheDirPath
+      - name: Get yarn cache directory path
+        id: yarnCacheDirPath
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
-        run: echo "::set-output name=dir::~/.npm"
-      - name: Cache npm directory
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn directory
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npmCacheDirPath.outputs.dir }}
-          key: ${{ runner.os }}-npmCacheDir-${{ steps.nodeModulesCacheKey.outputs.value }}
-          restore-keys: ${{ runner.os }}-npmCacheDir-
-      - name: Execute npm
+          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
+          key: ${{ runner.os }}-yarnCacheDir-${{ steps.nodeModulesCacheKey.outputs.value }}
+          restore-keys: ${{ runner.os }}-yarnCacheDir-
+      - name: Execute yarn
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
         run: |
-          npm global add gulp mocha
-          npm --frozen-lockfile --network-timeout 180000
+          yarn global add gulp mocha
+          yarn --frozen-lockfile --network-timeout 180000
 
       - name: Compile
-        run: npm run compile
+        run: yarn run compile
