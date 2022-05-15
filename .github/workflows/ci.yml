@@ -57,9 +57,7 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
-        run: |
-          yarn global add gulp mocha
-          yarn --frozen-lockfile --network-timeout 180000
+        run: yarn --frozen-lockfile --network-timeout 180000
       - name: Create node_modules archive
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         run: |
@@ -116,9 +114,7 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
-        run: |
-          yarn global add gulp mocha
-          yarn --frozen-lockfile --network-timeout 180000
+        run: yarn --frozen-lockfile --network-timeout 180000
 
       - name: Compile
         run: yarn run compile
@@ -162,9 +158,7 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
-        run: |
-          yarn global add gulp mocha
-          yarn --frozen-lockfile --network-timeout 180000
+        run: yarn --frozen-lockfile --network-timeout 180000
 
       - name: Compile
         run: yarn run compile
