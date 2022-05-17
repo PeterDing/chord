@@ -438,7 +438,7 @@ export function makeUserProfile(info: any): IUserProfile {
 
     // qq number
     // if there is not qq number, using encrypt_uin
-    let userOriginalId = (userInfo['uin'] || info['uin'] || info['encrypt_uin']).toString();
+    let userOriginalId = (userInfo['uin'] || userInfo['encrypt_uin'] || info['uin'] || info['encrypt_uin']).toString();
 
     let userProfile = {
         userId: _getUserId(userOriginalId),
