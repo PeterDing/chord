@@ -57,7 +57,7 @@ export function makeSong(info: any): ISong {
     let songOriginalId = info['rid'].toString();
 
     let albumOriginalId = info['albumid'].toString();
-    let albumCoverUrl = info['albumpic'];
+    let albumCoverUrl = info['albumpic'].replace('.kwcdn.', '.');
 
     let artistOriginalId = info['artistid'].toString();
 
@@ -166,7 +166,7 @@ export function makeLyric(songId: string, lyricInfo: any): ILyric {
 
 export function makeAlbum(info: any): IAlbum {
     let albumOriginalId = info['albumid'].toString();
-    let albumCoverUrl = info['pic'];
+    let albumCoverUrl = info['pic'].replace('.kwcdn.', '.');
 
     let artistOriginalId = info['artistid'].toString();
 
