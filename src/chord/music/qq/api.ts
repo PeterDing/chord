@@ -1,6 +1,6 @@
 'use strict';
 
-import { remote } from 'electron';
+const remote = global.electronRemote;
 
 import * as stdFs from 'fs';
 import * as stdPath from 'path';
@@ -9,6 +9,7 @@ import { CHORD_DIR } from 'chord/preference/common/chord';
 import { isEmptyObject } from 'chord/base/common/objects';
 import { ok } from 'chord/base/common/assert';
 import { sleep } from 'chord/base/common/time';
+import { IMap } from 'chord/base/common/map';
 import { getRandom } from 'chord/base/node/random';
 import { decodeHtml } from 'chord/base/browser/htmlContent';
 import { decodeBase64 } from 'chord/base/node/crypto';
@@ -32,7 +33,7 @@ import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
 import { makeCookie, makeCookieJar } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
-import { request, htmlGet, IRequestOptions } from 'chord/base/node/_request';
+import { request, htmlGet, IResponse, IRequestOptions } from 'chord/base/node/_request';
 
 import {
     makeSong,
@@ -143,11 +144,11 @@ export class QQMusicApi {
     };
 
     private account: IAccount;
-    private cookies: Object;
+    private cookies: IMap<string>;
 
     // The cookies are for getting audio url.
     // They can be these cookies of a vip user.
-    private cookiesForAudio: Object;
+    private cookiesForAudio: IMap<string>;
 
     private ip_index: number;
     private ips: Array<string>;
@@ -204,9 +205,11 @@ export class QQMusicApi {
             headers: headers,
             body: data,
             gzip: true,
+            resolveWithFullResponse: true,
         };
 
-        let body: any = await request(options);
+        let resp: IResponse = await request(options);
+        let body = resp.body;
         return body.trim().startsWith('<') || body == '' ? body : JSON.parse(body);
     }
 
@@ -328,7 +331,7 @@ export class QQMusicApi {
     /**
      * Get audio url
      */
-    async getAudioUrl(songMid: string, songMediaMid: string, kbps: number, format: string): Promise<string> {
+    public async getAudioUrl(songMid: string, songMediaMid: string, kbps: number, format: string): Promise<string> {
         let guid = this.makeguid();
         let uin = this.getUinForAudio();
 
@@ -355,10 +358,9 @@ export class QQMusicApi {
             'comm': {
                 uin,
                 'format': 'json',
-                'ct': 19,
+                'ct': 24,
                 'cv': 0
             }
-
         });
         let sign = getSecuritySign(data);
         let params = {
@@ -1172,9 +1174,7 @@ export class QQMusicApi {
     }
 
 
-    /**
-     * TODO: Need to logined
-     */
+    // TODO: Fix: {"code":1006,"subcode":1006,"msg":"g_token is wrong"}
     public async userFavoriteArtists(userMid: string, offset: number = 1, limit: number = 10): Promise<Array<IArtist>> {
         if (!this.logined()) {
             throw new NoLoginError("[QQMusicApi] Geting user's favorite artists needs to login");

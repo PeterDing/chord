@@ -1,5 +1,7 @@
 'use strict';
 
+// Here is renderer process
+
 import { Logger } from 'chord/platform/log/common/log';
 import { filenameToNodeName } from 'chord/platform/utils/common/paths';
 const logger = new Logger(filenameToNodeName(__filename));
@@ -24,9 +26,9 @@ import { webFrame } from 'electron';
 
 import 'chord/workbench/events/player';
 
-
 logger.info('electron rendering process activate')
 
+const reactDOMClient = global.reactDOMClient;
 
 // Disable zoom
 // https://github.com/electron/electron/issues/3609#issuecomment-289537969
@@ -47,8 +49,10 @@ function App() {
     );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
-
+// ReactDOM.render(<App />, document.getElementById('root'));
+const container = document.getElementById('root');
+const root = reactDOMClient.createRoot(container);
+root.render(<App />);
 
 // configure CAudio
 CAudio.registerStore(store);

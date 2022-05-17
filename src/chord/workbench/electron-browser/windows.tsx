@@ -1,7 +1,9 @@
 'use strict';
 
 import * as React from 'react';
-import { remote, shell } from 'electron';
+import { shell } from 'electron';
+
+const remote = global.electronRemote;
 
 
 export default class WindowsControlBar extends React.Component<any, any> {

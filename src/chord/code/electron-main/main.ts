@@ -1,5 +1,7 @@
 'use strict';
 
+// Here is the main process
+
 import { Logger } from 'chord/platform/log/common/log';
 import { filenameToNodeName } from 'chord/platform/utils/common/paths';
 const logger = new Logger(filenameToNodeName(__filename));
@@ -8,13 +10,12 @@ import * as process from 'process';
 import * as path from 'path';
 
 import { app, BrowserWindow, Menu } from 'electron';
+
 import { menuTemplate } from 'chord/code/electron-main/menu/template';
 
 import { isWindows, isMacintosh } from 'chord/base/common/platform';
 
-
 logger.info('electron main active');
-
 
 const DEV = process.env.ELECTRON_DEV ? true : false;
 
@@ -61,10 +62,17 @@ function createWindow() {
 
         webPreferences: {
             nodeIntegration: true,
-            enableRemoteModule: true,
+            contextIsolation: false,
         },
     });
 
+    // https://www.npmjs.com/package/@electron/remote
+    // Note: In electron >= 14.0.0, you must use the new enable API to enable
+    // the remote module for each desired WebContents separately:
+    // require("@electron/remote/main").enable(webContents).
+    //
+    // remoteMain must be import from `index.js` to ignore the amd error.
+    global.remoteMain.enable(win.webContents);
 
     // path: chord/workbench/electron-browser/bootstrap/index.html
     win.loadFile(path.join(__dirname, '../../workbench/electron-browser/bootstrap/index.html'));

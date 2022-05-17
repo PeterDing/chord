@@ -1,8 +1,14 @@
 'use strict';
 
+// Here is renderer process
+
 const path = require('path');
 const fs = require('fs');
 const ps = require('process');
+
+// Import the remote in renderer process
+global.electronRemote = require('@electron/remote');
+global.reactDOMClient = require('react-dom/client');
 
 // path: chord/loader.js
 const loaderFilename = path.join(__dirname + '../../../../loader.js');
@@ -29,13 +35,13 @@ let config = {
 };
 loader.require.config(config);
 
-let bootstrap = function(entrypoint, onLoad, onError) {
+let bootstrap = function (entrypoint, onLoad, onError) {
     if (!entrypoint) {
         return;
     }
 
-    onLoad = onLoad || function() {};
-    onError = onError || function(err) {
+    onLoad = onLoad || function () {};
+    onError = onError || function (err) {
         console.error(err);
     };
 
@@ -45,9 +51,9 @@ let bootstrap = function(entrypoint, onLoad, onError) {
 // load css-loader
 bootstrap('chord/css');
 bootstrap('chord/workbench/electron-browser/main');
+// bootstrap('chord/vvv');
 
-
-let isMacintosh  = (ps.platform === 'darwin');
+let isMacintosh = (ps.platform === 'darwin');
 if (!isMacintosh) {
     bootstrap('chord/workbench/electron-browser/scrollbar');
 }
