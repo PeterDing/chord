@@ -235,7 +235,7 @@ export class KuwoMusicApi {
                 format: 'mp3',
                 size: null,
                 kbps,
-                url: info['data']['url'],
+                url: info['data'] && info['data']['url'],
                 path: null,
             }
         ];
