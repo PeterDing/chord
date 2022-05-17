@@ -81,7 +81,7 @@ export default class ConfigurationView extends React.Component<any, IConfigurati
                     <br />
                     中国国内的用户如果要收听部分的 Himalaya 的内容，需要设置一个(科学上网)代理。
                     <br />
-                    chord 默认不使用代理来访问所以的音频链接，如果音频请求出错且音频链接的域名
+                    chord 默认不使用代理来访问所有的音频链接，如果音频请求出错且音频链接的域名
                     不属于中国，那么 chord 尝试用代理来链接。
                     <br />
                     如果用户没有设置 hosts 和 代理，可能无法搜索到 Himalaya 的内容。
