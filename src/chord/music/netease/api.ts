@@ -1014,19 +1014,19 @@ export class NeteaseMusicApi {
 
             let matchList = [
                 // song
-                [/song\?id=(\d+)/, 'song'],
+                [/song\?.*&?id=(\d+)/, 'song'],
 
                 // artist
-                [/artist\?id=(\d+)/, 'artist'],
+                [/artist\?.*&?id=(\d+)/, 'artist'],
 
                 // album
-                [/album\?id=(\d+)/, 'album'],
+                [/album\?.*&?id=(\d+)/, 'album'],
 
                 // playlist
-                [/playlist\?id=(\d+)/, 'collection'],
+                [/playlist\?.*&?id=(\d+)/, 'collection'],
 
                 // user
-                [/home\?id=(\d+)/, 'user'],
+                [/home\?.*&?id=(\d+)/, 'user'],
             ];
             for (let [re, tp] of matchList) {
                 m = (re as RegExp).exec(chunk);
