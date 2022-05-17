@@ -12,6 +12,15 @@ export function jsonLoadValue(obj: any): any {
     Object.keys(obj)
         .filter(key => typeof obj[key] == 'string')
         .filter(key => obj[key].startsWith('[') || obj[key].startsWith('{'))
-        .forEach(key => obj[key] = JSON.parse(obj[key]));
+        .forEach(key => obj[key] = json_parse(obj[key]));
     return obj;
+}
+
+
+function json_parse(obj: string): any {
+    try {
+        return JSON.parse(obj);
+    } catch (e) {
+        return obj;
+    }
 }
