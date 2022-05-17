@@ -86,7 +86,7 @@ function handleUrlExpire(): boolean {
     let playItem = state.player.playList[index];
 
     // Kuwo url has an expire time
-    if (playItem.origin == ORIGIN.kuwo) {
+    if (playItem.origin == ORIGIN.kuwo || playItem.origin == ORIGIN.netease) {
         playItem.audios.map(a => a.url = null);
     } else {
         return false;
