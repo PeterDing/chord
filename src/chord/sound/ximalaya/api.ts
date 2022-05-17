@@ -52,7 +52,7 @@ export class XimalayaApi {
         podcast: 'revision/album',
         podcastEpisodes: 'revision/album/getTracksList',
 
-        search: 'revision/search',
+        search: 'revision/search/main',
 
         radioBasic: 'revision/user/basic',
         radioAddons: 'revision/user',
@@ -228,19 +228,28 @@ export class XimalayaApi {
 
     public async searchEpisodes(keyword: string, page: number = 1, size: number = 10): Promise<Array<IEpisode>> {
         let json = await this.search('track', keyword, page, size);
-        return makeEpisodes(json.data.result.response.docs);
+        if (!json.data.track) {
+            return [];
+        }
+        return makeEpisodes(json.data.track.docs);
     }
 
 
     public async searchPodcasts(keyword: string, page: number = 1, size: number = 10): Promise<Array<IPodcast>> {
         let json = await this.search('album', keyword, page, size);
-        return makePodcasts(json.data.result.response.docs);
+        if (!json.data.album) {
+            return [];
+        }
+        return makePodcasts(json.data.album.docs);
     }
 
 
     public async searchRadios(keyword: string, page: number = 1, size: number = 10): Promise<Array<IRadio>> {
         let json = await this.search('user', keyword, page, size);
-        return makeRadios(json.data.result.response.docs);
+        if (!json.data.user) {
+            return [];
+        }
+        return makeRadios(json.data.user.docs);
     }
 
 
