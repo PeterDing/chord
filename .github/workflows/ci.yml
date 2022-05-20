@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
   pull_request:
     branches:
       - master
@@ -20,6 +22,11 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Get version
+        if: startsWith(github.ref, 'refs/tags/')
+        id: release
+        run: echo "::set-output name=version::${GITHUB_REF/refs\/tags\/v/''}"
 
       - uses: actions/setup-node@v2
         with:
@@ -69,6 +76,23 @@ jobs:
       - name: Compile
         run: yarn run compile
 
+      - name: Build binary
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          yarn run 'dist:win'
+          ls dist
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            - dist/chord-${{ steps.release.outputs.version }}-win-x64.exe
+
+      - name: Remove dist directory
+        if: startsWith(github.ref, 'refs/tags/')
+        run: rm -r dist
+
   linux:
     name: Linux
     runs-on: ubuntu-latest
@@ -77,6 +101,11 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Get version
+        if: startsWith(github.ref, 'refs/tags/')
+        id: release
+        run: echo "::set-output name=version::${GITHUB_REF/refs\/tags\/v/''}"
 
       # TODO: rename azure-pipelines/linux/xvfb.init to github-actions
       - name: Setup Build Environment
@@ -119,6 +148,26 @@ jobs:
       - name: Compile
         run: yarn run compile
 
+      - name: Build binary
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          yarn run 'dist:linux'
+          ls dist
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            - dist/chord-${{ steps.release.outputs.version }}-linux-x86_64.AppImage
+            - dist/chord-${{ steps.release.outputs.version }}-linux-amd64.deb
+            - dist/chord-${{ steps.release.outputs.version }}-linux-x64.pacman
+            - dist/chord-${{ steps.release.outputs.version }}-linux-x86_64.rpm
+
+      - name: Remove dist directory
+        if: startsWith(github.ref, 'refs/tags/')
+        run: rm -fr dist
+
   darwin:
     name: macOS
     runs-on: macos-latest
@@ -127,6 +176,11 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Get version
+        if: startsWith(github.ref, 'refs/tags/')
+        id: release
+        run: echo "::set-output name=version::${GITHUB_REF/refs\/tags\/v/''}"
 
       - uses: actions/setup-node@v2
         with:
@@ -162,3 +216,21 @@ jobs:
 
       - name: Compile
         run: yarn run compile
+
+      - name: Build binary
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          yarn run 'dist:mac'
+          ls dist
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            - dist/chord-${{ steps.release.outputs.version }}-mac-x64.dmg
+            - dist/chord-${{ steps.release.outputs.version }}-mac-x64.zip
+
+      - name: Remove dist directory
+        if: startsWith(github.ref, 'refs/tags/')
+        run: rm -fr dist
