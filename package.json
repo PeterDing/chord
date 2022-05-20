@@ -52,6 +52,8 @@
     },
     "dependencies": {
         "@electron/remote": "^2.0.8",
+        "axios": "^0.27.2",
+        "axios-cookiejar-support": "^4.0.1",
         "better-sqlite3": "^7.5.1",
         "big-integer": "^1.6.51",
         "cheerio": "^1.0.0-rc.10",
@@ -65,7 +67,8 @@
         "redux": "^4.2.0",
         "redux-thunk": "^2.4.1",
         "request": "^2.88.2",
-        "request-promise": "^4.2.6"
+        "request-promise": "^4.2.6",
+        "tough-cookie": "^4.0.0"
     },
     "devDependencies": {
         "@types/better-sqlite3": "^7.5.0",
