@@ -66,6 +66,8 @@ export interface IEpisode {
     tags?: Array<ITag>;
 
     description?: string;
+
+    // millisecond
     duration?: number;
 
     releaseDate?: number | string;
