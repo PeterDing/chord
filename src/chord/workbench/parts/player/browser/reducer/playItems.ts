@@ -21,7 +21,7 @@ export function playItems(state: IPlayerState, playList: Array<TPlayItem>): IPla
         // TODO: read kbps configuration
         let audio = selectAudio(playItem.audios);
         let audioUrl = audio.path || audio.url;
-        CAudio.makeAudio(audioUrl, (playItem as any).songId || (playItem as any).episodeId);
+        CAudio.makeAudio(audioUrl, (playItem as any).songId || (playItem as any).episodeId, playItem.duration);
 
         // play now
         CAudio.play();

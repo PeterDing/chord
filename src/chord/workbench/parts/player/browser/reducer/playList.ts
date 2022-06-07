@@ -25,7 +25,7 @@ export function playAudio(state: IPlayerState, act: IPlayAct): IPlayerState {
             // TODO: read kbps configuration
             let audio = selectAudio(playItem.audios);
             let audioUrl = audio.path || audio.url;
-            CAudio.makeAudio(audioUrl, (new PlayItem(playItem)).id());
+            CAudio.makeAudio(audioUrl, (new PlayItem(playItem)).id(), playItem.duration);
 
             // play now
             CAudio.play();
