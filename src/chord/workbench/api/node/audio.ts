@@ -26,6 +26,9 @@ class Audio {
     private static audio: Howl | null;
     private static store: Store;
 
+    // millisecond
+    private static durationDefault: number;
+
     private static onplayFns: Array<IHook> = [];
     private static onpauseFns: Array<IHook> = [];
     private static onendFns: Array<IHook> = [];
@@ -98,8 +101,10 @@ class Audio {
 
     /**
      * Make(or change) the Global Howl instance
+     *
+     * `durationDefault` is given by caller when the response of url is stream
      */
-    static makeAudio(url: string, playItemId?: string) {
+    static makeAudio(url: string, playItemId?: string, durationDefault?: number) {
         if (Audio.audio) {
             Audio.stop();
             Audio.destroy();
@@ -111,6 +116,7 @@ class Audio {
         }
 
         Audio.audio = Audio.doMakeAudio(url, playItemId);
+        Audio.durationDefault = durationDefault;
     }
 
     static seek(position?: number): number {
@@ -165,7 +171,10 @@ class Audio {
     }
 
     static duration(): number {
-        return Audio.audio ? Audio.audio.duration() : 0;
+        let durationDefault = Audio.durationDefault && Audio.durationDefault / 1000;
+        return Audio.audio ?
+            ((Audio.audio.duration() != Infinity ? Audio.audio.duration() : 0) || durationDefault)
+            : 0;
     }
 
     static destroy() {
