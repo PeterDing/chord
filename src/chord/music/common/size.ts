@@ -1,6 +1,7 @@
 'use strict';
 
 import * as nodeUrl from 'url';
+import { isString } from 'chord/base/common/checker';
 
 
 export enum ESize {
@@ -12,7 +13,7 @@ export enum ESize {
     Tiny,
 }
 
-export function resizeImageUrl(url: string, size: ESize | number, resizeFunc: (url: string, size: number) => string): string {
+export function resizeImageUrl(url: string | object, size: ESize | number, resizeFunc: (url: string | object, size: number) => string): string {
     switch (size) {
         case ESize.Huge:
             size = 700;
@@ -35,7 +36,9 @@ export function resizeImageUrl(url: string, size: ESize | number, resizeFunc: (u
         default:
             break;
     }
-    let u = nodeUrl.parse(url);
-    url = `${u.protocol}//${u.hostname}${u.pathname}`;
+    if (isString(url)) {
+        let u = nodeUrl.parse(url as string);
+        url = `${u.protocol}//${u.hostname}${u.pathname}`;
+    }
     return resizeFunc(url, size);
 }
