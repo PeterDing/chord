@@ -9,6 +9,7 @@ const ps = require('process');
 // Import the remote in renderer process
 global.electronRemote = require('@electron/remote');
 global.reactDOMClient = require('react-dom/client');
+global.axiosAdaptersHttp = require('axios/lib/adapters/http');
 
 // path: chord/loader.js
 const loaderFilename = path.join(__dirname + '../../../../loader.js');
