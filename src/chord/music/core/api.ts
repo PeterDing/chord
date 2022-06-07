@@ -26,6 +26,7 @@ import { QQMusicApi } from 'chord/music/qq/api';
 import { QianQianApi } from 'chord/music/qianqian/api';
 import { MiguMusicApi } from 'chord/music/migu/api';
 import { KuwoMusicApi } from 'chord/music/kuwo/api';
+import { SpotifyMusicApi } from 'chord/music/spotify/api';
 
 import { cache12, cache30 } from 'chord/base/common/lru';
 
@@ -44,6 +45,7 @@ export class Music {
     qianqianApi: QianQianApi;
     miguApi: MiguMusicApi;
     kuwoApi: KuwoMusicApi;
+    spotifyApi: SpotifyMusicApi;
 
 
     constructor() {
@@ -68,6 +70,9 @@ export class Music {
 
         // initiate kuwo api
         this.kuwoApi = new KuwoMusicApi();
+
+        // initiate spotify api
+        this.spotifyApi = new SpotifyMusicApi();
 
         // set user configuration
         let userConfig = userConfiguration.getConfig();
@@ -110,6 +115,9 @@ export class Music {
             case ORIGIN.kuwo:
                 this.kuwoApi = new KuwoMusicApi();
                 break;
+            case ORIGIN.spotify:
+                this.spotifyApi = new SpotifyMusicApi();
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.clean] Here will never be occured. [args]: ${origin}`);
@@ -144,6 +152,9 @@ export class Music {
                 break;
             case ORIGIN.kuwo:
                 result = await this.kuwoApi.audios(originType.id, supKbps);
+                break;
+            case ORIGIN.spotify:
+                result = await this.spotifyApi.audios(originType.id, supKbps);
                 break;
             default:
                 // Here will never be occured.
@@ -184,6 +195,9 @@ export class Music {
                 break;
             case ORIGIN.kuwo:
                 song = await this.kuwoApi.song(originType.id);
+                break;
+            case ORIGIN.spotify:
+                song = await this.spotifyApi.song(originType.id);
                 break;
             default:
                 // Here will never be occured.
@@ -263,6 +277,9 @@ export class Music {
             case ORIGIN.kuwo:
                 artist = await this.kuwoApi.artist(originType.id);
                 break;
+            case ORIGIN.spotify:
+                artist = await this.spotifyApi.artist(originType.id);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artist] Here will never be occured. [args]: ${artistId}`);
@@ -277,7 +294,7 @@ export class Music {
     /**
      * artistId is Chord's artist id, not artist original id
      */
-    public async artistSongs(artistId: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+    public async artistSongs(artistId: string, offset: number = 0, limit: number = 10, artistMid?: string): Promise<Array<ISong>> {
         let h = md5(`music.core.api.artistSongs(${artistId}, ${offset}, ${limit})`);
         let result = cache12.get(h);
         result = makeItems(result);
@@ -293,7 +310,7 @@ export class Music {
                 songs = await this.neteaseApi.artistSongs(originType.id, offset, limit);
                 break;
             case ORIGIN.qq:
-                songs = await this.qqApi.artistSongs(originType.id, offset, limit);
+                songs = await this.qqApi.artistSongs(artistMid, offset, limit);
                 break;
             case ORIGIN.qianqian:
                 songs = await this.qianqianApi.artistSongs(originType.id, offset, limit);
@@ -303,6 +320,9 @@ export class Music {
                 break;
             case ORIGIN.kuwo:
                 songs = await this.kuwoApi.artistSongs(originType.id, offset, limit);
+                break;
+            case ORIGIN.spotify:
+                songs = await this.spotifyApi.artistSongs(originType.id, offset, limit);
                 break;
             default:
                 // Here will never be occured.
@@ -346,6 +366,9 @@ export class Music {
             case ORIGIN.kuwo:
                 albums = await this.kuwoApi.artistAlbums(originType.id, offset, limit);
                 break;
+            case ORIGIN.spotify:
+                albums = await this.spotifyApi.artistAlbums(originType.id, offset, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.artistAlbums] Here will never be occured. [args]: ${artistId}`);
@@ -386,6 +409,9 @@ export class Music {
                 break;
             case ORIGIN.kuwo:
                 album = await this.kuwoApi.album(originType.id);
+                break;
+            case ORIGIN.spotify:
+                album = await this.spotifyApi.album(originType.id);
                 break;
             default:
                 // Here will never be occured.
@@ -428,6 +454,9 @@ export class Music {
             case ORIGIN.kuwo:
                 collection = await this.kuwoApi.collection(originType.id, offset, limit);
                 break;
+            case ORIGIN.spotify:
+                collection = await this.spotifyApi.collection(originType.id, limit);
+                break;
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.collection] Here will never be occured. [args]: ${collectionId}`);
@@ -449,12 +478,13 @@ export class Music {
         if (result) return result;
 
         let list = await Promise.all([
-            !this.isOriginOn(ORIGIN.xiami) ? [] : this.xiamiApi.searchSongs(keyword, offset + 1, limit),
-            !this.isOriginOn(ORIGIN.netease) ? [] : this.neteaseApi.searchSongs(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.qq) ? [] : this.qqApi.searchSongs(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.qianqian) ? [] : this.qianqianApi.searchSongs(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.migu) ? [] : this.miguApi.searchSongs(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.kuwo) ? [] : this.kuwoApi.searchSongs(keyword, offset + 1, limit),
+            this.isOriginOn(ORIGIN.xiami) ? this.xiamiApi.searchSongs(keyword, offset + 1, limit) : [],
+            this.isOriginOn(ORIGIN.netease) ? this.neteaseApi.searchSongs(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.qq) ? this.qqApi.searchSongs(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.qianqian) ? this.qianqianApi.searchSongs(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchSongs(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.kuwo) ? this.kuwoApi.searchSongs(keyword, offset + 1, limit) : [],
+            this.isOriginOn(ORIGIN.spotify) ? this.spotifyApi.searchSongs(keyword, offset + 1, limit) : [],
         ]);
 
         let items = insertMerge(list);
@@ -473,12 +503,13 @@ export class Music {
         if (result) return result;
 
         let list = await Promise.all([
-            !this.isOriginOn(ORIGIN.xiami) ? [] : this.xiamiApi.searchArtists(keyword, offset + 1, limit),
-            !this.isOriginOn(ORIGIN.netease) ? [] : this.neteaseApi.searchArtists(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.qianqian) ? [] : this.qianqianApi.searchArtists(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.migu) ? [] : this.miguApi.searchArtists(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.kuwo) ? [] : this.kuwoApi.searchArtists(keyword, offset + 1, limit),
-            // qq doesn't support to search artist
+            this.isOriginOn(ORIGIN.xiami) ? this.xiamiApi.searchArtists(keyword, offset + 1, limit) : [],
+            this.isOriginOn(ORIGIN.netease) ? this.neteaseApi.searchArtists(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.qq) ? this.qqApi.searchArtists(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.qianqian) ? this.qianqianApi.searchArtists(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchArtists(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.kuwo) ? this.kuwoApi.searchArtists(keyword, offset + 1, limit) : [],
+            this.isOriginOn(ORIGIN.spotify) ? this.spotifyApi.searchArtists(keyword, offset + 1, limit) : [],
         ]);
 
         let items = insertMerge(list);
@@ -497,12 +528,13 @@ export class Music {
         if (result) return result;
 
         let list = await Promise.all([
-            !this.isOriginOn(ORIGIN.xiami) ? [] : this.xiamiApi.searchAlbums(keyword, offset + 1, limit),
-            !this.isOriginOn(ORIGIN.netease) ? [] : this.neteaseApi.searchAlbums(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.qq) ? [] : this.qqApi.searchAlbums(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.qianqian) ? [] : this.qianqianApi.searchAlbums(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.migu) ? [] : this.miguApi.searchAlbums(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.kuwo) ? [] : this.kuwoApi.searchAlbums(keyword, offset + 1, limit),
+            this.isOriginOn(ORIGIN.xiami) ? this.xiamiApi.searchAlbums(keyword, offset + 1, limit) : [],
+            this.isOriginOn(ORIGIN.netease) ? this.neteaseApi.searchAlbums(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.qq) ? this.qqApi.searchAlbums(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.qianqian) ? this.qianqianApi.searchAlbums(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchAlbums(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.kuwo) ? this.kuwoApi.searchAlbums(keyword, offset + 1, limit) : [],
+            this.isOriginOn(ORIGIN.spotify) ? this.spotifyApi.searchAlbums(keyword, offset + 1, limit) : [],
         ]);
 
         let items = insertMerge(list);
@@ -521,12 +553,13 @@ export class Music {
         if (result) return result;
 
         let list = await Promise.all([
-            !this.isOriginOn(ORIGIN.xiami) ? [] : this.xiamiApi.searchCollections(keyword, offset + 1, limit),
-            !this.isOriginOn(ORIGIN.netease) ? [] : this.neteaseApi.searchCollections(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.qq) ? [] : this.qqApi.searchCollections(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.qianqian) ? [] : this.qianqianApi.searchCollections(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.migu) ? [] : this.miguApi.searchCollections(keyword, offset * limit, limit),
-            !this.isOriginOn(ORIGIN.kuwo) ? [] : this.kuwoApi.searchCollections(keyword, offset + 1, limit),
+            this.isOriginOn(ORIGIN.xiami) ? this.xiamiApi.searchCollections(keyword, offset + 1, limit) : [],
+            this.isOriginOn(ORIGIN.netease) ? this.neteaseApi.searchCollections(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.qq) ? this.qqApi.searchCollections(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.qianqian) ? this.qianqianApi.searchCollections(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchCollections(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.kuwo) ? this.kuwoApi.searchCollections(keyword, offset + 1, limit) : [],
+            this.isOriginOn(ORIGIN.spotify) ? this.spotifyApi.searchCollections(keyword, offset + 1, limit) : [],
         ]);
 
         let items = insertMerge(list);
@@ -1301,22 +1334,24 @@ export class Music {
     }
 
 
-    public resizeImageUrl(origin: string, url: string, size: ESize | number): string {
-        if (!url) { return url; }
+    public resizeImageUrl(origin: string, url: string | object, size: ESize | number): string {
+        if (!url) { return null; }
         switch (origin) {
             case ORIGIN.xiami:
                 return null;
             // return this.xiamiApi.resizeImageUrl(url, size);
             case ORIGIN.netease:
-                return this.neteaseApi.resizeImageUrl(url, size);
+                return this.neteaseApi.resizeImageUrl(url as string, size);
             case ORIGIN.qq:
-                return this.qqApi.resizeImageUrl(url, size);
+                return this.qqApi.resizeImageUrl(url as string, size);
             case ORIGIN.qianqian:
-                return this.qianqianApi.resizeImageUrl(url, size);
+                return this.qianqianApi.resizeImageUrl(url as string, size);
             case ORIGIN.migu:
-                return this.miguApi.resizeImageUrl(url, size);
+                return this.miguApi.resizeImageUrl(url as string, size);
             case ORIGIN.kuwo:
-                return this.kuwoApi.resizeImageUrl(url, size);
+                return this.kuwoApi.resizeImageUrl(url as string, size);
+            case ORIGIN.spotify:
+                return this.spotifyApi.resizeImageUrl(url as Array<any>, size);
             default:
                 // Here will never be occured.
                 throw new Error(`[ERROR] [Music.resizeImageUrl] Here will never be occured. [args]: ${url}`);
