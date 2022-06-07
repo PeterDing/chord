@@ -21,7 +21,8 @@ export async function getMoreSongs(artist: IArtist, offset: IOffset, size: numbe
             offset = { ...offset, offset: offset.offset + 1 };
             offsets = [offset];
         }
-        let futs = offsets.map(_offset => musicApi.artistSongs(artist.artistId, _offset.offset, _offset.limit));
+        let futs = offsets.map(
+            _offset => musicApi.artistSongs(artist.artistId, _offset.offset, _offset.limit, artist.artistMid));
         let songsList = await Promise.all(futs);
         // songs = songs.concat(...songsList).slice(0, size);
         songs = songs.concat(...songsList);
