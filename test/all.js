@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path');
 var glob = require('glob');
 var process = require('process');
@@ -7,7 +9,7 @@ var select = process.env.select;
 var TEST_GLOB = '**/test/**/*.test.js';
 var out = 'out';
 
-var loader = require('../' + 'out' + '/chord/loader');
+var loader = require('../out/chord/loader');
 var src = path.join(path.dirname(__dirname), out);
 
 
@@ -35,12 +37,12 @@ const loadFunc = cb => {
                 }
 
                 return test.replace(/(\.js)|(\.d\.ts)|(\.js\.map)$/, '');
-        });
+            });
         console.log(modulesToLoad);
         define(modulesToLoad, () => { cb(null); }, cb);
     };
 
-    glob(TEST_GLOB, { cwd: src }, function(err, files) { doRun(files); });
+    glob(TEST_GLOB, { cwd: src }, function (err, files) { doRun(files); });
 }
 
 
