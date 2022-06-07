@@ -42,6 +42,7 @@ export function makeOffsets(origin: string, offset: IOffset, size: number): Arra
             findPages(offset.offset, offset.limit, total, offsets);
             break;
         case ORIGIN.netease:
+        case ORIGIN.spotify:
         case ORIGIN.qq:
         case ORIGIN.qianqian:
             // TODO: user's favorites do not need offset * limit in apis
@@ -70,6 +71,7 @@ export function setCurrectOffset(origin: string, offset: IOffset, size: number):
             _offset.limit = 10;
             break;
         case ORIGIN.netease:
+        case ORIGIN.spotify:
         case ORIGIN.qq:
         case ORIGIN.qianqian:
             _offset = initiateOffset();
