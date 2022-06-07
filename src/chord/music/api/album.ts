@@ -17,10 +17,13 @@ export interface IAlbum {
     url?: string;
 
     albumName?: string;
-    albumCoverUrl?: string;
+
+    // cover url is json for spotify
+    albumCoverUrl?: string | object;
     albumCoverPath?: string;
 
     artistId?: string;
+
     artistOriginalId?: string;
     // for qq music
     artistMid?: string;

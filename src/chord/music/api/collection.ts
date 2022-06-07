@@ -14,7 +14,8 @@ export interface ICollection {
 
     collectionName?: string;
 
-    collectionCoverUrl?: string;
+    // cover url is json for spotify
+    collectionCoverUrl?: string | object;
     collectionCoverPath?: string;
 
     userId?: string;

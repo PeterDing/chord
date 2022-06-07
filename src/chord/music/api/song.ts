@@ -43,7 +43,9 @@ export interface ISong {
     // album mid for qq
     albumMid?: string;
     albumName?: string;
-    albumCoverUrl?: string;
+
+    // cover url is json for spotify
+    albumCoverUrl?: string | object;
     albumCoverPath?: string;
 
     // artistId is the database primary key
@@ -52,7 +54,8 @@ export interface ISong {
     // artist mid for qq
     artistMid?: string;
     artistName?: string;
-    artistAvatarUrl?: string;
+    // cover url is json for spotify
+    artistAvatarUrl?: string | object;
     artistAvatarPath?: string;
 
     composer?: string;
@@ -68,6 +71,8 @@ export interface ISong {
     tags?: Array<ITag>;
 
     description?: string;
+
+    // millisecond
     duration?: number;
 
     releaseDate?: number | string;

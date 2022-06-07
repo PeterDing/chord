@@ -20,7 +20,8 @@ export interface IArtist {
     artistName?: string;
     artistAlias?: Array<string>;
 
-    artistAvatarUrl?: string;
+    // cover url is json for spotify
+    artistAvatarUrl?: string | object;
     artistAvatarPath?: string;
 
     area?: string;
