@@ -12,6 +12,7 @@ export enum ORIGIN {
     himalaya = 'himalaya',
     migu = 'migu',
     kuwo = 'kuwo',
+    spotify = 'spotify',
 }
 
 export enum UnavailableOrigins {
@@ -57,6 +58,7 @@ export enum OriginSongUrl {
     qianqian = 'http://music.taihe.com/song/{id}',
     migu = 'http://music.migu.cn/v3/music/song/{id}',
     kuwo = 'http://kuwo.cn/play_detail/{id}',
+    spotify = 'https://open.spotify.com/track/{id}',
 }
 
 export enum OriginAlbumUrl {
@@ -66,6 +68,7 @@ export enum OriginAlbumUrl {
     qianqian = 'http://music.taihe.com/album/{id}',
     migu = 'http://music.migu.cn/v3/music/album/{id}',
     kuwo = 'http://kuwo.cn/album_detail/{id}',
+    spotify = 'https://open.spotify.com/album/{id}',
 }
 
 export enum OriginArtistUrl {
@@ -74,7 +77,8 @@ export enum OriginArtistUrl {
     qq = 'https://y.qq.com/n/yqq/singer/{id}.html',
     qianqian = 'http://music.taihe.com/artist/{id}',
     migu = 'http://music.migu.cn/v3/music/artist/{id}',
-    kuwo = 'http://kuwo.cn/singer_detail/{id},'
+    kuwo = 'http://kuwo.cn/singer_detail/{id}',
+    spotify = 'https://open.spotify.com/artist/{id}',
 }
 
 export enum OriginCollectionUrl {
@@ -84,6 +88,7 @@ export enum OriginCollectionUrl {
     qianqian = 'http://music.taihe.com/songlist/{id}',
     migu = 'http://music.migu.cn/v3/music/playlist/{id}',
     kuwo = 'http://kuwo.cn/playlist_detail/{id}',
+    spotify = 'https://open.spotify.com/playlist/{id}',
 }
 
 export enum OriginUserUrl {
@@ -94,6 +99,7 @@ export enum OriginUserUrl {
     // http://music.taihe.com/user?nickname=%E5%91%A8%E6%88%AA%E6%A3%8D%E7%9A%84%E5%8F%8C%E6%9D%B0%E4%BC%A6
     qianqian = 'http://music.taihe.com/user?nickname={id}',
     migu = 'http://music.migu.cn/v2/user/{id}',
+    spotify = 'https://open.spotify.com/user/{id}',
 }
 
 
