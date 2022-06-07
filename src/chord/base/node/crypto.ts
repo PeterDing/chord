@@ -10,8 +10,8 @@ export function md5(data: string | Buffer): string {
 
 export function sha256(
     data: string,
-    inputEncoding: crypto.Utf8AsciiLatin1Encoding = 'utf8',
-    outputEncoding: crypto.HexBase64Latin1Encoding = 'hex',
+    inputEncoding: crypto.Encoding = 'utf8',
+    outputEncoding: crypto.BinaryToTextEncoding = 'hex',
 ): string {
     return crypto.createHash('sha256').update(data, inputEncoding).digest(outputEncoding);
 }
@@ -33,8 +33,8 @@ export function encryptAES(
     buf: string,
     key: Buffer,
     iv: Buffer,
-    inputEncoding?: string,
-    outputEncoding?: string,
+    inputEncoding?: crypto.Encoding,
+    outputEncoding?: crypto.Encoding,
     mode: string = 'cbc',
     keySize?: number,
 ): string {
@@ -42,7 +42,7 @@ export function encryptAES(
 
     let cipher = crypto.createCipheriv(algorithm, key, iv);
 
-    let encrypted = cipher.update(buf, inputEncoding as any, outputEncoding as any);
+    let encrypted = cipher.update(buf, inputEncoding, outputEncoding);
     encrypted += cipher.final(outputEncoding);
 
     return encrypted;
@@ -53,8 +53,8 @@ export function decryptAES(
     buf: string,
     key: Buffer,
     iv: Buffer,
-    inputEncoding?: string,
-    outputEncoding?: string,
+    inputEncoding?: crypto.Encoding,
+    outputEncoding?: crypto.Encoding,
     mode: string = 'cbc',
     keySize?: number,
 ): string {
@@ -62,7 +62,7 @@ export function decryptAES(
 
     let decipher = crypto.createDecipheriv(algorithm, key, iv);
 
-    let decrypted = decipher.update(buf, inputEncoding as any, outputEncoding as any);
+    let decrypted = decipher.update(buf, inputEncoding, outputEncoding);
     decrypted += decipher.final(outputEncoding);
     return decrypted;
 }
@@ -74,7 +74,7 @@ export function encryptRSA(
     buf: string,
     publicKey: string | any,
     inputEncoding?: BufferEncoding,
-    outputEncoding?: string,
+    outputEncoding?: BufferEncoding,
 ): string {
     let _buf = Buffer.from(buf, inputEncoding);
     let encrypted = crypto.publicEncrypt(publicKey, _buf);
@@ -85,7 +85,7 @@ export function decryptRSA(
     buf: string,
     publicKey: string,
     inputEncoding?: BufferEncoding,
-    outputEncoding?: string,
+    outputEncoding?: BufferEncoding,
 ): string {
     let _buf = Buffer.from(buf, inputEncoding);
     let decrypted = crypto.publicDecrypt(publicKey, _buf);
