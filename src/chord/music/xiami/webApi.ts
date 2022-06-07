@@ -1,6 +1,8 @@
 'use strict';
 
-import { remote } from 'electron';
+// import { remote } from 'electron';
+
+const remote = global.electronRemote;
 
 import { sleep } from 'chord/base/common/time';
 import { Logger, LogLevel } from 'chord/platform/log/common/log';
@@ -13,7 +15,7 @@ import { md5 } from 'chord/base/node/crypto';
 
 import { Cookie, makeCookieJar, makeCookies, makeCookie } from 'chord/base/node/cookies';
 import { querystringify, getHost } from 'chord/base/node/url';
-import { request, IRequestOptions } from 'chord/base/node/_request';
+import { request, IRequestOptions, IResponse } from 'chord/base/node/_request';
 
 
 import { IAudio } from 'chord/music/api/audio';
@@ -146,21 +148,18 @@ export class XiamiApi {
         let url = XiamiApi.BASICURL;
         let options: IRequestOptions = {
             method: 'GET',
-            url: url,
             headers: XiamiApi.HEADERS2,
-            gzip: true,
-            resolveWithFullResponse: true,
         };
-        let result: any = await request(options);
-        if (result.headers.hasOwnProperty('set-cookie')) {
-            makeCookies(result.headers['set-cookie']).forEach(cookie => {
+        let resp: any = await request(url, options);
+        if (resp.headers.hasOwnProperty('set-cookie')) {
+            makeCookies(resp.headers['set-cookie']).forEach(cookie => {
                 this.cookies[cookie.key] = cookie;
                 if (cookie.key == 'xm_sg_tk') {
                     this.token = cookie.value.split('_')[0];
                 }
             });
         } else {
-            loggerWarning.warning('[XiamiApi.getCookies] [Error]: (params, response):', options, result);
+            loggerWarning.warning('[XiamiApi.getCookies] [Error]: (params, response):', options, resp);
         }
     }
 
@@ -211,7 +210,7 @@ export class XiamiApi {
     }
 
 
-    public async request(method: string, url: string, data?: string): Promise<any> {
+    public async request(method: string, url: string, data?: string): Promise<IResponse> {
         // init cookies
         await this.getCookies();
 
@@ -225,15 +224,12 @@ export class XiamiApi {
 
         let options: IRequestOptions = {
             method,
-            url: url,
             jar: cookieJar,
             headers: headers,
-            body: data,
-            gzip: true,
-            resolveWithFullResponse: false,
+            data,
         };
-        let result: any = await request(options);
-        return result;
+        let resp: IResponse = await request(url, options);
+        return resp;
     }
 
 
@@ -272,14 +268,11 @@ export class XiamiApi {
         let url = basicUrl + node + '?' + querystringify({ _q: queryStr, _s: sign });
         let options: IRequestOptions = {
             method,
-            url: url,
             jar: cookieJar,
             headers: headers,
-            gzip: true,
-            resolveWithFullResponse: false,
         };
-        let result: any = await request(options);
-        let json = JSON.parse(result.trim());
+        let resp: IResponse = await request(url, options);
+        let json = resp.data;
 
         // Handle verify
         if (json['rgv587_flag'] == 'sm') {
@@ -337,15 +330,12 @@ export class XiamiApi {
         let url = basicUrl + node + (params ? '?' + querystringify(params) : '');
         let options: IRequestOptions = {
             method,
-            url,
             jar: cookieJar,
             headers: headers,
-            body: data,
-            gzip: true,
-            resolveWithFullResponse: false,
+            data,
         };
-        let result: any = await request(options);
-        let json = JSON.parse(result.trim());
+        let resp: IResponse = await request(url, options);
+        let json = resp.data;
 
         // TODO: Handle each errors
 

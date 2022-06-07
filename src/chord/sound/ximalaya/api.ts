@@ -5,7 +5,7 @@ import { filenameToNodeName } from 'chord/platform/utils/common/paths';
 const loggerWarning = new Logger(filenameToNodeName(__filename), LogLevel.Warning);
 
 import { querystringify } from 'chord/base/node/url';
-import { request, IRequestOptions } from 'chord/base/node/_request';
+import { request, IRequestOptions, IResponse } from 'chord/base/node/_request';
 
 import { IListOption } from 'chord/music/api/listOption';
 
@@ -82,11 +82,9 @@ export class XimalayaApi {
             method: 'GET',
             url,
             headers,
-            gzip: true,
-            resolveWithFullResponse: false,
         };
-        let result: any = await request(options);
-        let json = JSON.parse(result.trim());
+        let resp: IResponse = await request(url, options);
+        let json = resp.data;
 
         if (json.ret && json.ret != 200 && json.ret != 0) {
             loggerWarning.warning('[XimalayaApi.request] [Error]: (params, response):', options, json);

@@ -7,9 +7,9 @@ const loggerWarning = new Logger(filenameToNodeName(__filename), LogLevel.Warnin
 import { getRandomSample } from 'chord/base/node/random';
 import { ASCII_LETTER_DIGIT } from 'chord/base/common/constants';
 
-import { makeCookieJar, makeCookie, CookieJar } from 'chord/base/node/cookies';
+import { makeCookieJar, makeCookie, makeCookies, CookieJar, Cookie } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
-import { request, IRequestOptions } from 'chord/base/node/_request';
+import { request, IRequestOptions, IResponse } from 'chord/base/node/_request';
 
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
@@ -56,8 +56,8 @@ export class KuwoMusicApi {
         'Cache-Control': 'no-cache',
     };
 
-    static readonly BASICURL = 'http://www.kuwo.cn/';
-    static readonly BASICURL_FLAC = 'http://mobi.kuwo.cn/';
+    static readonly BASICURL = 'https://www.kuwo.cn/';
+    static readonly BASICURL_FLAC = 'https://mobi.kuwo.cn/';
 
     static readonly NODE_MAP = {
         audios: 'api/v1/www/music/playUrl',
@@ -86,18 +86,28 @@ export class KuwoMusicApi {
 
 
     constructor() {
-        this.reset();
+        this.cookieJar = makeCookieJar();
+        this.init_token();
     }
 
 
-    public reset() {
-        let csrf_token = getRandomSample(LETTERS, 12).join('');
-        this.csrf_token = csrf_token;
+    protected async init_token() {
+        let url = KuwoMusicApi.BASICURL;
+        let headers = { ...KuwoMusicApi.HEADERS };
+        let options: IRequestOptions = { method: 'GET', headers: headers };
+        let resp: IResponse = await request(url, options);
+        this.setCookies(resp);
+    }
 
-        let cookieJar = makeCookieJar();
-        let cookie = makeCookie('kw_token', csrf_token, DOMAIN);
-        cookieJar.setCookie(cookie, 'http://' + DOMAIN);
-        this.cookieJar = cookieJar;
+
+    protected setCookies(resp: IResponse) {
+        makeCookies(resp.headers['set-cookie'] || []).map((cookie: Cookie) => {
+            if (cookie.key == 'kw_token') {
+                this.csrf_token = cookie.value;
+            }
+            this.cookieJar.setCookie(cookie, KuwoMusicApi.BASICURL);
+        });
+        console.log('set-cookie:', resp.headers['set-cookie'], this.csrf_token);
     }
 
 
@@ -116,14 +126,13 @@ export class KuwoMusicApi {
         url = url + '?' + params;
         let options: IRequestOptions = {
             method: 'GET',
-            url: url,
             headers: headers,
             jar: this.cookieJar || null,
-            gzip: true,
-            json: true,
-            resolveWithFullResponse: false,
         };
-        let json: any = await request(options);
+        let resp: IResponse = await request(url, options);
+        this.setCookies(resp);
+
+        let json = resp.data;
 
         if (!(json.code == 200 || json.status == 200)) {
             loggerWarning.warning('[KuwoMusicApi.request] [Error]: (params, response):', options, json);
@@ -153,24 +162,22 @@ export class KuwoMusicApi {
         url = url + '?' + params;
         let options: IRequestOptions = {
             method: 'GET',
-            url: url,
             headers: headers,
             jar: null,
-            gzip: true,
-            resolveWithFullResponse: false,
         };
 
-        let info: any;
+        let resp: IResponse;
 
         try {
-            info = await request(options);
+            resp = await request(url, options);
         } catch (e) {
             return null;
         }
 
-        if (info && info.startsWith('format=flac')) {
-            let kbps = /bitrate=(\d+)/.exec(info)[1];
-            let url = /url=([^\s]+)/.exec(info)[1];
+        if (resp && resp.data.startsWith('format=flac')) {
+            let body = resp.data;
+            let kbps = /bitrate=(\d+)/.exec(body)[1];
+            let url = /url=([^\s]+)/.exec(body)[1];
             return {
                 kbps: Number.parseInt(kbps),
                 url,
@@ -439,7 +446,7 @@ export class KuwoMusicApi {
 
 
     public resizeImageUrl(url: string, size: ESize | number): string {
-        return resizeImageUrl(url, size, (url, size) => {
+        return resizeImageUrl(url, size, (url: string, size) => {
             if (url.match('/userp')) {
                 if (size <= 150) {
                     size = 150;

@@ -103,6 +103,8 @@ function makeAudios(info: any): Array<IAudio> {
 
 
 export function makeSong(info: any): ISong {
+    info = info['songInfo'] || info;
+
     let songInfo = info['track_info'] || info;
     let otherInfo = info['info'] || [];
 
@@ -247,8 +249,8 @@ export function makeAlbum(info: any): IAlbum {
     let albumCoverUrl = getQQAlbumCoverUrl(albumMid);
 
     let artistOriginalId = info['singerid'] || info['singer_id'] || info['singerID'];
-    let artistMid;
-    let artistName;
+    let artistMid = null;
+    let artistName = null;
     if (artistOriginalId) {
         artistOriginalId = artistOriginalId.toString();
         artistMid = info['singermid'] || info['singer_mid'] || info['singerMID'];
@@ -259,9 +261,10 @@ export function makeAlbum(info: any): IAlbum {
             artistOriginalId = singerInfo['singer_id'].toString();
             artistMid = singerInfo['singer_mid'];
             artistName = singerInfo['singer_name'];
-        } else {
-            throw new Error(`[Error] [qq.parser.makeAlbum]: can not parse info: ${JSON.stringify(info)}`);
-        }
+        } 
+        // else {
+        //     throw new Error(`[Error] [qq.parser.makeAlbum]: can not parse info: ${JSON.stringify(info)}`);
+        // }
     }
     artistName = decodeHtml(artistName);
 
@@ -309,13 +312,15 @@ export function makeAlbums(info: any): Array<IAlbum> {
 
 
 export function makeArtist(info: any): IArtist {
-    let artistOriginalId = (info['singer_id'] || info['id'] || info['singerid']).toString();
-    let artistMid = info['singer_mid'] || info['mid'] || info['singermid'];
-    let artistName = info['singer_name'] || info['name'] || info['singername'];
+    let artistInfo = info['getSingerInfo'] || info;
+
+    let artistOriginalId = (artistInfo['singer_id'] || artistInfo['id'] || artistInfo['singerid'] || artistInfo['singerID'] || artistInfo['Fsinger_id']).toString();
+    let artistMid = artistInfo['singer_mid'] || artistInfo['mid'] || artistInfo['singermid'] || artistInfo['singerMID'] || artistInfo['Fsinger_mid'];
+    let artistName = artistInfo['singer_name'] || artistInfo['name'] || artistInfo['singername'] || artistInfo['singerName'] || artistInfo['Fsinger_name'];
     artistName = decodeHtml(artistName);
     let artistAvatarUrl = getQQArtistAvatarUrl(artistMid);
 
-    let likeCount = info['num'];
+    let likeCount = info['num'] || info['songNum'];
 
     let artist: IArtist = {
         artistId: _getArtistId(artistOriginalId),
@@ -329,7 +334,7 @@ export function makeArtist(info: any): IArtist {
 
         artistAvatarUrl: artistAvatarUrl,
 
-        description: info['SingerDesc'],
+        description: info['SingerDesc'] || info['singerBrief'],
 
         songs: [],
         albums: [],

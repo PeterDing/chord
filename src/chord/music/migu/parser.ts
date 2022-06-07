@@ -327,7 +327,7 @@ export function makeArtists(info: any): Array<IArtist> {
 
 export function extractArtistSongIds(html: any): Array<string> {
     let $ = cheerio.load(html);
-    let songIds = Array.from(($('a.action') || [])).map(item => item.attribs['data-cids']).filter(id => !!id);
+    let songIds = Array.from(($('a.action') || [])).map(item => item['attribs']['data-cids']).filter(id => !!id);
     return songIds;
 }
 
@@ -338,9 +338,9 @@ export function makeArtistAlbums(html: any): Array<IAlbum> {
     let elem = $('a.singer')[0];
     if (!elem) return [];
 
-    let artistOriginalId = elem.attribs.href.split('/').slice(-1)[0];
-    let artistName = elem.children[0].data;
-    let description = $('div.full-content')[0].children[0].data;
+    let artistOriginalId = elem['attribs'].href.split('/').slice(-1)[0];
+    let artistName = elem['children'][0].data;
+    let description = $('div.full-content')[0]['children'][0].data;
 
     let albums = Array.from($('a.thumb-link')).map((item: any) => {
         let albumOriginalId = item.attribs.href.split('/').slice(-1)[0];

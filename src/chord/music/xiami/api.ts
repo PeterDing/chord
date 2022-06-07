@@ -11,7 +11,7 @@ import { getRandomInt } from 'chord/base/node/random';
 
 import { Cookie, makeCookieJar, makeCookie, makeCookies } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
-import { request, IRequestOptions, htmlGet } from 'chord/base/node/_request';
+import { request, IRequestOptions, IResponse, htmlGet } from 'chord/base/node/_request';
 
 import { ORIGIN } from 'chord/music/common/origin';
 
@@ -317,13 +317,10 @@ export class AliMusicApi {
         let url = 'http://log.mmstat.com/eg.js';
         let options: IRequestOptions = {
             method: 'GET',
-            url: url,
             headers: { ...AliMusicApi.HEADERS },
-            gzip: true,
-            resolveWithFullResponse: true,
         };
-        let result: any = await request(options);
-        return result.headers['etag'];
+        let resp: IResponse = await request(url, options);
+        return resp.headers['etag'];
     }
 
 
@@ -366,14 +363,11 @@ export class AliMusicApi {
         url = url + '?' + params;
         let options: IRequestOptions = {
             method: 'GET',
-            url: url,
             // Cookies is excepted to get token
             jar: !init ? cookieJar : null,
             headers: headers,
-            gzip: true,
-            resolveWithFullResponse: init,
         };
-        let result: any = await request(options);
+        let result: IResponse = await request(url, options);
         if (init && result.headers.hasOwnProperty('set-cookie')) {
             makeCookies(result.headers['set-cookie']).forEach(cookie => {
                 this.cookies[cookie.key] = cookie;
@@ -383,7 +377,7 @@ export class AliMusicApi {
             });
             return null;
         }
-        let json = JSON.parse(result.trim().slice(11, -1));
+        let json = JSON.parse(result.data.trim().slice(11, -1));
 
         // TODO: Handle each errors
         if (json.ret[0].search('SUCCESS') == -1) {
@@ -1548,7 +1542,8 @@ export class AliMusicApi {
                 if (type == 'user' || type == 'collect') {
                     originId = m[1];
                 } else {
-                    let cn = await this.xiamiWebApi.request('GET', url);
+                    let resp = await this.xiamiWebApi.request('GET', url);
+                    let cn = resp.data;
                     m = (new RegExp(`xiami\\.com/${type}/(\\d+)`)).exec(cn);
                     if (!m) break;
                     originId = m[1];

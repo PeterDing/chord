@@ -21,7 +21,7 @@ import { IAccount } from 'chord/music/api/user';
 import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
 import { makeCookieJar, CookieJar } from 'chord/base/node/cookies';
-import { request, IRequestOptions } from 'chord/base/node/_request';
+import { request, IRequestOptions, IResponse } from 'chord/base/node/_request';
 
 import { encrypt } from 'chord/music/migu/crypto';
 
@@ -144,29 +144,27 @@ export class MiguMusicApi {
 
         let options: IRequestOptions = {
             method: 'GET',
-            url: url,
             jar: this.cookieJar || null,
             headers: headers,
-            gzip: true,
-            json: to_json,
-            resolveWithFullResponse: false,
         };
 
-        let result = await request(options);
+        let resp: IResponse = await request(url, options);
 
-        ok(result, `[ERROR] [MiguMusicApi.request]: url: ${url}, result is ${result}`);
+        ok(resp, `[ERROR] [MiguMusicApi.request]: url: ${url}, resp is ${resp}`);
+
+        let json = resp.data;
 
         let is_ok = true;
         if (to_json) {
-            is_ok = ((result['returnCode'] || result['code']) == '000000') || !!result['data'] || !!result['result'] || !!result['success'];
+            is_ok = ((resp['returnCode'] || resp['code']) == '000000') || !!resp['data'] || !!resp['result'] || !!resp['success'];
         }
         if (!is_ok) {
-            loggerWarning.warning(`[ERROR] [MiguMusicApi.request]: url: ${url}, result is ${JSON.stringify(result)}`);
+            loggerWarning.warning(`[ERROR] [MiguMusicApi.request]: url: ${url}, result is ${JSON.stringify(json)}`);
 
-            let message = result['msg'];
+            let message = json['msg'];
             throw new Error(message);
         }
-        return result;
+        return json;
     }
 
 
@@ -454,7 +452,7 @@ export class MiguMusicApi {
 
 
     public resizeImageUrl(url: string, size: ESize | number): string {
-        return resizeImageUrl(url, size, (url, size) => `${url}?${size}x${size}`);
+        return resizeImageUrl(url, size, (url: string, size) => `${url}?${size}x${size}`);
     }
 
 

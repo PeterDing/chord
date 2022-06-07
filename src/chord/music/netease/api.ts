@@ -26,8 +26,9 @@ import { IUserProfile, IAccount } from 'chord/music/api/user';
 
 import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
-import { makeCookieJar, makeCookieFrom, makeCookie, CookieJar } from 'chord/base/node/cookies';
-import { request, IRequestOptions } from 'chord/base/node/_request';
+import { makeCookieJar, makeCookieFromString, makeCookie, CookieJar } from 'chord/base/node/cookies';
+import { request, IRequestOptions, IResponse } from 'chord/base/node/_request';
+import { querystringify } from 'chord/base/node/url';
 
 import { encrypt } from 'chord/music/netease/crypto';
 import { initiateCookies } from 'chord/music/netease/util';
@@ -79,7 +80,7 @@ export class NeteaseMusicApi {
         'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,ja;q=0.6,zh-TW;q=0.5',
     };
 
-    static readonly BASICURL = 'http://music.163.com/';
+    static readonly BASICURL = 'https://music.163.com/';
 
     static readonly NODE_MAP = {
         audio: 'weapi/song/enhance/player/url',
@@ -155,30 +156,29 @@ export class NeteaseMusicApi {
 
         let options: IRequestOptions = {
             method: 'POST',
-            url: url,
             jar: this.cookieJar || null,
             headers: NeteaseMusicApi.HEADERS,
-            form: encrypt(jsonDumpValue(data)),
-            gzip: true,
-            json: true,
-            resolveWithFullResponse: init,
+            data: querystringify(encrypt(jsonDumpValue(data))),
         };
 
-        let result = await request(options);
-
+        let resp: IResponse = await request(url, options);
         // retry
-        if (!result && retry < MAX_RETRY) return this.request(node, data, init, retry + 1);
+        if (!resp && retry < MAX_RETRY) return this.request(node, data, init, retry + 1);
 
-        ok(result, `[ERROR] [NeteaseMusicApi.request]: url: ${url}, result is ${result}`);
+        let json = resp.data;
+        // retry
+        if (!json) return this.request(node, data, init, retry + 1);
 
-        let resultCode = init ? result.body['code'] : result['code'];
-        if (resultCode != 200) {
-            loggerWarning.warning(`[ERROR] [NeteaseMusicApi.request]: url: ${url}, result.code is ${resultCode}, result is ${JSON.stringify(result)}`);
+        ok(json, `[ERROR] [NeteaseMusicApi.request]: url: ${url}, resp is ${json}`);
 
-            let message = init ? result.body['msg'] : result['msg'];
+        let code = init ? json.body['code'] : json['code'];
+        if (code != 200) {
+            loggerWarning.warning(`[ERROR] [NeteaseMusicApi.request]: url: ${url}, json.code is ${code}, json is ${JSON.stringify(json)}`);
+
+            let message = init ? json.body['msg'] : json['msg'];
             throw new Error(message);
         }
-        return result;
+        return json;
     }
 
 
@@ -416,12 +416,11 @@ export class NeteaseMusicApi {
         let url = `https://music.163.com/playlist?id=${collectionId}`
         let options: IRequestOptions = {
             method: 'GET',
-            url: url,
             headers: NeteaseMusicApi.WEB_HEADERS,
-            gzip: true,
         };
 
-        let body = await request(options);
+        let resp: IResponse = await request(url, options);
+        let body = resp.data;
 
         let collectionIds = new Set();
         let re = /sname f-fs1 s-fc0" href="\/playlist\?id=(\d+)/g;
@@ -430,7 +429,9 @@ export class NeteaseMusicApi {
             collectionIds.add(group[1]);
         }
 
-        let collections = await Promise.all(Array.from(collectionIds).map(collectionId => this.collection(collectionId)));
+        let collections = await Promise.all(Array.from(collectionIds).map(
+            (collectionId: string) => this.collection(collectionId))
+        );
         return collections;
     }
 
@@ -587,7 +588,7 @@ export class NeteaseMusicApi {
         // XXX: '__csrf' may be not needed
         let cookies = {};
         result.headers['set-cookie'].forEach(cookieStr => {
-            let cookie = makeCookieFrom(cookieStr);
+            let cookie = makeCookieFromString(cookieStr);
             cookies[cookie.key] = cookie.value;
         });
 
@@ -656,12 +657,10 @@ export class NeteaseMusicApi {
         let user = makeUserProfile(json, userId);
 
         let webUrl = 'https://music.163.com/user?id=' + userId;
-        let html = await request({
+        let html = await request(webUrl, {
             method: 'GET',
-            url: webUrl,
             jar: this.cookieJar || null,
             headers: NeteaseMusicApi.WEB_HEADERS,
-            gzip: true,
         });
 
         let info = getInfosFromHtml(<any>html);
@@ -860,9 +859,9 @@ export class NeteaseMusicApi {
             pid: collectionId,
             csrf_token,
         } : {
-                id: collectionId,
-                csrf_token,
-            };
+            id: collectionId,
+            csrf_token,
+        };
         let json = await this.request(node, data);
         return json.code == 200;
     }
@@ -1000,7 +999,7 @@ export class NeteaseMusicApi {
 
 
     public resizeImageUrl(url: string, size: ESize | number): string {
-        return resizeImageUrl(url, size, (url, size) => `${url}?param=${size}y${size}`);
+        return resizeImageUrl(url, size, (url: string, size) => `${url}?param=${size}y${size}`);
     }
 
 

@@ -5,7 +5,7 @@ import { filenameToNodeName } from 'chord/platform/utils/common/paths';
 const loggerWarning = new Logger(filenameToNodeName(__filename), LogLevel.Warning);
 
 import { querystringify } from 'chord/base/node/url';
-import { request, IRequestOptions, htmlGet } from 'chord/base/node/_request';
+import { request, IRequestOptions, IResponse, htmlGet } from 'chord/base/node/_request';
 
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
@@ -95,14 +95,11 @@ export class QianQianApi {
         for (let i = 0; i < 5; i++) {
             let options: IRequestOptions = {
                 method: 'GET',
-                url,
                 headers,
-                body: data,
-                gzip: true,
-                resolveWithFullResponse: false,
+                data: data,
             };
-            let result: any = await request(options);
-            json = JSON.parse(result.trim());
+            let resp: IResponse = await request(url, options);
+            json = resp.data;
 
             if (json.error_code && json.error_code == 22001) {
                 continue;
@@ -516,7 +513,7 @@ export class QianQianApi {
 
 
     public resizeImageUrl(url: string, size: ESize | number): string {
-        return resizeImageUrl(url, size, (url, size) => `${url}@s_1,w_${size},h_${size}`);
+        return resizeImageUrl(url, size, (url: string, size) => `${url}@s_1,w_${size},h_${size}`);
     }
 
 

@@ -33,7 +33,7 @@ import { ESize, resizeImageUrl } from 'chord/music/common/size';
 
 import { makeCookie, makeCookieJar } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
-import { request, htmlGet, IResponse, IRequestOptions } from 'chord/base/node/_request';
+import { request, IResponse, IRequestOptions } from 'chord/base/node/_request';
 
 import {
     makeSong,
@@ -58,6 +58,7 @@ import { getSecuritySign } from 'chord/music/qq/crypto';
 import { AUDIO_FORMAT_MAP } from 'chord/music/qq/parser';
 
 import { ARTIST_LIST_OPTIONS } from 'chord/music/qq/common';
+import { isObject, isString } from 'chord/base/common/checker';
 
 
 const ALBUM_OPTION_NAME_MAP = {
@@ -93,17 +94,17 @@ export class QQMusicApi {
         lyric: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg',
         album: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_album_info_cp.fcg',
 
-        artist: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg',
+        artist: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_detail_cp.fcg',
         artistLikeCount: 'https://c.y.qq.com/rsc/fcgi-bin/fcg_order_singer_getnum.fcg',
-        artistSongs: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg',
-        artistAlbums: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        // artistSongs: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg',
+        artistSongs: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        // artistAlbums: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        artistAlbums: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_album.fcg',
 
         collection: 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
         collectionAddons: 'https://c.y.qq.com/3gmusic/fcgi-bin/3g_dir_order_uinlist',
 
-        searchSongs: 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp',
-        searchAlbums: 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp',
-        searchCollections: 'https://c.y.qq.com/soso/fcgi-bin/client_music_search_songlist',
+        search: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
 
         songList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         albumList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
@@ -200,17 +201,13 @@ export class QQMusicApi {
 
         let options: IRequestOptions = {
             method,
-            url,
             jar,
             headers: headers,
-            body: data,
-            gzip: true,
-            resolveWithFullResponse: true,
+            data,
         };
 
-        let resp: IResponse = await request(options);
-        let body = resp.body;
-        return body.trim().startsWith('<') || body == '' ? body : JSON.parse(body);
+        let resp: IResponse = await request(url, options);
+        return resp.data;
     }
 
 
@@ -322,8 +319,9 @@ export class QQMusicApi {
      */
     public async getIPs(): Promise<Array<string>> {
         let url = 'https://raw.githubusercontent.com/PeterDing/chord-data/master/qq-ip-checker/qq-ips.txt';
-        let cn = await htmlGet(url);
-        let ips = (cn as any).split('\n').map(ip => ip.trim() || null).filter(ip => ip);
+        let resp: IResponse = await request(url);
+        let body = resp.data;
+        let ips = body.split('\n').map(ip => ip.trim() || null).filter(ip => ip);
         return ips;
     }
 
@@ -513,49 +511,49 @@ export class QQMusicApi {
 
     public async artist(artistId: string, artistMid?: string): Promise<IArtist> {
         let params = {
-            singerid: artistId || undefined,
-            singermid: artistMid || undefined,
-            uin: '0',
+            newsong: 1,
+            tpl: 'wk',
+            singerid: artistId,
+            singermid: artistMid,
+            g_tk: 5381,
+            platform: 'mac',
+            g_tk_new_20200303: 5381,
+            loginUin: 0,
+            hostUin: 0,
             format: 'json',
             inCharset: 'utf-8',
             outCharset: 'utf-8',
-            notice: '0',
-            platform: 'h5page',
-            needNewCode: '1',
-            order: 'listen',
-            from: 'h5',
-            num: 1,
-            begin: 0,
-            '_': Date.now(),
+            notice: 0,
+            needNewCode: 0,
+            ct: 6,
+            cv: 10000,
         };
         let url = QQMusicApi.NODE_MAP.artist;
         let json = await this.request('GET', url, params);
-        let artist = makeArtist(json['data']);
+        let artist = makeArtist(json);
         let likeCount = await this.artistLikeCount(artist.artistMid);
         artist.likeCount = likeCount;
         return artist;
     }
 
 
-    public async artistSongs(artistId: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
-        let params = {
-            singerid: artistId,
-            uin: '0',
-            format: 'json',
-            inCharset: 'utf-8',
-            outCharset: 'utf-8',
-            notice: '0',
-            platform: 'h5page',
-            needNewCode: '1',
-            order: 'listen',
-            from: 'h5',
-            num: limit,
-            begin: offset,
-            '_': Date.now(),
-        };
+    public async artistSongs(artistMid: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let data = JSON.stringify({
+            "req_0": {
+                "module": "musichall.song_list_server",
+                "method": "GetSingerSongList",
+                "param": {
+                    "singerMid": artistMid,
+                    "begin": offset,
+                    "num": limit,
+                    "order": 0,
+                }
+            },
+        });
+        let params = { data };
         let url = QQMusicApi.NODE_MAP.artistSongs;
         let json = await this.request('GET', url, params);
-        return makeSongs(json['data']['list'].map(info => info['musicData']));
+        return makeSongs(json['req_0']['data']['songList']);
     }
 
 
@@ -563,33 +561,25 @@ export class QQMusicApi {
      * WARN: `artistMid`
      */
     public async artistAlbums(artistMid: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
-        let data = JSON.stringify({
-            "singerAlbum": {
-                "method": "get_singer_album",
-                "param": {
-                    "singermid": artistMid,
-                    "order": "time",
-                    "begin": offset,
-                    "num": limit,
-                    "exstatus": 1
-                },
-                "module": "music.web_singer_info_svr"
-            }
-        });
         let params = {
-            loginUin: '0',
-            hostUin: '0',
+            platform: 'mac',
+            singermid: artistMid,
+            order: 0, // @param order 排序 time 时间 listen 热度
+            begin: offset,
+            num: limit,
+            g_tk_new_20200303: 5381,
+            g_tk: 5381,
+            loginUin: 0,
+            hostUin: 0,
             format: 'json',
-            inCharset: 'utf8',
+            inCharset: 'utf-8',
             outCharset: 'utf-8',
-            notice: '0',
-            platform: 'yqq',
-            needNewCode: '0',
-            data,
+            notice: 0,
+            type: 0, // @param type 分类，不传为全部，0录音室专辑，11 EP单曲，1 现场专辑
         };
         let url = QQMusicApi.NODE_MAP.artistAlbums;
         let json = await this.request('GET', url, params);
-        return makeAlbums(json['singerAlbum']['data']['list']);
+        return makeAlbums(json['data']['list']);
     }
 
 
@@ -650,69 +640,62 @@ export class QQMusicApi {
     }
 
 
-    public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
-        let params = {
-            remoteplace: 'txt.yqq.song',
-            format: 'json',
-            p: offset,
-            n: limit,
-            w: keyword,
-            aggr: 1,
-            cr: 1,
-            lossless: 1,
-            flag_qc: 1,
-            new_json: 1,
-        };
-        let url = QQMusicApi.NODE_MAP.searchSongs;
+    /**
+     * Search
+     *
+     * @param type: number
+     *      0: song
+     *      1: artist
+     *      2: album
+     *      3: collection
+     *      8: user
+     */
+    public async search(type: number, keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let data = JSON.stringify({
+            "req_1": {
+                "method": "DoSearchForQQMusicDesktop",
+                "module": "music.search.SearchCgiService",
+                "param": {
+                    "remoteplace": "txt.yqq.top",
+                    "search_type": type,
+                    "query": keyword,
+                    "page_num": offset,
+                    "num_per_page": limit,
+                }
+            }
+        });
+        let params = { data };
+        let url = QQMusicApi.NODE_MAP.search;
         let json = await this.request('GET', url, params);
-        if (!json['data']) { return []; }
-        return makeSongs(json['data']['song']['list']);
+        return json;
+    }
+
+
+    public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
+        let json = await this.search(0, keyword, offset, limit);
+        if (!json['req_1']) { return []; }
+        return makeSongs(json['req_1']['data']['body']['song']['list']);
+    }
+
+
+    public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
+        let json = await this.search(1, keyword, offset, limit);
+        if (!json['req_1']) { return []; }
+        return makeArtists(json['req_1']['data']['body']['singer']['list']);
     }
 
 
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
-        let params = {
-            platform: 'yqq',
-            ct: 24,
-            qqmusic_ver: 1298,
-            remoteplace: 'txt.yqq.album',
-            format: 'json',
-            p: offset,
-            n: limit,
-            w: keyword,
-            lossless: 0,
-            aggr: 0,
-            sem: 10,
-            t: 8,
-            catZhida: 1,
-        };
-        let url = QQMusicApi.NODE_MAP.searchAlbums;
-        let json = await this.request('GET', url, params);
-        if (!json['data']) { return []; }
-        return makeAlbums(json['data']['album']['list']);
+        let json = await this.search(2, keyword, offset, limit);
+        if (!json['req_1']) { return []; }
+        return makeAlbums(json['req_1']['data']['body']['album']['list']);
     }
 
 
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
-        let params = {
-            remoteplace: 'txt.yqq.playlist',
-            flag_qc: '0',
-            page_no: offset,
-            num_per_page: limit,
-            query: keyword,
-            loginUin: '0',
-            hostUin: '0',
-            format: 'json',
-            inCharset: 'utf8',
-            outCharset: 'utf-8',
-            notice: '0',
-            platform: 'yqq',
-            needNewCode: '0',
-        };
-        let url = QQMusicApi.NODE_MAP.searchCollections;
-        let json = await this.request('GET', url, params);
-        if (!json['data']) { return []; }
-        return makeCollections(json['data']['list']);
+        let json = await this.search(3, keyword, offset, limit);
+        if (!json['req_1']) { return []; }
+        return makeCollections(json['req_1']['data']['body']['songlist']['list']);
     }
 
 
@@ -1071,7 +1054,11 @@ export class QQMusicApi {
                 });
 
                 // get user profile
-                let userOriginalId = cookies['ptui_loginuin'] || cookies['uin'];
+                let userOriginalId = cookies['uin'] || cookies['luin'] || cookies['p_uin'];
+                if (userOriginalId.startsWith('o0')) {
+                    userOriginalId = userOriginalId.slice(2);
+                }
+
                 let tmpApi = new QQMusicApi();
                 tmpApi.cookies = cookies;
 
@@ -1699,7 +1686,7 @@ export class QQMusicApi {
 
 
     public resizeImageUrl(url: string, size: ESize | number): string {
-        return resizeImageUrl(url, size, (url, size) => {
+        return resizeImageUrl(url, size, (url: string, size) => {
             if (size <= 300) {
                 return url;
             } else if (size > 300 && size <= 500) {
