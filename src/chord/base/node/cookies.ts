@@ -1,25 +1,26 @@
 'use strict';
 
-import * as r from 'request';
-
-export type CookieJar = r.CookieJar;
-export type Cookie = r.Cookie;
+import { Cookie, CookieJar } from 'tough-cookie';
+export { Cookie, CookieJar };
 
 
 export function makeCookieJar(): CookieJar {
-    return r.jar();
+    return new CookieJar();
 }
 
 export function makeCookies(rawCookies: Array<string>, jar?: CookieJar): Array<Cookie> {
-    let cookies = rawCookies.map(rawCookie => makeCookieFrom(rawCookie));
+    let cookies = rawCookies.map(rawCookie => makeCookieFromString(rawCookie));
     return cookies;
 }
 
 export function makeCookie(key: string, value: string, domain?: string): Cookie {
-    let s = `${key}=${value}; domain=${domain ? domain : ''}`;
-    return makeCookieFrom(s);
+    return new Cookie({ key, value, domain });
 }
 
-export function makeCookieFrom(input: string): Cookie {
-    return r.cookie(input);
+export function makeCookieFromString(rawCookie: string): Cookie {
+    return Cookie.parse(rawCookie);
+}
+
+export function dumpCookies(jar: CookieJar): string {
+    return jar.toJSON().cookies.map(c => c.key + '=' + escape(c.value) + ';').join(' ');
 }
