@@ -19,7 +19,7 @@ export async function handlePlayArtist(artist: IArtist): Promise<IPlayArtistAct>
     let count = songs.length;
 
     if (songs.length < 100) {
-        let _songs = await musicApi.artistSongs(artist.artistId, 0, 100);
+        let _songs = await musicApi.artistSongs(artist.artistId, 0, 100, artist.artistMid);
         count = _songs.length;
         songs = _songs
             .filter(song => !song.disable);
