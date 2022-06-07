@@ -31,6 +31,7 @@ export function initiateAppConfiguration(): IAppConfiguration {
 
             ximalaya: true,
             himalaya: true,
+            spotify: false,
         },
         volumn: 0.5,
         proxy: null,
