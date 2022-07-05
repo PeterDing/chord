@@ -7,7 +7,7 @@
     "author": "Peter Ding <dfhayst@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "compile": "gulp compile",
+        "compile": "NODE_OPTIONS=--no-experimental-fetch gulp compile",
         "test": "mocha --delay",
         "start": "ELECTRON_DEV=true electron ./out/main.js",
         "dist": "electron-builder --win --mac --linux deb",
