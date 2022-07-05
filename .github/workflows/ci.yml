@@ -69,7 +69,9 @@ jobs:
           7z.exe a .build/node_modules_cache/cache.7z -mx3 `@.build/node_modules_list.txt
 
       - name: Compile
-        run: yarn run compile
+        run: |
+          set NODE_OPTIONS=--no-experimental-fetch
+          yarn run compile-win
 
       - name: Build binary
         if: startsWith(github.ref, 'refs/tags/')
