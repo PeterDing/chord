@@ -171,14 +171,19 @@ export class NeteaseMusicApi {
 
         ok(json, `[ERROR] [NeteaseMusicApi.request]: url: ${url}, resp is ${json}`);
 
-        let code = init ? json.body['code'] : json['code'];
+        let code = json['code'];
         if (code != 200) {
             loggerWarning.warning(`[ERROR] [NeteaseMusicApi.request]: url: ${url}, json.code is ${code}, json is ${JSON.stringify(json)}`);
 
             let message = init ? json.body['msg'] : json['msg'];
             throw new Error(message);
         }
-        return json;
+
+        if (init) {
+            return resp;
+        } else {
+            return json;
+        }
     }
 
 
@@ -582,17 +587,18 @@ export class NeteaseMusicApi {
             password: md5(password),
             rememberLogin: 'true',
         };
-        let result = await tmpApi.request(node, data, true);
+
+        let resp = await tmpApi.request(node, data, true);
 
         // set user cookies
         // XXX: '__csrf' may be not needed
         let cookies = {};
-        result.headers['set-cookie'].forEach(cookieStr => {
+        resp.headers['set-cookie'].forEach(cookieStr => {
             let cookie = makeCookieFromString(cookieStr);
             cookies[cookie.key] = cookie.value;
         });
 
-        let user = makeUserProfile(result.body.profile);
+        let user = makeUserProfile(resp.data.profile);
 
         let account = {
             user,
