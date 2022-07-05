@@ -19,6 +19,7 @@ export function initiateCookies(): Array<Cookie> {
         ['_ntes_nnid', nuid + ',' + date],
         ['_ntes_nuid', nuid],
         ['os', 'pc'],
+        ['appver', '2.9.7'],
     ].map(item => makeCookie(item[0], item[1], DOMAIN));
 
     return cookies;
