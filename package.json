@@ -8,6 +8,7 @@
     "license": "MIT",
     "scripts": {
         "compile": "NODE_OPTIONS=--no-experimental-fetch gulp compile",
+        "compile-win": "gulp compile",
         "test": "mocha --delay",
         "start": "ELECTRON_DEV=true electron ./out/main.js",
         "dist": "electron-builder --win --mac --linux deb",
