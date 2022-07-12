@@ -107,7 +107,6 @@ export class KuwoMusicApi {
             }
             this.cookieJar.setCookie(cookie, KuwoMusicApi.BASICURL);
         });
-        console.log('set-cookie:', resp.headers['set-cookie'], this.csrf_token);
     }
 
 
