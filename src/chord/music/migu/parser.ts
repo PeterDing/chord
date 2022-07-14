@@ -11,7 +11,8 @@ import { ICollection } from "chord/music/api/collection";
 import { IAudio } from "chord/music/api/audio";
 
 import { parseToMillisecond } from 'chord/base/common/time';
-import { isObject } from 'chord/base/common/checker';
+import { isObject, isString } from 'chord/base/common/checker';
+import { equal } from 'chord/base/common/assert';
 
 import {
     getSongUrl,
@@ -42,7 +43,7 @@ const _origin = 'migu';
 const _getSongUrl: (id: string) => string = getSongUrl.bind(null, _origin);
 const _getSongId: (id: string) => string = getSongId.bind(null, _origin);
 const _getAlbumUrl: (id: string) => string = getAlbumUrl.bind(null, _origin);
-const _getAlbumId: (id: string) => string = getAlbumId.bind(null, _origin);
+export const _getAlbumId: (id: string) => string = getAlbumId.bind(null, _origin);
 const _getArtistUrl: (id: string) => string = getArtistUrl.bind(null, _origin);
 const _getArtistId: (id: string) => string = getArtistId.bind(null, _origin);
 const _getCollectionUrl: (id: string) => string = getCollectionUrl.bind(null, _origin);
@@ -84,53 +85,26 @@ export function makeAudios(infos: any): Array<IAudio> {
 
 export function makeSong(info: any): ISong {
     let songOriginalId = info['copyrightId'];
-    let songMid = (info['songId'] || info['id']).toString();
+    let songMid = (info['songId'] || info['id'] || '').toString();
+    let songMediaMid = (info['qq'] && info['qq']['productId']) || info['contentId'];
+    let songName = info['name'] || info['songName'] || (info['contentName'] || '').split(',')[0];
 
     let albumInfo = info['albums'] ? info['albums'][0] : info;
-    let albumOriginalId = albumInfo['albumId'] && albumInfo['albumId'].toString();
+    let albumOriginalId = albumInfo['albumId'] || albumInfo['id'];
+    let albumName = albumInfo['name'] || albumInfo['albumName'] || info['cover'];
 
     let artistInfo = info['singers'] ? info['singers'][0] : info;
 
-    let artistOriginalId = artistInfo['artistId']
-        || artistInfo['singerId']
+    let artistOriginalId = artistInfo['artistId'] || artistInfo['id'] || artistInfo['singerId']
         && (isObject(artistInfo['singerId']) ? (
             artistInfo['singerId'].length > 0 ? artistInfo['singerId'][0].toString() : null
         )
             : artistInfo['singerId']);
-    let artistName = artistInfo['artistName']
-        || artistInfo['singerName']
+    let artistName = artistInfo['artistName'] || artistInfo['name'] || artistInfo['singerName']
         && (isObject(artistInfo['singerName']) ? (
             artistInfo['singerName'].length > 0 ? artistInfo['singerName'][0].split(',')[0] : null
         )
             : artistInfo['singerName']);
-
-    let audios = [];
-    if (isObject(info['auditions'])) {
-        for (let tp of ['HQ', 'SQ', 'Bq']) {
-            let url = info['auditions']['lis' + tp];
-            let size = info['auditions']['lis' + tp + 'Size'];
-            if (!url) continue;
-            let kbps;
-            if (url.includes('MP3_128')) {
-                kbps = 128;
-            } else if (url.includes('MP3_320')) {
-                kbps = 320;
-            } else if (url.includes('flac')) {
-                kbps = 720;
-            } else {
-                continue;
-            }
-            let audio = {
-                format: url.split('.').slice(-1)[0],
-                size,
-                kbps,
-                url,
-                path: null,
-            };
-            audios.push(audio);
-        }
-    }
-
 
     let song: ISong = {
         songId: _getSongId(songOriginalId),
@@ -142,12 +116,13 @@ export function makeSong(info: any): ISong {
 
         url: _getSongUrl(songOriginalId),
 
-        songName: info['songName'] || (info['contentName'] || '').split(',')[0],
+        songName,
         songMid,
+        songMediaMid,
 
-        albumId: _getAlbumId(albumOriginalId),
+        albumId: albumOriginalId && _getAlbumId(albumOriginalId),
         albumOriginalId,
-        albumName: albumInfo['albumName'] || info['cover'],
+        albumName,
         albumCoverUrl: albumInfo['picS'], // migu cover image can't change size,
         // so we use the smallest one
 
@@ -163,13 +138,13 @@ export function makeSong(info: any): ISong {
         // millisecond
         duration: info['length'] && parseToMillisecond(info['length']),
 
+        audios: [],
+
         // millisecond
         releaseDate: null,
 
         playCountWeb: 0,
         playCount: 0,
-
-        audios,
 
         disable: false,
     };
@@ -200,20 +175,29 @@ export function makeLyric(songId: string, lyricInfo: string, transInfo: string):
 }
 
 export function makeAlbum(info: any): IAlbum {
-    let albumOriginalId = (info['albumId'] || info['id']).toString();
+    let albumInfo = info['detailInfo'] || info;
+    let albumOriginalId = (albumInfo['albumId'] || albumInfo['id']).toString();
+    let albumName = albumInfo['name'] || albumInfo['albumName'] || albumInfo['title'];
 
-    let albumCoverUrl = (info['localAlbumPicS'] || info['albumPicS'] || '').split('?')[0];
+    let albumCoverUrl = (albumInfo['mediumPic'] || albumInfo['localAlbumPicS'] || albumInfo['albumPicS'] || albumInfo['imgItems'] && albumInfo['imgItems'][1]['img'] || '').split('?')[0];
 
-    let artistOriginalId = null;
-    let artistName = null;
-    if (info['singerId']) {
-        artistOriginalId = info['singerId'].toString();
+    let artistInfo = albumInfo['singers'] && albumInfo['singers'][0] || info;
+    let artistOriginalId: string;
+    let artistName: string;
+    if (albumInfo['singers']) {
+        artistOriginalId = artistInfo['id'];
+        artistName = artistInfo['name'];
+    } else if (isString(info['singer'])) {
+        artistOriginalId = artistInfo['singerId'];
+        artistName = artistInfo['singer'];
     } else {
         if (isObject(info['singer'])) {
             artistOriginalId = info['singer'][0]['id'];
             artistName = info['singer'][0]['name'];
         }
     }
+
+    let songs = makeSongs(info['songs'] && info['songs']['items'] || []);
 
     let album: IAlbum = {
         albumId: _getAlbumId(albumOriginalId),
@@ -223,7 +207,7 @@ export function makeAlbum(info: any): IAlbum {
         albumOriginalId: albumOriginalId,
         url: _getAlbumUrl(albumOriginalId),
 
-        albumName: info['albumName'] || info['title'],
+        albumName,
         albumCoverUrl: albumCoverUrl,
 
         artistId: _getArtistId(artistOriginalId),
@@ -232,14 +216,14 @@ export function makeAlbum(info: any): IAlbum {
 
         tags: [],
 
-        description: info['albumIntro'],
+        description: info['albumIntro'] || info['albumDesc'],
 
-        releaseDate: parseToMillisecond(info['publishDate']),
+        releaseDate: Date.parse(info['publishDate']),
 
         company: info['publishCompany'],
 
-        songs: [],
-        songCount: Number.parseInt(info['trackCount'] || info['songNum']),
+        songs,
+        songCount: Number.parseInt(info['trackCount'] || info['songNum']) || songs.length,
     };
     return album;
 }
@@ -298,6 +282,7 @@ export function makeCollections(info: any): Array<ICollection> {
 export function makeArtist(info: any): IArtist {
     let artistOriginalId = (info['artistId'] || info['id']).toString();
     let artistAvatarUrl = (info['localArtistPicS'] || info['artistPicS'] || '').split('?')[0];
+    let artistName = info['name'] || info['artistName'] || info['title'];
 
     let artist: IArtist = {
         artistId: _getArtistId(artistOriginalId),
@@ -306,7 +291,7 @@ export function makeArtist(info: any): IArtist {
         artistOriginalId: artistOriginalId,
         url: _getArtistUrl(artistOriginalId),
 
-        artistName: info['artistName'] || info['title'],
+        artistName,
         artistAlias: info['anotherName'],
 
         artistAvatarUrl: artistAvatarUrl,
@@ -325,10 +310,58 @@ export function makeArtists(info: any): Array<IArtist> {
     return (info || []).map(artistInfo => makeArtist(artistInfo));
 }
 
-export function extractArtistSongIds(html: any): Array<string> {
+export function extractArtistSongs(html: any): Array<ISong> {
+    let groups = /\/artist\/(\d+)"[^<>]*?>(.+?)<\/a>/.exec(html);
+    let artistOriginalId = groups[1];
+    let artistName = groups[2];
+
     let $ = cheerio.load(html);
-    let songIds = Array.from(($('a.action') || [])).map(item => item['attribs']['data-cids']).filter(id => !!id);
-    return songIds;
+    let songs: Array<ISong> = Array.from($('#J_PageSonglist > div.songlist-body > div') || [])
+        .map(div => {
+            let songOriginalId = div['attribs']['data-cid'];
+            let songMid = div['attribs']['data-mid'];
+            let songName = null;
+            let a = $('a.song-name-txt', div);
+            if (a.length > 0) {
+                songName = a[0]['attribs']['title'];
+            }
+
+            let albumOriginalId = null;
+            let albumName = null;
+            a = $('div.song-belongs > a', div)
+            if (a.length > 0) {
+                albumOriginalId = a[0]['attribs']['href'].split('/').slice(-1)[0];
+                albumName = a[0]['attribs']['title'];
+            }
+
+            return {
+                songId: _getSongId(songOriginalId),
+
+                type: 'song',
+                origin: _origin,
+
+                songOriginalId,
+
+                url: _getSongUrl(songOriginalId),
+
+                songName,
+                songMid,
+
+                albumId: _getAlbumId(albumOriginalId),
+                albumOriginalId,
+                albumName,
+                // so we use the smallest one
+
+                artistId: _getArtistId(artistOriginalId),
+                artistOriginalId,
+                artistName,
+
+                audios: [],
+            };
+
+        });
+
+    return songs;
 }
 
 export function makeArtistAlbums(html: any): Array<IAlbum> {

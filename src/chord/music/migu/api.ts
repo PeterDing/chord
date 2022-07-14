@@ -7,6 +7,7 @@ const loggerWarning = new Logger(filenameToNodeName(__filename), LogLevel.Warnin
 import { sleep } from 'chord/base/common/time';
 import { ok } from 'chord/base/common/assert';
 import { querystringify } from 'chord/base/node/url';
+import { md5 } from 'chord/base/node/crypto';
 
 import { IAudio } from 'chord/music/api/audio';
 import { ISong } from 'chord/music/api/song';
@@ -26,6 +27,7 @@ import { request, IRequestOptions, IResponse } from 'chord/base/node/_request';
 import { encrypt } from 'chord/music/migu/crypto';
 
 import {
+    _getAlbumId,
     makeAudios,
     makeSong,
     makeSongs,
@@ -36,7 +38,7 @@ import {
     makeCollections,
     makeArtist,
     makeArtists,
-    extractArtistSongIds,
+    extractArtistSongs,
     makeArtistAlbums,
     extractCollectionSongIds,
 } from 'chord/music/migu/parser';
@@ -49,7 +51,7 @@ export class MiguMusicApi {
         'Accept': '*/*',
         'X-Requested-With': 'XMLHttpRequest',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
-        'Referer': 'http://music.migu.cn/v3/music/player/audio',
+        'Referer': 'https://music.migu.cn/v3/music/player/audio',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh-TW;q=0.7,zh;q=0.6,ja;q=0.5',
     };
@@ -59,7 +61,7 @@ export class MiguMusicApi {
         'Accept': 'application/json, text/javascript, */*; q=0.01',
         'X-Requested-With': 'XMLHttpRequest',
         'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Mobile Safari/537.36',
-        'Referer': 'http://m.music.migu.cn/v3',
+        'Referer': 'https://m.music.migu.cn/v3',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh-TW;q=0.7,zh;q=0.6,ja;q=0.5',
         'Content-Type': 'application/json; charset=utf-8',
@@ -70,30 +72,34 @@ export class MiguMusicApi {
         'Accept': '*/*',
         'X-Requested-With': 'XMLHttpRequest',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
-        'Referer': 'http://music.migu.cn/v3/',
+        'Referer': 'https://music.migu.cn/v3/',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh-TW;q=0.7,zh;q=0.6,ja;q=0.5',
     };
 
-    static readonly BASICURL = 'http://music.migu.cn/';
-    static readonly BASICURL_H5 = 'http://m.music.migu.cn/';
+    static readonly BASICURL = 'https://music.migu.cn/';
+    static readonly BASICURL_H5 = 'https://m.music.migu.cn/';
+    static readonly BASICURL_APP = 'https://pd.musicapp.migu.cn/';
+    static readonly AUDIO_URL = 'https://218.205.239.34/MIGUM2.0/v1.0/content/sub/listenSong.do';
 
     static readonly NODE_MAP = {
         audio: 'v3/api/music/audioPlayer/getPlayInfo',
 
-        song: 'v3/api/music/audioPlayer/songs',
+        // song: 'v3/api/music/audioPlayer/songs',
+        song: 'v3/music/song',
         song_h5: 'migu/remoting/cms_detail_tag',
 
-        album: 'migu/remoting/cms_album_detail_tag',
+        album: 'migumusic/h5/album/info',
         albumSongs: 'v3/api/music/audioPlayer/songs',
-        collection: 'migu/remoting/playlist_query_tag',
-        collectionSongs: 'v3/music/playlist',  // From web
+        collection: 'migu/remoting/query_playlist_by_id_tag',
+        collectionSongs: 'migu/remoting/playlistcontents_query_tag',  // From web
 
         artist: 'migu/remoting/cms_artist_detail_tag',
         artistSongs: 'v3/music/artist',  // From web
         artistAlbums: 'v3/music/artist',  // From web
 
-        search: 'migu/remoting/scr_search_tag',
+        // search: 'migu/remoting/scr_search_tag',
+        search: 'MIGUM3.0/v1.0/content/search_all.do',
     }
 
     private account: IAccount;
@@ -126,8 +132,10 @@ export class MiguMusicApi {
             default:
                 headers = MiguMusicApi.HEADERS_WEB;
         }
-        if (node == MiguMusicApi.NODE_MAP.audio) {
-            headers = MiguMusicApi.HEADERS_AUDIO;
+
+        if (node == MiguMusicApi.NODE_MAP.album) {
+            headers['By'] = md5(headers['User-Agent']);
+            headers['Referer'] = 'https://m.music.migu.cn/v4';
         }
 
         if (to_enc) {
@@ -146,6 +154,7 @@ export class MiguMusicApi {
             method: 'GET',
             jar: this.cookieJar || null,
             headers: headers,
+            withCredentials: false,
         };
 
         let resp: IResponse = await request(url, options);
@@ -171,32 +180,137 @@ export class MiguMusicApi {
     // flac: type = 3
     // 320kbps: type = 2
     // 40kbps: type = 1
-    public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
-        let audios = [];
-        while (true) {
-            let tp = 2;
-            if (supKbps > 320) {
-                tp = 3;
-            }
-            let node = MiguMusicApi.NODE_MAP.audio;
-            let params = {
-                copyrightId: songId,
-                auditionsFlag: 0,
-                type: tp,
-            };
-            let json = await this.request(node, params, true);
-            audios = makeAudios(json['data']);
+    // public async audios(songId: string, songMediaMid?: string, supKbps?: number): Promise<Array<IAudio>> {
+    //     let audios = [];
+    //     while (true) {
+    //         let tp = 2;
+    //         if (supKbps > 320) {
+    //             tp = 3;
+    //         }
+    //         let data = {
+    //             copyrightId: songId,
+    //             auditionsFlag: 0,
+    //             type: tp,
+    //         };
+    //         let { secKey, encBuf } = encrypt(JSON.stringify(data));
+    //         let params = {
+    //             dataType: 2,
+    //             data: encBuf,
+    //             secKey,
+    //         }
+    //         let headers = MiguMusicApi.HEADERS_AUDIO;
+    //         let node = MiguMusicApi.NODE_MAP.audio;
+    //         let url = MiguMusicApi.BASICURL + node + '?' + querystringify(params);
+    //         let options: IRequestOptions = {
+    //             method: 'GET',
+    //             jar: this.cookieJar || null,
+    //             headers: headers,
+    //             withCredentials: false,
+    //         };
+    //         let resp: IResponse = await request(url, options);
+    //         let json = resp.data;
+    //         audios = makeAudios(json['data']);
+    //
+    //         // if the audio is not flac, changing to 320kbps
+    //         if (audios.length > 0 && tp == 3) {
+    //             if (audios[0].kbps < 320) {
+    //                 supKbps = 320;
+    //                 continue;
+    //             }
+    //         }
+    //         break;
+    //     }
+    //     return audios;
+    // }
 
-            // if the audio is not flac, changing to 320kbps
-            if (audios.length > 0 && tp == 3) {
-                if (audios[0].kbps < 320) {
+
+    public async audios(songOriginalId: string, songMediaMid?: string, supKbps?: number): Promise<Array<IAudio>> {
+        if (!songMediaMid) {
+            let song = await this.song(songOriginalId);
+            songMediaMid = song.songMediaMid;
+        }
+
+        let toneFlag = 'SQ';
+        let formatType = 'SQ';
+        let resourceType = 'E';
+        let format = 'flac';
+        let kbps = 1000;
+        while (true) {
+            if (supKbps > 320) {
+                toneFlag = 'SQ';
+                formatType = 'SQ';
+                resourceType = 'E';
+                format = 'flac';
+                kbps = 1000;
+            } else if (supKbps > 128) {
+                toneFlag = 'HQ';
+                formatType = 'HQ';
+                resourceType = '2';
+                format = 'mp3';
+                kbps = 320;
+            } else if (supKbps > 64) {
+                toneFlag = 'PQ';
+                formatType = 'PQ';
+                resourceType = '2';
+                format = 'mp3';
+                kbps = 128;
+            } else {
+                toneFlag = 'LQ';
+                formatType = 'LQ';
+                resourceType = '3';
+                format = 'mp3';
+                kbps = 64;
+            }
+
+            let params = {
+                toneFlag,
+                formatType,
+                resourceType,
+                netType: '00',
+                copyrightId: '0',
+                contentId: songMediaMid,
+                channel: '0',
+            };
+            let resp = await request(
+                MiguMusicApi.AUDIO_URL + '?' + querystringify(params),
+                {
+                    method: 'GET',
+                    maxRedirects: 0,
+                    validateStatus: function (status: number) { return status >= 200 && status <= 302; }
+                }
+            );
+
+            let url = resp.headers['location'];
+            if (!url) {
+                if (supKbps > 320) {
                     supKbps = 320;
-                    continue;
+                } else if (supKbps > 128) {
+                    supKbps = 128;
+                } else if (supKbps > 64) {
+                    supKbps = 64;
+                } else {
+                    // No audio
+                    return [];
+                }
+                continue;
+            } else {
+                if (url.includes('MP3_320_')) {
+                    kbps = 320;
+                } else if (url.includes('MP3_128_')) {
+                    kbps = 128;
+                } else if (url.includes('MP3_64_')) {
+                    kbps = 64;
                 }
             }
-            break;
+
+            return [{
+                format,
+                size: null,
+                kbps,
+                url,
+                path: null,
+            }];
         }
-        return audios;
     }
 
 
@@ -212,37 +326,23 @@ export class MiguMusicApi {
         let song = makeSong(json.data);
 
         // Get album info
-        node = MiguMusicApi.NODE_MAP.song;
-        params = {
-            type: 1,
-            copyrightId: songId,
-        };
-        json = await this.request(node, params);
-        let song_ = makeSong(json.items && json.items[0]);
-
-        song.duration = song_.duration;
-
-        song.albumId = song_.albumId;
-        song.albumOriginalId = song_.albumOriginalId;
-        song.albumName = song_.albumName;
-
-        song.artistId = song_.artistId;
-        song.artistOriginalId = song_.artistOriginalId;
-        song.artistName = song_.artistName;
+        node = MiguMusicApi.NODE_MAP.song + '/' + songId;
+        let body = await this.request(node, params, false, MiguMusicApi.BASICURL, false);
+        let groups = /album\/(\d+)">(.+?)</.exec(body);
+        if (groups != null) {
+            let albumOriginalId = groups[1];
+            let albumName = groups[2];
+            song.albumId = _getAlbumId(albumOriginalId);
+            song.albumOriginalId = albumOriginalId;
+            song.albumName = albumName;
+        }
 
         return song;
     }
 
 
     public async songs(songIds: Array<string>): Promise<Array<ISong>> {
-        // Get album info
-        let node = MiguMusicApi.NODE_MAP.song;
-        let params = {
-            type: 1,
-            copyrightId: songIds.join(','),
-        };
-        let json = await this.request(node, params);
-        return makeSongs(json.items);
+        return await Promise.all(songIds.map(songId => this.song(songId)));
     }
 
 
@@ -263,31 +363,40 @@ export class MiguMusicApi {
 
     public async album(albumId: string): Promise<IAlbum> {
         let node = MiguMusicApi.NODE_MAP.album;
-        let params: any = {
-            albumId,
-        };
+        let params: any = { albumId };
         let json = await this.request(node, params, false, MiguMusicApi.BASICURL_H5);
         let album = makeAlbum(json.data);
 
-        node = MiguMusicApi.NODE_MAP.albumSongs;
-        params = {
+        // node = MiguMusicApi.NODE_MAP.albumSongs;
+        // params = {
+        //     albumId,
+        //     type: 2,
+        // };
+        // json = await this.request(node, params, false);
+        // let songs = makeSongs(json.items).map(song => {
+        //     song.albumCoverUrl = album.albumCoverUrl;
+        //     return song;
+        // });
+        // if (songs.length > 0) {
+        //     let song = songs[0];
+        //     album.artistOriginalId = song.artistOriginalId;
+        //     album.artistId = song.artistId;
+        //     album.artistName = song.artistName;
+        // }
+        // album.songs = songs;
+
+        return album;
+    }
+
+
+    public async albumSongs(albumId: string): Promise<Array<ISong>> {
+        let node = MiguMusicApi.NODE_MAP.albumSongs;
+        let params = {
             albumId,
             type: 2,
         };
-        json = await this.request(node, params, false);
-        let songs = makeSongs(json.items).map(song => {
-            song.albumCoverUrl = album.albumCoverUrl;
-            return song;
-        });
-        if (songs.length > 0) {
-            let song = songs[0];
-            album.artistOriginalId = song.artistOriginalId;
-            album.artistId = song.artistId;
-            album.artistName = song.artistName;
-        }
-        album.songs = songs;
-
-        return album;
+        let json = await this.request(node, params, false);
+        return makeSongs(json.items);
     }
 
 
@@ -308,11 +417,10 @@ export class MiguMusicApi {
     public async artistSongs(artistId: string, page: number = 1, size: number = 20): Promise<Array<ISong>> {
         let node = MiguMusicApi.NODE_MAP.artistSongs + '/' + artistId + '/song';
         let params = {
-            page,
+            from: 'migu', page, origin: 4,
         };
         let html = await this.request(node, params, false, MiguMusicApi.BASICURL, false);
-        let songIds = extractArtistSongIds(html);
-        return this.songs(songIds);
+        return extractArtistSongs(html);
     }
 
 
@@ -328,50 +436,19 @@ export class MiguMusicApi {
 
     public async collection(collectionId: string, size: number = 10000): Promise<ICollection> {
         let node = MiguMusicApi.NODE_MAP.collection;
-        let params: any = {
-            onLine: 1,
-            queryChannel: 0,
-            createUserId: '221acca8-9179-4ba7-ac3f-2b0fdffed356',
-            contentCountMin: 5,
-            playListId: collectionId,
-        };
+        let params: any = { playListId: collectionId };
+
         let json = await this.request(node, params, false, MiguMusicApi.BASICURL_H5);
-        let collection = makeCollection(json.playlist[0]);
+        let collection = makeCollection(json['rsp']['playList'][0]);
 
-        let pages = Math.ceil(collection.songCount / 20);
-
-        let songs = [];
-        for (let page of [...Array(pages).keys()]) {
-            while (true) {
-                let node = MiguMusicApi.NODE_MAP.collectionSongs + '/' + collectionId;
-                let params = {
-                    page: page + 1,
-                };
-
-                let html;
-                try {
-                    html = await this.request(node, params, false, MiguMusicApi.BASICURL, false);
-                } catch (e) {
-                    await sleep(1);
-                    continue;
-                }
-
-                let songIds = extractCollectionSongIds(html);
-
-                let songs_;
-                try {
-                    songs_ = await this.songs(songIds);
-                } catch (e) {
-                    await sleep(1);
-                    continue;
-                }
-
-                songs = [...songs, ...songs_];
-                break;
-            }
+        node = MiguMusicApi.NODE_MAP.collectionSongs;
+        params = {
+            playListType: 2,
+            playListId: collectionId,
+            contentCount: size,
         };
-
-        collection.songs = songs;
+        json = await this.request(node, params, false, MiguMusicApi.BASICURL_H5);
+        collection.songs = makeSongs(json['contentList'] || []);
         return collection;
     }
 
@@ -387,15 +464,25 @@ export class MiguMusicApi {
      * 5: mv
      * 6: collection
      */
-    public async search(type: number, keyword: string, page: number = 1, size: number = 10): Promise<any> {
+    public async search(type: number, keyword: string, page: number = 1, size: number = 20): Promise<any> {
         let node = MiguMusicApi.NODE_MAP.search;
+        let searchSwitch = {
+            song: type == 2,
+            album: type == 4,
+            singer: type == 1,
+            songlist: type == 6,
+            tagSong: 0,
+            mvSong: 0,
+            bestShow: 0,
+        }
         let params: any = {
-            rows: size,
-            type,
-            keyword,
-            pgc: page,
-        };
-        let json = await this.request(node, params, false, MiguMusicApi.BASICURL_H5);
+            ua: 'Android_migu',
+            text: keyword,
+            pageNo: page,
+            pageSize: 20, // This can not be changed.
+            searchSwitch: JSON.stringify(searchSwitch),
+        }
+        let json = await this.request(node, params, false, MiguMusicApi.BASICURL_APP);
         return json;
     }
 
@@ -407,8 +494,9 @@ export class MiguMusicApi {
      */
     public async searchSongs(keyword: string, page: number = 1, size: number = 10): Promise<Array<ISong>> {
         let json = await this.search(2, keyword, page, size);
-        if (!json['musics']) { return []; }
-        return makeSongs(json['musics'] || []);
+        if (!json['songResultData']) { return []; }
+        let s = makeSongs(json['songResultData']['result'] || []);
+        return s;
     }
 
 
@@ -418,8 +506,8 @@ export class MiguMusicApi {
      */
     public async searchAlbums(keyword: string, page: number = 1, size: number = 10): Promise<Array<IAlbum>> {
         let json = await this.search(4, keyword, page, size);
-        if (!json['albums']) { return []; }
-        return makeAlbums(json['albums'] || []);
+        if (!json['albumResultData']) { return []; }
+        return makeAlbums(json['albumResultData']['result'] || []);
     }
 
 
@@ -430,8 +518,8 @@ export class MiguMusicApi {
      */
     public async searchArtists(keyword: string, page: number = 1, size: number = 10): Promise<Array<IArtist>> {
         let json = await this.search(1, keyword, page, size);
-        if (!json['artists']) { return []; }
-        return makeArtists(json['artists'] || []);
+        if (!json['singerResultData']) { return []; }
+        return makeArtists(json['singerResultData']['result'] || []);
     }
 
 
@@ -441,8 +529,8 @@ export class MiguMusicApi {
      */
     public async searchCollections(keyword: string, page: number = 1, size: number = 10): Promise<Array<ICollection>> {
         let json = await this.search(6, keyword, page, size);
-        if (!json['songLists']) { return []; }
-        return makeCollections(json['songLists'] || []);
+        if (!json['songListResultData']) { return []; }
+        return makeCollections(json['songListResultData']['result'] || []);
     }
 
 
