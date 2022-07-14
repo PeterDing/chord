@@ -7,7 +7,7 @@ const loggerWarning = new Logger(filenameToNodeName(__filename), LogLevel.Warnin
 import { getRandomSample } from 'chord/base/node/random';
 import { ASCII_LETTER_DIGIT } from 'chord/base/common/constants';
 
-import { makeCookieJar, makeCookie, makeCookies, CookieJar, Cookie } from 'chord/base/node/cookies';
+import { makeCookies, Cookie } from 'chord/base/node/cookies';
 import { querystringify } from 'chord/base/node/url';
 import { request, IRequestOptions, IResponse } from 'chord/base/node/_request';
 
@@ -82,11 +82,9 @@ export class KuwoMusicApi {
     }
 
     private csrf_token: string;
-    private cookieJar: CookieJar;
 
 
     constructor() {
-        this.cookieJar = makeCookieJar();
         this.init_token();
     }
 
@@ -105,7 +103,6 @@ export class KuwoMusicApi {
             if (cookie.key == 'kw_token') {
                 this.csrf_token = cookie.value;
             }
-            this.cookieJar.setCookie(cookie, KuwoMusicApi.BASICURL);
         });
     }
 
@@ -118,21 +115,33 @@ export class KuwoMusicApi {
         let url = domain + node;
         let params = apiParams ? querystringify(apiParams) : null;
 
+        let csrf_token = this.csrf_token || '';
+
         let headers = !!referer ?
-            { ...KuwoMusicApi.HEADERS, Referer: referer, csrf: this.csrf_token }
-            : { ...KuwoMusicApi.HEADERS, Referer: KuwoMusicApi.BASICURL, csrf: this.csrf_token };
+            { ...KuwoMusicApi.HEADERS, Referer: referer, csrf: csrf_token, Cookie: `kw_token=${csrf_token}` }
+            : { ...KuwoMusicApi.HEADERS, Referer: KuwoMusicApi.BASICURL, csrf: csrf_token, Cookie: `kw_token=${csrf_token}` };
 
         url = url + '?' + params;
         let options: IRequestOptions = {
             method: 'GET',
             headers: headers,
-            jar: this.cookieJar || null,
         };
-        let resp: IResponse = await request(url, options);
+
+        let resp: IResponse;
+        let retries = 3;
+        for (let i = 0; i < retries; ++i) {
+            try {
+                resp = await request(url, options);
+            } catch (e) {
+                if (i + 1 == retries) {
+                    throw new Error(e);
+                }
+                continue;
+            }
+        }
+
         this.setCookies(resp);
-
         let json = resp.data;
-
         if (!(json.code == 200 || json.status == 200)) {
             loggerWarning.warning('[KuwoMusicApi.request] [Error]: (params, response):', options, json);
         }
