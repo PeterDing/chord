@@ -128,7 +128,7 @@ export class Music {
     /**
      * audioId is Chord's audio id, not audio original id
      */
-    public async audios(songId: string, supKbps?: number): Promise<Array<IAudio>> {
+    public async audios(songId: string, songMediaMid?: string, supKbps?: number): Promise<Array<IAudio>> {
         let h = md5(`music.core.api.audios(${songId})`);
         let result = cache30.get(h);
         if (result) return deepCopy(result);
@@ -148,7 +148,7 @@ export class Music {
                 result = await this.qianqianApi.audios(originType.id, supKbps);
                 break;
             case ORIGIN.migu:
-                result = await this.miguApi.audios(originType.id, supKbps);
+                result = await this.miguApi.audios(originType.id, songMediaMid, supKbps);
                 break;
             case ORIGIN.kuwo:
                 result = await this.kuwoApi.audios(originType.id, supKbps);
@@ -482,7 +482,7 @@ export class Music {
             this.isOriginOn(ORIGIN.netease) ? this.neteaseApi.searchSongs(keyword, offset * limit, limit) : [],
             this.isOriginOn(ORIGIN.qq) ? this.qqApi.searchSongs(keyword, offset * limit, limit) : [],
             this.isOriginOn(ORIGIN.qianqian) ? this.qianqianApi.searchSongs(keyword, offset * limit, limit) : [],
-            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchSongs(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchSongs(keyword, offset + 1, limit) : [],
             this.isOriginOn(ORIGIN.kuwo) ? this.kuwoApi.searchSongs(keyword, offset + 1, limit) : [],
             this.isOriginOn(ORIGIN.spotify) ? this.spotifyApi.searchSongs(keyword, offset + 1, limit) : [],
         ]);
@@ -507,7 +507,7 @@ export class Music {
             this.isOriginOn(ORIGIN.netease) ? this.neteaseApi.searchArtists(keyword, offset * limit, limit) : [],
             this.isOriginOn(ORIGIN.qq) ? this.qqApi.searchArtists(keyword, offset * limit, limit) : [],
             this.isOriginOn(ORIGIN.qianqian) ? this.qianqianApi.searchArtists(keyword, offset * limit, limit) : [],
-            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchArtists(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchArtists(keyword, offset + 1, limit) : [],
             this.isOriginOn(ORIGIN.kuwo) ? this.kuwoApi.searchArtists(keyword, offset + 1, limit) : [],
             this.isOriginOn(ORIGIN.spotify) ? this.spotifyApi.searchArtists(keyword, offset + 1, limit) : [],
         ]);
@@ -532,7 +532,7 @@ export class Music {
             this.isOriginOn(ORIGIN.netease) ? this.neteaseApi.searchAlbums(keyword, offset * limit, limit) : [],
             this.isOriginOn(ORIGIN.qq) ? this.qqApi.searchAlbums(keyword, offset * limit, limit) : [],
             this.isOriginOn(ORIGIN.qianqian) ? this.qianqianApi.searchAlbums(keyword, offset * limit, limit) : [],
-            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchAlbums(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchAlbums(keyword, offset + 1, limit) : [],
             this.isOriginOn(ORIGIN.kuwo) ? this.kuwoApi.searchAlbums(keyword, offset + 1, limit) : [],
             this.isOriginOn(ORIGIN.spotify) ? this.spotifyApi.searchAlbums(keyword, offset + 1, limit) : [],
         ]);
@@ -557,7 +557,7 @@ export class Music {
             this.isOriginOn(ORIGIN.netease) ? this.neteaseApi.searchCollections(keyword, offset * limit, limit) : [],
             this.isOriginOn(ORIGIN.qq) ? this.qqApi.searchCollections(keyword, offset * limit, limit) : [],
             this.isOriginOn(ORIGIN.qianqian) ? this.qianqianApi.searchCollections(keyword, offset * limit, limit) : [],
-            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchCollections(keyword, offset * limit, limit) : [],
+            this.isOriginOn(ORIGIN.migu) ? this.miguApi.searchCollections(keyword, offset + 1, limit) : [],
             this.isOriginOn(ORIGIN.kuwo) ? this.kuwoApi.searchCollections(keyword, offset + 1, limit) : [],
             this.isOriginOn(ORIGIN.spotify) ? this.spotifyApi.searchCollections(keyword, offset + 1, limit) : [],
         ]);
