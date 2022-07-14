@@ -104,7 +104,9 @@ export class QQMusicApi {
         collection: 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
         collectionAddons: 'https://c.y.qq.com/3gmusic/fcgi-bin/3g_dir_order_uinlist',
 
-        search: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        // search: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        search: 'http://c.y.qq.com/soso/fcgi-bin/client_search_cp',
+        searchCollections: 'https://c.y.qq.com/soso/fcgi-bin/client_music_search_songlist',
 
         songList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
         albumList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
@@ -645,27 +647,26 @@ export class QQMusicApi {
      *
      * @param type: number
      *      0: song
-     *      1: artist
-     *      2: album
-     *      3: collection
-     *      8: user
+     *      2: collection
+     *      8: album
+     *      9: artist
      */
-    public async search(type: number, keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
-        let data = JSON.stringify({
-            "req_1": {
-                "method": "DoSearchForQQMusicDesktop",
-                "module": "music.search.SearchCgiService",
-                "param": {
-                    "remoteplace": "txt.yqq.top",
-                    "search_type": type,
-                    "query": keyword,
-                    "page_num": offset,
-                    "num_per_page": limit,
-                }
-            }
-        });
-        let params = { data };
-        let url = QQMusicApi.NODE_MAP.search;
+    public async search(type: number, keyword: string, offset: number = 0, limit: number = 10): Promise<any> {
+        let params = type == 2 ? {
+            remoteplace: 'txt.yqq.playlist',
+            page_no: offset,
+            num_per_page: limit,
+            query: keyword,
+        } : {
+            format: 'json',
+            n: limit,
+            p: offset,
+            w: keyword,
+            cr: '1',
+            g_tk: '5381',
+            t: type,
+        };
+        let url = type == 2 ? QQMusicApi.NODE_MAP.searchCollections : QQMusicApi.NODE_MAP.search;
         let json = await this.request('GET', url, params);
         return json;
     }
@@ -673,29 +674,26 @@ export class QQMusicApi {
 
     public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
         let json = await this.search(0, keyword, offset, limit);
-        if (!json['req_1']) { return []; }
-        return makeSongs(json['req_1']['data']['body']['song']['list']);
+        return makeSongs(json['data']['song'] && json['data']['song']['list'] || []);
     }
 
 
     public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
-        let json = await this.search(1, keyword, offset, limit);
-        if (!json['req_1']) { return []; }
-        return makeArtists(json['req_1']['data']['body']['singer']['list']);
+        let json = await this.search(9, keyword, offset, limit);
+        return makeArtists(json['data']['singer'] && json['data']['singer']['list'] || []);
     }
 
 
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
-        let json = await this.search(2, keyword, offset, limit);
-        if (!json['req_1']) { return []; }
-        return makeAlbums(json['req_1']['data']['body']['album']['list']);
+        let json = await this.search(8, keyword, offset, limit);
+        return makeAlbums(json['data']['album'] && json['data']['album']['list'] || []);
     }
 
 
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
-        let json = await this.search(3, keyword, offset, limit);
-        if (!json['req_1']) { return []; }
-        return makeCollections(json['req_1']['data']['body']['songlist']['list']);
+        let body = await this.search(2, keyword, offset, limit);
+        let json = JSON.parse(body.slice(18, -1));
+        return makeCollections(json['data'] && json['data']['list'] || []);
     }
 
 
