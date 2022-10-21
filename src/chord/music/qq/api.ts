@@ -104,8 +104,8 @@ export class QQMusicApi {
         collection: 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
         collectionAddons: 'https://c.y.qq.com/3gmusic/fcgi-bin/3g_dir_order_uinlist',
 
-        // search: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
-        search: 'http://c.y.qq.com/soso/fcgi-bin/client_search_cp',
+        search: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        // search: 'http://c.y.qq.com/soso/fcgi-bin/client_search_cp',
         searchCollections: 'https://c.y.qq.com/soso/fcgi-bin/client_music_search_songlist',
 
         songList: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
@@ -183,13 +183,15 @@ export class QQMusicApi {
         params?: any,
         data?: any,
         referer?: string,
-        cookies: Object = {}): Promise<any> {
+        cookies: Object = {},
+        headers?: any,
+    ): Promise<any> {
         if (params) {
             url = url + '?' + querystringify(params);
         }
 
         referer = referer || 'https://y.qq.com';
-        let headers = { ...QQMusicApi.HEADERS, referer };
+        headers = headers || { ...QQMusicApi.HEADERS, referer };
 
         // Here, domains are different. Make a new CookieJar for a request.
         if (isEmptyObject(cookies)) {
@@ -198,7 +200,7 @@ export class QQMusicApi {
         let jar = makeCookieJar();
         for (let k of Object.keys(cookies)) {
             let cookie = makeCookie(k, cookies[k]);
-            jar.setCookie(cookie, url);
+            jar.setCookieSync(cookie, url);
         }
 
         let options: IRequestOptions = {
@@ -208,8 +210,17 @@ export class QQMusicApi {
             data,
         };
 
-        let resp: IResponse = await request(url, options);
-        return resp.data;
+        let retries = 5;
+        for (let i = 0; i < retries; ++i) {
+            try {
+                let resp: IResponse = await request(url, options);
+                return resp.data;
+            } catch (err) {
+                if (i + 1 == retries) {
+                    throw err;
+                }
+            }
+        }
     }
 
 
@@ -646,54 +657,65 @@ export class QQMusicApi {
      * Search
      *
      * @param type: number
-     *      0: song
-     *      2: collection
-     *      8: album
-     *      9: artist
+     *   0：song
+     *   1：artist
+     *   2：album
+     *   3：collection
+     *   4：mv
+     *   7：layric
+     *   8：user
      */
     public async search(type: number, keyword: string, offset: number = 0, limit: number = 10): Promise<any> {
-        let params = type == 2 ? {
-            remoteplace: 'txt.yqq.playlist',
-            page_no: offset,
-            num_per_page: limit,
-            query: keyword,
-        } : {
-            format: 'json',
-            n: limit,
-            p: offset,
-            w: keyword,
-            cr: '1',
-            g_tk: '5381',
-            t: type,
+        let data = JSON.stringify({
+            comm: {
+                ct: '19',
+                cv: '1859',
+                uin: '0',
+            },
+            req: {
+                method: 'DoSearchForQQMusicDesktop',
+                module: 'music.search.SearchCgiService',
+                param: {
+                    grp: 1,
+                    num_per_page: limit,
+                    page_num: offset,
+                    query: keyword,
+                    search_type: type,
+                },
+            },
+        });
+        let headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
         };
-        let url = type == 2 ? QQMusicApi.NODE_MAP.searchCollections : QQMusicApi.NODE_MAP.search;
-        let json = await this.request('GET', url, params);
+
+        let url = QQMusicApi.NODE_MAP.search;
+        let json = await this.request('POST', url, null, data, null, {}, headers);
         return json;
     }
 
 
     public async searchSongs(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ISong>> {
         let json = await this.search(0, keyword, offset, limit);
-        return makeSongs(json['data']['song'] && json['data']['song']['list'] || []);
+        return makeSongs(json.req.data.body.song && json.req.data.body.song.list || []);
     }
 
 
     public async searchArtists(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IArtist>> {
-        let json = await this.search(9, keyword, offset, limit);
-        return makeArtists(json['data']['singer'] && json['data']['singer']['list'] || []);
+        let json = await this.search(1, keyword, offset, limit);
+        return makeArtists(json.req.data.body.singer && json.req.data.body.singer.list || []);
     }
 
 
     public async searchAlbums(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<IAlbum>> {
-        let json = await this.search(8, keyword, offset, limit);
-        return makeAlbums(json['data']['album'] && json['data']['album']['list'] || []);
+        let json = await this.search(2, keyword, offset, limit);
+        return makeAlbums(json.req.data.body.album && json.req.data.body.album.list || []);
     }
 
 
     public async searchCollections(keyword: string, offset: number = 0, limit: number = 10): Promise<Array<ICollection>> {
-        let body = await this.search(2, keyword, offset, limit);
-        let json = JSON.parse(body.slice(18, -1));
-        return makeCollections(json['data'] && json['data']['list'] || []);
+        let json = await this.search(3, keyword, offset, limit);
+        return makeCollections(json.req.data.body.songlist && json.req.data.body.songlist.list || []);
     }
 
 
