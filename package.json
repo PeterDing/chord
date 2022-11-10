@@ -83,7 +83,7 @@
         "@types/request": "^2.48.8",
         "@types/request-promise": "^4.1.48",
         "@types/tough-cookie": "^4.0.2",
-        "electron": "^18.2.3",
+        "electron": "^18.3.7",
         "electron-builder": "^23.0.3",
         "electron-rebuild": "^3.2.7",
         "gulp": "^4.0.2",
